@@ -1,0 +1,8 @@
+# ⚠ PROYECTO DE EJEMPLO
+titulo: Coche eléctrico
+año: 2022
+labor: Dirección de arte
+cliente: Marca Ejemplo
+mostrar_en_inicio: no
+---
+Anuncio de ejemplo.

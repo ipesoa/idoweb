@@ -1,0 +1,11 @@
+# ⚠ EJEMPLO: revisa título, año, labor y texto
+titulo: Superstar
+año: 2000
+labor: Diseño de producción
+director: 
+mostrar_en_inicio: si
+encuadre: 70% center
+---
+Texto de ejemplo. Aquí se cuenta el proyecto: el concepto visual, los decorados construidos, las referencias y el equipo de arte.
+
+Una línea en blanco empieza un párrafo nuevo, y las palabras entre *asteriscos* salen en cursiva.

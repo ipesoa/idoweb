@@ -1,0 +1,8 @@
+# ⚠ PROYECTO DE EJEMPLO (este NO sale en el inicio)
+titulo: Niebla
+año: 2019
+labor: Ambientación
+director: Nombre Apellido
+mostrar_en_inicio: no
+---
+Proyecto de ejemplo.

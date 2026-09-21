@@ -1,0 +1,8 @@
+# ⚠ PROYECTO DE EJEMPLO
+titulo: El último verano
+año: 2021
+labor: Dirección de arte
+director: Nombre Apellido
+mostrar_en_inicio: si
+---
+Proyecto de ejemplo. Paleta de ocres y terracotas, un pueblo de interior en agosto.

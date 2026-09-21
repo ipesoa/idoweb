@@ -1,0 +1,35 @@
+# =====================================================================
+#  PLANTILLA DE PROYECTO  (las carpetas que empiezan por "_" no salen en la web)
+#  Copia esta carpeta, cámbiale el nombre (ej: 2025-titulo-de-la-peli)
+#  y rellena lo de abajo. Las líneas que empiezan por # son notas.
+# =====================================================================
+titulo: Título del anuncio
+año: 2025
+labor: Diseño de producción
+director: Nombre del director/a
+cliente: Marca
+productora: Nombre de la productora
+
+# ¿Sale en el pase de imágenes de la página de inicio?  si / no
+mostrar_en_inicio: si
+
+# (opcional) Qué parte de la portada se ve cuando se recorta:
+# center | top | bottom | left | right | "30% 50%" (horizontal vertical)
+encuadre: center
+
+# (opcional) Tráiler o making-of de Vimeo o YouTube, sale grande en el mosaico
+video:
+
+# (opcional) Número para forzar el orden en la lista (mayor = sale antes)
+orden:
+
+# FOTOS: todas las imágenes de esta carpeta salen en el mosaico, por orden de nombre.
+#   portada.jpg        → imagen grande del inicio y de la cabecera
+#   portada-movil.jpg  → (opcional) versión vertical para móviles
+#   01.jpg, 02.jpg...  → fotos del mosaico
+#   Añade _grande, _ancha, _alta o _pequena al nombre para forzar el tamaño
+#   (ej: 05_ancha.jpg ocupa todo el ancho). También vale vídeo .mp4 corto.
+---
+Aquí va el texto libre del proyecto. Lo que se hizo, el concepto, los decorados…
+
+Una línea en blanco empieza un párrafo nuevo. Las palabras entre *asteriscos* salen en cursiva.

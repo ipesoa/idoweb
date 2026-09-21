@@ -1,0 +1,11 @@
+# ⚠ PROYECTO DE EJEMPLO — bórralo cuando haya proyectos reales
+titulo: La casa del lago
+año: 2023
+labor: Diseño de producción
+director: Nombre Apellido
+productora: Productora Ejemplo
+mostrar_en_inicio: si
+---
+Proyecto de ejemplo para ver cómo se compone el mosaico. Una casa de los años setenta junto al agua: maderas oscuras, verdes húmedos y luz filtrada por la niebla.
+
+Se construyeron en plató el salón y la escalera, y el resto se rodó en una casa real intervenida durante seis semanas.

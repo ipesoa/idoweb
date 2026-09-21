@@ -1,0 +1,9 @@
+# ⚠ PROYECTO DE EJEMPLO
+titulo: Perfume Noir
+año: 2024
+labor: Diseño de producción
+director: Nombre Apellido
+cliente: Marca Ejemplo
+mostrar_en_inicio: si
+---
+Anuncio de ejemplo. Un único decorado negro lacado con reflejos en rojo.
