@@ -1,4 +1,4 @@
-/* ARCHIVO GENERADO AUTOMÁTICAMENTE por herramientas-mac/_generar-datos.sh
+/* ARCHIVO GENERADO AUTOMÁTICAMENTE por herramientas-mac/_generar-datos.sh o herramientas-windows/_generar-datos.ps1
    No lo edites a mano: cambia las carpetas de /contenido y vuelve a generarlo. */
 window.CONTENIDO = {
   "films": [
