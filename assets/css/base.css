@@ -25,6 +25,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   mix-blend-mode: var(--texto-mezcla);
 }
 
+/* ---------- TRAZO: contorno de las letras (ajustes en ajustes.css 3b) - */
+.trazo,
+.pagina-inicio .menu {
+  -webkit-text-stroke: var(--trazo-grosor) var(--trazo-color);
+  paint-order: stroke fill;   /* el contorno queda por fuera, la letra no adelgaza */
+}
+
 /* ---------- CORTINA: fundido al entrar y salir de cada página ------- */
 .cortina {
   position: fixed; inset: 0; z-index: 1000;
@@ -138,7 +145,7 @@ body:not(.pagina-inicio) .menu__comercials { right: var(--margen); top: calc(var
   font-size: .72rem; letter-spacing: .2em; color: var(--color-suave);
 }
 
-/* ---------- MOSAICO: cuadrícula compartida (proyecto y listas) ------- */
+/* ---------- MOSAICO: cuadrícula de las páginas de proyecto --------- */
 .mosaico {
   --cols: var(--columnas-escritorio);
   display: grid;

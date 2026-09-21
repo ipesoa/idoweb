@@ -82,15 +82,6 @@ html, body { height: 100%; overflow: hidden; }
   opacity: 0; filter: blur(18px); transform: none;
 }
 
-/* ---- Contador 01 / 07 ---- */
-.pase__cuenta {
-  position: absolute; z-index: 5;
-  left: 50%; bottom: var(--margen);
-  transform: translateX(-50%);
-  font-size: .72rem; letter-spacing: .3em;
-  font-variant-numeric: tabular-nums;
-}
-
 .pase__vacio {
   position: absolute; inset: 0; display: grid; place-items: center;
   text-align: center; padding: 2rem; color: var(--color-suave);
@@ -99,5 +90,4 @@ html, body { height: 100%; overflow: hidden; }
 @media (max-width: 700px) {
   .pase__titulo { font-size: clamp(2.6rem, 15vw, 5rem); }
   .pase__datos  { letter-spacing: .2em; }
-  .pase__cuenta { bottom: calc(var(--margen) + 2.8rem); }
 }

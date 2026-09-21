@@ -61,11 +61,34 @@
   --texto-mezcla: difference;
   --texto-color:  #f2ece2;
 
+/* ---------- 3b. TRAZO (contorno) DE LAS LETRAS ----------------------
+   Letras del inicio (título, año·labor y menú) y los títulos grandes
+   "Films" / "Comercials" llevan un contorno.
+   Su color se calcula solo:
+     70 % el OPUESTO del color de la letra  (--texto-color)
+     30 % el OPUESTO del fondo              (--color-fondo)
+   y luego se mezcla con la foto igual que la letra (efecto diferencia),
+   así el contorno siempre sale "al revés" que la letra.
+   --trazo-peso-letra  cuánto pesa el opuesto de la letra (el resto es el del fondo)
+   --trazo-grosor      grosor (en em = proporcional al tamaño de la letra)
+                       0 = sin contorno                                   */
+  --trazo-grosor:     0.06em;
+  --trazo-peso-letra: 70%;
+  --trazo-color:      #5a5d63;   /* reserva para navegadores antiguos */
+
   /* El menú (nombre, films, comercials, about) usa su propio efecto   */
   --menu-mezcla: difference;
   --menu-color:  #f2ece2;
 
-/* ---------- 4. CUADRÍCULAS (páginas de proyecto y listas) ----------- */
+/* ---------- 4. CUADRÍCULAS -------------------------------------------
+   Listas FILMS y COMERCIALS: 2 portadas por fila, formato cine.
+   --formato-cine: 2.39 / 1  (Scope, panorámico)
+                   1.85 / 1  (Flat)   ·   16 / 9 (tele)                */
+  --formato-cine:        2.39 / 1;
+  --lista-columnas:       2;
+  --lista-columnas-movil: 1;
+
+  /* Mosaico de las páginas de PROYECTO                                 */
   --hilo:        1px;          /* grosor del hilo blanco de cada foto (entre dos fotos se ve el doble) */
   --hilo-color:  #f4f1ec;      /* color del hilo                       */
   --columnas-escritorio: 6;
@@ -82,4 +105,13 @@
 
 /* ---------- 6. ESPACIOS -------------------------------------------- */
   --margen: clamp(16px, 2.6vw, 40px);  /* margen a los lados de pantalla */
+}
+
+/* Color del trazo calculado (navegadores modernos) */
+@supports (color: rgb(from red r g b)) {
+  :root {
+    --trazo-color: color-mix(in srgb,
+      rgb(from var(--texto-color) calc(255 - r) calc(255 - g) calc(255 - b)) var(--trazo-peso-letra),
+      rgb(from var(--color-fondo) calc(255 - r) calc(255 - g) calc(255 - b)));
+  }
 }

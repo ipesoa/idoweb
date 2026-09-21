@@ -15,7 +15,6 @@
   const A = window.AJUSTES.inicio;
   const pase = document.getElementById("pase");
   const pie = document.getElementById("pie");
-  const cuenta = document.getElementById("cuenta");
   const capas = [...pase.querySelectorAll(".pase__capa")];
 
   // Pasar los tiempos de ajustes.js al CSS
@@ -55,7 +54,7 @@
     pie.querySelector(".pase__titulo").innerHTML = Comun.letras(p.titulo, A.retrasoLetra);
     pie.querySelector(".pase__datos").innerHTML =
       Comun.letras(datos, Math.round(A.retrasoLetra / 2), p.titulo.length * A.retrasoLetra * 0.6);
-    pie.className = "pase__pie mezcla";
+    pie.className = "pase__pie mezcla trazo";
     void pie.offsetWidth; // reinicia la animación
   }
 
@@ -77,7 +76,6 @@
     vieja.classList.add("saliendo");
     void nueva.offsetWidth;
     nueva.classList.add("activa");
-    cuenta.textContent = `${String(indice + 1).padStart(2, "0")} / ${String(lista.length).padStart(2, "0")}`;
 
     // precargar la siguiente
     cargar(imagenDe(lista[(indice + 1) % lista.length]));

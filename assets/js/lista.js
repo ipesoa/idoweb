@@ -2,8 +2,9 @@
    LISTA  ·  cuadrícula de portadas de films o de comercials
    ---------------------------------------------------------------------
    El tipo sale de <body data-pagina="films"> o "comercials".
-   Cada portada ocupa una forma distinta (grande, apaisada, alta...)
-   para que la composición sea variada pero siempre igual en cada visita.
+   Orden: del más reciente al más antiguo (o por "orden:" en info.txt).
+   Columnas y formato de cada rectángulo: ajustes.css (sección 4).
+   Al pasar el ratón, título · año · labor siguen al cursor.
    ===================================================================== */
 (function () {
   const tipo = document.body.dataset.pagina;
@@ -16,20 +17,10 @@
     return;
   }
 
-  // Formas posibles [columnas, filas] según el ancho de pantalla.
-  // Cambia estas listas para otra composición.
-  const FORMAS = {
-    6: [[3, 3], [2, 2], [1, 2], [2, 1], [3, 2], [1, 1], [4, 3], [2, 3]],
-    4: [[2, 2], [2, 3], [1, 2], [2, 1], [4, 3], [1, 1]],
-    2: [[2, 2], [1, 2], [1, 1], [2, 1], [1, 1]],
-  };
-  const columnas = () => parseInt(getComputedStyle(lista).getPropertyValue("--cols")) || 6;
-
-  const celdas = proyectos.map((p, i) => {
+  proyectos.forEach((p) => {
     const a = document.createElement("a");
     a.className = "celda-proyecto";
     a.href = p.enlace;
-    a._p = p; a._i = i;
     const datos = [p.ano, p.labor].filter(Boolean).join(" · ");
     a.innerHTML = `
       <img src="${(p.portada || {}).url || ""}" alt="${p.titulo}" loading="lazy" decoding="async"
@@ -40,34 +31,8 @@
       etiqueta.classList.add("visible");
     });
     a.addEventListener("mouseleave", () => etiqueta.classList.remove("visible"));
-    return a;
-  });
-
-  function formar() {
-    const cols = columnas();
-    const formas = FORMAS[cols] || FORMAS[6];
-    const piezas = celdas.map((a) => {
-      // el primero siempre grande; el resto según un azar fijo por proyecto
-      const [c, f] = a._i === 0 ? formas[0] : formas[Math.floor(Comun.azar(a._p.id) * formas.length)];
-      return { el: a, c: Math.min(c, cols), f: (cc) => Math.max(1, Math.round(f * cc / c)) };
-    });
-    Comun.empaquetar(piezas, cols);
-    // si la celda quedó más alta que ancha y hay portada vertical, usarla
-    celdas.forEach((a) => {
-      const img = a.querySelector("img");
-      const vertical = a.clientHeight > a.clientWidth * 1.05 && a._p.portadaMovil;
-      const nueva = (vertical ? a._p.portadaMovil : a._p.portada)?.url;
-      if (nueva && !img.src.endsWith(nueva)) img.src = nueva;
-    });
-  }
-
-  lista.append(...celdas);
-  formar();
-  celdas.forEach(Comun.aparecer);
-
-  let colsAntes = columnas();
-  window.addEventListener("resize", () => {
-    if (columnas() !== colsAntes) { colsAntes = columnas(); formar(); }
+    lista.append(a);
+    Comun.aparecer(a);
   });
 
   // Etiqueta que sigue al cursor (suavizada)
