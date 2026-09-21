@@ -1,1 +1,89 @@
-# idoweb
+# Web de Idoia Esteban Galván
+
+Web de portfolio (diseño de producción): **inicio** con pase de imágenes, **Films**, **Comercials**, página de cada **proyecto** con mosaico de fotos y **About**.
+
+No hace falta saber programar para mantenerla: todo el contenido son **carpetas con fotos + un archivo de texto** (`info.txt`).
+
+---
+
+## 🗂 Dónde está cada cosa
+
+```
+contenido/                 ← AQUÍ VA TODO EL CONTENIDO
+  films/
+    2023-la-casa-del-lago/ ← una carpeta por película
+      info.txt             ← título, año, labor… y el texto
+      portada.jpg          ← la imagen grande (inicio y cabecera)
+      portada-movil.jpg    ← (opcional) versión vertical para móvil
+      01.jpg 02.jpg …      ← fotos del mosaico, por orden de nombre
+    _PLANTILLA/            ← modelo explicado (no sale en la web)
+  comercials/              ← igual que films
+  about/
+    info.txt               ← nombre, email, instagram, showreel, bio
+    retrato.jpg
+    filmografia-extra.txt  ← trabajos sin fotos para la lista del about
+  datos-generados.js       ← lo crea el script solo. No tocar.
+
+herramientas-mac/          ← los botones para el día a día (doble clic)
+assets/                    ← diseño y efectos (css = aspecto, js = comportamiento)
+laboratorio.html           ← página para probar colores y tipografías
+```
+
+## ✏️ Un info.txt
+
+```
+titulo: La casa del lago
+año: 2023
+labor: Diseño de producción
+director: Nombre Apellido
+mostrar_en_inicio: si        ← si / no: sale o no en el pase del inicio
+---
+Texto libre. Una línea en blanco = párrafo nuevo. *Así* sale en cursiva.
+```
+
+Opcionales: `productora:`, `cliente:`, `encuadre:` (qué parte de la portada se ve: `top`, `left`, `30% 50%`…), `video:` (enlace de Vimeo/YouTube), `orden:` (número; mayor = antes).
+
+**Trucos para las fotos del mosaico:** añade al nombre del archivo `_grande`, `_ancha` (todo el ancho), `_alta` o `_pequena` para forzar su tamaño. Ej: `05_ancha.jpg`. También se pueden meter vídeos `.mp4` cortos (sin sonido, en bucle).
+
+---
+
+## 🖱 El día a día (carpeta `herramientas-mac`)
+
+| Doble clic en… | Para… |
+|---|---|
+| `1-Configurar.command` | **Solo la primera vez**: usuario, repositorio y token de GitHub |
+| `2-Nuevo-proyecto.command` | Añadir una peli o anuncio: pregunta los datos, eliges fotos y lo prepara todo |
+| `6-Anadir-fotos.command` | Meter más fotos en un proyecto que ya existe |
+| `3-Ver-en-local.command` | Ver cómo queda en tu ordenador antes de publicar |
+| `4-Publicar.command` | Subir los cambios a internet (1-2 min en verse) |
+| `5-Traer-cambios.command` | Bajar a tu ordenador cambios hechos desde otro sitio |
+
+También puedes editar a mano: cambiar un `info.txt`, borrar una foto, renombrar… y luego **3** para ver y **4** para publicar.
+
+> **La primera vez que abras un `.command`**, macOS puede decir que "no se puede abrir porque es de un desarrollador no identificado": clic derecho → **Abrir** → **Abrir**. Solo pasa una vez por archivo.
+> Si pide instalar "herramientas de línea de comandos", acepta (es de Apple, necesario para git).
+
+---
+
+## 🚀 Poner la web en internet (una vez)
+
+1. Crea una cuenta en [github.com](https://github.com) y un repositorio nuevo (ej. `web-idoia`), vacío.
+2. Crea un **token**: GitHub → Settings → Developer settings → Personal access tokens → **Fine-grained tokens** → Generate new token.
+   - *Repository access*: solo ese repositorio.
+   - *Permissions → Contents*: **Read and write**.
+   - Copia el token (empieza por `github_pat_`).
+3. Doble clic en `herramientas-mac/1-Configurar.command` y pega usuario, repositorio y token.
+   El token se guarda en el **Llavero** del Mac, nunca en un archivo (así no se sube a internet por error).
+4. Doble clic en `4-Publicar.command`.
+5. En GitHub: repositorio → **Settings → Pages** → *Source: Deploy from a branch* → `main` / `(root)` → Save.
+6. La web queda en `https://USUARIO.github.io/web-idoia/`. (Luego se puede poner un dominio propio en la misma pantalla.)
+
+---
+
+## 🎨 Cambiar el aspecto
+
+- **Colores, tipografías, efecto del texto, hilo blanco del mosaico** → `assets/css/ajustes.css` (todo comentado).
+- **Tiempos del pase de imágenes, velocidad del auto-scroll** → `assets/js/ajustes.js`.
+- **Probar combinaciones** → abre `laboratorio.html`: eliges modo de mezcla, color y fuente sobre las fotos reales, y te da las líneas para copiar. Tiene una calculadora: "sobre este color de fondo quiero que el texto salga de este otro".
+
+Para cambios más grandes, pásale la carpeta a una IA o a quien sea con `CLAUDE.md`: ahí está el mapa técnico de la web.

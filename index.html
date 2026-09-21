@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Idoia Esteban Galván · Diseño de producción</title>
+  <meta name="description" content="Idoia Esteban Galván — diseño de producción y dirección de arte para cine y publicidad.">
+  <link rel="stylesheet" href="assets/css/ajustes.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/inicio.css">
+</head>
+<body class="pagina-inicio" data-pagina="inicio">
+
+  <!-- INICIO: pase de imágenes a pantalla completa.
+       Todo lo que sale aquí lo decide assets/js/inicio.js
+       (proyectos con "mostrar_en_inicio: si" en su info.txt) -->
+  <main class="pase" id="pase" aria-live="polite">
+    <div class="pase__capa"><img alt=""></div>
+    <div class="pase__capa"><img alt=""></div>
+    <a class="pase__pie mezcla" id="pie" href="#">
+      <h2 class="pase__titulo"></h2>
+      <p class="pase__datos"></p>
+    </a>
+    <div class="pase__cuenta mezcla" id="cuenta"></div>
+  </main>
+
+  <script src="contenido/datos-generados.js"></script>
+  <script src="assets/js/ajustes.js"></script>
+  <script src="assets/js/contenido.js"></script>
+  <script src="assets/js/comun.js"></script>
+  <script src="assets/js/inicio.js"></script>
+</body>
+</html>

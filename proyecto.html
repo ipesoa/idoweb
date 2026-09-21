@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title></title>
+  <link rel="stylesheet" href="assets/css/ajustes.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/proyecto.css">
+</head>
+<body data-pagina="proyecto">
+
+  <!-- PÁGINA DE PROYECTO (película o anuncio).
+       Una sola plantilla para todos: el contenido llega por la dirección
+       proyecto.html?tipo=films&id=NOMBRE-DE-CARPETA
+       Lo monta assets/js/proyecto.js con las fotos de esa carpeta. -->
+  <main id="proyecto">
+    <header class="portada" id="portada">
+      <img class="portada__img" alt="">
+      <div class="portada__texto mezcla">
+        <p class="portada__sup"></p>
+        <h1 class="portada__titulo"></h1>
+        <p class="portada__labor"></p>
+      </div>
+      <span class="portada__bajar mezcla" aria-hidden="true">↓</span>
+    </header>
+
+    <section class="mosaico" id="mosaico" aria-label="Imágenes del proyecto"></section>
+
+    <nav class="siguiente" id="siguiente" aria-label="Otros proyectos"></nav>
+  </main>
+
+  <script src="contenido/datos-generados.js"></script>
+  <script src="assets/js/ajustes.js"></script>
+  <script src="assets/js/contenido.js"></script>
+  <script src="assets/js/comun.js"></script>
+  <script src="assets/js/proyecto.js"></script>
+</body>
+</html>

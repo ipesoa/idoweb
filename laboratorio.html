@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laboratorio · efectos de texto</title>
+  <!-- LABORATORIO: página interna (no enlazada en el menú) para probar
+       colores, modos de mezcla y tipografías sobre las fotos reales.
+       Lo que te guste, cópialo en assets/css/ajustes.css -->
+  <link rel="stylesheet" href="assets/css/ajustes.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700&family=Fraunces:ital,wght@0,300;1,300&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;600&family=Unbounded:wght@300;600&family=Archivo:wght@300;700&family=Bodoni+Moda:ital@0;1&family=Playfair+Display:ital@0;1&display=swap">
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    body { background: #000; color: #eee; font: 14px/1.4 "Instrument Sans", system-ui, sans-serif; height: 100vh; overflow: hidden; }
+    .fondo { position: fixed; inset: 0; }
+    .fondo img { width: 100%; height: 100%; object-fit: cover; transition: opacity 1s; }
+    .muestra {
+      position: fixed; inset: 0 340px 0 0; display: grid; place-content: center; text-align: center;
+      color: var(--texto-color); mix-blend-mode: var(--texto-mezcla); pointer-events: none;
+    }
+    .muestra h1 { font-family: var(--fuente-titulos); font-weight: 400; font-style: var(--estilo, italic); font-size: var(--tam, 9vw); line-height: .95; text-transform: var(--mayus, none); letter-spacing: var(--espacio, 0); }
+    .muestra p { margin-top: 1.2em; letter-spacing: .28em; text-transform: uppercase; font-size: 1rem; }
+    .panel { position: fixed; right: 0; top: 0; bottom: 0; width: 340px; background: #111; padding: 22px; overflow: auto; border-left: 1px solid #333; }
+    .panel h2 { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: #999; margin: 22px 0 10px; font-weight: 500; }
+    .panel h2:first-child { margin-top: 0; }
+    label { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 8px 0; }
+    select, input[type=text] { background: #222; color: #eee; border: 1px solid #333; padding: 6px; font: inherit; width: 170px; }
+    input[type=color] { width: 60px; height: 30px; border: 0; background: none; }
+    input[type=range] { width: 170px; }
+    .presets { display: flex; flex-wrap: wrap; gap: 6px; }
+    .presets button, .accion { background: #222; color: #eee; border: 1px solid #3a3a3a; padding: 6px 10px; cursor: pointer; font: inherit; font-size: 12px; }
+    .presets button:hover, .accion:hover { background: #333; }
+    pre { background: #000; border: 1px solid #333; padding: 10px; font-size: 12px; white-space: pre-wrap; user-select: all; color: #cfc; }
+    .calc { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .sw { width: 34px; height: 34px; border: 1px solid #444; display: inline-block; }
+    .nota { color: #888; font-size: 12px; margin-top: 6px; }
+    @media (max-width: 800px) { .muestra { inset: 0 0 50vh 0; } .panel { top: 50vh; width: 100%; } }
+  </style>
+</head>
+<body>
+  <div class="fondo"><img id="foto" alt=""></div>
+  <div class="muestra" id="muestra">
+    <h1 id="t">La casa del lago</h1>
+    <p>2023 · Diseño de producción</p>
+  </div>
+
+  <aside class="panel">
+    <h2>Texto de prueba</h2>
+    <label>Título <input type="text" id="texto" value="La casa del lago"></label>
+    <button class="accion" id="otraFoto">Otra foto →</button>
+
+    <h2>Presets</h2>
+    <div class="presets" id="presets"></div>
+
+    <h2>Mezcla y color</h2>
+    <label>Modo <select id="mezcla">
+      <option>difference</option><option>exclusion</option><option>overlay</option><option>soft-light</option>
+      <option>hard-light</option><option>color-dodge</option><option>color-burn</option><option>luminosity</option>
+      <option>screen</option><option>multiply</option><option>normal</option>
+    </select></label>
+    <label>Color texto <input type="color" id="color" value="#f2ece2"></label>
+
+    <h2>Tipografía</h2>
+    <label>Fuente <select id="fuente">
+      <option value="Instrument Serif">Instrument Serif</option><option>Syne</option><option>Fraunces</option>
+      <option>Cormorant Garamond</option><option>DM Serif Display</option><option>Bodoni Moda</option>
+      <option>Playfair Display</option><option>Space Grotesk</option><option>Unbounded</option><option>Archivo</option>
+    </select></label>
+    <label>Cursiva <input type="checkbox" id="cursiva" checked></label>
+    <label>MAYÚSCULAS <input type="checkbox" id="mayus"></label>
+    <label>Tamaño <input type="range" id="tam" min="3" max="16" value="9" step=".5"></label>
+    <label>Espaciado <input type="range" id="espacio" min="-0.05" max="0.3" value="0" step=".01"></label>
+
+    <h2>Calculadora "sobre X quiero que salga Y"</h2>
+    <p class="nota">Solo para el modo <b>difference</b>. Elige el color típico del fondo (ej. el rojo del telón) y el color que quieres ver en el texto.</p>
+    <div class="calc" style="margin-top:10px">
+      <label style="margin:0">Fondo <input type="color" id="cFondo" value="#b8191b"></label>
+      <label style="margin:0">Quiero <input type="color" id="cQuiero" value="#e7c9a0"></label>
+    </div>
+    <p class="nota" id="cRes"></p>
+    <button class="accion" id="cUsar">Usar ese color</button>
+
+    <h2>Copia esto en ajustes.css</h2>
+    <pre id="salida"></pre>
+  </aside>
+
+  <script src="contenido/datos-generados.js"></script>
+  <script src="assets/js/ajustes.js"></script>
+  <script src="assets/js/contenido.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const raiz = document.documentElement.style;
+    const muestra = $("muestra").style;
+
+    // Fotos: portadas + galerías de todos los proyectos
+    const fotos = [...Web.proyectos("films"), ...Web.proyectos("comercials")]
+      .flatMap((p) => [p.portada, ...p.galeria.filter((g) => !g.video)]).filter(Boolean).map((g) => g.url);
+    let n = 0;
+    const foto = () => ($("foto").src = fotos[n % fotos.length] || "");
+    $("otraFoto").onclick = () => { n++; foto(); };
+    foto();
+
+    const PRESETS = {
+      "Hueso": ["difference", "#f2ece2"], "Plata": ["exclusion", "#cfd2d4"], "Champán": ["difference", "#c9a36b"],
+      "Tono a tono": ["luminosity", "#f2ece2"], "Velo": ["overlay", "#ffffff"], "Salvia": ["exclusion", "#9fb59a"],
+      "Rosa polvo": ["difference", "#e8b4b0"], "Tinta": ["multiply", "#3a3f5c"],
+    };
+    $("presets").innerHTML = Object.keys(PRESETS).map((k) => `<button data-k="${k}">${k}</button>`).join("");
+    $("presets").onclick = (e) => {
+      const k = e.target.dataset.k; if (!k) return;
+      $("mezcla").value = PRESETS[k][0]; $("color").value = PRESETS[k][1]; aplicar();
+    };
+
+    function aplicar() {
+      raiz.setProperty("--texto-mezcla", $("mezcla").value);
+      raiz.setProperty("--texto-color", $("color").value);
+      raiz.setProperty("--fuente-titulos", `"${$("fuente").value}", serif`);
+      muestra.setProperty("--estilo", $("cursiva").checked ? "italic" : "normal");
+      muestra.setProperty("--mayus", $("mayus").checked ? "uppercase" : "none");
+      muestra.setProperty("--tam", $("tam").value + "vw");
+      muestra.setProperty("--espacio", $("espacio").value + "em");
+      $("t").textContent = $("texto").value;
+      const f = $("fuente").value;
+      $("salida").textContent =
+`/* en el @import, la fuente: */
+family=${f.replace(/ /g, "+")}:ital@0;1
+
+--fuente-titulos: "${f}", serif;
+--texto-mezcla: ${$("mezcla").value};
+--texto-color:  ${$("color").value};`;
+    }
+    document.querySelectorAll("select, input").forEach((el) => el.addEventListener("input", aplicar));
+
+    // Calculadora de diferencia: resultado = |fondo − texto|  →  texto = fondo ± resultado
+    const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+    const aHex = (a) => "#" + a.map((v) => v.toString(16).padStart(2, "0")).join("");
+    let calculado = null;
+    function calcular() {
+      const P = hex($("cFondo").value), R = hex($("cQuiero").value);
+      const C = P.map((p, i) => (p + R[i] <= 255 ? p + R[i] : p - R[i] >= 0 ? p - R[i] : (p > 127 ? 0 : 255)));
+      const real = P.map((p, i) => Math.abs(p - C[i]));
+      calculado = aHex(C);
+      $("cRes").innerHTML = `Color de texto: <span class="sw" style="background:${calculado}"></span> <b>${calculado}</b>
+        &nbsp;→ saldrá <span class="sw" style="background:${aHex(real)}"></span>
+        ${aHex(real) === $("cQuiero").value ? "(exacto)" : "(lo más cercano posible)"}`;
+    }
+    $("cFondo").oninput = $("cQuiero").oninput = calcular;
+    $("cUsar").onclick = () => { $("mezcla").value = "difference"; $("color").value = calculado; aplicar(); };
+    calcular(); aplicar();
+  </script>
+</body>
+</html>
