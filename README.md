@@ -24,7 +24,8 @@ contenido/                 ← AQUÍ VA TODO EL CONTENIDO
     filmografia-extra.txt  ← trabajos sin fotos para la lista del about
   datos-generados.js       ← lo crea el script solo. No tocar.
 
-herramientas-mac/          ← los botones para el día a día (doble clic)
+herramientas-mac/          ← los botones para el día a día en Mac (doble clic)
+herramientas-windows/      ← lo mismo para Windows (.bat)
 assets/                    ← diseño y efectos (css = aspecto, js = comportamiento)
 laboratorio.html           ← página para probar colores y tipografías
 ```
@@ -47,21 +48,25 @@ Opcionales: `productora:`, `cliente:`, `encuadre:` (qué parte de la portada se 
 
 ---
 
-## 🖱 El día a día (carpeta `herramientas-mac`)
+## 🖱 El día a día
+
+Mac: carpeta `herramientas-mac` (archivos `.command`). Windows: carpeta `herramientas-windows` (archivos `.bat`). Hacen exactamente lo mismo.
 
 | Doble clic en… | Para… |
 |---|---|
-| `1-Configurar.command` | **Solo la primera vez**: usuario, repositorio y token de GitHub |
-| `2-Nuevo-proyecto.command` | Añadir una peli o anuncio: pregunta los datos, eliges fotos y lo prepara todo |
-| `6-Anadir-fotos.command` | Meter más fotos en un proyecto que ya existe |
-| `3-Ver-en-local.command` | Ver cómo queda en tu ordenador antes de publicar |
-| `4-Publicar.command` | Subir los cambios a internet (1-2 min en verse) |
-| `5-Traer-cambios.command` | Bajar a tu ordenador cambios hechos desde otro sitio |
+| `1-Configurar` | **Solo la primera vez**: usuario, repositorio y token de GitHub |
+| `2-Nuevo-proyecto` | Añadir una peli o anuncio: pregunta los datos, eliges fotos y lo prepara todo |
+| `6-Anadir-fotos` | Meter más fotos en un proyecto que ya existe |
+| `3-Ver-en-local` | Ver cómo queda en tu ordenador antes de publicar |
+| `4-Publicar` | Subir los cambios a internet (1-2 min en verse) |
+| `5-Traer-cambios` | Bajar a tu ordenador cambios hechos desde otro sitio |
 
 También puedes editar a mano: cambiar un `info.txt`, borrar una foto, renombrar… y luego **3** para ver y **4** para publicar.
 
 > **La primera vez que abras un `.command`**, macOS puede decir que "no se puede abrir porque es de un desarrollador no identificado": clic derecho → **Abrir** → **Abrir**. Solo pasa una vez por archivo.
 > Si pide instalar "herramientas de línea de comandos", acepta (es de Apple, necesario para git).
+>
+> **En Windows**, la primera vez puede salir "Windows protegió su PC": **Más información → Ejecutar de todas formas**. Si falta Git, el propio `.bat` ofrece instalarlo. Las fotos HEIC del iPhone no se pueden leer en Windows: pásalas antes a JPG.
 
 ---
 
@@ -72,9 +77,9 @@ También puedes editar a mano: cambiar un `info.txt`, borrar una foto, renombrar
    - *Repository access*: solo ese repositorio.
    - *Permissions → Contents*: **Read and write**.
    - Copia el token (empieza por `github_pat_`).
-3. Doble clic en `herramientas-mac/1-Configurar.command` y pega usuario, repositorio y token.
-   El token se guarda en el **Llavero** del Mac, nunca en un archivo (así no se sube a internet por error).
-4. Doble clic en `4-Publicar.command`.
+3. Doble clic en `1-Configurar` (Mac o Windows) y pega usuario, repositorio y token.
+   El token nunca se guarda dentro de la carpeta de la web (así no se sube a internet por error): en Mac va al **Llavero**; en Windows, cifrado con tu usuario en `%APPDATA%\web-portfolio`.
+4. Doble clic en `4-Publicar`.
 5. En GitHub: repositorio → **Settings → Pages** → *Source: Deploy from a branch* → `main` / `(root)` → Save.
 6. La web queda en `https://USUARIO.github.io/web-idoia/`. (Luego se puede poner un dominio propio en la misma pantalla.)
 
@@ -82,7 +87,7 @@ También puedes editar a mano: cambiar un `info.txt`, borrar una foto, renombrar
 
 ## 🎨 Cambiar el aspecto
 
-- **Colores, tipografías, efecto del texto, hilo blanco del mosaico** → `assets/css/ajustes.css` (todo comentado).
+- **Colores, tipografías, efecto del texto, contorno de las letras, hilo blanco, formato cine y columnas de Films/Comercials** → `assets/css/ajustes.css` (todo comentado).
 - **Tiempos del pase de imágenes, velocidad del auto-scroll** → `assets/js/ajustes.js`.
 - **Probar combinaciones** → abre `laboratorio.html`: eliges modo de mezcla, color y fuente sobre las fotos reales, y te da las líneas para copiar. Tiene una calculadora: "sobre este color de fondo quiero que el texto salga de este otro".
 

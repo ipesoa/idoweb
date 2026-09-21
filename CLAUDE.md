@@ -29,7 +29,7 @@ window.Web = { proyectos(tipo), proyecto(tipo,id), about, filmografia(), parrafo
 | Archivo | JS | CSS | Qué hace |
 |---|---|---|---|
 | `index.html` | `inicio.js` | `inicio.css` | Pase fullscreen: proyectos con `mostrar_en_inicio: si`. Doble capa de imagen con fundido+desenfoque, texto letra a letra con `mix-blend-mode`. Clic → proyecto. ←/→ y swipe. |
-| `films.html`, `comercials.html` | `lista.js` | `lista.css` | Mosaico de portadas. Tipo según `<body data-pagina>`. Etiqueta que sigue al cursor. Formas en la constante `FORMAS`. |
+| `films.html`, `comercials.html` | `lista.js` | `lista.css` | Cuadrícula REGULAR (no mosaico): `--lista-columnas` (2) / `--lista-columnas-movil` (1), cada celda con `aspect-ratio: var(--formato-cine)` (2.39/1). Tipo según `<body data-pagina>`. Info (título · año · labor) sigue al cursor. |
 | `proyecto.html?tipo=films&id=CARPETA` | `proyecto.js` | `proyecto.css` | Portada fullscreen + mosaico de la galería + bloque de texto (`AJUSTES.mosaico.posicionTexto`) + vídeo + anterior/siguiente. |
 | `about.html` | `about.js` | `about.css` | Bio, contacto, showreel, filmografía (films + comercials + `filmografia-extra.txt`) con filtros. |
 | `laboratorio.html` | inline | inline | Herramienta interna para probar mezcla/color/fuente. No enlazada en el menú. |
@@ -49,8 +49,12 @@ Orden de scripts en cada página: `datos-generados.js → ajustes.js → conteni
 ## Estilo
 - Tokens en `assets/css/ajustes.css` (`--fuente-*`, `--color-*`, `--texto-mezcla`, `--texto-color`, `--menu-mezcla`, `--hilo`, `--columnas-*`, `--alto-fila`…). Fuentes vía `@import` de Google Fonts al principio de ese archivo.
 - Efecto "diferencia": clase `.mezcla` = `color: var(--texto-color); mix-blend-mode: var(--texto-mezcla)`. Para que funcione, los ancestros del texto no deben crear aislamiento (`isolation`, `opacity<1`, `transform`, `filter`) entre el texto y la imagen.
-- Mosaico: `.mosaico` en `base.css`; columnas por breakpoint (1100px / 700px); alto de fila = ancho de columna × `--alto-fila`. El hilo blanco es un `::after` con borde en cada celda.
+- Trazo: clase `.trazo` (y `.pagina-inicio .menu`) = `-webkit-text-stroke` + `paint-order: stroke fill`. Color `--trazo-color` calculado en `ajustes.css` con relative color syntax: mezcla `--trazo-peso-letra` (70 %) del inverso de `--texto-color` + resto del inverso de `--color-fondo`; como está dentro del elemento con `mix-blend-mode`, también se mezcla con la foto. Grosor `--trazo-grosor` en em.
+- Mosaico (solo páginas de proyecto): `.mosaico` en `base.css`; columnas por breakpoint (1100px / 700px); alto de fila = ancho de columna × `--alto-fila`. El hilo blanco es un `::after` con borde en cada celda.
 - Tiempos del pase: `AJUSTES.inicio` se pasan como variables CSS en `inicio.js`.
+
+## Herramientas Windows (`herramientas-windows/`)
+Espejo de las de Mac. Cada `.bat` (ASCII, CRLF) llama a `_tareas.ps1 <tarea>` (PowerShell 5.1 compatible, **UTF-8 con BOM** para que Windows lea las tildes). Diálogos con Windows Forms. Token cifrado con DPAPI (`ConvertFrom-SecureString`) en `%APPDATA%\web-portfolio\token.dat`. Config en `herramientas-windows/.config-local` (mismo formato que la de Mac, gitignored). `_generar-datos.ps1` produce un `datos-generados.js` idéntico byte a byte al del script bash; si se cambia uno, cambiar el otro. Imágenes: System.Drawing, aplica la orientación EXIF y reduce a 2600 px JPG. `.gitattributes` fija LF para .sh/.command y CRLF para .bat/.ps1.
 
 ## Herramientas Mac (`herramientas-mac/`)
 `.command` = scripts bash que se abren con doble clic en macOS. Diálogos con `osascript`. Token de GitHub en el Llavero (`security`, servicio `web-portfolio-github`), usuario/repo en `.config-local` (gitignored). Push/pull con URL que lleva el token en el momento (nunca se guarda en `.git/config`). Imágenes nuevas se reducen a 2600px JPG con `sips`.

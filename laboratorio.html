@@ -17,6 +17,7 @@
     .muestra {
       position: fixed; inset: 0 340px 0 0; display: grid; place-content: center; text-align: center;
       color: var(--texto-color); mix-blend-mode: var(--texto-mezcla); pointer-events: none;
+      -webkit-text-stroke: var(--trazo-grosor) var(--trazo-color); paint-order: stroke fill;
     }
     .muestra h1 { font-family: var(--fuente-titulos); font-weight: 400; font-style: var(--estilo, italic); font-size: var(--tam, 9vw); line-height: .95; text-transform: var(--mayus, none); letter-spacing: var(--espacio, 0); }
     .muestra p { margin-top: 1.2em; letter-spacing: .28em; text-transform: uppercase; font-size: 1rem; }
@@ -59,6 +60,11 @@
       <option>screen</option><option>multiply</option><option>normal</option>
     </select></label>
     <label>Color texto <input type="color" id="color" value="#f2ece2"></label>
+
+    <h2>Trazo (contorno)</h2>
+    <label>Grosor <input type="range" id="trazo" min="0" max="0.15" value="0.06" step=".005"></label>
+    <label>Opuesto de la letra <input type="range" id="peso" min="0" max="100" value="70" step="5"></label>
+    <p class="nota">El resto hasta 100 % es el opuesto del fondo. 100 = solo opuesto de la letra.</p>
 
     <h2>Tipografía</h2>
     <label>Fuente <select id="fuente">
@@ -115,6 +121,8 @@
       raiz.setProperty("--texto-mezcla", $("mezcla").value);
       raiz.setProperty("--texto-color", $("color").value);
       raiz.setProperty("--fuente-titulos", `"${$("fuente").value}", serif`);
+      raiz.setProperty("--trazo-grosor", $("trazo").value + "em");
+      raiz.setProperty("--trazo-peso-letra", $("peso").value + "%");
       muestra.setProperty("--estilo", $("cursiva").checked ? "italic" : "normal");
       muestra.setProperty("--mayus", $("mayus").checked ? "uppercase" : "none");
       muestra.setProperty("--tam", $("tam").value + "vw");
@@ -127,7 +135,9 @@ family=${f.replace(/ /g, "+")}:ital@0;1
 
 --fuente-titulos: "${f}", serif;
 --texto-mezcla: ${$("mezcla").value};
---texto-color:  ${$("color").value};`;
+--texto-color:  ${$("color").value};
+--trazo-grosor:     ${$("trazo").value}em;
+--trazo-peso-letra: ${$("peso").value}%;`;
     }
     document.querySelectorAll("select, input").forEach((el) => el.addEventListener("input", aplicar));
 
