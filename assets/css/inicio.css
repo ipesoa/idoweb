@@ -1,0 +1,103 @@
+/* =====================================================================
+   INICIO  ·  pase de imágenes a pantalla completa
+   Los tiempos vienen de assets/js/ajustes.js (se pasan como variables)
+   ===================================================================== */
+
+html, body { height: 100%; overflow: hidden; }
+
+.pase {
+  position: fixed; inset: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--color-fondo);
+}
+
+/* ---- Las dos capas de imagen que se van turnando ---- */
+.pase__capa {
+  position: absolute; inset: 0;
+  opacity: 0;
+  filter: blur(var(--desenfoque, 28px));
+  transform: scale(var(--zoom, 1.07));
+  transition:
+    opacity   var(--t-imagen, 2200ms) var(--curva),
+    filter    var(--t-imagen, 2200ms) var(--curva),
+    transform calc(var(--t-imagen, 2200ms) * 1.4) var(--curva);
+  will-change: opacity, filter, transform;
+}
+.pase__capa img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: var(--encuadre, center);
+}
+.pase__capa.activa { opacity: 1; filter: blur(0); transform: scale(1); z-index: 1; }
+.pase__capa.saliendo { opacity: 0; filter: blur(var(--desenfoque, 28px)); transform: scale(1.015); z-index: 0; }
+
+/* Zoom muy lento mientras la foto está en pantalla */
+.zoom-lento .pase__capa.activa img { animation: acercar 16s linear forwards; }
+@keyframes acercar { to { transform: scale(1.06); } }
+
+/* ---- Texto: título, año y labor (efecto diferencia) ---- */
+.pase__pie {
+  position: absolute; z-index: 5;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 1400px);
+  text-align: center;
+  pointer-events: none;
+}
+.pase__titulo {
+  font-family: var(--fuente-titulos);
+  font-weight: 400;
+  font-style: italic;
+  font-size: var(--tam-titulo-slide);
+  line-height: .95;
+  letter-spacing: -.01em;
+}
+.pase__datos {
+  margin-top: 1.1em;
+  font-size: var(--tam-dato-slide);
+  letter-spacing: .28em;
+  text-transform: uppercase;
+}
+
+/* Letra a letra: aparecen desde desenfocadas */
+.pase__pie .palabra { display: inline-block; white-space: nowrap; }
+.pase__pie .letra {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(14px);
+  transform: translateY(.18em);
+}
+.pase__pie.entra .letra {
+  transition:
+    opacity   var(--t-texto, 1400ms) var(--curva) var(--d),
+    filter    var(--t-texto, 1400ms) var(--curva) var(--d),
+    transform var(--t-texto, 1400ms) var(--curva) var(--d);
+  opacity: 1; filter: blur(0); transform: none;
+}
+.pase__pie.sale .letra {
+  transition:
+    opacity var(--t-salida, 1100ms) var(--curva),
+    filter  var(--t-salida, 1100ms) var(--curva);
+  opacity: 0; filter: blur(18px); transform: none;
+}
+
+/* ---- Contador 01 / 07 ---- */
+.pase__cuenta {
+  position: absolute; z-index: 5;
+  left: 50%; bottom: var(--margen);
+  transform: translateX(-50%);
+  font-size: .72rem; letter-spacing: .3em;
+  font-variant-numeric: tabular-nums;
+}
+
+.pase__vacio {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  text-align: center; padding: 2rem; color: var(--color-suave);
+}
+
+@media (max-width: 700px) {
+  .pase__titulo { font-size: clamp(2.6rem, 15vw, 5rem); }
+  .pase__datos  { letter-spacing: .2em; }
+  .pase__cuenta { bottom: calc(var(--margen) + 2.8rem); }
+}

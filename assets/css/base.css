@@ -1,0 +1,176 @@
+/* =====================================================================
+   BASE  ·  cosas comunes a todas las páginas
+   (menú, cortina de transición, botón auto-scroll, visor de fotos)
+   ===================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--color-fondo);
+  color: var(--color-tinta);
+  font-family: var(--fuente-texto);
+  font-size: var(--tam-texto);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+img, video, iframe { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+::selection { background: var(--color-tinta); color: var(--color-fondo); }
+
+/* ---------- Texto que se mezcla con la imagen (efecto diferencia) --- */
+.mezcla {
+  color: var(--texto-color);
+  mix-blend-mode: var(--texto-mezcla);
+}
+
+/* ---------- CORTINA: fundido al entrar y salir de cada página ------- */
+.cortina {
+  position: fixed; inset: 0; z-index: 1000;
+  background: var(--color-fondo);
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity var(--t-cortina) var(--curva);
+}
+.cortina.abierta { opacity: 0; }
+
+/* ---------- MENÚ --------------------------------------------------- */
+.menu {
+  position: fixed; inset: 0; z-index: 50;
+  pointer-events: none;
+  color: var(--menu-color);
+  mix-blend-mode: var(--menu-mezcla);
+  font-family: var(--fuente-texto);
+  text-transform: uppercase;
+}
+.menu a { pointer-events: auto; transition: opacity .3s; }
+.menu a:hover { opacity: .6; }
+
+.menu__nombre {
+  position: absolute; top: calc(var(--margen) * .7); left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--tam-nombre);
+  font-weight: 400;
+  letter-spacing: .02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.menu__about {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  top: calc(var(--margen) * .7 + var(--tam-nombre) * 1.15);
+  font-size: calc(var(--tam-menu) * .85);
+  text-transform: lowercase;
+  letter-spacing: .04em;
+}
+.menu__films, .menu__comercials {
+  position: absolute;
+  font-size: var(--tam-menu);
+  letter-spacing: var(--espaciado-menu);
+}
+/* Posición en el INICIO: a media altura, izquierda y derecha (como la maqueta) */
+.pagina-inicio .menu__films      { left: var(--margen);  top: 50%; transform: translateY(-50%); }
+.pagina-inicio .menu__comercials { right: var(--margen); top: 50%; transform: translateY(-50%); }
+
+/* En el resto de páginas: menú compacto arriba */
+body:not(.pagina-inicio) .menu__nombre { font-size: calc(var(--tam-nombre) * .42); letter-spacing: .12em; }
+body:not(.pagina-inicio) .menu__about  { top: calc(var(--margen) * .7 + var(--tam-nombre) * .55); font-size: calc(var(--tam-menu) * .7); }
+body:not(.pagina-inicio) .menu__films      { left: var(--margen);  top: calc(var(--margen) * .7); font-size: calc(var(--tam-menu) * .75); }
+body:not(.pagina-inicio) .menu__comercials { right: var(--margen); top: calc(var(--margen) * .7); font-size: calc(var(--tam-menu) * .75); }
+
+.menu a.activo { text-decoration: underline; text-underline-offset: .25em; text-decoration-thickness: 1px; }
+
+/* Móvil: films y comercials abajo, en las esquinas */
+@media (max-width: 700px) {
+  .menu__nombre { font-size: clamp(1.15rem, 6.4vw, 2rem); }
+  .menu__about  { top: calc(var(--margen) * .7 + clamp(1.15rem, 6.4vw, 2rem) * 1.25); }
+  .pagina-inicio .menu__films,
+  body:not(.pagina-inicio) .menu__films      { top: auto; bottom: calc(var(--margen) + env(safe-area-inset-bottom)); transform: none; font-size: .95rem; }
+  .pagina-inicio .menu__comercials,
+  body:not(.pagina-inicio) .menu__comercials { top: auto; bottom: calc(var(--margen) + env(safe-area-inset-bottom)); transform: none; font-size: .95rem; }
+  body:not(.pagina-inicio) .menu__nombre { font-size: .9rem; }
+  body:not(.pagina-inicio) .menu__about  { top: calc(var(--margen) * .7 + 1.35rem); }
+}
+
+/* ---------- BOTÓN AUTO-SCROLL -------------------------------------- */
+.boton-auto {
+  position: fixed; z-index: 60;
+  right: var(--margen); bottom: var(--margen);
+  font-size: .72rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--menu-color); mix-blend-mode: var(--menu-mezcla);
+  display: flex; align-items: center; gap: .6em;
+}
+.boton-auto::before {
+  content: ""; width: .55em; height: .55em; border-radius: 50%;
+  border: 1px solid currentColor;
+  transition: background .3s;
+}
+.boton-auto.encendido::before { background: currentColor; animation: latido 1.6s infinite; }
+@keyframes latido { 50% { opacity: .25; } }
+@media (max-width: 700px) {
+  .boton-auto { bottom: calc(var(--margen) + 2.2rem); }
+}
+
+/* ---------- VISOR DE FOTOS (al pinchar una imagen) ------------------ */
+.visor {
+  position: fixed; inset: 0; z-index: 900;
+  background: rgba(8, 8, 7, .96);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .45s var(--curva);
+}
+.visor.abierto { opacity: 1; pointer-events: auto; }
+.visor img {
+  max-width: calc(100vw - 2 * var(--margen));
+  max-height: calc(100vh - 6rem);
+  object-fit: contain;
+  transition: opacity .35s;
+}
+.visor__cerrar, .visor__ant, .visor__sig {
+  position: absolute; font-size: .75rem; letter-spacing: .2em; text-transform: uppercase;
+  padding: 1rem; color: var(--color-tinta);
+}
+.visor__cerrar { top: var(--margen); right: var(--margen); }
+.visor__ant { left: var(--margen); top: 50%; transform: translateY(-50%); }
+.visor__sig { right: var(--margen); top: 50%; transform: translateY(-50%); }
+.visor__cuenta {
+  position: absolute; bottom: var(--margen); left: 50%; transform: translateX(-50%);
+  font-size: .72rem; letter-spacing: .2em; color: var(--color-suave);
+}
+
+/* ---------- MOSAICO: cuadrícula compartida (proyecto y listas) ------- */
+.mosaico {
+  --cols: var(--columnas-escritorio);
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  grid-auto-rows: calc(100vw / var(--cols) * var(--alto-fila));
+  grid-auto-flow: dense;
+  background: var(--color-fondo);
+}
+/* el hilo blanco: una línea fina por dentro de cada celda */
+.mosaico > *::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 3;
+  border: var(--hilo) solid var(--hilo-color);
+}
+@media (max-width: 1100px) { .mosaico { --cols: var(--columnas-tablet); } }
+@media (max-width: 700px)  { .mosaico { --cols: var(--columnas-movil); } }
+
+.mosaico > * {
+  position: relative; overflow: hidden;
+  background: var(--color-fondo);
+  grid-column: span var(--c, 1);
+  grid-row: span var(--f, 1);
+}
+.mosaico img, .mosaico video {
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; transform: scale(1.04);
+  transition: opacity 1.2s var(--curva), transform 1.6s var(--curva), filter var(--t-hover) var(--curva);
+}
+.mosaico .visible img, .mosaico .visible video { opacity: 1; transform: scale(1); }
+
+/* Utilidad para ocultar texto solo visualmente */
+.solo-lector { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

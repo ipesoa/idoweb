@@ -1,0 +1,85 @@
+/* =====================================================================
+   AJUSTES VISUALES  ·  el "panel de control" de toda la web
+   ---------------------------------------------------------------------
+   Aquí se cambian tipografías, colores, el efecto del texto sobre las
+   imágenes, el hilo blanco de las cuadrículas y los tiempos de las
+   animaciones CSS. No hace falta tocar ningún otro archivo para esto.
+
+   Consejo: abre  laboratorio.html  para probar colores/mezclas/fuentes
+   en vivo sobre las fotos y copiar aquí el resultado.
+   ===================================================================== */
+
+/* ---------- 1. TIPOGRAFÍAS -------------------------------------------
+   Se cargan de Google Fonts. Para cambiar de fuente:
+   a) cambia el @import por el de la fuente nueva (fonts.google.com)
+   b) cambia el nombre en --fuente-titulos / --fuente-texto
+   Alternativas que quedan bien: "Syne", "Space Grotesk", "Fraunces",
+   "Cormorant Garamond", "DM Serif Display", "Archivo", "Unbounded".   */
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap");
+
+:root {
+  --fuente-titulos: "Instrument Serif", "Times New Roman", serif;
+  --fuente-texto:   "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+
+  /* Tamaños (clamp = mínimo, ideal según pantalla, máximo) */
+  --tam-nombre:        clamp(1.6rem, 4.6vw, 4.8rem);  /* IDOIA ESTEBAN GALVÁN */
+  --tam-menu:          clamp(0.95rem, 1.6vw, 1.6rem); /* FILMS / COMERCIALS   */
+  --tam-titulo-slide:  clamp(3rem, 11vw, 11rem);      /* título en el inicio  */
+  --tam-dato-slide:    clamp(0.8rem, 1.2vw, 1.05rem); /* año · labor          */
+  --tam-titulo-pagina: clamp(2.6rem, 8vw, 8rem);
+  --tam-texto:         clamp(0.95rem, 1.05vw, 1.1rem);
+
+  --espaciado-menu: 0.14em;   /* separación entre letras de los menús */
+
+/* ---------- 2. COLORES --------------------------------------------- */
+  --color-fondo:  #0d0c0b;    /* fondo general (casi negro cálido)   */
+  --color-tinta:  #f2ece2;    /* texto normal (hueso)                */
+  --color-suave:  #8f877c;    /* textos secundarios                  */
+  --color-acento: #c9a36b;    /* detalles (champán)                  */
+
+/* ---------- 3. EFECTO DEL TEXTO SOBRE LAS IMÁGENES ------------------
+   Es el efecto "diferencia": el texto se mezcla con la foto que tiene
+   debajo y cambia de color según lo que pase por detrás.
+
+   --texto-mezcla   modo de mezcla: difference | exclusion | overlay |
+                    soft-light | hard-light | color-dodge | luminosity |
+                    normal (sin efecto)
+   --texto-color    color base del texto antes de mezclarse
+
+   Cómo sale con "difference":  color final = |foto − texto|
+     · texto claro  → sale el "negativo" de la foto (rojo → verde-azulado)
+     · texto medio  → colores más apagados y elegantes
+   Para saber qué color poner para que sobre X salga Y: laboratorio.html
+
+   PRESETS (copia una pareja de líneas):
+     Hueso       difference   #f2ece2   (clásico, negativo limpio)
+     Plata       exclusion    #cfd2d4   (más suave, grisáceo)
+     Champán     difference   #c9a36b   (dorados/azules apagados)
+     Tono a tono luminosity   #f2ece2   (texto claro con el color de la foto)
+     Velo        overlay      #ffffff   (brillo sutil, muy fino)
+     Salvia      exclusion    #9fb59a                                  */
+  --texto-mezcla: difference;
+  --texto-color:  #f2ece2;
+
+  /* El menú (nombre, films, comercials, about) usa su propio efecto   */
+  --menu-mezcla: difference;
+  --menu-color:  #f2ece2;
+
+/* ---------- 4. CUADRÍCULAS (páginas de proyecto y listas) ----------- */
+  --hilo:        1px;          /* grosor del hilo blanco de cada foto (entre dos fotos se ve el doble) */
+  --hilo-color:  #f4f1ec;      /* color del hilo                       */
+  --columnas-escritorio: 6;
+  --columnas-tablet:     4;
+  --columnas-movil:      2;
+  --alto-fila: 0.72;           /* alto de fila = ancho de columna × esto */
+
+/* ---------- 5. TIEMPOS DE ANIMACIÓN (CSS) ----------------------------
+   Los tiempos del pase de diapositivas del inicio están en
+   assets/js/ajustes.js                                                */
+  --t-cortina: 650ms;          /* fundido al cambiar de página          */
+  --t-hover:   600ms;          /* zoom/oscurecer al pasar el ratón      */
+  --curva:     cubic-bezier(.65, 0, .35, 1);
+
+/* ---------- 6. ESPACIOS -------------------------------------------- */
+  --margen: clamp(16px, 2.6vw, 40px);  /* margen a los lados de pantalla */
+}
