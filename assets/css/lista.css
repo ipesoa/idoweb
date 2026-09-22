@@ -19,27 +19,31 @@
   .lista-cine .celda-proyecto.visible:hover img { filter: none; transform: scale(1.035); }
 }
 
-/* Info (título · año · labor): en móvil fija abajo en cada portada… */
+/* Info: Título / labor / año, un párrafo alineado a la izquierda.
+   Tamaño y distancia al cursor: ajustes.css sección 4 (--etiqueta-...) */
 .celda-proyecto__txt,
 .etiqueta-cursor {
   font-family: var(--fuente-etiqueta);
+  font-size: var(--etiqueta-tam);
+  line-height: 1.3;
+  text-align: left;
   color: var(--texto-color); mix-blend-mode: var(--texto-mezcla);
-  line-height: 1.25;
   pointer-events: none;
 }
-.celda-proyecto__txt b, .etiqueta-cursor b { display: block; font-weight: 400; font-size: var(--etiqueta-tam-titulo); }
-.celda-proyecto__txt small, .etiqueta-cursor small { font-size: var(--etiqueta-tam-datos); letter-spacing: .18em; text-transform: uppercase; }
+.celda-proyecto__txt span, .etiqueta-cursor span { display: block; }
+
+/* En móvil: fija abajo a la izquierda de cada portada */
 .celda-proyecto__txt { position: absolute; z-index: 2; left: .8rem; bottom: .7rem; right: .8rem; }
 
-/* …y con ratón, sigue al cursor */
+/* Con ratón: sale a las 4 del cursor (abajo a la derecha) */
 @media (hover: hover) and (pointer: fine) {
   .celda-proyecto__txt { display: none; }
-  .lista-cine { cursor: none; }
 }
 .etiqueta-cursor {
   position: fixed; z-index: 70; left: 0; top: 0;
+  margin: var(--etiqueta-separacion) 0 0 var(--etiqueta-separacion);
   opacity: 0; transition: opacity .35s;
-  white-space: nowrap; text-align: center;
+  white-space: nowrap;
 }
 .etiqueta-cursor.visible { opacity: 1; }
 @media not all and (hover: hover) { .etiqueta-cursor { display: none; } }

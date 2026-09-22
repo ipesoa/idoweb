@@ -1,34 +1,34 @@
 /* =====================================================================
-   ABOUT  ·  superminimal: nombre, labor, ciudad y lista de trabajos
-   Fuente y tamaños: ajustes.css sección 5
+   ABOUT  ·  superminimal: una columna estrecha abajo a la derecha
+   (nombre, labor, ciudad y lista de trabajos), con mucho hueco.
+   Fuente, tamaños y ancho de la columna: ajustes.css sección 5
    ===================================================================== */
 
 .about {
+  min-height: 100vh; min-height: 100svh;
+  display: flex; justify-content: flex-end; align-items: flex-end;
+  padding: calc(var(--margen) * 5) var(--margen) calc(var(--margen) * 1.4);
   font-family: var(--fuente-about);
   font-size: var(--about-tam);
-  line-height: 1.6;
-  padding: clamp(120px, 22vh, 220px) var(--margen) calc(var(--margen) * 4);
-  max-width: 1100px;
+  line-height: 1.55;
 }
-.about__datos p:first-child { font-size: var(--about-tam-nombre); }
-.about__datos { margin-bottom: 4.5em; }
+.about__columna { width: min(100%, var(--about-ancho)); }
 
-.filtros { display: flex; gap: 1.6em; margin-bottom: 1.6em; }
+.about__datos { margin-bottom: 3.5em; }
+.about__datos p:first-child { font-size: var(--about-tam-nombre); }
+
+.filtros { display: flex; gap: 1.4em; margin-bottom: 1.2em; }
 .filtros button { color: var(--color-suave); font-size: inherit; transition: color .3s; }
 .filtros button.activo, .filtros button:hover { color: var(--color-tinta); }
 
 .trabajos { list-style: none; }
-.trabajos .fila {
-  display: grid;
-  grid-template-columns: 4.5em 1.4fr 1fr 1fr;
-  gap: 1em;
-  padding: .15em 0;
-}
+.trabajos .fila { display: grid; grid-template-columns: 3.4em 1fr auto; gap: .9em; }
 .trabajos .fila span:not(.titulo) { color: var(--color-suave); }
 .trabajos a.fila:hover .titulo { text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; }
 .trabajos li.oculta { display: none; }
 
 @media (max-width: 700px) {
-  .trabajos .fila { grid-template-columns: 3.5em 1fr; gap: 0 .8em; padding: .4em 0; }
-  .trabajos .fila span:nth-child(n+3) { grid-column: 2; }
+  .about { padding-bottom: calc(var(--margen) + 3rem); }   /* deja sitio a FILMS / COMERCIALS */
+  .trabajos .fila { grid-template-columns: 3em 1fr; gap: 0 .8em; }
+  .trabajos .fila span:nth-child(3) { grid-column: 2; margin-bottom: .4em; }
 }

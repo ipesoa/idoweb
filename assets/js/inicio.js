@@ -26,9 +26,7 @@
   pase.style.setProperty("--t-salida", A.salidaTexto + "ms");
   pase.style.setProperty("--desenfoque", A.desenfoque + "px");
   pase.style.setProperty("--zoom", A.zoom);
-  if (A.zoomLento) pase.classList.add("zoom-lento");
-  const TABLA = A.modoColor !== "diferencia";
-  document.body.classList.add(TABLA ? "modo-tabla" : "modo-diferencia");
+
 
   // ---- Qué proyectos salen ----
   let lista = Web.proyectos("films").filter((p) => p.enInicio);
@@ -50,24 +48,30 @@
     const i = new Image(); i.onload = i.onerror = () => ok(i); i.src = src;
   });
 
-  // Elige color de letra y de borde para este proyecto
+  // Elige color de letra y de borde para este proyecto (ver assets/js/colores.js)
   function ponerColores(p, img) {
     const e = p.extra;
-    let fila = null;
-    if (e.color_letra || e.color_borde) fila = { letra: e.color_letra || "#ffffff", borde: e.color_borde || "#000000" };
-    else if (TABLA) {
-      const rgb = Colores.medio(img);
-      if (rgb) fila = Colores.elegir(rgb);
-    }
-    const cuerpo = document.body;
-    if (fila) {
-      cuerpo.classList.add("modo-tabla"); cuerpo.classList.remove("modo-diferencia");
-      cuerpo.style.setProperty("--inicio-letra", fila.letra);
-      cuerpo.style.setProperty("--inicio-borde", fila.borde);
-    } else { // no se puede leer la foto (vista local en Chrome) → efecto diferencia
-      cuerpo.classList.remove("modo-tabla"); cuerpo.classList.add("modo-diferencia");
-    }
+    const forzada = (e.color_letra || e.color_borde)
+      ? { letra: e.color_letra || "#ffffff", borde: e.color_borde || "#000000" } : null;
+    if (Colores.modo() === "diferencia") return;
+    const rgb = Colores.medio(img);
+    if (!rgb) return;                       // no se puede leer la foto → modo diferencia
+    const c = Colores.calcular(rgb, forzada);
+    document.body.style.setProperty("--inicio-letra", c.letra);
+    document.body.style.setProperty("--inicio-borde", c.borde);
   }
+
+  // Zoom lento y continuo: empieza cuando la capa entra y NO se corta al salir
+  // (antes se cortaba y la foto "saltaba" justo antes del cambio)
+  function zoomLento(img) {
+    if (!A.zoomLento) return;
+    img.style.transition = "none";
+    img.style.transform = "scale(1)";
+    void img.offsetWidth;
+    img.style.transition = "transform 20s linear";
+    img.style.transform = `scale(${A.zoomFinal || 1.06})`;
+  }
+
   let turno = 0; // cambia cada vez que se salta a mano → cancela esperas viejas
   const esperar = (ms, t) => new Promise((ok, no) => setTimeout(() => (t === turno ? ok() : no()), ms));
 
@@ -96,11 +100,15 @@
     img.src = imagenDe(p);
     img.alt = p.titulo;
     nueva.style.setProperty("--encuadre", p.encuadre);
+    zoomLento(img);
     nueva.classList.remove("saliendo");
     vieja.classList.remove("activa");
     vieja.classList.add("saliendo");
     void nueva.offsetWidth;
     nueva.classList.add("activa");
+
+    Colores.pintarMenu();
+    setTimeout(Colores.pintarMenu, A.entradaImagen);
 
     // precargar la siguiente
     cargar(imagenDe(lista[(indice + 1) % lista.length]));

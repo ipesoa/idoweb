@@ -28,10 +28,10 @@ window.Web = { proyectos(tipo), proyecto(tipo,id), about, filmografia(), parrafo
 
 | Archivo | JS | CSS | Qué hace |
 |---|---|---|---|
-| `index.html` | `inicio.js` + `colores.js` | `inicio.css` | Pase fullscreen: proyectos con `mostrar_en_inicio: si`. Doble capa de imagen con fundido+desenfoque, texto Arial letra a letra. Colores: modo `tabla` (por defecto) = se muestrea la franja central de la foto en un canvas, se busca la fila más cercana de `AJUSTES.tablaColores` y se ponen `--inicio-letra`/`--inicio-borde` en `<body>` (clase `modo-tabla`, blend normal); `color_letra`/`color_borde` en info.txt mandan. Si el canvas está "tainted" (file:// en Chrome) cae a `modo-diferencia`. Clic → proyecto. ←/→ y swipe. |
-| `films.html`, `comercials.html` | `lista.js` | `lista.css` | `.rejilla-cine.lista-cine` desde arriba (sin título). `--lista-columnas`, `--lista-formato`. Info Arial pequeña sigue al cursor. |
+| `index.html` | `inicio.js` + `colores.js` | `inicio.css` | Pase fullscreen: proyectos con `mostrar_en_inicio: si`. Doble capa de imagen con fundido+desenfoque, texto Arial letra a letra. Colores: ver `colores.js` abajo. Zoom lento de cada foto por JS (`transition` inline de 20 s sobre el `<img>`, reiniciado solo cuando la capa vuelve a entrar) para que no salte al cambiar. Clic → proyecto. ←/→ y swipe. |
+| `films.html`, `comercials.html` | `lista.js` | `lista.css` | `.rejilla-cine.lista-cine` desde arriba (sin título). `--lista-columnas`, `--lista-formato`. Info Arial pequeña (Título / labor / año, alineada a la izquierda) a las 4 del cursor (`--etiqueta-separacion`). |
 | `proyecto.html?tipo=films&id=CARPETA` | `proyecto.js` | `proyecto.css` | `.rejilla-cine.proyecto-cine` desde arriba: portada + galería (+ iframe si `video:`), sin textos. Al final solo botón Contact (mailto a `about.email`). |
-| `about.html` | `about.js` | `about.css` | Minimal Arial: nombre, subtitulo, ubicacion + lista de trabajos (films + comercials + `filmografia-extra.txt`) con filtros Films (por defecto) / Comercials / Todo. |
+| `about.html` | `about.js` | `about.css` | Minimal Arial, columna estrecha abajo a la derecha (`--about-ancho`): nombre, subtitulo, ubicacion + lista de trabajos (films + comercials + `filmografia-extra.txt`) con filtros Films (por defecto) / Comercials / Todo. |
 | `laboratorio.html` | inline + `colores.js` | inline | Herramienta interna: tabla de colores sobre cada foto, grosor de borde, mezcla, fuente. No enlazada en el menú. |
 
 Orden de scripts en cada página: `datos-generados.js → ajustes.js → contenido.js → comun.js → <página>.js`.
@@ -45,6 +45,12 @@ Orden de scripts en cada página: `datos-generados.js → ajustes.js → conteni
 - `Comun.azar(string)` pseudoaleatorio estable.
 - Textos de menú/filtros/botón desde `AJUSTES.textos`.
 - `Comun.embed(url)` Vimeo/YouTube → URL de iframe.
+
+## Colores (`assets/js/colores.js` → `window.Colores`)
+Se carga en index, films, comercials y proyecto (NO en about: allí el menú es el normal). `AJUSTES.colores.modo`:
+- `tabla-mezcla` (defecto): se promedia en un canvas la zona de la foto bajo el texto, `elegir()` busca la fila más cercana de `AJUSTES.tablaColores` {fondo, letra, borde} y `paraDiferencia(P, deseado)` calcula el color que, en `mix-blend-mode: difference` sobre ese fondo medio, da el color deseado → el texto sigue mezclándose píxel a píxel con la foto.
+- `tabla`: colores de la tabla planos (blend normal). `diferencia`: negativo sin tabla.
+Clases en `<body>`: `color-auto` + `modo-mezcla|modo-tabla|modo-diferencia`. Título del inicio: vars `--inicio-letra/--inicio-borde` en body (inicio.js). Menú: cada `<a>` recibe `--l/--b` según la `<img>` que tiene debajo (`elementsFromPoint` + `medioBajo`), repintado en scroll/resize/carga de imágenes y tras cada cambio de foto del inicio. Si el canvas está "tainted" (file:// en Chrome) → `modo-diferencia`. `color_letra`/`color_borde` en info.txt fuerzan la fila en el inicio.
 
 ## Estilo
 - Todo lo ajustable en `assets/css/ajustes.css`, por secciones numeradas (1 fuentes, 2 inicio: tamaños y `--inicio-borde-grosor`, 3 menú resto, 4 rejillas: `--lista-*`/`--proyecto-*` formato y columnas + etiqueta, 5 about, 6 colores, 7 tiempos). No poner números sueltos en otros CSS: crear variable aquí.

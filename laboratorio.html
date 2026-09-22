@@ -58,7 +58,8 @@
 
     <h2>Modo de color</h2>
     <label>Modo <select id="modo">
-      <option value="tabla">tabla (fondo → letra + borde)</option>
+      <option value="tabla-mezcla">tabla + mezcla con la foto</option>
+      <option value="tabla">tabla (colores planos)</option>
       <option value="diferencia">diferencia (negativo)</option>
     </select></label>
     <p class="nota" id="detectado"></p>
@@ -78,7 +79,7 @@
     <label>Color texto <input type="color" id="color" value="#f2ece2"></label>
 
     <h2>Trazo (contorno)</h2>
-    <label>Grosor <input type="range" id="trazo" min="0" max="0.25" value="0.12" step=".005"></label>
+    <label>Grosor <input type="range" id="trazo" min="0" max="0.25" value="0.08" step=".005"></label>
     <label>Opuesto de la letra <input type="range" id="peso" min="0" max="100" value="70" step="5"></label>
     <p class="nota">El resto hasta 100 % es el opuesto del fondo. 100 = solo opuesto de la letra.</p>
 
@@ -139,24 +140,26 @@
     let forzada = null;
     $("tabla").innerHTML = TABLA.map((f, i) => `<div data-i="${i}"><i style="background:${f.fondo}"></i>
         <span>${f.nombre}</span><b style="color:${f.letra};-webkit-text-stroke-color:${f.borde};background:${f.fondo}">Aa</b></div>`).join("");
-    $("tabla").onclick = (e) => { const d = e.target.closest("[data-i]"); if (!d) return; forzada = TABLA[d.dataset.i]; $("modo").value = "tabla"; aplicar(); };
+    $("tabla").onclick = (e) => { const d = e.target.closest("[data-i]"); if (!d) return; forzada = TABLA[d.dataset.i]; if ($("modo").value === "diferencia") $("modo").value = "tabla-mezcla"; aplicar(); };
     $("foto").addEventListener("load", () => { forzada = null; aplicar(); });
 
     function aplicarTabla() {
-      const m = $("muestra");
+      const m = $("muestra"), modo = $("modo").value;
+      Colores.ponerModo(modo);
       const rgb = Colores.medio($("foto"));
-      const fila = forzada || (rgb && Colores.elegir(rgb));
-      $("detectado").innerHTML = rgb
-        ? `Color medio detrás del texto: <span class="sw" style="background:rgb(${rgb.map(Math.round)})"></span> → fila <b>${fila.nombre}</b>${forzada ? " (elegida a mano)" : ""}`
-        : "No se puede leer la foto en este navegador.";
-      document.querySelectorAll("#tabla [data-i]").forEach((d) => d.classList.toggle("elegida", fila && TABLA[d.dataset.i] === fila));
-      if (fila) { m.classList.add("tabla"); m.style.color = fila.letra; m.style.webkitTextStrokeColor = fila.borde; }
+      if (!rgb) { $("detectado").textContent = "No se puede leer la foto en este navegador."; return; }
+      const c = Colores.calcular(rgb, forzada);
+      $("detectado").innerHTML = `Color medio detrás del texto: <span class="sw" style="background:rgb(${rgb.map(Math.round)})"></span> → fila <b>${c.fila.nombre || "forzada"}</b>${forzada ? " (elegida a mano)" : ""}`;
+      document.querySelectorAll("#tabla [data-i]").forEach((d) => d.classList.toggle("elegida", TABLA[d.dataset.i] === c.fila));
+      m.classList.add("tabla");
+      m.style.mixBlendMode = modo === "tabla-mezcla" ? "difference" : "normal";
+      m.style.color = c.letra; m.style.webkitTextStrokeColor = c.borde;
     }
 
     function aplicar() {
       const m = $("muestra");
-      m.classList.remove("tabla"); m.style.color = ""; m.style.webkitTextStrokeColor = "";
-      if ($("modo").value === "tabla") setTimeout(aplicarTabla, 0);
+      m.classList.remove("tabla"); m.style.color = ""; m.style.webkitTextStrokeColor = ""; m.style.mixBlendMode = "";
+      if ($("modo").value !== "diferencia") setTimeout(aplicarTabla, 0);
       raiz.setProperty("--texto-mezcla", $("mezcla").value);
       raiz.setProperty("--texto-color", $("color").value);
       raiz.setProperty("--fuente-titulos", `"${$("fuente").value}", serif`);

@@ -14,15 +14,15 @@ mostrar_en_inicio: no
 Proyecto de ejemplo.
 `,
       "archivos": [
-      {"f":"01.jpg","w":1800,"h":1200},
-      {"f":"02.jpg","w":1800,"h":1200},
-      {"f":"03.jpg","w":1326,"h":1800},
-      {"f":"04.jpg","w":1600,"h":1600},
-      {"f":"05.jpg","w":1326,"h":1800},
-      {"f":"06.jpg","w":1800,"h":1200},
-      {"f":"07.jpg","w":1800,"h":1200},
-      {"f":"08.jpg","w":1326,"h":1800},
-      {"f":"portada.jpg","w":1800,"h":1013}]
+      {"f":"01.jpg"},
+      {"f":"02.jpg"},
+      {"f":"03.jpg"},
+      {"f":"04.jpg"},
+      {"f":"05.jpg"},
+      {"f":"06.jpg"},
+      {"f":"07.jpg"},
+      {"f":"08.jpg"},
+      {"f":"portada.jpg"}]
     },
     {
       "carpeta": "2021-el-ultimo-verano",
@@ -36,19 +36,19 @@ mostrar_en_inicio: si
 Proyecto de ejemplo. Paleta de ocres y terracotas, un pueblo de interior en agosto.
 `,
       "archivos": [
-      {"f":"01.jpg","w":1326,"h":1800},
-      {"f":"02.jpg","w":1800,"h":1200},
-      {"f":"03.jpg","w":1800,"h":1200},
-      {"f":"04.jpg","w":1326,"h":1800},
-      {"f":"05.jpg","w":1600,"h":1600},
-      {"f":"06_ancha.jpg","w":1800,"h":1013},
-      {"f":"07.jpg","w":1326,"h":1800},
-      {"f":"08.jpg","w":1800,"h":1200},
-      {"f":"09.jpg","w":1326,"h":1800},
-      {"f":"10.jpg","w":1800,"h":1200},
-      {"f":"11.jpg","w":1600,"h":1600},
-      {"f":"portada-movil.jpg","w":1029,"h":1800},
-      {"f":"portada.jpg","w":1800,"h":1013}]
+      {"f":"01.jpg"},
+      {"f":"02.jpg"},
+      {"f":"03.jpg"},
+      {"f":"04.jpg"},
+      {"f":"05.jpg"},
+      {"f":"06_ancha.jpg"},
+      {"f":"07.jpg"},
+      {"f":"08.jpg"},
+      {"f":"09.jpg"},
+      {"f":"10.jpg"},
+      {"f":"11.jpg"},
+      {"f":"portada-movil.jpg"},
+      {"f":"portada.jpg"}]
     },
     {
       "carpeta": "2023-la-casa-del-lago",
@@ -65,21 +65,21 @@ Proyecto de ejemplo para ver cómo se compone el mosaico. Una casa de los años 
 Se construyeron en plató el salón y la escalera, y el resto se rodó en una casa real intervenida durante seis semanas.
 `,
       "archivos": [
-      {"f":"01.jpg","w":1800,"h":1200},
-      {"f":"02.jpg","w":1326,"h":1800},
-      {"f":"03.jpg","w":1800,"h":1200},
-      {"f":"04.jpg","w":1600,"h":1600},
-      {"f":"05_grande.jpg","w":1800,"h":1013},
-      {"f":"06.jpg","w":1326,"h":1800},
-      {"f":"07.jpg","w":1800,"h":1200},
-      {"f":"08.jpg","w":1800,"h":1200},
-      {"f":"09.jpg","w":1326,"h":1800},
-      {"f":"10.jpg","w":1600,"h":1600},
-      {"f":"11.jpg","w":1800,"h":1013},
-      {"f":"12.jpg","w":1800,"h":1200},
-      {"f":"13.jpg","w":1326,"h":1800},
-      {"f":"portada-movil.jpg","w":1029,"h":1800},
-      {"f":"portada.jpg","w":1800,"h":1013}]
+      {"f":"01.jpg"},
+      {"f":"02.jpg"},
+      {"f":"03.jpg"},
+      {"f":"04.jpg"},
+      {"f":"05_grande.jpg"},
+      {"f":"06.jpg"},
+      {"f":"07.jpg"},
+      {"f":"08.jpg"},
+      {"f":"09.jpg"},
+      {"f":"10.jpg"},
+      {"f":"11.jpg"},
+      {"f":"12.jpg"},
+      {"f":"13.jpg"},
+      {"f":"portada-movil.jpg"},
+      {"f":"portada.jpg"}]
     },
     {
       "carpeta": "superstar",
@@ -96,15 +96,15 @@ Texto de ejemplo. Aquí se cuenta el proyecto: el concepto visual, los decorados
 Una línea en blanco empieza un párrafo nuevo, y las palabras entre *asteriscos* salen en cursiva.
 `,
       "archivos": [
-      {"f":"01.jpg","w":1286,"h":1800},
-      {"f":"02.jpg","w":1500,"h":1000},
-      {"f":"03.jpg","w":1800,"h":1179},
-      {"f":"04.jpg","w":1000,"h":1181},
-      {"f":"05.jpg","w":1200,"h":881},
-      {"f":"06.jpg","w":900,"h":900},
-      {"f":"07.jpg","w":1400,"h":1000},
-      {"f":"portada-movil.jpg","w":1088,"h":1800},
-      {"f":"portada.jpg","w":1800,"h":1273}]
+      {"f":"01.jpg"},
+      {"f":"02.jpg"},
+      {"f":"03.jpg"},
+      {"f":"04.jpg"},
+      {"f":"05.jpg"},
+      {"f":"06.jpg"},
+      {"f":"07.jpg"},
+      {"f":"portada-movil.jpg"},
+      {"f":"portada.jpg"}]
     },
   ],
   "comercials": [
@@ -120,15 +120,15 @@ mostrar_en_inicio: no
 Anuncio de ejemplo.
 `,
       "archivos": [
-      {"f":"01.jpg","w":1800,"h":1200},
-      {"f":"02.jpg","w":1800,"h":1200},
-      {"f":"03.jpg","w":1326,"h":1800},
-      {"f":"04_ancha.jpg","w":1800,"h":1013},
-      {"f":"05.jpg","w":1800,"h":1200},
-      {"f":"06.jpg","w":1600,"h":1600},
-      {"f":"07.jpg","w":1326,"h":1800},
-      {"f":"08.jpg","w":1800,"h":1200},
-      {"f":"portada.jpg","w":1800,"h":1013}]
+      {"f":"01.jpg"},
+      {"f":"02.jpg"},
+      {"f":"03.jpg"},
+      {"f":"04_ancha.jpg"},
+      {"f":"05.jpg"},
+      {"f":"06.jpg"},
+      {"f":"07.jpg"},
+      {"f":"08.jpg"},
+      {"f":"portada.jpg"}]
     },
     {
       "carpeta": "2024-perfume-noir",
@@ -143,16 +143,16 @@ mostrar_en_inicio: si
 Anuncio de ejemplo. Un único decorado negro lacado con reflejos en rojo.
 `,
       "archivos": [
-      {"f":"01.jpg","w":1326,"h":1800},
-      {"f":"02.jpg","w":1326,"h":1800},
-      {"f":"03.jpg","w":1800,"h":1200},
-      {"f":"04.jpg","w":1600,"h":1600},
-      {"f":"05_grande.jpg","w":1800,"h":1013},
-      {"f":"06.jpg","w":1326,"h":1800},
-      {"f":"07.jpg","w":1326,"h":1800},
-      {"f":"08.jpg","w":1800,"h":1200},
-      {"f":"portada-movil.jpg","w":1029,"h":1800},
-      {"f":"portada.jpg","w":1800,"h":1013}]
+      {"f":"01.jpg"},
+      {"f":"02.jpg"},
+      {"f":"03.jpg"},
+      {"f":"04.jpg"},
+      {"f":"05_grande.jpg"},
+      {"f":"06.jpg"},
+      {"f":"07.jpg"},
+      {"f":"08.jpg"},
+      {"f":"portada-movil.jpg"},
+      {"f":"portada.jpg"}]
     },
   ],
   "about": {
@@ -190,6 +190,6 @@ Aquí va la bio más larga: formación, trayectoria, con quién ha trabajado, pr
 2016 | Serie de ejemplo (T1) | Ayudante de arte | Nombre Apellido | films
 `,
     "archivos": [
-      {"f":"retrato.jpg","w":1200,"h":1500}]
+      {"f":"retrato.jpg"}]
   }
 };

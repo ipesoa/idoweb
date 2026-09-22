@@ -29,15 +29,15 @@
   --inicio-tam-nombre:  clamp(1rem, 2.4vw, 2.4rem);    /* IDOIA ESTEBAN GALVÁN */
   --inicio-tam-about:   clamp(.8rem, 1vw, 1rem);       /* about                */
   --inicio-tam-menu:    clamp(.85rem, 1.3vw, 1.3rem);  /* FILMS / COMERCIALS   */
-  --inicio-tam-titulo:  clamp(2.4rem, 7.5vw, 7.5rem);  /* título de la peli    */
+  --inicio-tam-titulo:  clamp(1.6rem, 4.2vw, 4.4rem);  /* título de la peli    */
   --inicio-tam-datos:   clamp(.75rem, 1.05vw, 1rem);   /* año · labor          */
 
   /* en el móvil */
   --inicio-tam-nombre-movil: 1.05rem;
-  --inicio-tam-titulo-movil: 2.6rem;
+  --inicio-tam-titulo-movil: 1.7rem;
 
   /* Grosor del BORDE de las letras del inicio (em = proporcional a cada letra)
-     0 = sin borde · 0.06em = fino · 0.12em = medio · 0.18em = gordo
+     0 = sin borde · 0.06em = fino · 0.08em · 0.12em = medio · 0.18em = gordo
      (la mitad queda por fuera de la letra, así que se ve la mitad)    */
   --inicio-borde-grosor: 0.08em;
 
@@ -47,7 +47,8 @@
 /* ---------- 3. MENÚ EN EL RESTO DE PÁGINAS -------------------------- */
   --menu-tam-nombre: .95rem;
   --menu-tam-otros:  .8rem;           /* about, films, comercials */
-  --menu-mezcla: difference;          /* el menú se "invierte" sobre las fotos */
+  --menu-borde-grosor: 0.08em;        /* borde de las letras del menú (films, comercials, proyecto) */
+  --menu-mezcla: difference;          /* sin tabla (about): el menú se "invierte" */
   --menu-color:  #f2ece2;
 
 /* ---------- 4. CUADRÍCULAS (formato cine) ----------------------------
@@ -68,15 +69,16 @@
   --hilo:       1px;         /* hilo blanco alrededor de cada imagen */
   --hilo-color: #f4f1ec;
 
-  /* Texto que sigue al ratón en FILMS / COMERCIALS */
-  --etiqueta-tam-titulo: 1.1rem;
-  --etiqueta-tam-datos:  .68rem;
+  /* Texto que sigue al ratón en FILMS / COMERCIALS (sale a las 4 del cursor) */
+  --etiqueta-tam:        .8rem;
+  --etiqueta-separacion: 18px;        /* distancia al cursor */
   --texto-mezcla: difference;          /* se invierte sobre la foto */
   --texto-color:  #f2ece2;
 
-/* ---------- 5. ABOUT ------------------------------------------------- */
-  --about-tam:        .9rem;          /* todo el texto del about */
-  --about-tam-nombre: .9rem;
+/* ---------- 5. ABOUT (columna abajo a la derecha) ------------------ */
+  --about-tam:        .8rem;          /* todo el texto del about */
+  --about-tam-nombre: .8rem;
+  --about-ancho:      380px;          /* ancho de la columna */
 
 /* ---------- 6. COLORES GENERALES ------------------------------------ */
   --color-fondo:  #0d0c0b;
@@ -87,7 +89,7 @@
 /* ---------- 7. TIEMPOS Y ESPACIOS ----------------------------------- */
   --t-cortina: 650ms;          /* fundido al cambiar de página      */
   --t-hover:   600ms;          /* zoom/oscurecer al pasar el ratón  */
-  --t-color:   900ms;          /* cambio de color de letra/borde en el inicio */
+  --t-color:   900ms;          /* cambio de color de letra/borde */
   --curva:     cubic-bezier(.65, 0, .35, 1);
   --margen: clamp(16px, 2.6vw, 40px);
 

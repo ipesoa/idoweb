@@ -22,41 +22,47 @@ window.AJUSTES = {
     desenfoque: 28,              // px de desenfoque al entrar/salir la foto
     zoom: 1.07,                  // escala de la foto al empezar (1 = sin zoom)
     zoomLento: true,             // la foto se acerca muy despacio mientras está
-
-    /* ---- COLOR DE LAS LETRAS ----
-       "tabla"      → la web mira el color de la foto detrás del texto,
-                      busca en TABLA_COLORES el fondo más parecido y usa
-                      su letra y su borde.
-       "diferencia" → el efecto de inversión (negativo) de antes.     */
-    modoColor: "tabla",
+    zoomFinal: 1.06,             // cuánto se acerca la foto mientras está (lento y continuo)
   },
 
-  /* ---- TABLA DE COLORES DEL INICIO ----------------------------------
-     Cada línea:  fondo parecido a…  →  color de la letra  +  color del borde
-     La web elige la fila cuyo "fondo" se parezca más a la foto.
-     Añade, quita o cambia filas libremente (colores en #hex).
-     Para un proyecto concreto también se puede forzar en su info.txt:
-         color_letra: #f3d34a
-         color_borde: #d4372c
-     Pruébala en laboratorio.html (modo "tabla").                        */
+  /* ---- COLOR DE LAS LETRAS (inicio + menú de films/comercials/proyecto) ----
+     modo:
+       "tabla-mezcla" → la web mira el color de la foto detrás de cada texto,
+                        busca en la tabla el fondo más parecido y usa su letra
+                        y su borde, PERO mezclados con la foto (efecto
+                        diferencia): donde la foto cambia de color, la letra
+                        también cambia. ← recomendado
+       "tabla"        → los colores de la tabla, planos (sin mezcla)
+       "diferencia"   → solo el negativo, sin tabla                        */
+  colores: {
+    modo: "tabla-mezcla",
+  },
+
+  /* ---- TABLA DE COLORES -----------------------------------------------
+     Cada fila:  si el fondo se parece a…  →  color de la letra  +  color del borde
+     Colores flúor / chillones. Añade, quita o cambia filas (colores #hex).
+     Para un proyecto concreto se puede forzar en su info.txt:
+         color_letra: #fff200
+         color_borde: #ff1a1a
+     Pruébala en laboratorio.html.                                          */
   tablaColores: [
-    //  nombre              fondo        letra        borde
-    { nombre: "negro",       fondo: "#0e0e0e", letra: "#f3d34a", borde: "#d4372c" }, // amarillo / rojo
-    { nombre: "gris oscuro", fondo: "#3a3a3a", letra: "#ffffff", borde: "#101010" }, // blanco / negro
-    { nombre: "gris medio",  fondo: "#7c7c7c", letra: "#ffffff", borde: "#1c1c1c" },
-    { nombre: "blanco",      fondo: "#ececec", letra: "#141414", borde: "#f3d34a" }, // negro / amarillo
-    { nombre: "beige",       fondo: "#d6c3a5", letra: "#2e1a47", borde: "#f6ecd9" }, // morado / crema
-    { nombre: "rojo",        fondo: "#a91e1e", letra: "#f6e7c8", borde: "#16213e" }, // crema / azul marino
-    { nombre: "granate",     fondo: "#5a1414", letra: "#f3d34a", borde: "#0b0b0b" },
-    { nombre: "naranja",     fondo: "#c97a32", letra: "#1b2a55", borde: "#f6ecd9" }, // azul / crema
-    { nombre: "amarillo",    fondo: "#e2c653", letra: "#2a1846", borde: "#e0443a" }, // morado / rojo
-    { nombre: "marrón",      fondo: "#5b3b26", letra: "#bfe6e1", borde: "#150a04" }, // turquesa claro / negro
-    { nombre: "verde",       fondo: "#3d6547", letra: "#f5c6d3", borde: "#1c0b15" }, // rosa / berenjena
-    { nombre: "verde oscuro",fondo: "#1d302a", letra: "#f1e3b0", borde: "#a8322d" },
-    { nombre: "azul",        fondo: "#2c4d7a", letra: "#ffb347", borde: "#0d0d14" }, // naranja / negro
-    { nombre: "azul oscuro", fondo: "#141c30", letra: "#f5d0a9", borde: "#c0392b" },
-    { nombre: "rosa",        fondo: "#d79aa6", letra: "#173a2b", borde: "#ffffff" }, // verde botella / blanco
-    { nombre: "morado",      fondo: "#4b2d5e", letra: "#e7f27c", borde: "#120a18" }, // lima / negro
+    //  nombre               fondo parecido a     letra (flúor)        borde
+    { nombre: "negro",        fondo: "#0e0e0e", letra: "#fff200", borde: "#ff1a1a" }, // amarillo · rojo
+    { nombre: "gris oscuro",  fondo: "#3a3a3a", letra: "#39ff14", borde: "#ff00c8" }, // verde · magenta
+    { nombre: "gris medio",   fondo: "#7c7c7c", letra: "#00f0ff", borde: "#ff00c8" }, // cian · magenta
+    { nombre: "blanco",       fondo: "#ececec", letra: "#1f51ff", borde: "#ff2bd6" }, // azul eléctrico · rosa
+    { nombre: "beige",        fondo: "#d6c3a5", letra: "#ff00c8", borde: "#1f51ff" }, // magenta · azul
+    { nombre: "rojo",         fondo: "#a91e1e", letra: "#00f0ff", borde: "#fff200" }, // cian · amarillo
+    { nombre: "granate",      fondo: "#5a1414", letra: "#fff200", borde: "#00f0ff" }, // amarillo · cian
+    { nombre: "naranja",      fondo: "#c97a32", letra: "#1f51ff", borde: "#39ff14" }, // azul · verde
+    { nombre: "amarillo",     fondo: "#e2c653", letra: "#ff00c8", borde: "#1f51ff" }, // magenta · azul
+    { nombre: "marrón",       fondo: "#5b3b26", letra: "#00f0ff", borde: "#ff00c8" }, // cian · magenta
+    { nombre: "verde",        fondo: "#3d6547", letra: "#ff2bd6", borde: "#fff200" }, // rosa · amarillo
+    { nombre: "verde oscuro", fondo: "#1d302a", letra: "#dfff00", borde: "#ff1a1a" }, // lima · rojo
+    { nombre: "azul",         fondo: "#2c4d7a", letra: "#ff6a00", borde: "#fff200" }, // naranja · amarillo
+    { nombre: "azul oscuro",  fondo: "#141c30", letra: "#39ff14", borde: "#ff00c8" }, // verde · magenta
+    { nombre: "rosa",         fondo: "#d79aa6", letra: "#1f51ff", borde: "#39ff14" }, // azul · verde
+    { nombre: "morado",       fondo: "#4b2d5e", letra: "#dfff00", borde: "#00f0ff" }, // lima · cian
   ],
 
   /* ---- Textos de la web (por si quieres cambiarlos o traducirlos) --- */

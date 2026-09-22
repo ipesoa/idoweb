@@ -32,9 +32,7 @@ html, body { height: 100%; overflow: hidden; }
 .pase__capa.activa { opacity: 1; filter: blur(0); transform: scale(1); z-index: 1; }
 .pase__capa.saliendo { opacity: 0; filter: blur(var(--desenfoque, 28px)); transform: scale(1.015); z-index: 0; }
 
-/* Zoom muy lento mientras la foto está en pantalla */
-.zoom-lento .pase__capa.activa img { animation: acercar 16s linear forwards; }
-@keyframes acercar { to { transform: scale(1.06); } }
+/* El zoom muy lento de cada foto lo hace inicio.js (sin saltos al cambiar) */
 
 /* ---- Texto: título, año y labor ---- */
 .pase__pie {
@@ -60,24 +58,24 @@ html, body { height: 100%; overflow: hidden; }
   text-transform: uppercase;
 }
 
-/* ---- Color de letra y BORDE (todas las letras del inicio) ----
+/* ---- Color de letra y BORDE del título / año · labor ----
    Grosor: ajustes.css (--inicio-borde-grosor)
-   Colores: ajustes.js (tablaColores); inicio.js los pone en
-   --inicio-letra y --inicio-borde según la foto.                  */
-.pase__pie,
-.pagina-inicio .menu {
+   Colores: tabla de assets/js/ajustes.js; inicio.js pone
+   --inicio-letra y --inicio-borde según la foto.
+   (el menú del inicio se colorea igual, desde base.css)          */
+.pase__pie {
   -webkit-text-stroke-width: var(--inicio-borde-grosor);
   paint-order: stroke fill;              /* el borde va por fuera: la letra no adelgaza */
-}
-.modo-tabla .pase__pie,
-.modo-tabla .menu {
-  color: var(--inicio-letra, #fff);
-  -webkit-text-stroke-color: var(--inicio-borde, #000);
-  mix-blend-mode: normal;
   transition: color var(--t-color) var(--curva), -webkit-text-stroke-color var(--t-color) var(--curva);
 }
-.modo-diferencia .pase__pie,
-.modo-diferencia .menu { -webkit-text-stroke-color: var(--trazo-color); }
+.modo-mezcla .pase__pie,
+.modo-tabla .pase__pie {
+  color: var(--inicio-letra, #fff);
+  -webkit-text-stroke-color: var(--inicio-borde, #000);
+}
+.modo-mezcla .pase__pie { mix-blend-mode: difference; }   /* se mezcla con la foto */
+.modo-tabla  .pase__pie { mix-blend-mode: normal; }       /* colores planos        */
+.modo-diferencia .pase__pie { -webkit-text-stroke-color: var(--trazo-color); }
 
 /* Letra a letra: aparecen desde desenfocadas */
 .pase__pie .palabra { display: inline-block; white-space: nowrap; }

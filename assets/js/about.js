@@ -20,8 +20,7 @@
 
   const ol = document.getElementById("trabajos");
   ol.innerHTML = Web.filmografia().map((t) => {
-    const dentro = `<span>${t.ano || ""}</span><span class="titulo">${t.titulo}</span>
-                    <span>${t.labor || ""}</span><span>${t.director || ""}</span>`;
+    const dentro = `<span>${t.ano || ""}</span><span class="titulo">${t.titulo}</span><span>${t.labor || ""}</span>`;
     return `<li data-tipo="${t.tipo}">${t.enlace
       ? `<a class="fila" href="${t.enlace}">${dentro}</a>`
       : `<div class="fila">${dentro}</div>`}</li>`;

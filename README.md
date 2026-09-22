@@ -96,7 +96,7 @@ También puedes editar a mano: cambiar un `info.txt`, borrar una foto, renombrar
 6–7. Colores generales, tiempos, márgenes
 
 **`assets/js/ajustes.js`** (comportamiento):
-- **Tabla de colores del inicio**: *si el fondo se parece a X → letra Y + borde Z*. La web mira el color de la foto detrás del texto y elige la fila más parecida. Se pueden añadir, quitar o cambiar filas.
+- **Tabla de colores** (inicio y menú de films/comercials/proyecto): *si el fondo se parece a X → letra Y + borde Z* (colores flúor). La web mira el color de la foto detrás de cada texto y elige la fila más parecida. Con el modo `tabla-mezcla` (el de por defecto) el texto además se mezcla con la foto, así que cambia de tono donde la foto cambia. Se pueden añadir, quitar o cambiar filas.
 - Tiempos del pase de imágenes, velocidad del auto-scroll, textos de los botones (Films, Comercials, Todo, Contact).
 
 **`laboratorio.html`**: para ver la tabla de colores sobre cada foto (pincha una fila para probarla), el grosor del borde, fuentes…

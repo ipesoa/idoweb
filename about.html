@@ -10,11 +10,12 @@
 </head>
 <body data-pagina="about">
 
-  <!-- ABOUT (minimal): nombre, labor, ciudad y lista de trabajos.
+  <!-- ABOUT (minimal): columna abajo a la derecha con nombre, labor, ciudad y lista de trabajos.
        Textos: contenido/about/info.txt (nombre, subtitulo, ubicacion)
        Trabajos sin página propia: contenido/about/filmografia-extra.txt
        Lo monta assets/js/about.js · tamaños: ajustes.css sección 5 -->
   <main class="about">
+   <div class="about__columna">
     <header class="about__datos">
       <p id="nombre"></p>
       <p id="subtitulo"></p>
@@ -23,6 +24,7 @@
 
     <nav class="filtros" id="filtros"></nav>
     <ol class="trabajos" id="trabajos"></ol>
+   </div>
   </main>
 
   <script src="contenido/datos-generados.js"></script>

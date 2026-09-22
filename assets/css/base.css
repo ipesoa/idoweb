@@ -47,6 +47,19 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .menu a { pointer-events: auto; transition: opacity .3s; }
 .menu a:hover { opacity: .6; }
+/* Colores automáticos del menú (tabla de colores, ver assets/js/colores.js)
+   Solo en páginas con fotos: inicio, films, comercials, proyecto        */
+.color-auto .menu a {
+  color: var(--l, var(--menu-color));
+  -webkit-text-stroke: var(--menu-borde-grosor) var(--b, transparent);
+  paint-order: stroke fill;
+  transition: opacity .3s, color var(--t-color) var(--curva), -webkit-text-stroke-color var(--t-color) var(--curva);
+}
+.pagina-inicio.color-auto .menu a { -webkit-text-stroke-width: var(--inicio-borde-grosor); }
+.modo-mezcla .menu { mix-blend-mode: difference; }
+.modo-tabla  .menu { mix-blend-mode: normal; }
+.modo-diferencia.color-auto .menu a { color: var(--menu-color); -webkit-text-stroke-color: var(--trazo-color); }
+
 .menu a.activo { text-decoration: underline; text-underline-offset: .25em; text-decoration-thickness: 1px; }
 
 .menu__nombre {
