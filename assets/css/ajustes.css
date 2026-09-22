@@ -39,7 +39,7 @@
   /* Grosor del BORDE de las letras del inicio (em = proporcional a cada letra)
      0 = sin borde · 0.06em = fino · 0.12em = medio · 0.18em = gordo
      (la mitad queda por fuera de la letra, así que se ve la mitad)    */
-  --inicio-borde-grosor: 0.12em;
+  --inicio-borde-grosor: 0.08em;
 
   --inicio-espaciado-menu: 0.14em;    /* separación entre letras del menú */
   --inicio-negrita-titulo: 400;       /* 400 normal · 700 negrita           */
