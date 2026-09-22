@@ -48,7 +48,23 @@ Las fotos salen en la rejilla por orden de nombre (portada primero). Mejor horiz
 
 ---
 
-## 🖱 El día a día
+## ⭐ El gestor (lo más fácil)
+
+Doble clic en **`gestor-accesos/Gestor-web.command`** (Mac) o **`Gestor-web.bat`** (Windows) · también valen `Gestor-web.webloc` / `Gestor-web.url`.
+Se abre `https://ipesoa.github.io/idoweb/gestor.html` en el navegador. La primera vez pide el **token** (se queda guardado en ese ordenador).
+
+| Pestaña | Qué se hace |
+|---|---|
+| **Inicio** | Pinchar cada película/anuncio para que salga (verde) o no en el pase del inicio |
+| **Films / Comercials** | ＋ Nueva · pinchar para editar (datos, fotos, portada) · casillas para seleccionar varias y eliminar o poner/quitar del inicio a la vez |
+| **Editor** | Arrastrar fotos para ordenarlas (la primera es la portada), añadir (se reducen solas), seleccionar y eliminar |
+| **About** | Líneas: nombre, labor, ciudad, email, teléfono, instagram (las vacías no salen) · trabajos sin fotos para la lista |
+
+Nada se sube hasta pulsar **Publicar cambios**. El **LED**: 🟡 cambios sin publicar · 🔵 subiendo · 🟠 GitHub actualizando la web (1-2 min) · 🟢 la web ya está al día · 🔴 error.
+
+Los scripts de abajo (`herramientas-mac` / `herramientas-windows`) siguen funcionando para trabajar con la carpeta en el ordenador, pero ya no hacen falta.
+
+## 🖱 El día a día (con la carpeta en el ordenador, opcional)
 
 Mac: carpeta `herramientas-mac` (archivos `.command`). Windows: carpeta `herramientas-windows` (archivos `.bat`). Hacen exactamente lo mismo.
 

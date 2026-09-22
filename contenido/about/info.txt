@@ -5,9 +5,9 @@
 nombre: Idoia Esteban Galván
 subtitulo: Diseño de producción
 ubicacion: Based in Madrid
-email: hola@ejemplo.com
+email:
 telefono:
-instagram: @usuario
+instagram:
 imdb:
 
 # Showreel: enlace de Vimeo o YouTube, o pon un archivo showreel.mp4 en esta carpeta

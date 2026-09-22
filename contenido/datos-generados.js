@@ -15,10 +15,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":675},
+      {"f":"02.jpg","w":884,"h":1200},
+      {"f":"03.jpg","w":1200,"h":800},
+      {"f":"portada.jpg","w":1200,"h":1200}]
     },
     {
       "carpeta": "2004-913",
@@ -33,10 +33,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":800},
+      {"f":"02.jpg","w":1200,"h":1200},
+      {"f":"03.jpg","w":884,"h":1200},
+      {"f":"portada.jpg","w":1200,"h":1200}]
     },
     {
       "carpeta": "2004-anhedonia",
@@ -51,10 +51,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":884,"h":1200},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":884,"h":1200},
+      {"f":"portada.jpg","w":884,"h":1200}]
     },
     {
       "carpeta": "2004-sabado-noche",
@@ -69,10 +69,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":884,"h":1200},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":1200,"h":800},
+      {"f":"portada.jpg","w":1200,"h":1200}]
     },
     {
       "carpeta": "2007-las-horas-muertas",
@@ -87,10 +87,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":884,"h":1200},
+      {"f":"02.jpg","w":1200,"h":1200},
+      {"f":"03.jpg","w":884,"h":1200},
+      {"f":"portada.jpg","w":884,"h":1200}]
     },
     {
       "carpeta": "2008-hoy-no-se-fia-manana-si",
@@ -104,10 +104,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":800},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":1200,"h":800},
+      {"f":"portada.jpg","w":1200,"h":675}]
     },
     {
       "carpeta": "2011-extraterrestre",
@@ -121,10 +121,10 @@ mostrar_en_inicio: si
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":800},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":884,"h":1200},
+      {"f":"portada.jpg","w":1200,"h":675}]
     },
     {
       "carpeta": "2012-agua",
@@ -139,10 +139,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":800},
+      {"f":"02.jpg","w":884,"h":1200},
+      {"f":"03.jpg","w":1200,"h":1200},
+      {"f":"portada.jpg","w":884,"h":1200}]
     },
     {
       "carpeta": "2012-lain",
@@ -157,10 +157,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":1200},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":1200,"h":800},
+      {"f":"portada.jpg","w":1200,"h":800}]
     },
     {
       "carpeta": "2012-tesla-version-04",
@@ -175,10 +175,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":884,"h":1200},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":1200,"h":1200},
+      {"f":"portada.jpg","w":1200,"h":800}]
     },
     {
       "carpeta": "2012-the-abcs-of-death",
@@ -193,10 +193,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":1200},
+      {"f":"02.jpg","w":884,"h":1200},
+      {"f":"03.jpg","w":1200,"h":800},
+      {"f":"portada.jpg","w":1200,"h":1200}]
     },
     {
       "carpeta": "2012-zombi",
@@ -211,10 +211,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":884,"h":1200},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":1200,"h":800},
+      {"f":"portada.jpg","w":1200,"h":800}]
     },
     {
       "carpeta": "2013-alaba-zintzoa",
@@ -228,10 +228,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":800},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":1200,"h":675},
+      {"f":"portada.jpg","w":1200,"h":800}]
     },
     {
       "carpeta": "2013-the-profane-exhibit",
@@ -245,10 +245,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":675},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":1200,"h":675},
+      {"f":"portada.jpg","w":1200,"h":800}]
     },
     {
       "carpeta": "2014-a-escondidas",
@@ -262,10 +262,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":1200},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":884,"h":1200},
+      {"f":"portada.jpg","w":1200,"h":800}]
     },
     {
       "carpeta": "2014-anomalo",
@@ -280,10 +280,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":1200},
+      {"f":"02.jpg","w":884,"h":1200},
+      {"f":"03.jpg","w":1200,"h":1200},
+      {"f":"portada.jpg","w":1200,"h":800}]
     },
     {
       "carpeta": "2014-purgatorio",
@@ -297,10 +297,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":800},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":1200,"h":800},
+      {"f":"portada.jpg","w":1200,"h":800}]
     },
     {
       "carpeta": "2015-bilbao-bizkaia-ext-dia",
@@ -315,10 +315,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":675},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":1200,"h":675},
+      {"f":"portada.jpg","w":884,"h":1200}]
     },
     {
       "carpeta": "2015-los-miercoles-no-existen",
@@ -332,10 +332,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":1200},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":1200,"h":675},
+      {"f":"portada.jpg","w":884,"h":1200}]
     },
     {
       "carpeta": "2015-txarriboda",
@@ -349,10 +349,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":884,"h":1200},
+      {"f":"02.jpg","w":884,"h":1200},
+      {"f":"03.jpg","w":1200,"h":675},
+      {"f":"portada.jpg","w":884,"h":1200}]
     },
     {
       "carpeta": "2016-caminan",
@@ -367,10 +367,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":800},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":1200,"h":1200},
+      {"f":"portada.jpg","w":1200,"h":675}]
     },
     {
       "carpeta": "2016-funeral",
@@ -385,10 +385,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":884,"h":1200},
+      {"f":"02.jpg","w":884,"h":1200},
+      {"f":"03.jpg","w":1200,"h":675},
+      {"f":"portada.jpg","w":1200,"h":800}]
     },
     {
       "carpeta": "2016-hileta",
@@ -403,10 +403,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":675},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":884,"h":1200},
+      {"f":"portada.jpg","w":884,"h":1200}]
     },
     {
       "carpeta": "2017-pieles",
@@ -420,10 +420,10 @@ mostrar_en_inicio: si
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":675},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":1200,"h":800},
+      {"f":"portada.jpg","w":1200,"h":800}]
     },
     {
       "carpeta": "2017-que-baje-dios-y-lo-vea",
@@ -437,10 +437,10 @@ mostrar_en_inicio: si
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":800},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":884,"h":1200},
+      {"f":"portada.jpg","w":1200,"h":800}]
     },
     {
       "carpeta": "2018-arde-madrid",
@@ -455,10 +455,10 @@ mostrar_en_inicio: si
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":675},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":1200,"h":675},
+      {"f":"portada.jpg","w":1200,"h":675}]
     },
     {
       "carpeta": "2018-en-las-estrellas",
@@ -472,10 +472,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":884,"h":1200},
+      {"f":"02.jpg","w":884,"h":1200},
+      {"f":"03.jpg","w":1200,"h":1200},
+      {"f":"portada.jpg","w":884,"h":1200}]
     },
     {
       "carpeta": "2018-lo-siento-mi-amor",
@@ -490,10 +490,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":675},
+      {"f":"02.jpg","w":884,"h":1200},
+      {"f":"03.jpg","w":884,"h":1200},
+      {"f":"portada.jpg","w":1200,"h":800}]
     },
     {
       "carpeta": "2019-el-doble-mas-quince",
@@ -507,10 +507,10 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":884,"h":1200},
+      {"f":"02.jpg","w":1200,"h":1200},
+      {"f":"03.jpg","w":1200,"h":800},
+      {"f":"portada.jpg","w":1200,"h":1200}]
     },
     {
       "carpeta": "2019-si-yo-fuera-rico",
@@ -524,10 +524,10 @@ mostrar_en_inicio: si
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":675},
+      {"f":"02.jpg","w":1200,"h":1200},
+      {"f":"03.jpg","w":884,"h":1200},
+      {"f":"portada.jpg","w":884,"h":1200}]
     },
     {
       "carpeta": "2021-a-1000-km-de-la-navidad",
@@ -541,10 +541,10 @@ mostrar_en_inicio: si
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":675},
+      {"f":"02.jpg","w":1200,"h":800},
+      {"f":"03.jpg","w":1200,"h":800},
+      {"f":"portada.jpg","w":884,"h":1200}]
     },
     {
       "carpeta": "2021-asalto-a-la-casa-de-moneda",
@@ -558,10 +558,10 @@ mostrar_en_inicio: si
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":884,"h":1200},
+      {"f":"02.jpg","w":884,"h":1200},
+      {"f":"03.jpg","w":1200,"h":675},
+      {"f":"portada.jpg","w":884,"h":1200}]
     },
     {
       "carpeta": "2022-rainbow",
@@ -575,10 +575,10 @@ mostrar_en_inicio: si
 ---
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1200,"h":675},
+      {"f":"02.jpg","w":884,"h":1200},
+      {"f":"03.jpg","w":1200,"h":800},
+      {"f":"portada.jpg","w":1200,"h":800}]
     },
     {
       "carpeta": "superstar",
@@ -595,15 +595,15 @@ Texto de ejemplo. Aquí se cuenta el proyecto: el concepto visual, los decorados
 Una línea en blanco empieza un párrafo nuevo, y las palabras entre *asteriscos* salen en cursiva.
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"04.jpg"},
-      {"f":"05.jpg"},
-      {"f":"06.jpg"},
-      {"f":"07.jpg"},
-      {"f":"portada-movil.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1286,"h":1800},
+      {"f":"02.jpg","w":1500,"h":1000},
+      {"f":"03.jpg","w":1800,"h":1179},
+      {"f":"04.jpg","w":1000,"h":1181},
+      {"f":"05.jpg","w":1200,"h":881},
+      {"f":"06.jpg","w":900,"h":900},
+      {"f":"07.jpg","w":1400,"h":1000},
+      {"f":"portada-movil.jpg","w":1088,"h":1800},
+      {"f":"portada.jpg","w":1800,"h":1273}]
     },
   ],
   "comercials": [
@@ -619,15 +619,15 @@ mostrar_en_inicio: no
 Anuncio de ejemplo.
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"04_ancha.jpg"},
-      {"f":"05.jpg"},
-      {"f":"06.jpg"},
-      {"f":"07.jpg"},
-      {"f":"08.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1800,"h":1200},
+      {"f":"02.jpg","w":1800,"h":1200},
+      {"f":"03.jpg","w":1326,"h":1800},
+      {"f":"04_ancha.jpg","w":1800,"h":1013},
+      {"f":"05.jpg","w":1800,"h":1200},
+      {"f":"06.jpg","w":1600,"h":1600},
+      {"f":"07.jpg","w":1326,"h":1800},
+      {"f":"08.jpg","w":1800,"h":1200},
+      {"f":"portada.jpg","w":1800,"h":1013}]
     },
     {
       "carpeta": "2024-perfume-noir",
@@ -642,16 +642,16 @@ mostrar_en_inicio: si
 Anuncio de ejemplo. Un único decorado negro lacado con reflejos en rojo.
 `,
       "archivos": [
-      {"f":"01.jpg"},
-      {"f":"02.jpg"},
-      {"f":"03.jpg"},
-      {"f":"04.jpg"},
-      {"f":"05_grande.jpg"},
-      {"f":"06.jpg"},
-      {"f":"07.jpg"},
-      {"f":"08.jpg"},
-      {"f":"portada-movil.jpg"},
-      {"f":"portada.jpg"}]
+      {"f":"01.jpg","w":1326,"h":1800},
+      {"f":"02.jpg","w":1326,"h":1800},
+      {"f":"03.jpg","w":1800,"h":1200},
+      {"f":"04.jpg","w":1600,"h":1600},
+      {"f":"05_grande.jpg","w":1800,"h":1013},
+      {"f":"06.jpg","w":1326,"h":1800},
+      {"f":"07.jpg","w":1326,"h":1800},
+      {"f":"08.jpg","w":1800,"h":1200},
+      {"f":"portada-movil.jpg","w":1029,"h":1800},
+      {"f":"portada.jpg","w":1800,"h":1013}]
     },
   ],
   "about": {
@@ -662,9 +662,9 @@ Anuncio de ejemplo. Un único decorado negro lacado con reflejos en rojo.
 nombre: Idoia Esteban Galván
 subtitulo: Diseño de producción
 ubicacion: Based in Madrid
-email: hola@ejemplo.com
+email:
 telefono:
-instagram: @usuario
+instagram:
 imdb:
 
 # Showreel: enlace de Vimeo o YouTube, o pon un archivo showreel.mp4 en esta carpeta
@@ -686,6 +686,6 @@ Aquí va la bio más larga: formación, trayectoria, con quién ha trabajado, pr
 # =====================================================================
 `,
     "archivos": [
-      {"f":"retrato.jpg"}]
+      {"f":"retrato.jpg","w":1200,"h":1500}]
   }
 };
