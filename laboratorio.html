@@ -16,8 +16,8 @@
     .fondo img { width: 100%; height: 100%; object-fit: cover; transition: opacity 1s; }
     .muestra {
       position: fixed; inset: 0 340px 0 0; display: grid; place-content: center; text-align: center;
-      color: var(--texto-color); mix-blend-mode: var(--texto-mezcla); pointer-events: none;
-      -webkit-text-stroke: var(--trazo-grosor) var(--trazo-color); paint-order: stroke fill;
+      color: var(--dif-letra); mix-blend-mode: var(--dif-mezcla); pointer-events: none;
+      -webkit-text-stroke: var(--trazo-grosor) var(--dif-borde); paint-order: stroke fill;
     }
     .muestra.tabla { mix-blend-mode: normal; }
     .tabla-lista { display: grid; gap: 4px; }
@@ -58,16 +58,13 @@
 
     <h2>Modo de color</h2>
     <label>Modo <select id="modo">
-      <option value="tabla-mezcla">tabla + mezcla con la foto</option>
-      <option value="tabla">tabla (colores planos)</option>
-      <option value="diferencia">diferencia (negativo)</option>
+      <option value="diferencia">diferencia en tiempo real (el de la web)</option>
+      <option value="tabla-mezcla">tabla + mezcla (experimental)</option>
+      <option value="tabla">tabla, colores planos (experimental)</option>
     </select></label>
     <p class="nota" id="detectado"></p>
-    <div class="tabla-lista" id="tabla"></div>
-    <p class="nota">La tabla se edita en <b>assets/js/ajustes.js</b> (tablaColores). Pincha una fila para verla sobre esta foto.
-      Si "no se puede leer la foto": abre la web publicada o usa Safari/Firefox (Chrome no deja leer fotos abriendo el archivo con doble clic).</p>
 
-    <h2>Presets (modo diferencia)</h2>
+    <h2>Parejas flúor (letra / borde)</h2>
     <div class="presets" id="presets"></div>
 
     <h2>Mezcla y color</h2>
@@ -76,12 +73,15 @@
       <option>hard-light</option><option>color-dodge</option><option>color-burn</option><option>luminosity</option>
       <option>screen</option><option>multiply</option><option>normal</option>
     </select></label>
-    <label>Color texto <input type="color" id="color" value="#f2ece2"></label>
+    <label>Color letra <input type="color" id="color" value="#fff200"></label>
+    <label>Color borde <input type="color" id="colorBorde" value="#ff1a1a"></label>
 
-    <h2>Trazo (contorno)</h2>
+    <h2>Cómo sale sobre cada tipo de fondo</h2>
+    <div class="tabla-lista" id="tabla"></div>
+    <p class="nota">Con "diferencia": lo que se ve = |fondo − color|. En la web cambia en tiempo real, punto a punto, según la foto.</p>
+
+    <h2>Borde</h2>
     <label>Grosor <input type="range" id="trazo" min="0" max="0.25" value="0.08" step=".005"></label>
-    <label>Opuesto de la letra <input type="range" id="peso" min="0" max="100" value="70" step="5"></label>
-    <p class="nota">El resto hasta 100 % es el opuesto del fondo. 100 = solo opuesto de la letra.</p>
 
     <h2>Tipografía</h2>
     <label>Fuente <select id="fuente">
@@ -125,22 +125,30 @@
     foto();
 
     const PRESETS = {
-      "Hueso": ["difference", "#f2ece2"], "Plata": ["exclusion", "#cfd2d4"], "Champán": ["difference", "#c9a36b"],
-      "Tono a tono": ["luminosity", "#f2ece2"], "Velo": ["overlay", "#ffffff"], "Salvia": ["exclusion", "#9fb59a"],
-      "Rosa polvo": ["difference", "#e8b4b0"], "Tinta": ["multiply", "#3a3f5c"],
+      "Amarillo / rojo": ["#fff200", "#ff1a1a"], "Verde / magenta": ["#39ff14", "#ff00c8"],
+      "Cian / amarillo": ["#00f0ff", "#fff200"], "Magenta / verde": ["#ff00c8", "#39ff14"],
+      "Lima / azul": ["#dfff00", "#1f51ff"], "Naranja / cian": ["#ff6a00", "#00f0ff"],
     };
     $("presets").innerHTML = Object.keys(PRESETS).map((k) => `<button data-k="${k}">${k}</button>`).join("");
     $("presets").onclick = (e) => {
       const k = e.target.dataset.k; if (!k) return;
-      $("mezcla").value = PRESETS[k][0]; $("color").value = PRESETS[k][1]; aplicar();
+      $("mezcla").value = "difference"; $("color").value = PRESETS[k][0]; $("colorBorde").value = PRESETS[k][1]; aplicar();
     };
 
-    // ---- Tabla de colores ----
+    // ---- Tabla: cómo sale la letra/borde sobre cada tipo de fondo ----
     const TABLA = AJUSTES.tablaColores;
     let forzada = null;
-    $("tabla").innerHTML = TABLA.map((f, i) => `<div data-i="${i}"><i style="background:${f.fondo}"></i>
-        <span>${f.nombre}</span><b style="color:${f.letra};-webkit-text-stroke-color:${f.borde};background:${f.fondo}">Aa</b></div>`).join("");
-    $("tabla").onclick = (e) => { const d = e.target.closest("[data-i]"); if (!d) return; forzada = TABLA[d.dataset.i]; if ($("modo").value === "diferencia") $("modo").value = "tabla-mezcla"; aplicar(); };
+    const dif = (fondo, c) => { const F = Colores.hexARgb(fondo), C = Colores.hexARgb(c); return "#" + F.map((v, i) => Math.abs(v - C[i]).toString(16).padStart(2, "0")).join(""); };
+    function pintarTabla() {
+      const L = $("color").value, B = $("colorBorde").value, modo = $("modo").value, mezcla = $("mezcla").value === "difference";
+      $("tabla").innerHTML = TABLA.map((f, i) => {
+        const l = modo === "diferencia" ? (mezcla ? dif(f.fondo, L) : L) : f.letra;
+        const b = modo === "diferencia" ? (mezcla ? dif(f.fondo, B) : B) : f.borde;
+        return `<div data-i="${i}"><i style="background:${f.fondo}"></i><span>${f.nombre}</span>
+          <b style="color:${l};-webkit-text-stroke-color:${b};background:${f.fondo}">Aa</b></div>`;
+      }).join("");
+    }
+    $("tabla").onclick = (e) => { const d = e.target.closest("[data-i]"); if (!d || $("modo").value === "diferencia") return; forzada = TABLA[d.dataset.i]; aplicar(); };
     $("foto").addEventListener("load", () => { forzada = null; aplicar(); });
 
     function aplicarTabla() {
@@ -149,8 +157,7 @@
       const rgb = Colores.medio($("foto"));
       if (!rgb) { $("detectado").textContent = "No se puede leer la foto en este navegador."; return; }
       const c = Colores.calcular(rgb, forzada);
-      $("detectado").innerHTML = `Color medio detrás del texto: <span class="sw" style="background:rgb(${rgb.map(Math.round)})"></span> → fila <b>${c.fila.nombre || "forzada"}</b>${forzada ? " (elegida a mano)" : ""}`;
-      document.querySelectorAll("#tabla [data-i]").forEach((d) => d.classList.toggle("elegida", TABLA[d.dataset.i] === c.fila));
+      $("detectado").innerHTML = `Color medio detrás del texto: <span class="sw" style="background:rgb(${rgb.map(Math.round)})"></span> → fila <b>${c.fila.nombre || "forzada"}</b>`;
       m.classList.add("tabla");
       m.style.mixBlendMode = modo === "tabla-mezcla" ? "difference" : "normal";
       m.style.color = c.letra; m.style.webkitTextStrokeColor = c.borde;
@@ -159,12 +166,14 @@
     function aplicar() {
       const m = $("muestra");
       m.classList.remove("tabla"); m.style.color = ""; m.style.webkitTextStrokeColor = ""; m.style.mixBlendMode = "";
+      $("detectado").textContent = "";
       if ($("modo").value !== "diferencia") setTimeout(aplicarTabla, 0);
-      raiz.setProperty("--texto-mezcla", $("mezcla").value);
-      raiz.setProperty("--texto-color", $("color").value);
+      raiz.setProperty("--dif-mezcla", $("mezcla").value);
+      raiz.setProperty("--dif-letra", $("color").value);
+      raiz.setProperty("--dif-borde", $("colorBorde").value);
+      pintarTabla();
       raiz.setProperty("--fuente-titulos", `"${$("fuente").value}", serif`);
       raiz.setProperty("--trazo-grosor", $("trazo").value + "em");
-      raiz.setProperty("--trazo-peso-letra", $("peso").value + "%");
       muestra.setProperty("--estilo", $("cursiva").checked ? "italic" : "normal");
       muestra.setProperty("--mayus", $("mayus").checked ? "uppercase" : "none");
       muestra.setProperty("--tam", $("tam").value + "vw");
@@ -175,11 +184,11 @@
 `/* en el @import, la fuente: */
 family=${f.replace(/ /g, "+")}:ital@0;1
 
---fuente-titulos: "${f}", serif;
---texto-mezcla: ${$("mezcla").value};
---texto-color:  ${$("color").value};
---trazo-grosor:     ${$("trazo").value}em;
---trazo-peso-letra: ${$("peso").value}%;`;
+--fuente-inicio: "${f}";              (sección 1)
+--dif-letra:  ${$("color").value};     (sección 2b)
+--dif-borde:  ${$("colorBorde").value};
+--dif-mezcla: ${$("mezcla").value};
+--inicio-borde-grosor: ${$("trazo").value}em;   (sección 2)`;
     }
     document.querySelectorAll("select, input").forEach((el) => el.addEventListener("input", aplicar));
 
@@ -197,7 +206,7 @@ family=${f.replace(/ /g, "+")}:ital@0;1
         ${aHex(real) === $("cQuiero").value ? "(exacto)" : "(lo más cercano posible)"}`;
     }
     $("cFondo").oninput = $("cQuiero").oninput = calcular;
-    $("cUsar").onclick = () => { $("mezcla").value = "difference"; $("color").value = calculado; aplicar(); };
+    $("cUsar").onclick = () => { $("mezcla").value = "difference"; $("modo").value = "diferencia"; $("color").value = calculado; aplicar(); };
     $("fuente").value = "Arial";
     calcular(); aplicar();
   </script>

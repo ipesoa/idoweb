@@ -95,13 +95,13 @@ También puedes editar a mano: cambiar un `info.txt`, borrar una foto, renombrar
 5. About
 6–7. Colores generales, tiempos, márgenes
 
-**`assets/js/ajustes.js`** (comportamiento):
-- **Tabla de colores** (inicio y menú de films/comercials/proyecto): *si el fondo se parece a X → letra Y + borde Z* (colores flúor). La web mira el color de la foto detrás de cada texto y elige la fila más parecida. Con el modo `tabla-mezcla` (el de por defecto) el texto además se mezcla con la foto, así que cambia de tono donde la foto cambia. Se pueden añadir, quitar o cambiar filas.
-- Tiempos del pase de imágenes, velocidad del auto-scroll, textos de los botones (Films, Comercials, Todo, Contact).
+**Colores de las letras** (`ajustes.css` sección 2b): un color de letra y uno de borde (flúor) para todo. Se mezclan con la foto en tiempo real (efecto diferencia): sobre negro se ven tal cual, sobre blanco su opuesto, y sobre cada color lo que toque, punto a punto.
 
-**`laboratorio.html`**: para ver la tabla de colores sobre cada foto (pincha una fila para probarla), el grosor del borde, fuentes…
+**`assets/js/ajustes.js`**: tiempos del pase de imágenes, textos de los botones (Films, Comercials, Todo, Contact), botón de auto-scroll (apagado).
 
-> Abriendo la web con doble clic en Chrome, el navegador no deja "leer" los colores de las fotos y el inicio usa el efecto de inversión. En la web publicada (y en Safari) la tabla funciona siempre.
+**Efecto del About** (`assets/js/about-glitch.js`, parámetros arriba del todo): número de líneas de datos, velocidad, tiempo que se queda el texto, palabras que aparecen entre el ruido…
+
+**`laboratorio.html`**: probar parejas de colores letra/borde sobre las fotos, ver cómo salen sobre cada tipo de fondo, grosor del borde, fuentes…
 - **Probar combinaciones** → abre `laboratorio.html`: eliges modo de mezcla, color y fuente sobre las fotos reales, y te da las líneas para copiar. Tiene una calculadora: "sobre este color de fondo quiero que el texto salga de este otro".
 
 Para cambios más grandes, pásale la carpeta a una IA o a quien sea con `CLAUDE.md`: ahí está el mapa técnico de la web.

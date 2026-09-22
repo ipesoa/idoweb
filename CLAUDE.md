@@ -46,11 +46,15 @@ Orden de scripts en cada página: `datos-generados.js → ajustes.js → conteni
 - Textos de menú/filtros/botón desde `AJUSTES.textos`.
 - `Comun.embed(url)` Vimeo/YouTube → URL de iframe.
 
-## Colores (`assets/js/colores.js` → `window.Colores`)
-Se carga en index, films, comercials y proyecto (NO en about: allí el menú es el normal). `AJUSTES.colores.modo`:
-- `tabla-mezcla` (defecto): se promedia en un canvas la zona de la foto bajo el texto, `elegir()` busca la fila más cercana de `AJUSTES.tablaColores` {fondo, letra, borde} y `paraDiferencia(P, deseado)` calcula el color que, en `mix-blend-mode: difference` sobre ese fondo medio, da el color deseado → el texto sigue mezclándose píxel a píxel con la foto.
-- `tabla`: colores de la tabla planos (blend normal). `diferencia`: negativo sin tabla.
-Clases en `<body>`: `color-auto` + `modo-mezcla|modo-tabla|modo-diferencia`. Título del inicio: vars `--inicio-letra/--inicio-borde` en body (inicio.js). Menú: cada `<a>` recibe `--l/--b` según la `<img>` que tiene debajo (`elementsFromPoint` + `medioBajo`), repintado en scroll/resize/carga de imágenes y tras cada cambio de foto del inicio. Si el canvas está "tainted" (file:// en Chrome) → `modo-diferencia`. `color_letra`/`color_borde` en info.txt fuerzan la fila en el inicio.
+## Colores de las letras (efecto diferencia)
+Por defecto (`AJUSTES.colores.modo = "diferencia"`) es **solo CSS**: menú, título/datos del inicio y etiqueta del ratón usan `color: var(--dif-letra)`, `-webkit-text-stroke: … var(--dif-borde)` y `mix-blend-mode: var(--dif-mezcla)` (ajustes.css 2b). El navegador mezcla en tiempo real, píxel a píxel; no hay JS de por medio. NO volver a muestrear colores con JS para esto (la dueña lo rechazó: cambios "en bloque" no orgánicos).
+`colores.js` conserva modos experimentales `tabla` / `tabla-mezcla` (muestreo en canvas + `AJUSTES.tablaColores`), inactivos por defecto.
+
+## Hilo blanco bajo el menú (`assets/js/hilo.js`)
+En films/comercials/proyecto, cada celda `.rejilla-cine > *` recibe `--hilo-huecos` (máscara CSS con agujeros donde hay palabras del menú encima), usada por `::after` con `mask-composite: exclude`. Recalculado en scroll/resize/load.
+
+## About glitch (`assets/js/about-glitch.js` + `assets/css/about-glitch.css`)
+Reimplementación vanilla de `src/line.ts` de ikeryou/sketch491: por línea, `a` (showRateA, ExpoOut) revela de izq. a der. (aquí con `clip-path` sobre la línea), `b` (showRateB, ExpoInOut, +0,75·t) convierte el ruido en huecos; palabras de `WORDS` incrustadas; hide inverso tras `HOLD_TIME` y show tras `RESTART_DELAY`; escalonado `START_DELAY + i·LINE_DELAY`. El ruido es un `<span class="glitch-ruido">` monoespaciado absoluto dentro de cada línea; las casillas ocupadas por texto real se dejan en blanco. Parámetros en MAYÚSCULAS al principio del archivo. Estilos encapsulados bajo `.glitch`. Se reinicia al pulsar un filtro. No modifica about.js.
 
 ## Estilo
 - Todo lo ajustable en `assets/css/ajustes.css`, por secciones numeradas (1 fuentes, 2 inicio: tamaños y `--inicio-borde-grosor`, 3 menú resto, 4 rejillas: `--lista-*`/`--proyecto-*` formato y columnas + etiqueta, 5 about, 6 colores, 7 tiempos). No poner números sueltos en otros CSS: crear variable aquí.
