@@ -1,36 +1,14 @@
 /* =====================================================================
    ABOUT GLITCH  ·  estilos del efecto (todo dentro de .glitch)
-   Parámetros del efecto: assets/js/about-glitch.js (arriba del todo)
+   El ruido usa la misma fuente que el texto, así que casi no necesita
+   estilos. Parámetros del efecto: assets/js/about-glitch.js
    ===================================================================== */
 
-.glitch .glitch-linea {
-  position: relative;
-  will-change: clip-path;
-}
-
-/* Capa de ruido: caracteres monoespaciados encima de cada línea */
-.glitch .glitch-ruido {
-  position: absolute; left: 0; top: 50%;
-  transform: translateY(-50%);
-  width: 100%;
-  overflow: hidden;
-  white-space: pre;
-  font-family: "Source Code Pro", ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
-  font-size: var(--glitch-tam, 10px);
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--color-tinta);
-  pointer-events: none;
-  user-select: none;
-}
-
-/* Líneas extra (solo datos) encima del about, como el original */
+/* Líneas extra (solo datos) encima del about · solo si LINE_COUNT > 0 */
 .glitch .glitch-extra {
   display: flex; flex-direction: column;
   gap: var(--glitch-separacion, .5em);
   font-size: var(--glitch-tam, 10px);
   margin-bottom: 3em;
 }
-.glitch .glitch-linea--extra { height: 1em; }
+.glitch .glitch-extra > div { height: 1em; white-space: pre; overflow: hidden; }

@@ -60,25 +60,13 @@ html, body { height: 100%; overflow: hidden; }
 
 /* ---- Color de letra y BORDE del título / año · labor ----
    Grosor: ajustes.css (--inicio-borde-grosor)
-   Colores: tabla de assets/js/ajustes.js; inicio.js pone
-   --inicio-letra y --inicio-borde según la foto.
-   (el menú del inicio se colorea igual, desde base.css)          */
+   Colores: assets/js/diferencia.js (píxel a píxel, según la foto).  */
 .pase__pie {
   color: var(--dif-letra);
-  mix-blend-mode: var(--dif-mezcla);           /* diferencia en tiempo real (ajustes.css 2b) */
+  mix-blend-mode: var(--dif-mezcla);           /* solo si no hay capa de diferencia (ajustes.css 2b) */
   -webkit-text-stroke: var(--inicio-borde-grosor) var(--dif-borde);
   paint-order: stroke fill;                    /* el borde va por fuera: la letra no adelgaza */
 }
-/* Modos opcionales con TABLA (ajustes.js → colores.modo) */
-.modo-mezcla .pase__pie,
-.modo-tabla .pase__pie {
-  color: var(--inicio-letra, var(--dif-letra));
-  -webkit-text-stroke-color: var(--inicio-borde, var(--dif-borde));
-  transition: color var(--t-color) var(--curva), -webkit-text-stroke-color var(--t-color) var(--curva);
-}
-.modo-mezcla .pase__pie { mix-blend-mode: difference; }
-.modo-tabla  .pase__pie { mix-blend-mode: normal; }
-
 /* Letra a letra: aparecen desde desenfocadas */
 .pase__pie .palabra { display: inline-block; white-space: nowrap; }
 .pase__pie .letra {

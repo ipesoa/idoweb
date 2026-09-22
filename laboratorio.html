@@ -3,120 +3,83 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Laboratorio · efectos de texto</title>
-  <!-- LABORATORIO: página interna (no enlazada en el menú) para probar
-       colores, modos de mezcla y tipografías sobre las fotos reales.
-       Lo que te guste, cópialo en assets/css/ajustes.css -->
+  <title>Laboratorio · Difference dirigido</title>
+  <!-- LABORATORIO (página interna, no enlazada en el menú)
+       Prueba el modelo de color "Difference + boyas" sobre las fotos reales,
+       mira las boyas y las transiciones continuas, cambia el radio o pega
+       un modelo nuevo. Lo que te guste: assets/js/diferencia-modelo.js -->
   <link rel="stylesheet" href="assets/css/ajustes.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700&family=Fraunces:ital,wght@0,300;1,300&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@400;600&family=Unbounded:wght@300;600&family=Archivo:wght@300;700&family=Bodoni+Moda:ital@0;1&family=Playfair+Display:ital@0;1&display=swap">
+  <link rel="stylesheet" href="assets/css/base.css">
   <style>
-    * { box-sizing: border-box; margin: 0; }
-    body { background: #000; color: #eee; font: 14px/1.4 "Instrument Sans", system-ui, sans-serif; height: 100vh; overflow: hidden; }
-    .fondo { position: fixed; inset: 0; }
-    .fondo img { width: 100%; height: 100%; object-fit: cover; transition: opacity 1s; }
-    .muestra {
-      position: fixed; inset: 0 340px 0 0; display: grid; place-content: center; text-align: center;
-      color: var(--dif-letra); mix-blend-mode: var(--dif-mezcla); pointer-events: none;
-      -webkit-text-stroke: var(--trazo-grosor) var(--dif-borde); paint-order: stroke fill;
-    }
-    .muestra.tabla { mix-blend-mode: normal; }
-    .tabla-lista { display: grid; gap: 4px; }
-    .tabla-lista div { display: grid; grid-template-columns: 22px 1fr auto; gap: 8px; align-items: center; padding: 3px 5px; cursor: pointer; border: 1px solid transparent; font-size: 12px; }
-    .tabla-lista div.elegida { border-color: #eee; }
-    .tabla-lista i { width: 22px; height: 22px; display: block; border: 1px solid #444; }
-    .tabla-lista b { font: 700 18px Arial, sans-serif; -webkit-text-stroke-width: 2px; paint-order: stroke fill; padding: 0 6px; }
-    .muestra h1 { font-family: var(--fuente-titulos); font-weight: 400; font-style: var(--estilo, italic); font-size: var(--tam, 9vw); line-height: .95; text-transform: var(--mayus, none); letter-spacing: var(--espacio, 0); }
-    .muestra p { margin-top: 1.2em; letter-spacing: .28em; text-transform: uppercase; font-size: 1rem; }
-    .panel { position: fixed; right: 0; top: 0; bottom: 0; width: 340px; background: #111; padding: 22px; overflow: auto; border-left: 1px solid #333; }
-    .panel h2 { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: #999; margin: 22px 0 10px; font-weight: 500; }
+    body { height: 100vh; overflow: hidden; font: 13px/1.4 Arial, sans-serif; }
+    .fondo { position: fixed; inset: 0 360px 0 0; }
+    .fondo img { width: 100%; height: 100%; object-fit: cover; }
+    .muestra { position: fixed; inset: 0 360px 0 0; display: grid; place-content: center; text-align: center; pointer-events: none; }
+    .muestra h1 { font: 400 var(--lab-tam, 5vw)/1 Arial, sans-serif; -webkit-text-stroke: var(--lab-borde, 2px) #18A8FF; paint-order: stroke fill; color: #fff; mix-blend-mode: difference; }
+    .muestra p { margin-top: 1em; letter-spacing: .24em; text-transform: uppercase; font-size: 12px; -webkit-text-stroke: 1px #18A8FF; paint-order: stroke fill; color: #fff; mix-blend-mode: difference; }
+    .panel { position: fixed; right: 0; top: 0; bottom: 0; width: 360px; background: #111; color: #ddd; padding: 20px; overflow: auto; border-left: 1px solid #333; }
+    .panel h2 { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: #888; margin: 22px 0 8px; font-weight: 400; }
     .panel h2:first-child { margin-top: 0; }
-    label { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 8px 0; }
-    select, input[type=text] { background: #222; color: #eee; border: 1px solid #333; padding: 6px; font: inherit; width: 170px; }
-    input[type=color] { width: 60px; height: 30px; border: 0; background: none; }
-    input[type=range] { width: 170px; }
-    .presets { display: flex; flex-wrap: wrap; gap: 6px; }
-    .presets button, .accion { background: #222; color: #eee; border: 1px solid #3a3a3a; padding: 6px 10px; cursor: pointer; font: inherit; font-size: 12px; }
-    .presets button:hover, .accion:hover { background: #333; }
-    pre { background: #000; border: 1px solid #333; padding: 10px; font-size: 12px; white-space: pre-wrap; user-select: all; color: #cfc; }
-    .calc { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .sw { width: 34px; height: 34px; border: 1px solid #444; display: inline-block; }
-    .nota { color: #888; font-size: 12px; margin-top: 6px; }
-    @media (max-width: 800px) { .muestra { inset: 0 0 50vh 0; } .panel { top: 50vh; width: 100%; } }
+    label { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 6px 0; }
+    input[type=text], textarea { background: #1c1c1c; color: #eee; border: 1px solid #333; padding: 5px; font: inherit; }
+    input[type=text] { width: 180px; }
+    textarea { width: 100%; height: 110px; font: 11px/1.3 monospace; }
+    button { background: #222; color: #eee; border: 1px solid #3a3a3a; padding: 5px 10px; font-size: 12px; }
+    button:hover { background: #333; }
+    .boyas { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+    .boya { display: flex; align-items: center; gap: 6px; font-size: 11px; }
+    .boya b { display: inline-block; padding: 0 6px; font: 700 17px Arial; -webkit-text-stroke: 2px; paint-order: stroke fill; }
+    .ok { color: #7f7; } .no { color: #f77; }
+    canvas.rampa { width: 100%; height: 42px; display: block; margin: 4px 0; image-rendering: pixelated; border: 1px solid #333; }
+    .nota { color: #888; font-size: 11px; margin-top: 4px; }
+    #aviso { color: #f9a; }
+    @media (max-width: 800px) { .fondo, .muestra { inset: 0 0 50vh 0; } .panel { top: 50vh; width: 100%; } }
   </style>
 </head>
 <body>
   <div class="fondo"><img id="foto" alt=""></div>
-  <div class="muestra" id="muestra">
-    <h1 id="t">La casa del lago</h1>
-    <p>2023 · Diseño de producción</p>
+  <div class="muestra">
+    <h1 id="t" data-dif>La casa del lago</h1>
+    <p data-dif>2023 · Dirección de arte</p>
   </div>
 
   <aside class="panel">
     <h2>Texto de prueba</h2>
-    <label>Título <input type="text" id="texto" value="La casa del lago"></label>
-    <button class="accion" id="otraFoto">Otra foto →</button>
+    <label>Título <input type="text" id="texto" value="Asalto a la Casa de Moneda"></label>
+    <label>Tamaño <input type="range" id="tam" min="1" max="12" value="5" step=".5"></label>
+    <label>Grosor borde (px) <input type="range" id="borde" min="0" max="8" value="2" step=".5"></label>
+    <button id="otraFoto">Otra foto →</button>
+    <p class="nota" id="aviso"></p>
 
-    <h2>Modo de color</h2>
-    <label>Modo <select id="modo">
-      <option value="diferencia">diferencia en tiempo real (el de la web)</option>
-      <option value="tabla-mezcla">tabla + mezcla (experimental)</option>
-      <option value="tabla">tabla, colores planos (experimental)</option>
-    </select></label>
-    <p class="nota" id="detectado"></p>
+    <h2>Radio de influencia</h2>
+    <label><span id="radioTxt"></span> <input type="range" id="radio" min="0.05" max="0.8" value="0.28" step="0.01"></label>
 
-    <h2>Parejas flúor (letra / borde)</h2>
-    <div class="presets" id="presets"></div>
+    <h2>Boyas · letra y borde (✓ = salida exacta)</h2>
+    <div class="boyas" id="boyas"></div>
 
-    <h2>Mezcla y color</h2>
-    <label>Modo <select id="mezcla">
-      <option>difference</option><option>exclusion</option><option>overlay</option><option>soft-light</option>
-      <option>hard-light</option><option>color-dodge</option><option>color-burn</option><option>luminosity</option>
-      <option>screen</option><option>multiply</option><option>normal</option>
-    </select></label>
-    <label>Color letra <input type="color" id="color" value="#fff200"></label>
-    <label>Color borde <input type="color" id="colorBorde" value="#ff1a1a"></label>
+    <h2>Transiciones continuas (arriba fondo · letra · borde)</h2>
+    <canvas class="rampa" id="r1"></canvas>
+    <canvas class="rampa" id="r2"></canvas>
+    <canvas class="rampa" id="r3"></canvas>
+    <p class="nota">Negro → blanco · rueda de color saturada · rueda de color apagada.</p>
 
-    <h2>Cómo sale sobre cada tipo de fondo</h2>
-    <div class="tabla-lista" id="tabla"></div>
-    <p class="nota">Con "diferencia": lo que se ve = |fondo − color|. En la web cambia en tiempo real, punto a punto, según la foto.</p>
-
-    <h2>Borde</h2>
-    <label>Grosor <input type="range" id="trazo" min="0" max="0.25" value="0.08" step=".005"></label>
-
-    <h2>Tipografía</h2>
-    <label>Fuente <select id="fuente">
-      <option value="Arial">Arial</option><option value="Instrument Serif">Instrument Serif</option><option>Syne</option><option>Fraunces</option>
-      <option>Cormorant Garamond</option><option>DM Serif Display</option><option>Bodoni Moda</option>
-      <option>Playfair Display</option><option>Space Grotesk</option><option>Unbounded</option><option>Archivo</option>
-    </select></label>
-    <label>Cursiva <input type="checkbox" id="cursiva"></label>
-    <label>MAYÚSCULAS <input type="checkbox" id="mayus"></label>
-    <label>Tamaño <input type="range" id="tam" min="3" max="16" value="9" step=".5"></label>
-    <label>Espaciado <input type="range" id="espacio" min="-0.05" max="0.3" value="0" step=".01"></label>
-
-    <h2>Calculadora "sobre X quiero que salga Y"</h2>
-    <p class="nota">Solo para el modo <b>difference</b>. Elige el color típico del fondo (ej. el rojo del telón) y el color que quieres ver en el texto.</p>
-    <div class="calc" style="margin-top:10px">
-      <label style="margin:0">Fondo <input type="color" id="cFondo" value="#b8191b"></label>
-      <label style="margin:0">Quiero <input type="color" id="cQuiero" value="#e7c9a0"></label>
-    </div>
-    <p class="nota" id="cRes"></p>
-    <button class="accion" id="cUsar">Usar ese color</button>
-
-    <h2>Copia esto en ajustes.css</h2>
-    <pre id="salida"></pre>
+    <h2>Pegar un modelo nuevo (JSON)</h2>
+    <textarea id="json" placeholder='{ "version": 2, "base": {...}, "letterAnchors": [...], ... }'></textarea>
+    <button id="aplicarJson">Probar este modelo</button>
+    <p class="nota">Si te gusta, pega el mismo JSON en <b>assets/js/diferencia-modelo.js</b>.</p>
   </aside>
 
   <script src="contenido/datos-generados.js"></script>
-  <script src="assets/js/ajustes.js"></script>
+  <script>window.AJUSTES = { diferencia: { activo: true, textos: "[data-dif]" } };</script>
   <script src="assets/js/contenido.js"></script>
-  <script src="assets/js/colores.js"></script>
+  <script src="assets/js/diferencia-modelo.js"></script>
+  <script src="assets/js/diferencia.js"></script>
   <script>
     const $ = (id) => document.getElementById(id);
-    const raiz = document.documentElement.style;
-    const muestra = $("muestra").style;
+    const D = window.Diferencia;
+    let modelo = JSON.parse(JSON.stringify(window.DIFERENCIA_MODELO));
 
-    // Fotos: portadas + galerías de todos los proyectos
+    // Fotos de todos los proyectos
     const fotos = [...Web.proyectos("films"), ...Web.proyectos("comercials")]
       .flatMap((p) => [p.portada, ...p.galeria.filter((g) => !g.video)]).filter(Boolean).map((g) => g.url);
     let n = 0;
@@ -124,91 +87,63 @@
     $("otraFoto").onclick = () => { n++; foto(); };
     foto();
 
-    const PRESETS = {
-      "Amarillo / rojo": ["#fff200", "#ff1a1a"], "Verde / magenta": ["#39ff14", "#ff00c8"],
-      "Cian / amarillo": ["#00f0ff", "#fff200"], "Magenta / verde": ["#ff00c8", "#39ff14"],
-      "Lima / azul": ["#dfff00", "#1f51ff"], "Naranja / cian": ["#ff6a00", "#00f0ff"],
-    };
-    $("presets").innerHTML = Object.keys(PRESETS).map((k) => `<button data-k="${k}">${k}</button>`).join("");
-    $("presets").onclick = (e) => {
-      const k = e.target.dataset.k; if (!k) return;
-      $("mezcla").value = "difference"; $("color").value = PRESETS[k][0]; $("colorBorde").value = PRESETS[k][1]; aplicar();
-    };
+    $("texto").oninput = () => ($("t").textContent = $("texto").value);
+    $("t").textContent = $("texto").value;
+    $("tam").oninput = () => document.querySelector(".muestra").style.setProperty("--lab-tam", $("tam").value + "vw");
+    $("borde").oninput = () => document.querySelector(".muestra").style.setProperty("--lab-borde", $("borde").value + "px");
 
-    // ---- Tabla: cómo sale la letra/borde sobre cada tipo de fondo ----
-    const TABLA = AJUSTES.tablaColores;
-    let forzada = null;
-    const dif = (fondo, c) => { const F = Colores.hexARgb(fondo), C = Colores.hexARgb(c); return "#" + F.map((v, i) => Math.abs(v - C[i]).toString(16).padStart(2, "0")).join(""); };
-    function pintarTabla() {
-      const L = $("color").value, B = $("colorBorde").value, modo = $("modo").value, mezcla = $("mezcla").value === "difference";
-      $("tabla").innerHTML = TABLA.map((f, i) => {
-        const l = modo === "diferencia" ? (mezcla ? dif(f.fondo, L) : L) : f.letra;
-        const b = modo === "diferencia" ? (mezcla ? dif(f.fondo, B) : B) : f.borde;
-        return `<div data-i="${i}"><i style="background:${f.fondo}"></i><span>${f.nombre}</span>
-          <b style="color:${l};-webkit-text-stroke-color:${b};background:${f.fondo}">Aa</b></div>`;
-      }).join("");
+    function pintarBoyas() {
+      const fila = (a, tipo) => {
+        const c = D.colorPara(a.bg)[tipo];
+        const ok = c === a.out.toUpperCase();
+        const estilo = tipo === "letra"
+          ? `color:${c};-webkit-text-stroke-color:${D.colorPara(a.bg).borde}`
+          : `color:${D.colorPara(a.bg).letra};-webkit-text-stroke-color:${c}`;
+        return `<div class="boya"><b style="background:${a.bg};${estilo}">Aa</b>${a.bg} <span class="${ok ? "ok" : "no"}">${ok ? "✓" : "≈"}</span></div>`;
+      };
+      $("boyas").innerHTML = modelo.letterAnchors.map((a) => fila(a, "letra")).join("");
     }
-    $("tabla").onclick = (e) => { const d = e.target.closest("[data-i]"); if (!d || $("modo").value === "diferencia") return; forzada = TABLA[d.dataset.i]; aplicar(); };
-    $("foto").addEventListener("load", () => { forzada = null; aplicar(); });
 
-    function aplicarTabla() {
-      const m = $("muestra"), modo = $("modo").value;
-      Colores.ponerModo(modo);
-      const rgb = Colores.medio($("foto"));
-      if (!rgb) { $("detectado").textContent = "No se puede leer la foto en este navegador."; return; }
-      const c = Colores.calcular(rgb, forzada);
-      $("detectado").innerHTML = `Color medio detrás del texto: <span class="sw" style="background:rgb(${rgb.map(Math.round)})"></span> → fila <b>${c.fila.nombre || "forzada"}</b>`;
-      m.classList.add("tabla");
-      m.style.mixBlendMode = modo === "tabla-mezcla" ? "difference" : "normal";
-      m.style.color = c.letra; m.style.webkitTextStrokeColor = c.borde;
+    // Rampas: fondo continuo y la salida de letra y borde
+    const hsl = (h, s, l) => { const a = s * Math.min(l, 1 - l); const f = (k) => { const x = (k + h / 30) % 12; return l - a * Math.max(-1, Math.min(x - 3, 9 - x, 1)); }; return [f(0), f(8), f(4)].map((v) => v * 255); };
+    function rampa(id, fondo) {
+      const c = $(id), W = 256, H = 3;
+      c.width = W; c.height = H;
+      const x = c.getContext("2d"), img = x.createImageData(W, H);
+      for (let i = 0; i < W; i++) {
+        const bg = fondo(i / (W - 1)), L = D.letra(bg), B = D.borde(bg);
+        [bg, L, B].forEach((col, fila) => { const p = (fila * W + i) * 4; img.data[p] = col[0]; img.data[p + 1] = col[1]; img.data[p + 2] = col[2]; img.data[p + 3] = 255; });
+      }
+      x.putImageData(img, 0, 0);
+    }
+    function pintarRampas() {
+      rampa("r1", (t) => [t * 255, t * 255, t * 255]);
+      rampa("r2", (t) => hsl(t * 360, 1, 0.5));
+      rampa("r3", (t) => hsl(t * 360, 0.45, 0.35));
     }
 
     function aplicar() {
-      const m = $("muestra");
-      m.classList.remove("tabla"); m.style.color = ""; m.style.webkitTextStrokeColor = ""; m.style.mixBlendMode = "";
-      $("detectado").textContent = "";
-      if ($("modo").value !== "diferencia") setTimeout(aplicarTabla, 0);
-      raiz.setProperty("--dif-mezcla", $("mezcla").value);
-      raiz.setProperty("--dif-letra", $("color").value);
-      raiz.setProperty("--dif-borde", $("colorBorde").value);
-      pintarTabla();
-      raiz.setProperty("--fuente-titulos", `"${$("fuente").value}", serif`);
-      raiz.setProperty("--trazo-grosor", $("trazo").value + "em");
-      muestra.setProperty("--estilo", $("cursiva").checked ? "italic" : "normal");
-      muestra.setProperty("--mayus", $("mayus").checked ? "uppercase" : "none");
-      muestra.setProperty("--tam", $("tam").value + "vw");
-      muestra.setProperty("--espacio", $("espacio").value + "em");
-      $("t").textContent = $("texto").value;
-      const f = $("fuente").value;
-      $("salida").textContent =
-`/* en el @import, la fuente: */
-family=${f.replace(/ /g, "+")}:ital@0;1
-
---fuente-inicio: "${f}";              (sección 1)
---dif-letra:  ${$("color").value};     (sección 2b)
---dif-borde:  ${$("colorBorde").value};
---dif-mezcla: ${$("mezcla").value};
---inicio-borde-grosor: ${$("trazo").value}em;   (sección 2)`;
+      modelo.interpolation.radius = parseFloat($("radio").value);
+      $("radioTxt").textContent = modelo.interpolation.radius.toFixed(2);
+      D.construir(modelo);
+      pintarBoyas(); pintarRampas();
     }
-    document.querySelectorAll("select, input").forEach((el) => el.addEventListener("input", aplicar));
+    $("radio").oninput = aplicar;
+    $("aplicarJson").onclick = () => {
+      try {
+        modelo = JSON.parse($("json").value);
+        $("radio").value = modelo.interpolation.radius;
+        aplicar();
+      } catch (e) { alert("El JSON no es válido: " + e.message); }
+    };
+    $("json").value = JSON.stringify(modelo, null, 2);
+    $("radio").value = modelo.interpolation.radius;
+    aplicar();
 
-    // Calculadora de diferencia: resultado = |fondo − texto|  →  texto = fondo ± resultado
-    const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-    const aHex = (a) => "#" + a.map((v) => v.toString(16).padStart(2, "0")).join("");
-    let calculado = null;
-    function calcular() {
-      const P = hex($("cFondo").value), R = hex($("cQuiero").value);
-      const C = P.map((p, i) => (p + R[i] <= 255 ? p + R[i] : p - R[i] >= 0 ? p - R[i] : (p > 127 ? 0 : 255)));
-      const real = P.map((p, i) => Math.abs(p - C[i]));
-      calculado = aHex(C);
-      $("cRes").innerHTML = `Color de texto: <span class="sw" style="background:${calculado}"></span> <b>${calculado}</b>
-        &nbsp;→ saldrá <span class="sw" style="background:${aHex(real)}"></span>
-        ${aHex(real) === $("cQuiero").value ? "(exacto)" : "(lo más cercano posible)"}`;
-    }
-    $("cFondo").oninput = $("cQuiero").oninput = calcular;
-    $("cUsar").onclick = () => { $("mezcla").value = "difference"; $("modo").value = "diferencia"; $("color").value = calculado; aplicar(); };
-    $("fuente").value = "Arial";
-    calcular(); aplicar();
+    setTimeout(() => {
+      if (!document.documentElement.classList.contains("dif-activo"))
+        $("aviso").textContent = "Este navegador no deja leer las fotos abriendo el archivo con doble clic: se ve el Difference base. Ábrelo desde la web publicada o con Safari.";
+    }, 1500);
   </script>
 </body>
 </html>

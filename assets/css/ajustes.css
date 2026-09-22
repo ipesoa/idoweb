@@ -26,15 +26,15 @@
 /* ---------- 2. INICIO (index) · TAMAÑOS Y BORDE ----------------------
    clamp(mínimo, tamaño según ancho de pantalla, máximo)
    "vw" = % del ancho de la pantalla. Cambia sobre todo el número del medio. */
-  --inicio-tam-nombre:  clamp(1rem, 2.4vw, 2.4rem);    /* IDOIA ESTEBAN GALVÁN */
-  --inicio-tam-about:   clamp(.8rem, 1vw, 1rem);       /* about                */
-  --inicio-tam-menu:    clamp(.85rem, 1.3vw, 1.3rem);  /* FILMS / COMERCIALS   */
-  --inicio-tam-titulo:  clamp(1.6rem, 4.2vw, 4.4rem);  /* título de la peli    */
-  --inicio-tam-datos:   clamp(.75rem, 1.05vw, 1rem);   /* año · labor          */
+  --inicio-tam-nombre:  clamp(.72rem, 1.05vw, 1.05rem); /* IDOIA ESTEBAN GALVÁN */
+  --inicio-tam-about:   clamp(.66rem, .8vw, .8rem);    /* about                */
+  --inicio-tam-menu:    clamp(.7rem, .95vw, .95rem);   /* FILMS / COMERCIALS   */
+  --inicio-tam-titulo:  clamp(.95rem, 1.6vw, 1.6rem);  /* título de la peli    */
+  --inicio-tam-datos:   clamp(.6rem, .72vw, .72rem);   /* año · labor          */
 
   /* en el móvil */
-  --inicio-tam-nombre-movil: 1.05rem;
-  --inicio-tam-titulo-movil: 1.7rem;
+  --inicio-tam-nombre-movil: .78rem;
+  --inicio-tam-titulo-movil: 1rem;
 
   /* Grosor del BORDE de las letras del inicio (em = proporcional a cada letra)
      0 = sin borde · 0.06em = fino · 0.08em · 0.12em = medio · 0.18em = gordo
@@ -44,22 +44,16 @@
   --inicio-espaciado-menu: 0.14em;    /* separación entre letras del menú */
   --inicio-negrita-titulo: 400;       /* 400 normal · 700 negrita           */
 
-/* ---------- 2b. EFECTO DIFERENCIA (TODAS las letras sobre fotos) -----
-   Un único color de letra y uno de borde para todo (menú, títulos del
-   inicio, info del ratón). El navegador los mezcla con la foto que hay
-   debajo EN TIEMPO REAL, píxel a píxel:  color que se ve = |foto − color|
-     · sobre negro sale el color tal cual   (#fff200 → amarillo flúor)
-     · sobre blanco sale su opuesto          (#fff200 → azul eléctrico)
-     · sobre rojo, verde, piel... el tono que toque en cada punto
-   Parejas flúor para probar (letra / borde):
-     #fff200 / #ff1a1a   amarillo / rojo      ← actual
-     #39ff14 / #ff00c8   verde / magenta
-     #00f0ff / #fff200   cian / amarillo
-     #ff00c8 / #39ff14   magenta / verde
-   Ver el resultado sobre cada tipo de fondo: laboratorio.html          */
-  --dif-letra:  #fff200;
-  --dif-borde:  #ff1a1a;
-  --dif-mezcla: difference;   /* normal = sin mezcla (colores planos) */
+/* ---------- 2b. COLOR DE LAS LETRAS: "Difference dirigido" -----------
+   El color de letra y de borde se calcula píxel a píxel a partir de la
+   foto que hay debajo (assets/js/diferencia.js) con el modelo de
+   assets/js/diferencia-modelo.js (Difference + boyas).
+   Estas variables son solo el "plan B" si la capa no puede funcionar
+   (abrir la web con doble clic en Chrome): Difference base con CSS.
+   (Se rellenan solas con los colores de mezcla del modelo.)           */
+  --dif-letra:  #FFFFFF;
+  --dif-borde:  #18A8FF;
+  --dif-mezcla: difference;
 
 /* ---------- 3. MENÚ EN EL RESTO DE PÁGINAS -------------------------- */
   --menu-tam-nombre: .95rem;
@@ -83,8 +77,10 @@
   --proyecto-columnas:       2;
   --proyecto-columnas-movil: 1;
 
-  --hilo:       1px;         /* hilo blanco alrededor de cada imagen */
+  --hilo:       1px;         /* hilo blanco alrededor de cada imagen (no cambia el color de las letras) */
   --hilo-color: #f4f1ec;
+
+  --hover-luz:  .7;          /* FILMS/COMERCIALS: luz de las demás fotos al pasar el ratón (1 = igual) */
 
   /* Texto que sigue al ratón en FILMS / COMERCIALS (sale a las 4 del cursor) */
   --etiqueta-tam:        .8rem;

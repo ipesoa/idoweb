@@ -9,9 +9,8 @@
      4. el texto se disuelve → siguiente foto
    Pinchar en cualquier sitio lleva a la página de ese proyecto.
    Flechas del teclado ← → para pasar a mano.
-   Colores de letra y borde: según la foto, con la tabla de
-   AJUSTES.tablaColores (ver assets/js/colores.js), o lo que diga
-   info.txt en "color_letra:" / "color_borde:".
+   Colores de letra y borde: assets/js/diferencia.js (según la foto,
+   píxel a píxel, en cada fotograma).
    Tiempos: assets/js/ajustes.js → AJUSTES.inicio
    ===================================================================== */
 (function () {
@@ -48,19 +47,6 @@
     const i = new Image(); i.onload = i.onerror = () => ok(i); i.src = src;
   });
 
-  // Elige color de letra y de borde para este proyecto (ver assets/js/colores.js)
-  function ponerColores(p, img) {
-    const e = p.extra;
-    const forzada = (e.color_letra || e.color_borde)
-      ? { letra: e.color_letra || "#ffffff", borde: e.color_borde || "#000000" } : null;
-    if (Colores.modo() === "diferencia") return;
-    const rgb = Colores.medio(img);
-    if (!rgb) return;                       // no se puede leer la foto → modo diferencia
-    const c = Colores.calcular(rgb, forzada);
-    document.body.style.setProperty("--inicio-letra", c.letra);
-    document.body.style.setProperty("--inicio-borde", c.borde);
-  }
-
   // Zoom lento y continuo: empieza cuando la capa entra y NO se corta al salir
   // (antes se cortaba y la foto "saltaba" justo antes del cambio)
   function zoomLento(img) {
@@ -91,7 +77,6 @@
     actual = p;
     const cargada = await cargar(imagenDe(p));
     if (t !== turno) return;
-    ponerColores(p, cargada);
 
     // 1. cambiar de foto
     const vieja = capas[capa], nueva = capas[1 - capa];
@@ -106,9 +91,6 @@
     vieja.classList.add("saliendo");
     void nueva.offsetWidth;
     nueva.classList.add("activa");
-
-    Colores.pintarMenu();
-    setTimeout(Colores.pintarMenu, A.entradaImagen);
 
     // precargar la siguiente
     cargar(imagenDe(lista[(indice + 1) % lista.length]));

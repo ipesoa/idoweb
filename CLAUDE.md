@@ -28,11 +28,11 @@ window.Web = { proyectos(tipo), proyecto(tipo,id), about, filmografia(), parrafo
 
 | Archivo | JS | CSS | Qué hace |
 |---|---|---|---|
-| `index.html` | `inicio.js` + `colores.js` | `inicio.css` | Pase fullscreen: proyectos con `mostrar_en_inicio: si`. Doble capa de imagen con fundido+desenfoque, texto Arial letra a letra. Colores: ver `colores.js` abajo. Zoom lento de cada foto por JS (`transition` inline de 20 s sobre el `<img>`, reiniciado solo cuando la capa vuelve a entrar) para que no salte al cambiar. Clic → proyecto. ←/→ y swipe. |
+| `index.html` | `inicio.js` | `inicio.css` | Pase fullscreen: proyectos con `mostrar_en_inicio: si`. Doble capa de imagen con fundido+desenfoque, texto Arial letra a letra. Colores: ver "Difference dirigido" abajo. Zoom lento de cada foto por JS (`transition` inline de 20 s sobre el `<img>`, reiniciado solo cuando la capa vuelve a entrar) para que no salte al cambiar. Clic → proyecto. ←/→ y swipe. |
 | `films.html`, `comercials.html` | `lista.js` | `lista.css` | `.rejilla-cine.lista-cine` desde arriba (sin título). `--lista-columnas`, `--lista-formato`. Info Arial pequeña (Título / labor / año, alineada a la izquierda) a las 4 del cursor (`--etiqueta-separacion`). |
 | `proyecto.html?tipo=films&id=CARPETA` | `proyecto.js` | `proyecto.css` | `.rejilla-cine.proyecto-cine` desde arriba: portada + galería (+ iframe si `video:`), sin textos. Al final solo botón Contact (mailto a `about.email`). |
 | `about.html` | `about.js` | `about.css` | Minimal Arial, columna estrecha abajo a la derecha (`--about-ancho`): nombre, subtitulo, ubicacion + lista de trabajos (films + comercials + `filmografia-extra.txt`) con filtros Films (por defecto) / Comercials / Todo. |
-| `laboratorio.html` | inline + `colores.js` | inline | Herramienta interna: tabla de colores sobre cada foto, grosor de borde, mezcla, fuente. No enlazada en el menú. |
+| `laboratorio.html` | inline + `diferencia.js` | inline | Herramienta interna: el modelo de color sobre las fotos, boyas (✓ exactas), rampas de continuidad, radio, pegar JSON. No enlazada en el menú. |
 
 Orden de scripts en cada página: `datos-generados.js → ajustes.js → contenido.js → comun.js → <página>.js`.
 
@@ -46,15 +46,15 @@ Orden de scripts en cada página: `datos-generados.js → ajustes.js → conteni
 - Textos de menú/filtros/botón desde `AJUSTES.textos`.
 - `Comun.embed(url)` Vimeo/YouTube → URL de iframe.
 
-## Colores de las letras (efecto diferencia)
-Por defecto (`AJUSTES.colores.modo = "diferencia"`) es **solo CSS**: menú, título/datos del inicio y etiqueta del ratón usan `color: var(--dif-letra)`, `-webkit-text-stroke: … var(--dif-borde)` y `mix-blend-mode: var(--dif-mezcla)` (ajustes.css 2b). El navegador mezcla en tiempo real, píxel a píxel; no hay JS de por medio. NO volver a muestrear colores con JS para esto (la dueña lo rechazó: cambios "en bloque" no orgánicos).
-`colores.js` conserva modos experimentales `tabla` / `tabla-mezcla` (muestreo en canvas + `AJUSTES.tablaColores`), inactivos por defecto.
-
-## Hilo blanco bajo el menú (`assets/js/hilo.js`)
-En films/comercials/proyecto, cada celda `.rejilla-cine > *` recibe `--hilo-huecos` (máscara CSS con agujeros donde hay palabras del menú encima), usada por `::after` con `mask-composite: exclude`. Recalculado en scroll/resize/load.
+## Color de las letras: "Difference dirigido" (`assets/js/diferencia.js` + `diferencia-modelo.js`)
+Función de la dueña (NO cambiar la matemática sin que lo pida):
+`salida(fondo) = OKLab→sRGB( OKLab(|fondo − mezcla|) + Σ wᵢ·exp(−(|OKLab(fondo) − OKLab(bgᵢ)|/radio)²) )`, con `w` resuelto (Φw = residuos) para que en cada boya la salida sea exacta. Letra (mezcla #FFFFFF) y borde (#18A8FF) con boyas independientes. Nada de tablas/categorías/vecino más cercano.
+Aplicación píxel a píxel: capa `<canvas class="dif-capa">` fija encima (z 80). Cada fotograma, para cada texto de `AJUSTES.diferencia.textos`: reconstruye en un canvas el fondo real detrás (imgs/vídeos con su rect, object-fit/position, opacidad y filtros acumulados, recorte por overflow; el hilo blanco NO se dibuja), mapea cada píxel con una LUT 33³ trilineal (+ valor exacto si el píxel coincide con una boya), y recorta con máscaras de las letras dibujadas con la misma fuente/posición (Range por carácter), opacidad y desenfoque que el DOM (borde = strokeText con el ancho de `-webkit-text-stroke`). El DOM queda con texto transparente (`.dif-activo`). Si `getImageData` falla (file:// en Chrome) → se quita `.dif-activo` y queda el Difference base con CSS.
+`window.Diferencia`: `colorPara(hex)`, `construir(modelo)`, `letra(rgb)`, `borde(rgb)`, `tiempos()`, `ms`.
+Para añadir un texto nuevo al sistema: añadir su selector a `AJUSTES.diferencia.textos` (o ponerle `data-dif`).
 
 ## About glitch (`assets/js/about-glitch.js` + `assets/css/about-glitch.css`)
-Reimplementación vanilla de `src/line.ts` de ikeryou/sketch491: por línea, `a` (showRateA, ExpoOut) revela de izq. a der. (aquí con `clip-path` sobre la línea), `b` (showRateB, ExpoInOut, +0,75·t) convierte el ruido en huecos; palabras de `WORDS` incrustadas; hide inverso tras `HOLD_TIME` y show tras `RESTART_DELAY`; escalonado `START_DELAY + i·LINE_DELAY`. El ruido es un `<span class="glitch-ruido">` monoespaciado absoluto dentro de cada línea; las casillas ocupadas por texto real se dejan en blanco. Parámetros en MAYÚSCULAS al principio del archivo. Estilos encapsulados bajo `.glitch`. Se reinicia al pulsar un filtro. No modifica about.js.
+Reimplementación vanilla de `src/line.ts` de ikeryou/sketch491 con la MISMA fuente del about: cada línea (p de datos, filtros, cada fila de la lista) anima su propio texto: `a` (ExpoOut) escribe de izq. a der., `b` (ExpoInOut, +0,75·t) borra el ruido; el texto real aparece tal cual y el hueco a su derecha se llena de caracteres aleatorios (y `WORDS`). Ancho bloqueado durante la animación; al terminar se restaura el texto original sin estilos. `REPEAT = false` (aparece y se queda). `LINE_COUNT = 0` (sin bloque de datos extra). Se reinicia la lista al pulsar un filtro. No modifica about.js.
 
 ## Estilo
 - Todo lo ajustable en `assets/css/ajustes.css`, por secciones numeradas (1 fuentes, 2 inicio: tamaños y `--inicio-borde-grosor`, 3 menú resto, 4 rejillas: `--lista-*`/`--proyecto-*` formato y columnas + etiqueta, 5 about, 6 colores, 7 tiempos). No poner números sueltos en otros CSS: crear variable aquí.

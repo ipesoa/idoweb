@@ -13,9 +13,10 @@
 
 .celda-proyecto { cursor: pointer; }
 
-/* Al pasar el ratón: la elegida se acerca, las demás se apagan */
+/* Al pasar el ratón: la elegida se acerca, las demás bajan un poco la luz
+   (cuánto: ajustes.css → --hover-luz) */
 @media (hover: hover) {
-  .lista-cine:hover .celda-proyecto.visible img { filter: grayscale(.9) brightness(.45); }
+  .lista-cine:hover .celda-proyecto.visible img { filter: brightness(var(--hover-luz)); }
   .lista-cine .celda-proyecto.visible:hover img { filter: none; transform: scale(1.035); }
 }
 

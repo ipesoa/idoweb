@@ -95,13 +95,15 @@ También puedes editar a mano: cambiar un `info.txt`, borrar una foto, renombrar
 5. About
 6–7. Colores generales, tiempos, márgenes
 
-**Colores de las letras** (`ajustes.css` sección 2b): un color de letra y uno de borde (flúor) para todo. Se mezclan con la foto en tiempo real (efecto diferencia): sobre negro se ven tal cual, sobre blanco su opuesto, y sobre cada color lo que toque, punto a punto.
+**Colores de las letras** (`assets/js/diferencia-modelo.js`): tu modelo "Difference + boyas". La web calcula letra y borde píxel a píxel según la foto que hay debajo. Si generas un modelo nuevo con tu herramienta, pega el JSON en ese archivo (pruébalo antes en `laboratorio.html`, que tiene un botón para pegarlo). El hilo blanco no afecta al color.
 
 **`assets/js/ajustes.js`**: tiempos del pase de imágenes, textos de los botones (Films, Comercials, Todo, Contact), botón de auto-scroll (apagado).
 
 **Efecto del About** (`assets/js/about-glitch.js`, parámetros arriba del todo): número de líneas de datos, velocidad, tiempo que se queda el texto, palabras que aparecen entre el ruido…
 
-**`laboratorio.html`**: probar parejas de colores letra/borde sobre las fotos, ver cómo salen sobre cada tipo de fondo, grosor del borde, fuentes…
+**`laboratorio.html`**: el modelo de color sobre las fotos reales, las boyas (✓ = sale exacto), las transiciones continuas, el radio de influencia y un hueco para pegar un modelo nuevo.
+
+> Abriendo la web con doble clic en Chrome, el navegador no deja leer las fotos y se ve el Difference base (sin boyas). En la web publicada y en Safari funciona el modelo completo.
 - **Probar combinaciones** → abre `laboratorio.html`: eliges modo de mezcla, color y fuente sobre las fotos reales, y te da las líneas para copiar. Tiene una calculadora: "sobre este color de fondo quiero que el texto salga de este otro".
 
 Para cambios más grandes, pásale la carpeta a una IA o a quien sea con `CLAUDE.md`: ahí está el mapa técnico de la web.
