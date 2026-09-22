@@ -6,6 +6,3 @@
 #  Una línea por trabajo, separado con |  :
 #  año | título | labor | director o cliente | films o comercials
 # =====================================================================
-2018 | Cortometraje de ejemplo | Dirección de arte | Nombre Apellido | films
-2017 | Anuncio de ejemplo | Ambientación | Marca | comercials
-2016 | Serie de ejemplo (T1) | Ayudante de arte | Nombre Apellido | films
