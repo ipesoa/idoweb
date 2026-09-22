@@ -1,0 +1,9 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: Terminal
+año: 2003
+labor: Dirección de arte
+director: 
+formato: Cortometraje
+imdb: https://www.imdb.com/es/title/tt0402526/
+mostrar_en_inicio: no
+---

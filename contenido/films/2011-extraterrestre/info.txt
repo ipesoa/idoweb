@@ -1,0 +1,8 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: Extraterrestre
+año: 2011
+labor: Dirección de arte
+director: 
+imdb: https://www.imdb.com/es/title/tt1680133/
+mostrar_en_inicio: si
+---

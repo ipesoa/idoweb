@@ -1,0 +1,8 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: Los miércoles no existen
+año: 2015
+labor: Dirección de arte
+director: 
+imdb: https://www.imdb.com/es/title/tt4108068/
+mostrar_en_inicio: no
+---

@@ -1,0 +1,9 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: 913
+año: 2004
+labor: Dirección de arte
+director: 
+formato: Cortometraje
+imdb: https://www.imdb.com/es/title/tt0495266/
+mostrar_en_inicio: no
+---

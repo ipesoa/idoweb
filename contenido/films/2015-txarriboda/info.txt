@@ -1,0 +1,8 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: Txarriboda
+año: 2015
+labor: Dirección de arte
+director: 
+imdb: https://www.imdb.com/es/title/tt4529506/
+mostrar_en_inicio: no
+---

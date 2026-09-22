@@ -1,0 +1,8 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: The Profane Exhibit
+año: 2013
+labor: Dirección de arte
+director: 
+imdb: https://www.imdb.com/es/title/tt2066123/
+mostrar_en_inicio: no
+---

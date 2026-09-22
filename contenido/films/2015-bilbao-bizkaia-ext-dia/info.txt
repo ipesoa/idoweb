@@ -1,0 +1,9 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: Bilbao-Bizkaia Ext: Día
+año: 2015
+labor: Dirección de arte
+director: 
+formato: Cortometraje · segmento "Caminan"
+imdb: https://www.imdb.com/es/title/tt4944622/
+mostrar_en_inicio: no
+---
