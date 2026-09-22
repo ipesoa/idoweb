@@ -118,6 +118,7 @@
     about = {
       nombre: info.nombre || "",
       subtitulo: info.subtitulo || "",
+      ubicacion: info.ubicacion || "",
       email: info.email || "",
       telefono: info.telefono || "",
       instagram: info.instagram || "",

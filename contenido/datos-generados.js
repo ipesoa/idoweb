@@ -161,7 +161,8 @@ Anuncio de ejemplo. Un único decorado negro lacado con reflejos en rojo.
 #  Deja vacío lo que no quieras que salga.
 # =====================================================================
 nombre: Idoia Esteban Galván
-subtitulo: Diseño de producción · Dirección de arte
+subtitulo: Diseño de producción
+ubicacion: Based in Madrid
 email: hola@ejemplo.com
 telefono:
 instagram: @usuario

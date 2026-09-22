@@ -28,11 +28,11 @@ window.Web = { proyectos(tipo), proyecto(tipo,id), about, filmografia(), parrafo
 
 | Archivo | JS | CSS | Qué hace |
 |---|---|---|---|
-| `index.html` | `inicio.js` | `inicio.css` | Pase fullscreen: proyectos con `mostrar_en_inicio: si`. Doble capa de imagen con fundido+desenfoque, texto letra a letra con `mix-blend-mode`. Clic → proyecto. ←/→ y swipe. |
-| `films.html`, `comercials.html` | `lista.js` | `lista.css` | Cuadrícula REGULAR (no mosaico): `--lista-columnas` (2) / `--lista-columnas-movil` (1), cada celda con `aspect-ratio: var(--formato-cine)` (2.39/1). Tipo según `<body data-pagina>`. Info (título · año · labor) sigue al cursor. |
-| `proyecto.html?tipo=films&id=CARPETA` | `proyecto.js` | `proyecto.css` | Portada fullscreen + mosaico de la galería + bloque de texto (`AJUSTES.mosaico.posicionTexto`) + vídeo + anterior/siguiente. |
-| `about.html` | `about.js` | `about.css` | Bio, contacto, showreel, filmografía (films + comercials + `filmografia-extra.txt`) con filtros. |
-| `laboratorio.html` | inline | inline | Herramienta interna para probar mezcla/color/fuente. No enlazada en el menú. |
+| `index.html` | `inicio.js` + `colores.js` | `inicio.css` | Pase fullscreen: proyectos con `mostrar_en_inicio: si`. Doble capa de imagen con fundido+desenfoque, texto Arial letra a letra. Colores: modo `tabla` (por defecto) = se muestrea la franja central de la foto en un canvas, se busca la fila más cercana de `AJUSTES.tablaColores` y se ponen `--inicio-letra`/`--inicio-borde` en `<body>` (clase `modo-tabla`, blend normal); `color_letra`/`color_borde` en info.txt mandan. Si el canvas está "tainted" (file:// en Chrome) cae a `modo-diferencia`. Clic → proyecto. ←/→ y swipe. |
+| `films.html`, `comercials.html` | `lista.js` | `lista.css` | `.rejilla-cine.lista-cine` desde arriba (sin título). `--lista-columnas`, `--lista-formato`. Info Arial pequeña sigue al cursor. |
+| `proyecto.html?tipo=films&id=CARPETA` | `proyecto.js` | `proyecto.css` | `.rejilla-cine.proyecto-cine` desde arriba: portada + galería (+ iframe si `video:`), sin textos. Al final solo botón Contact (mailto a `about.email`). |
+| `about.html` | `about.js` | `about.css` | Minimal Arial: nombre, subtitulo, ubicacion + lista de trabajos (films + comercials + `filmografia-extra.txt`) con filtros Films (por defecto) / Comercials / Todo. |
+| `laboratorio.html` | inline + `colores.js` | inline | Herramienta interna: tabla de colores sobre cada foto, grosor de borde, mezcla, fuente. No enlazada en el menú. |
 
 Orden de scripts en cada página: `datos-generados.js → ajustes.js → contenido.js → comun.js → <página>.js`.
 
@@ -41,17 +41,17 @@ Orden de scripts en cada página: `datos-generados.js → ajustes.js → conteni
 - Cortina de transición entre páginas (`.cortina`, `Comun.irA(href)`).
 - `Comun.autoScroll()` botón "auto" (se para al tocar/rueda/teclado).
 - `Comun.visor(urls, i)` visor de fotos.
-- `Comun.empaquetar(piezas, cols)` **empaquetador del mosaico sin huecos**: cada pieza `{el, c, f:(c)=>filas, fijo}`; rellena siempre el primer hueco libre, estrecha/acorta piezas no fijas, y estira las últimas para dejar el borde inferior recto. Escribe `grid-column/grid-row` inline.
 - `Comun.letras(texto, retraso, inicio)` → spans `.palabra > .letra` con `--d` (retraso).
-- `Comun.azar(string)` pseudoaleatorio estable (misma foto → mismo tamaño siempre).
+- `Comun.azar(string)` pseudoaleatorio estable.
+- Textos de menú/filtros/botón desde `AJUSTES.textos`.
 - `Comun.embed(url)` Vimeo/YouTube → URL de iframe.
 
 ## Estilo
-- Tokens en `assets/css/ajustes.css` (`--fuente-*`, `--color-*`, `--texto-mezcla`, `--texto-color`, `--menu-mezcla`, `--hilo`, `--columnas-*`, `--alto-fila`…). Fuentes vía `@import` de Google Fonts al principio de ese archivo.
-- Efecto "diferencia": clase `.mezcla` = `color: var(--texto-color); mix-blend-mode: var(--texto-mezcla)`. Para que funcione, los ancestros del texto no deben crear aislamiento (`isolation`, `opacity<1`, `transform`, `filter`) entre el texto y la imagen.
-- Trazo: clase `.trazo` (y `.pagina-inicio .menu`) = `-webkit-text-stroke` + `paint-order: stroke fill`. Color `--trazo-color` calculado en `ajustes.css` con relative color syntax: mezcla `--trazo-peso-letra` (70 %) del inverso de `--texto-color` + resto del inverso de `--color-fondo`; como está dentro del elemento con `mix-blend-mode`, también se mezcla con la foto. Grosor `--trazo-grosor` en em.
-- Mosaico (solo páginas de proyecto): `.mosaico` en `base.css`; columnas por breakpoint (1100px / 700px); alto de fila = ancho de columna × `--alto-fila`. El hilo blanco es un `::after` con borde en cada celda.
-- Tiempos del pase: `AJUSTES.inicio` se pasan como variables CSS en `inicio.js`.
+- Todo lo ajustable en `assets/css/ajustes.css`, por secciones numeradas (1 fuentes, 2 inicio: tamaños y `--inicio-borde-grosor`, 3 menú resto, 4 rejillas: `--lista-*`/`--proyecto-*` formato y columnas + etiqueta, 5 about, 6 colores, 7 tiempos). No poner números sueltos en otros CSS: crear variable aquí.
+- Borde de letras del inicio: `-webkit-text-stroke-width` + `paint-order: stroke fill` en `.pase__pie` y `.pagina-inicio .menu` (inicio.css).
+- `.rejilla-cine` (base.css): grid de `--cols` columnas, celdas `aspect-ratio: var(--formato)`, hilo blanco `::after`, imágenes `object-fit: cover` que aparecen con `.visible` (IntersectionObserver en `Comun.aparecer`).
+- `.mezcla` = `mix-blend-mode: var(--texto-mezcla)` (etiqueta del ratón, modo diferencia). Los ancestros no deben crear aislamiento (`isolation`, `opacity<1`, `transform`, `filter`).
+- Tiempos del pase: `AJUSTES.inicio` → variables CSS en `inicio.js`.
 
 ## Herramientas Windows (`herramientas-windows/`)
 Espejo de las de Mac. Cada `.bat` (ASCII, CRLF) llama a `_tareas.ps1 <tarea>` (PowerShell 5.1 compatible, **UTF-8 con BOM** para que Windows lea las tildes). Diálogos con Windows Forms. Token cifrado con DPAPI (`ConvertFrom-SecureString`) en `%APPDATA%\web-portfolio\token.dat`. Config en `herramientas-windows/.config-local` (mismo formato que la de Mac, gitignored). `_generar-datos.ps1` produce un `datos-generados.js` idéntico byte a byte al del script bash; si se cambia uno, cambiar el otro. Imágenes: System.Drawing, aplica la orientación EXIF y reduce a 2600 px JPG. `.gitattributes` fija LF para .sh/.command y CRLF para .bat/.ps1.

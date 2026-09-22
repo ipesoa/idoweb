@@ -10,36 +10,19 @@
 </head>
 <body data-pagina="about">
 
-  <!-- ABOUT: bio, contacto, showreel y filmografía por orden cronológico.
-       Textos: contenido/about/info.txt
-       Trabajos que no tienen página propia: contenido/about/filmografia-extra.txt
-       Lo monta assets/js/about.js -->
+  <!-- ABOUT (minimal): nombre, labor, ciudad y lista de trabajos.
+       Textos: contenido/about/info.txt (nombre, subtitulo, ubicacion)
+       Trabajos sin página propia: contenido/about/filmografia-extra.txt
+       Lo monta assets/js/about.js · tamaños: ajustes.css sección 5 -->
   <main class="about">
-    <section class="bio">
-      <figure class="bio__retrato" id="retrato"></figure>
-      <div class="bio__texto">
-        <p class="bio__sub" id="subtitulo"></p>
-        <div class="bio__cuerpo" id="bio"></div>
-        <ul class="contacto" id="contacto"></ul>
-      </div>
-    </section>
+    <header class="about__datos">
+      <p id="nombre"></p>
+      <p id="subtitulo"></p>
+      <p id="ubicacion"></p>
+    </header>
 
-    <section class="showreel" id="showreel" hidden>
-      <h2 class="seccion">Showreel</h2>
-      <div class="showreel__marco"></div>
-    </section>
-
-    <section class="filmografia">
-      <div class="filmografia__cabecera">
-        <h2 class="seccion">Filmografía</h2>
-        <div class="filtros" id="filtros">
-          <button data-f="todo" class="activo">Todo</button>
-          <button data-f="films">Films</button>
-          <button data-f="comercials">Comercials</button>
-        </div>
-      </div>
-      <ol class="filmografia__lista" id="filmografia"></ol>
-    </section>
+    <nav class="filtros" id="filtros"></nav>
+    <ol class="trabajos" id="trabajos"></ol>
   </main>
 
   <script src="contenido/datos-generados.js"></script>

@@ -17,19 +17,22 @@ mostrar_en_inicio: si
 # center | top | bottom | left | right | "30% 50%" (horizontal vertical)
 encuadre: center
 
-# (opcional) Tráiler o making-of de Vimeo o YouTube, sale grande en el mosaico
+# (opcional) Colores del texto en el INICIO para este proyecto.
+# Si no se ponen, se eligen solos con la tabla de assets/js/ajustes.js
+# color_letra: #f3d34a
+# color_borde: #d4372c
+
+# (opcional) Tráiler o making-of de Vimeo o YouTube (sale como un rectángulo más)
 video:
 
 # (opcional) Número para forzar el orden en la lista (mayor = sale antes)
 orden:
 
-# FOTOS: todas las imágenes de esta carpeta salen en el mosaico, por orden de nombre.
-#   portada.jpg        → imagen grande del inicio y de la cabecera
-#   portada-movil.jpg  → (opcional) versión vertical para móviles
-#   01.jpg, 02.jpg...  → fotos del mosaico
-#   Añade _grande, _ancha, _alta o _pequena al nombre para forzar el tamaño
-#   (ej: 05_ancha.jpg ocupa todo el ancho). También vale vídeo .mp4 corto.
+# FOTOS: todas las imágenes de esta carpeta salen en la rejilla, por orden de nombre.
+#   portada.jpg        → la primera de la rejilla, la del inicio y la de la lista
+#   portada-movil.jpg  → (opcional) versión vertical para el inicio en móviles
+#   01.jpg, 02.jpg...  → resto de fotos (mejor horizontales: se recortan a formato cine)
+#   También vale vídeo .mp4 corto (sale sin sonido, en bucle).
 ---
-Aquí va el texto libre del proyecto. Lo que se hizo, el concepto, los decorados…
-
-Una línea en blanco empieza un párrafo nuevo. Las palabras entre *asteriscos* salen en cursiva.
+(Texto libre del proyecto: ahora mismo NO se muestra en la web, pero se guarda
+por si más adelante se quiere usar.)

@@ -1,117 +1,97 @@
 /* =====================================================================
    AJUSTES VISUALES  ·  el "panel de control" de toda la web
    ---------------------------------------------------------------------
-   Aquí se cambian tipografías, colores, el efecto del texto sobre las
-   imágenes, el hilo blanco de las cuadrículas y los tiempos de las
-   animaciones CSS. No hace falta tocar ningún otro archivo para esto.
-
-   Consejo: abre  laboratorio.html  para probar colores/mezclas/fuentes
-   en vivo sobre las fotos y copiar aquí el resultado.
+   Tipografías, tamaños, grosor del borde de las letras, cuadrículas...
+   todo lo que se suele retocar está AQUÍ, por secciones.
+   Los COLORES de las letras del inicio (tabla fondo → letra → borde)
+   y los tiempos de las animaciones están en  assets/js/ajustes.js
    ===================================================================== */
 
 /* ---------- 1. TIPOGRAFÍAS -------------------------------------------
-   Se cargan de Google Fonts. Para cambiar de fuente:
-   a) cambia el @import por el de la fuente nueva (fonts.google.com)
-   b) cambia el nombre en --fuente-titulos / --fuente-texto
-   Alternativas que quedan bien: "Syne", "Space Grotesk", "Fraunces",
-   "Cormorant Garamond", "DM Serif Display", "Archivo", "Unbounded".   */
+   Arial viene en todos los ordenadores (no hay que cargar nada).
+   Para usar una de Google Fonts: añade su @import aquí debajo y pon
+   su nombre en la variable que quieras.                               */
 @import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap");
 
 :root {
-  --fuente-titulos: "Instrument Serif", "Times New Roman", serif;
-  --fuente-texto:   "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --arial: Arial, "Helvetica Neue", Helvetica, sans-serif;
 
-  /* Tamaños (clamp = mínimo, ideal según pantalla, máximo) */
-  --tam-nombre:        clamp(1.6rem, 4.6vw, 4.8rem);  /* IDOIA ESTEBAN GALVÁN */
-  --tam-menu:          clamp(0.95rem, 1.6vw, 1.6rem); /* FILMS / COMERCIALS   */
-  --tam-titulo-slide:  clamp(3rem, 11vw, 11rem);      /* título en el inicio  */
-  --tam-dato-slide:    clamp(0.8rem, 1.2vw, 1.05rem); /* año · labor          */
-  --tam-titulo-pagina: clamp(2.6rem, 8vw, 8rem);
-  --tam-texto:         clamp(0.95rem, 1.05vw, 1.1rem);
+  --fuente-inicio:   var(--arial);   /* título, año y labor del pase del inicio */
+  --fuente-menu:     var(--arial);   /* IDOIA ESTEBAN GALVÁN, about, films, comercials */
+  --fuente-etiqueta: var(--arial);   /* texto que sigue al ratón en films/comercials */
+  --fuente-about:    var(--arial);   /* página about */
+  --fuente-texto:    var(--arial);   /* resto (botón contact, auto...) */
+  --fuente-titulos:  "Instrument Serif", "Times New Roman", serif;  /* solo laboratorio */
 
-  --espaciado-menu: 0.14em;   /* separación entre letras de los menús */
+/* ---------- 2. INICIO (index) · TAMAÑOS Y BORDE ----------------------
+   clamp(mínimo, tamaño según ancho de pantalla, máximo)
+   "vw" = % del ancho de la pantalla. Cambia sobre todo el número del medio. */
+  --inicio-tam-nombre:  clamp(1rem, 2.4vw, 2.4rem);    /* IDOIA ESTEBAN GALVÁN */
+  --inicio-tam-about:   clamp(.8rem, 1vw, 1rem);       /* about                */
+  --inicio-tam-menu:    clamp(.85rem, 1.3vw, 1.3rem);  /* FILMS / COMERCIALS   */
+  --inicio-tam-titulo:  clamp(2.4rem, 7.5vw, 7.5rem);  /* título de la peli    */
+  --inicio-tam-datos:   clamp(.75rem, 1.05vw, 1rem);   /* año · labor          */
 
-/* ---------- 2. COLORES --------------------------------------------- */
-  --color-fondo:  #0d0c0b;    /* fondo general (casi negro cálido)   */
-  --color-tinta:  #f2ece2;    /* texto normal (hueso)                */
-  --color-suave:  #8f877c;    /* textos secundarios                  */
-  --color-acento: #c9a36b;    /* detalles (champán)                  */
+  /* en el móvil */
+  --inicio-tam-nombre-movil: 1.05rem;
+  --inicio-tam-titulo-movil: 2.6rem;
 
-/* ---------- 3. EFECTO DEL TEXTO SOBRE LAS IMÁGENES ------------------
-   Es el efecto "diferencia": el texto se mezcla con la foto que tiene
-   debajo y cambia de color según lo que pase por detrás.
+  /* Grosor del BORDE de las letras del inicio (em = proporcional a cada letra)
+     0 = sin borde · 0.06em = fino · 0.12em = medio · 0.18em = gordo
+     (la mitad queda por fuera de la letra, así que se ve la mitad)    */
+  --inicio-borde-grosor: 0.12em;
 
-   --texto-mezcla   modo de mezcla: difference | exclusion | overlay |
-                    soft-light | hard-light | color-dodge | luminosity |
-                    normal (sin efecto)
-   --texto-color    color base del texto antes de mezclarse
+  --inicio-espaciado-menu: 0.14em;    /* separación entre letras del menú */
+  --inicio-negrita-titulo: 400;       /* 400 normal · 700 negrita           */
 
-   Cómo sale con "difference":  color final = |foto − texto|
-     · texto claro  → sale el "negativo" de la foto (rojo → verde-azulado)
-     · texto medio  → colores más apagados y elegantes
-   Para saber qué color poner para que sobre X salga Y: laboratorio.html
-
-   PRESETS (copia una pareja de líneas):
-     Hueso       difference   #f2ece2   (clásico, negativo limpio)
-     Plata       exclusion    #cfd2d4   (más suave, grisáceo)
-     Champán     difference   #c9a36b   (dorados/azules apagados)
-     Tono a tono luminosity   #f2ece2   (texto claro con el color de la foto)
-     Velo        overlay      #ffffff   (brillo sutil, muy fino)
-     Salvia      exclusion    #9fb59a                                  */
-  --texto-mezcla: difference;
-  --texto-color:  #f2ece2;
-
-/* ---------- 3b. TRAZO (contorno) DE LAS LETRAS ----------------------
-   Letras del inicio (título, año·labor y menú) y los títulos grandes
-   "Films" / "Comercials" llevan un contorno.
-   Su color se calcula solo:
-     70 % el OPUESTO del color de la letra  (--texto-color)
-     30 % el OPUESTO del fondo              (--color-fondo)
-   y luego se mezcla con la foto igual que la letra (efecto diferencia),
-   así el contorno siempre sale "al revés" que la letra.
-   --trazo-peso-letra  cuánto pesa el opuesto de la letra (el resto es el del fondo)
-   --trazo-grosor      grosor (en em = proporcional al tamaño de la letra)
-                       0 = sin contorno                                   */
-  --trazo-grosor:     0.06em;
-  --trazo-peso-letra: 70%;
-  --trazo-color:      #5a5d63;   /* reserva para navegadores antiguos */
-
-  /* El menú (nombre, films, comercials, about) usa su propio efecto   */
-  --menu-mezcla: difference;
+/* ---------- 3. MENÚ EN EL RESTO DE PÁGINAS -------------------------- */
+  --menu-tam-nombre: .95rem;
+  --menu-tam-otros:  .8rem;           /* about, films, comercials */
+  --menu-mezcla: difference;          /* el menú se "invierte" sobre las fotos */
   --menu-color:  #f2ece2;
 
-/* ---------- 4. CUADRÍCULAS -------------------------------------------
-   Listas FILMS y COMERCIALS: 2 portadas por fila, formato cine.
-   --formato-cine: 2.39 / 1  (Scope, panorámico)
-                   1.85 / 1  (Flat)   ·   16 / 9 (tele)                */
-  --formato-cine:        2.39 / 1;
-  --lista-columnas:       2;
-  --lista-columnas-movil: 1;
+/* ---------- 4. CUADRÍCULAS (formato cine) ----------------------------
+   Formato de cada rectángulo = ancho / alto
+     2.39 / 1  Scope (muy alargado)
+     1.85 / 1  Flat (cine estándar)   ← actual
+     16 / 9    tele (1.78)
+     1.5 / 1   foto
+   Columnas = cuántos rectángulos por fila.                            */
+  --lista-formato:          1.85 / 1;   /* FILMS y COMERCIALS */
+  --lista-columnas:         2;
+  --lista-columnas-movil:   1;
 
-  /* Mosaico de las páginas de PROYECTO                                 */
-  --hilo:        1px;          /* grosor del hilo blanco de cada foto (entre dos fotos se ve el doble) */
-  --hilo-color:  #f4f1ec;      /* color del hilo                       */
-  --columnas-escritorio: 6;
-  --columnas-tablet:     4;
-  --columnas-movil:      2;
-  --alto-fila: 0.72;           /* alto de fila = ancho de columna × esto */
+  --proyecto-formato:        1.85 / 1;  /* página de cada peli / anuncio */
+  --proyecto-columnas:       2;
+  --proyecto-columnas-movil: 1;
 
-/* ---------- 5. TIEMPOS DE ANIMACIÓN (CSS) ----------------------------
-   Los tiempos del pase de diapositivas del inicio están en
-   assets/js/ajustes.js                                                */
-  --t-cortina: 650ms;          /* fundido al cambiar de página          */
-  --t-hover:   600ms;          /* zoom/oscurecer al pasar el ratón      */
+  --hilo:       1px;         /* hilo blanco alrededor de cada imagen */
+  --hilo-color: #f4f1ec;
+
+  /* Texto que sigue al ratón en FILMS / COMERCIALS */
+  --etiqueta-tam-titulo: 1.1rem;
+  --etiqueta-tam-datos:  .68rem;
+  --texto-mezcla: difference;          /* se invierte sobre la foto */
+  --texto-color:  #f2ece2;
+
+/* ---------- 5. ABOUT ------------------------------------------------- */
+  --about-tam:        .9rem;          /* todo el texto del about */
+  --about-tam-nombre: .9rem;
+
+/* ---------- 6. COLORES GENERALES ------------------------------------ */
+  --color-fondo:  #0d0c0b;
+  --color-tinta:  #f2ece2;
+  --color-suave:  #8f877c;
+  --color-acento: #c9a36b;
+
+/* ---------- 7. TIEMPOS Y ESPACIOS ----------------------------------- */
+  --t-cortina: 650ms;          /* fundido al cambiar de página      */
+  --t-hover:   600ms;          /* zoom/oscurecer al pasar el ratón  */
+  --t-color:   900ms;          /* cambio de color de letra/borde en el inicio */
   --curva:     cubic-bezier(.65, 0, .35, 1);
+  --margen: clamp(16px, 2.6vw, 40px);
 
-/* ---------- 6. ESPACIOS -------------------------------------------- */
-  --margen: clamp(16px, 2.6vw, 40px);  /* margen a los lados de pantalla */
-}
-
-/* Color del trazo calculado (navegadores modernos) */
-@supports (color: rgb(from red r g b)) {
-  :root {
-    --trazo-color: color-mix(in srgb,
-      rgb(from var(--texto-color) calc(255 - r) calc(255 - g) calc(255 - b)) var(--trazo-peso-letra),
-      rgb(from var(--color-fondo) calc(255 - r) calc(255 - g) calc(255 - b)));
-  }
+  /* (lo usa el modo "diferencia" del inicio, si se activa en ajustes.js) */
+  --trazo-grosor: var(--inicio-borde-grosor);
+  --trazo-color:  #5a5d63;
 }

@@ -11,23 +11,14 @@
 <body data-pagina="proyecto">
 
   <!-- PÁGINA DE PROYECTO (película o anuncio).
-       Una sola plantilla para todos: el contenido llega por la dirección
-       proyecto.html?tipo=films&id=NOMBRE-DE-CARPETA
-       Lo monta assets/js/proyecto.js con las fotos de esa carpeta. -->
-  <main id="proyecto">
-    <header class="portada" id="portada">
-      <img class="portada__img" alt="">
-      <div class="portada__texto mezcla">
-        <p class="portada__sup"></p>
-        <h1 class="portada__titulo"></h1>
-        <p class="portada__labor"></p>
-      </div>
-      <span class="portada__bajar mezcla" aria-hidden="true">↓</span>
-    </header>
-
-    <section class="mosaico" id="mosaico" aria-label="Imágenes del proyecto"></section>
-
-    <nav class="siguiente" id="siguiente" aria-label="Otros proyectos"></nav>
+       Rejilla regular de imágenes horizontales en formato cine, desde arriba,
+       y un botón "Contact" al final. Sin textos.
+       Dirección: proyecto.html?tipo=films&id=NOMBRE-DE-CARPETA
+       Lo monta assets/js/proyecto.js con las fotos de esa carpeta.
+       Columnas y formato: ajustes.css sección 4 (--proyecto-...). -->
+  <main>
+    <section class="rejilla-cine proyecto-cine" id="rejilla" aria-label="Imágenes del proyecto"></section>
+    <footer class="pie-contacto" id="contacto"></footer>
   </main>
 
   <script src="contenido/datos-generados.js"></script>

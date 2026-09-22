@@ -1,44 +1,17 @@
 /* =====================================================================
    LISTAS (films.html y comercials.html)
-   Cuadrícula regular: 2 portadas por fila (1 en móvil), cada una en
-   formato cine. Columnas y formato: ajustes.css → sección 4.
+   Rejilla regular desde arriba, cada portada en formato cine.
+   Columnas y formato: ajustes.css sección 4 (--lista-...)
+   La rejilla en sí está en base.css (.rejilla-cine)
    ===================================================================== */
 
-.lista__titulo {
-  font-family: var(--fuente-titulos);
-  font-style: italic;
-  font-weight: 400;
-  font-size: clamp(3.4rem, 16vw, 16rem);
-  line-height: .85;
-  padding: calc(var(--margen) * 4) var(--margen) calc(var(--margen) * .8);
-  letter-spacing: -.02em;
-}
-
 .lista-cine {
-  display: grid;
-  grid-template-columns: repeat(var(--lista-columnas), 1fr);
+  --cols: var(--lista-columnas);
+  --formato: var(--lista-formato);
 }
-@media (max-width: 700px) {
-  .lista-cine { grid-template-columns: repeat(var(--lista-columnas-movil), 1fr); }
-}
+@media (max-width: 700px) { .lista-cine { --cols: var(--lista-columnas-movil); } }
 
-.celda-proyecto {
-  position: relative; display: block; overflow: hidden;
-  aspect-ratio: var(--formato-cine);
-  background: var(--color-fondo);
-  cursor: pointer;
-}
-/* el hilo blanco */
-.celda-proyecto::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 3;
-  border: var(--hilo) solid var(--hilo-color);
-}
-.celda-proyecto img {
-  width: 100%; height: 100%; object-fit: cover;
-  opacity: 0; transform: scale(1.04);
-  transition: opacity 1.2s var(--curva), transform var(--t-hover) var(--curva), filter var(--t-hover) var(--curva);
-}
-.celda-proyecto.visible img { opacity: 1; transform: scale(1); }
+.celda-proyecto { cursor: pointer; }
 
 /* Al pasar el ratón: la elegida se acerca, las demás se apagan */
 @media (hover: hover) {
@@ -46,42 +19,29 @@
   .lista-cine .celda-proyecto.visible:hover img { filter: none; transform: scale(1.035); }
 }
 
-/* Título dentro de cada celda (en móvil / pantallas táctiles) */
-.celda-proyecto__txt {
-  position: absolute; z-index: 2;
-  left: .9rem; bottom: .8rem; right: .9rem;
+/* Info (título · año · labor): en móvil fija abajo en cada portada… */
+.celda-proyecto__txt,
+.etiqueta-cursor {
+  font-family: var(--fuente-etiqueta);
   color: var(--texto-color); mix-blend-mode: var(--texto-mezcla);
-  line-height: 1.1;
+  line-height: 1.25;
   pointer-events: none;
 }
-.celda-proyecto__txt b {
-  display: block;
-  font-family: var(--fuente-titulos); font-style: italic; font-weight: 400;
-  font-size: clamp(1.2rem, 2vw, 2rem);
-}
-.celda-proyecto__txt small { font-size: .66rem; letter-spacing: .2em; text-transform: uppercase; }
+.celda-proyecto__txt b, .etiqueta-cursor b { display: block; font-weight: 400; font-size: var(--etiqueta-tam-titulo); }
+.celda-proyecto__txt small, .etiqueta-cursor small { font-size: var(--etiqueta-tam-datos); letter-spacing: .18em; text-transform: uppercase; }
+.celda-proyecto__txt { position: absolute; z-index: 2; left: .8rem; bottom: .7rem; right: .8rem; }
 
-/* Con ratón: la info va siguiendo al cursor en vez de estar fija */
+/* …y con ratón, sigue al cursor */
 @media (hover: hover) and (pointer: fine) {
-  .celda-proyecto__txt { opacity: 0; }
+  .celda-proyecto__txt { display: none; }
   .lista-cine { cursor: none; }
 }
-
 .etiqueta-cursor {
   position: fixed; z-index: 70; left: 0; top: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity .35s;
-  white-space: nowrap;
-  text-align: center;
+  opacity: 0; transition: opacity .35s;
+  white-space: nowrap; text-align: center;
 }
 .etiqueta-cursor.visible { opacity: 1; }
-.etiqueta-cursor b {
-  display: block; font-family: var(--fuente-titulos); font-style: italic; font-weight: 400;
-  font-size: clamp(2rem, 4.4vw, 4.6rem); line-height: 1;
-}
-.etiqueta-cursor small { font-size: .7rem; letter-spacing: .24em; text-transform: uppercase; }
 @media not all and (hover: hover) { .etiqueta-cursor { display: none; } }
 
-.lista-vacia { padding: var(--margen); color: var(--color-suave); }
-main { padding-bottom: calc(var(--margen) * 4); }
+.lista-vacia { padding: calc(var(--margen) * 4) var(--margen); color: var(--color-suave); }

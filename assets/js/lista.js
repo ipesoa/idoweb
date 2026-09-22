@@ -3,7 +3,7 @@
    ---------------------------------------------------------------------
    El tipo sale de <body data-pagina="films"> o "comercials".
    Orden: del más reciente al más antiguo (o por "orden:" en info.txt).
-   Columnas y formato de cada rectángulo: ajustes.css (sección 4).
+   Columnas y formato de cada rectángulo: ajustes.css (sección 4, --lista-...).
    Al pasar el ratón, título · año · labor siguen al cursor.
    ===================================================================== */
 (function () {

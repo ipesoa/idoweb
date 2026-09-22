@@ -1,6 +1,7 @@
 /* =====================================================================
    BASE  ·  cosas comunes a todas las páginas
-   (menú, cortina de transición, botón auto-scroll, visor de fotos)
+   (menú, cortina de transición, rejilla formato cine, botón auto-scroll,
+   visor de fotos). Los tamaños se cambian en ajustes.css.
    ===================================================================== */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -9,8 +10,8 @@ body {
   background: var(--color-fondo);
   color: var(--color-tinta);
   font-family: var(--fuente-texto);
-  font-size: var(--tam-texto);
-  line-height: 1.55;
+  font-size: 1rem;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
 }
@@ -19,17 +20,10 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 ::selection { background: var(--color-tinta); color: var(--color-fondo); }
 
-/* ---------- Texto que se mezcla con la imagen (efecto diferencia) --- */
+/* Texto que se invierte sobre la imagen (efecto diferencia) */
 .mezcla {
   color: var(--texto-color);
   mix-blend-mode: var(--texto-mezcla);
-}
-
-/* ---------- TRAZO: contorno de las letras (ajustes en ajustes.css 3b) - */
-.trazo,
-.pagina-inicio .menu {
-  -webkit-text-stroke: var(--trazo-grosor) var(--trazo-color);
-  paint-order: stroke fill;   /* el contorno queda por fuera, la letra no adelgaza */
 }
 
 /* ---------- CORTINA: fundido al entrar y salir de cada página ------- */
@@ -48,75 +42,90 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   pointer-events: none;
   color: var(--menu-color);
   mix-blend-mode: var(--menu-mezcla);
-  font-family: var(--fuente-texto);
+  font-family: var(--fuente-menu);
   text-transform: uppercase;
 }
 .menu a { pointer-events: auto; transition: opacity .3s; }
 .menu a:hover { opacity: .6; }
+.menu a.activo { text-decoration: underline; text-underline-offset: .25em; text-decoration-thickness: 1px; }
 
 .menu__nombre {
-  position: absolute; top: calc(var(--margen) * .7); left: 50%;
+  position: absolute; left: 50%; top: calc(var(--margen) * .7);
   transform: translateX(-50%);
-  font-size: var(--tam-nombre);
-  font-weight: 400;
-  letter-spacing: .02em;
-  line-height: 1;
-  white-space: nowrap;
+  font-size: var(--menu-tam-nombre);
+  letter-spacing: .12em; line-height: 1; white-space: nowrap;
 }
 .menu__about {
   position: absolute; left: 50%; transform: translateX(-50%);
-  top: calc(var(--margen) * .7 + var(--tam-nombre) * 1.15);
-  font-size: calc(var(--tam-menu) * .85);
-  text-transform: lowercase;
-  letter-spacing: .04em;
+  top: calc(var(--margen) * .7 + var(--menu-tam-nombre) * 1.5);
+  font-size: var(--menu-tam-otros);
+  text-transform: lowercase; letter-spacing: .04em;
 }
 .menu__films, .menu__comercials {
-  position: absolute;
-  font-size: var(--tam-menu);
-  letter-spacing: var(--espaciado-menu);
+  position: absolute; top: calc(var(--margen) * .7);
+  font-size: var(--menu-tam-otros);
+  letter-spacing: .14em;
 }
-/* Posición en el INICIO: a media altura, izquierda y derecha (como la maqueta) */
-.pagina-inicio .menu__films      { left: var(--margen);  top: 50%; transform: translateY(-50%); }
-.pagina-inicio .menu__comercials { right: var(--margen); top: 50%; transform: translateY(-50%); }
+.menu__films      { left: var(--margen); }
+.menu__comercials { right: var(--margen); }
 
-/* En el resto de páginas: menú compacto arriba */
-body:not(.pagina-inicio) .menu__nombre { font-size: calc(var(--tam-nombre) * .42); letter-spacing: .12em; }
-body:not(.pagina-inicio) .menu__about  { top: calc(var(--margen) * .7 + var(--tam-nombre) * .55); font-size: calc(var(--tam-menu) * .7); }
-body:not(.pagina-inicio) .menu__films      { left: var(--margen);  top: calc(var(--margen) * .7); font-size: calc(var(--tam-menu) * .75); }
-body:not(.pagina-inicio) .menu__comercials { right: var(--margen); top: calc(var(--margen) * .7); font-size: calc(var(--tam-menu) * .75); }
+/* ---- Menú en el INICIO (tamaños: ajustes.css sección 2) ---- */
+.pagina-inicio .menu__nombre { font-size: var(--inicio-tam-nombre); letter-spacing: .02em; }
+.pagina-inicio .menu__about  { font-size: var(--inicio-tam-about); top: calc(var(--margen) * .7 + var(--inicio-tam-nombre) * 1.2); }
+.pagina-inicio .menu__films,
+.pagina-inicio .menu__comercials { top: 50%; transform: translateY(-50%); font-size: var(--inicio-tam-menu); letter-spacing: var(--inicio-espaciado-menu); }
 
-.menu a.activo { text-decoration: underline; text-underline-offset: .25em; text-decoration-thickness: 1px; }
-
-/* Móvil: films y comercials abajo, en las esquinas */
+/* ---- Móvil: films y comercials abajo, en las esquinas ---- */
 @media (max-width: 700px) {
-  .menu__nombre { font-size: clamp(1.15rem, 6.4vw, 2rem); }
-  .menu__about  { top: calc(var(--margen) * .7 + clamp(1.15rem, 6.4vw, 2rem) * 1.25); }
-  .pagina-inicio .menu__films,
-  body:not(.pagina-inicio) .menu__films      { top: auto; bottom: calc(var(--margen) + env(safe-area-inset-bottom)); transform: none; font-size: .95rem; }
-  .pagina-inicio .menu__comercials,
-  body:not(.pagina-inicio) .menu__comercials { top: auto; bottom: calc(var(--margen) + env(safe-area-inset-bottom)); transform: none; font-size: .95rem; }
-  body:not(.pagina-inicio) .menu__nombre { font-size: .9rem; }
-  body:not(.pagina-inicio) .menu__about  { top: calc(var(--margen) * .7 + 1.35rem); }
+  .menu__films, .menu__comercials,
+  .pagina-inicio .menu__films, .pagina-inicio .menu__comercials {
+    top: auto; transform: none;
+    bottom: calc(var(--margen) + env(safe-area-inset-bottom));
+    font-size: .9rem;
+  }
+  .pagina-inicio .menu__nombre { font-size: var(--inicio-tam-nombre-movil); }
+  .pagina-inicio .menu__about  { top: calc(var(--margen) * .7 + var(--inicio-tam-nombre-movil) * 1.3); }
 }
+
+/* ---------- REJILLA FORMATO CINE (films, comercials y proyecto) ------
+   Columnas y formato: ajustes.css sección 4                           */
+.rejilla-cine {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 2), 1fr);
+}
+.rejilla-cine > * {
+  position: relative; display: block; overflow: hidden;
+  aspect-ratio: var(--formato, 1.85 / 1);
+  background: var(--color-fondo);
+}
+.rejilla-cine > *::after {            /* el hilo blanco */
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 3;
+  border: var(--hilo) solid var(--hilo-color);
+}
+.rejilla-cine img, .rejilla-cine video, .rejilla-cine iframe {
+  width: 100%; height: 100%; object-fit: cover; border: 0;
+}
+.rejilla-cine img, .rejilla-cine video {
+  opacity: 0; transform: scale(1.04);
+  transition: opacity 1.2s var(--curva), transform var(--t-hover) var(--curva), filter var(--t-hover) var(--curva);
+}
+.rejilla-cine .visible img, .rejilla-cine .visible video { opacity: 1; transform: scale(1); }
 
 /* ---------- BOTÓN AUTO-SCROLL -------------------------------------- */
 .boton-auto {
   position: fixed; z-index: 60;
   right: var(--margen); bottom: var(--margen);
-  font-size: .72rem; letter-spacing: .18em; text-transform: uppercase;
+  font-size: .68rem; letter-spacing: .18em; text-transform: uppercase;
   color: var(--menu-color); mix-blend-mode: var(--menu-mezcla);
   display: flex; align-items: center; gap: .6em;
 }
 .boton-auto::before {
   content: ""; width: .55em; height: .55em; border-radius: 50%;
-  border: 1px solid currentColor;
-  transition: background .3s;
+  border: 1px solid currentColor; transition: background .3s;
 }
 .boton-auto.encendido::before { background: currentColor; animation: latido 1.6s infinite; }
 @keyframes latido { 50% { opacity: .25; } }
-@media (max-width: 700px) {
-  .boton-auto { bottom: calc(var(--margen) + 2.2rem); }
-}
+@media (max-width: 700px) { .boton-auto { bottom: calc(var(--margen) + 2.2rem); } }
 
 /* ---------- VISOR DE FOTOS (al pinchar una imagen) ------------------ */
 .visor {
@@ -130,11 +139,10 @@ body:not(.pagina-inicio) .menu__comercials { right: var(--margen); top: calc(var
 .visor img {
   max-width: calc(100vw - 2 * var(--margen));
   max-height: calc(100vh - 6rem);
-  object-fit: contain;
-  transition: opacity .35s;
+  object-fit: contain; transition: opacity .35s;
 }
 .visor__cerrar, .visor__ant, .visor__sig {
-  position: absolute; font-size: .75rem; letter-spacing: .2em; text-transform: uppercase;
+  position: absolute; font-size: .72rem; letter-spacing: .2em; text-transform: uppercase;
   padding: 1rem; color: var(--color-tinta);
 }
 .visor__cerrar { top: var(--margen); right: var(--margen); }
@@ -142,41 +150,8 @@ body:not(.pagina-inicio) .menu__comercials { right: var(--margen); top: calc(var
 .visor__sig { right: var(--margen); top: 50%; transform: translateY(-50%); }
 .visor__cuenta {
   position: absolute; bottom: var(--margen); left: 50%; transform: translateX(-50%);
-  font-size: .72rem; letter-spacing: .2em; color: var(--color-suave);
+  font-size: .7rem; letter-spacing: .2em; color: var(--color-suave);
 }
-
-/* ---------- MOSAICO: cuadrícula de las páginas de proyecto --------- */
-.mosaico {
-  --cols: var(--columnas-escritorio);
-  display: grid;
-  grid-template-columns: repeat(var(--cols), 1fr);
-  grid-auto-rows: calc(100vw / var(--cols) * var(--alto-fila));
-  grid-auto-flow: dense;
-  background: var(--color-fondo);
-}
-/* el hilo blanco: una línea fina por dentro de cada celda */
-.mosaico > *::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 3;
-  border: var(--hilo) solid var(--hilo-color);
-}
-@media (max-width: 1100px) { .mosaico { --cols: var(--columnas-tablet); } }
-@media (max-width: 700px)  { .mosaico { --cols: var(--columnas-movil); } }
-
-.mosaico > * {
-  position: relative; overflow: hidden;
-  background: var(--color-fondo);
-  grid-column: span var(--c, 1);
-  grid-row: span var(--f, 1);
-}
-.mosaico img, .mosaico video {
-  width: 100%; height: 100%; object-fit: cover;
-  opacity: 0; transform: scale(1.04);
-  transition: opacity 1.2s var(--curva), transform 1.6s var(--curva), filter var(--t-hover) var(--curva);
-}
-.mosaico .visible img, .mosaico .visible video { opacity: 1; transform: scale(1); }
-
-/* Utilidad para ocultar texto solo visualmente */
-.solo-lector { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }

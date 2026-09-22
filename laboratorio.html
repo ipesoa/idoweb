@@ -19,6 +19,12 @@
       color: var(--texto-color); mix-blend-mode: var(--texto-mezcla); pointer-events: none;
       -webkit-text-stroke: var(--trazo-grosor) var(--trazo-color); paint-order: stroke fill;
     }
+    .muestra.tabla { mix-blend-mode: normal; }
+    .tabla-lista { display: grid; gap: 4px; }
+    .tabla-lista div { display: grid; grid-template-columns: 22px 1fr auto; gap: 8px; align-items: center; padding: 3px 5px; cursor: pointer; border: 1px solid transparent; font-size: 12px; }
+    .tabla-lista div.elegida { border-color: #eee; }
+    .tabla-lista i { width: 22px; height: 22px; display: block; border: 1px solid #444; }
+    .tabla-lista b { font: 700 18px Arial, sans-serif; -webkit-text-stroke-width: 2px; paint-order: stroke fill; padding: 0 6px; }
     .muestra h1 { font-family: var(--fuente-titulos); font-weight: 400; font-style: var(--estilo, italic); font-size: var(--tam, 9vw); line-height: .95; text-transform: var(--mayus, none); letter-spacing: var(--espacio, 0); }
     .muestra p { margin-top: 1.2em; letter-spacing: .28em; text-transform: uppercase; font-size: 1rem; }
     .panel { position: fixed; right: 0; top: 0; bottom: 0; width: 340px; background: #111; padding: 22px; overflow: auto; border-left: 1px solid #333; }
@@ -50,7 +56,17 @@
     <label>Título <input type="text" id="texto" value="La casa del lago"></label>
     <button class="accion" id="otraFoto">Otra foto →</button>
 
-    <h2>Presets</h2>
+    <h2>Modo de color</h2>
+    <label>Modo <select id="modo">
+      <option value="tabla">tabla (fondo → letra + borde)</option>
+      <option value="diferencia">diferencia (negativo)</option>
+    </select></label>
+    <p class="nota" id="detectado"></p>
+    <div class="tabla-lista" id="tabla"></div>
+    <p class="nota">La tabla se edita en <b>assets/js/ajustes.js</b> (tablaColores). Pincha una fila para verla sobre esta foto.
+      Si "no se puede leer la foto": abre la web publicada o usa Safari/Firefox (Chrome no deja leer fotos abriendo el archivo con doble clic).</p>
+
+    <h2>Presets (modo diferencia)</h2>
     <div class="presets" id="presets"></div>
 
     <h2>Mezcla y color</h2>
@@ -62,17 +78,17 @@
     <label>Color texto <input type="color" id="color" value="#f2ece2"></label>
 
     <h2>Trazo (contorno)</h2>
-    <label>Grosor <input type="range" id="trazo" min="0" max="0.15" value="0.06" step=".005"></label>
+    <label>Grosor <input type="range" id="trazo" min="0" max="0.25" value="0.12" step=".005"></label>
     <label>Opuesto de la letra <input type="range" id="peso" min="0" max="100" value="70" step="5"></label>
     <p class="nota">El resto hasta 100 % es el opuesto del fondo. 100 = solo opuesto de la letra.</p>
 
     <h2>Tipografía</h2>
     <label>Fuente <select id="fuente">
-      <option value="Instrument Serif">Instrument Serif</option><option>Syne</option><option>Fraunces</option>
+      <option value="Arial">Arial</option><option value="Instrument Serif">Instrument Serif</option><option>Syne</option><option>Fraunces</option>
       <option>Cormorant Garamond</option><option>DM Serif Display</option><option>Bodoni Moda</option>
       <option>Playfair Display</option><option>Space Grotesk</option><option>Unbounded</option><option>Archivo</option>
     </select></label>
-    <label>Cursiva <input type="checkbox" id="cursiva" checked></label>
+    <label>Cursiva <input type="checkbox" id="cursiva"></label>
     <label>MAYÚSCULAS <input type="checkbox" id="mayus"></label>
     <label>Tamaño <input type="range" id="tam" min="3" max="16" value="9" step=".5"></label>
     <label>Espaciado <input type="range" id="espacio" min="-0.05" max="0.3" value="0" step=".01"></label>
@@ -93,6 +109,7 @@
   <script src="contenido/datos-generados.js"></script>
   <script src="assets/js/ajustes.js"></script>
   <script src="assets/js/contenido.js"></script>
+  <script src="assets/js/colores.js"></script>
   <script>
     const $ = (id) => document.getElementById(id);
     const raiz = document.documentElement.style;
@@ -117,7 +134,29 @@
       $("mezcla").value = PRESETS[k][0]; $("color").value = PRESETS[k][1]; aplicar();
     };
 
+    // ---- Tabla de colores ----
+    const TABLA = AJUSTES.tablaColores;
+    let forzada = null;
+    $("tabla").innerHTML = TABLA.map((f, i) => `<div data-i="${i}"><i style="background:${f.fondo}"></i>
+        <span>${f.nombre}</span><b style="color:${f.letra};-webkit-text-stroke-color:${f.borde};background:${f.fondo}">Aa</b></div>`).join("");
+    $("tabla").onclick = (e) => { const d = e.target.closest("[data-i]"); if (!d) return; forzada = TABLA[d.dataset.i]; $("modo").value = "tabla"; aplicar(); };
+    $("foto").addEventListener("load", () => { forzada = null; aplicar(); });
+
+    function aplicarTabla() {
+      const m = $("muestra");
+      const rgb = Colores.medio($("foto"));
+      const fila = forzada || (rgb && Colores.elegir(rgb));
+      $("detectado").innerHTML = rgb
+        ? `Color medio detrás del texto: <span class="sw" style="background:rgb(${rgb.map(Math.round)})"></span> → fila <b>${fila.nombre}</b>${forzada ? " (elegida a mano)" : ""}`
+        : "No se puede leer la foto en este navegador.";
+      document.querySelectorAll("#tabla [data-i]").forEach((d) => d.classList.toggle("elegida", fila && TABLA[d.dataset.i] === fila));
+      if (fila) { m.classList.add("tabla"); m.style.color = fila.letra; m.style.webkitTextStrokeColor = fila.borde; }
+    }
+
     function aplicar() {
+      const m = $("muestra");
+      m.classList.remove("tabla"); m.style.color = ""; m.style.webkitTextStrokeColor = "";
+      if ($("modo").value === "tabla") setTimeout(aplicarTabla, 0);
       raiz.setProperty("--texto-mezcla", $("mezcla").value);
       raiz.setProperty("--texto-color", $("color").value);
       raiz.setProperty("--fuente-titulos", `"${$("fuente").value}", serif`);
@@ -156,6 +195,7 @@ family=${f.replace(/ /g, "+")}:ital@0;1
     }
     $("cFondo").oninput = $("cQuiero").oninput = calcular;
     $("cUsar").onclick = () => { $("mezcla").value = "difference"; $("color").value = calculado; aplicar(); };
+    $("fuente").value = "Arial";
     calcular(); aplicar();
   </script>
 </body>

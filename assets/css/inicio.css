@@ -36,7 +36,7 @@ html, body { height: 100%; overflow: hidden; }
 .zoom-lento .pase__capa.activa img { animation: acercar 16s linear forwards; }
 @keyframes acercar { to { transform: scale(1.06); } }
 
-/* ---- Texto: título, año y labor (efecto diferencia) ---- */
+/* ---- Texto: título, año y labor ---- */
 .pase__pie {
   position: absolute; z-index: 5;
   left: 50%; top: 50%;
@@ -46,19 +46,38 @@ html, body { height: 100%; overflow: hidden; }
   pointer-events: none;
 }
 .pase__titulo {
-  font-family: var(--fuente-titulos);
-  font-weight: 400;
-  font-style: italic;
-  font-size: var(--tam-titulo-slide);
-  line-height: .95;
+  font-family: var(--fuente-inicio);
+  font-weight: var(--inicio-negrita-titulo);
+  font-size: var(--inicio-tam-titulo);
+  line-height: 1;
   letter-spacing: -.01em;
 }
 .pase__datos {
-  margin-top: 1.1em;
-  font-size: var(--tam-dato-slide);
-  letter-spacing: .28em;
+  font-family: var(--fuente-inicio);
+  margin-top: 1em;
+  font-size: var(--inicio-tam-datos);
+  letter-spacing: .24em;
   text-transform: uppercase;
 }
+
+/* ---- Color de letra y BORDE (todas las letras del inicio) ----
+   Grosor: ajustes.css (--inicio-borde-grosor)
+   Colores: ajustes.js (tablaColores); inicio.js los pone en
+   --inicio-letra y --inicio-borde según la foto.                  */
+.pase__pie,
+.pagina-inicio .menu {
+  -webkit-text-stroke-width: var(--inicio-borde-grosor);
+  paint-order: stroke fill;              /* el borde va por fuera: la letra no adelgaza */
+}
+.modo-tabla .pase__pie,
+.modo-tabla .menu {
+  color: var(--inicio-letra, #fff);
+  -webkit-text-stroke-color: var(--inicio-borde, #000);
+  mix-blend-mode: normal;
+  transition: color var(--t-color) var(--curva), -webkit-text-stroke-color var(--t-color) var(--curva);
+}
+.modo-diferencia .pase__pie,
+.modo-diferencia .menu { -webkit-text-stroke-color: var(--trazo-color); }
 
 /* Letra a letra: aparecen desde desenfocadas */
 .pase__pie .palabra { display: inline-block; white-space: nowrap; }
@@ -88,6 +107,6 @@ html, body { height: 100%; overflow: hidden; }
 }
 
 @media (max-width: 700px) {
-  .pase__titulo { font-size: clamp(2.6rem, 15vw, 5rem); }
+  .pase__titulo { font-size: var(--inicio-tam-titulo-movil); }
   .pase__datos  { letter-spacing: .2em; }
 }

@@ -7,7 +7,6 @@
    - Comun.visor       visor de fotos a pantalla completa
    - Comun.aparecer    hace aparecer las fotos al entrar en pantalla
    - Comun.letras      parte un texto en letras (para animarlas)
-   - Comun.empaquetar  coloca las celdas del mosaico sin huecos
    - Comun.azar        números "aleatorios" pero siempre iguales por nombre
    - Comun.embed       enlace de Vimeo/YouTube → reproductor incrustado
    ===================================================================== */
@@ -24,8 +23,8 @@
     nav.innerHTML = `
       <a class="menu__nombre" href="index.html">${nombre}</a>
       <a class="menu__about ${pagina === "about" ? "activo" : ""}" href="about.html">about</a>
-      <a class="menu__films ${pagina === "films" ? "activo" : ""}" href="films.html">Films</a>
-      <a class="menu__comercials ${pagina === "comercials" ? "activo" : ""}" href="comercials.html">Comercials</a>`;
+      <a class="menu__films ${pagina === "films" ? "activo" : ""}" href="films.html">${A.textos.films}</a>
+      <a class="menu__comercials ${pagina === "comercials" ? "activo" : ""}" href="comercials.html">${A.textos.comercials}</a>`;
     document.body.prepend(nav);
     if (!document.title) document.title = nombre;
   }
@@ -156,60 +155,6 @@
     ).join(" ");
   }
 
-  /* ---------- EMPAQUETAR MOSAICO ----------
-     Coloca las celdas en la cuadrícula sin dejar huecos.
-     Cada pieza trae: { el, c (columnas deseadas), f(c) → filas, fijo }
-     - Siempre se rellena el primer hueco libre (de izquierda a derecha,
-       de arriba abajo). Si la pieza no cabe entera, se estrecha/acorta.
-     - Las piezas "fijas" (bloque de texto) no se acortan: si no caben,
-       esperan al siguiente hueco.
-     - Al final se estiran las últimas piezas para que el borde de abajo
-       quede recto. */
-  function empaquetar(piezas, cols) {
-    const ocupado = [];                       // ocupado[fila][col] = true
-    const libre = (y, x) => !(ocupado[y] && ocupado[y][x]);
-    const marcar = (x, y, c, f) => { for (let j = y; j < y + f; j++) { ocupado[j] = ocupado[j] || []; for (let i = x; i < x + c; i++) ocupado[j][i] = true; } };
-    const cabe = (x, y, c, f) => { for (let j = y; j < y + f; j++) for (let i = x; i < x + c; i++) if (i >= cols || !libre(j, i)) return false; return true; };
-    const pendientes = piezas.slice();
-    const colocadas = [];
-    let y = 0, x = 0;
-    while (pendientes.length) {
-      while (!libre(y, x)) { x++; if (x >= cols) { x = 0; y++; } }
-      let ancho = 0; while (x + ancho < cols && libre(y, x + ancho)) ancho++;
-      let elegida = -1, c, f;
-      for (let k = 0; k < Math.min(pendientes.length, 6); k++) {
-        const p = pendientes[k];
-        c = Math.min(p.c, ancho);
-        if (p.fijo) { c = Math.min(p.c, cols); f = p.f(c); if (c <= ancho && cabe(x, y, c, f)) { elegida = k; break; } continue; }
-        f = Math.max(1, p.f(c));
-        while (f > 1 && !cabe(x, y, c, f)) f--;
-        elegida = k; break;
-      }
-      if (elegida < 0) { // solo quedan piezas fijas que no caben aquí: colócala en otra fila
-        const p = pendientes[0]; c = Math.min(p.c, cols); f = p.f(c);
-        let yy = y; while (!cabe(0, yy, c, f)) yy++;
-        marcar(0, yy, c, f); colocadas.push({ p, x: 0, y: yy, c, f }); pendientes.shift(); continue;
-      }
-      const p = pendientes.splice(elegida, 1)[0];
-      marcar(x, y, c, f);
-      colocadas.push({ p, x, y, c, f });
-    }
-    // Estirar hacia abajo para dejar el borde inferior recto
-    const fondo = Math.max(0, ...colocadas.map((k) => k.y + k.f));
-    let cambio = true;
-    while (cambio) {
-      cambio = false;
-      colocadas.forEach((k) => {
-        const abajo = k.y + k.f;
-        if (abajo < fondo && !k.p.fijo && cabe(k.x, abajo, k.c, 1)) { marcar(k.x, abajo, k.c, 1); k.f++; cambio = true; }
-      });
-    }
-    colocadas.forEach((k) => {
-      k.p.el.style.gridColumn = `${k.x + 1} / span ${k.c}`;
-      k.p.el.style.gridRow = `${k.y + 1} / span ${k.f}`;
-    });
-  }
-
   /* ---------- AZAR FIJO (misma entrada → mismo número 0..1) ---------- */
   function azar(texto) {
     let h = 2166136261;
@@ -230,5 +175,5 @@
   pintarMenu();
   montarCortina();
 
-  window.Comun = { autoScroll, visor, aparecer, letras, azar, irA, embed, empaquetar };
+  window.Comun = { autoScroll, visor, aparecer, letras, azar, irA, embed };
 })();

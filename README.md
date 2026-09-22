@@ -1,6 +1,6 @@
 # Web de Idoia Esteban Galván
 
-Web de portfolio (diseño de producción): **inicio** con pase de imágenes, **Films**, **Comercials**, página de cada **proyecto** con mosaico de fotos y **About**.
+Web de portfolio (diseño de producción): **inicio** con pase de imágenes, **Films** y **Comercials** (rejilla de portadas en formato cine), página de cada **proyecto** (rejilla de fotos + botón Contact) y **About** minimal.
 
 No hace falta saber programar para mantenerla: todo el contenido son **carpetas con fotos + un archivo de texto** (`info.txt`).
 
@@ -42,9 +42,9 @@ mostrar_en_inicio: si        ← si / no: sale o no en el pase del inicio
 Texto libre. Una línea en blanco = párrafo nuevo. *Así* sale en cursiva.
 ```
 
-Opcionales: `productora:`, `cliente:`, `encuadre:` (qué parte de la portada se ve: `top`, `left`, `30% 50%`…), `video:` (enlace de Vimeo/YouTube), `orden:` (número; mayor = antes).
+Opcionales: `productora:`, `cliente:`, `encuadre:` (qué parte de la portada se ve: `top`, `left`, `30% 50%`…), `video:` (enlace de Vimeo/YouTube), `orden:` (número; mayor = antes), `color_letra:` / `color_borde:` (fuerzan los colores del texto de ese proyecto en el inicio).
 
-**Trucos para las fotos del mosaico:** añade al nombre del archivo `_grande`, `_ancha` (todo el ancho), `_alta` o `_pequena` para forzar su tamaño. Ej: `05_ancha.jpg`. También se pueden meter vídeos `.mp4` cortos (sin sonido, en bucle).
+Las fotos salen en la rejilla por orden de nombre (portada primero). Mejor horizontales: se recortan a formato cine. También vale vídeo `.mp4` corto (sin sonido, en bucle). El texto de debajo de `---` se guarda pero ahora no se muestra.
 
 ---
 
@@ -87,8 +87,21 @@ También puedes editar a mano: cambiar un `info.txt`, borrar una foto, renombrar
 
 ## 🎨 Cambiar el aspecto
 
-- **Colores, tipografías, efecto del texto, contorno de las letras, hilo blanco, formato cine y columnas de Films/Comercials** → `assets/css/ajustes.css` (todo comentado).
-- **Tiempos del pase de imágenes, velocidad del auto-scroll** → `assets/js/ajustes.js`.
+**`assets/css/ajustes.css`** (tamaños y formas), por secciones:
+1. Tipografías (todo en Arial ahora)
+2. **Inicio**: tamaño de IDOIA ESTEBAN GALVÁN, about, FILMS/COMERCIALS, título de la peli, año·labor, y **grosor del borde** de las letras
+3. Menú en el resto de páginas
+4. **Rejillas**: formato de cada rectángulo (`1.85 / 1`…) y columnas, para Films/Comercials y para la página de cada proyecto; tamaño del texto que sigue al ratón
+5. About
+6–7. Colores generales, tiempos, márgenes
+
+**`assets/js/ajustes.js`** (comportamiento):
+- **Tabla de colores del inicio**: *si el fondo se parece a X → letra Y + borde Z*. La web mira el color de la foto detrás del texto y elige la fila más parecida. Se pueden añadir, quitar o cambiar filas.
+- Tiempos del pase de imágenes, velocidad del auto-scroll, textos de los botones (Films, Comercials, Todo, Contact).
+
+**`laboratorio.html`**: para ver la tabla de colores sobre cada foto (pincha una fila para probarla), el grosor del borde, fuentes…
+
+> Abriendo la web con doble clic en Chrome, el navegador no deja "leer" los colores de las fotos y el inicio usa el efecto de inversión. En la web publicada (y en Safari) la tabla funciona siempre.
 - **Probar combinaciones** → abre `laboratorio.html`: eliges modo de mezcla, color y fuente sobre las fotos reales, y te da las líneas para copiar. Tiene una calculadora: "sobre este color de fondo quiero que el texto salga de este otro".
 
 Para cambios más grandes, pásale la carpeta a una IA o a quien sea con `CLAUDE.md`: ahí está el mapa técnico de la web.
