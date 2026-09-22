@@ -25,20 +25,21 @@ window.AJUSTES = {
     zoomFinal: 1.06,             // cuánto se acerca la foto mientras está (lento y continuo)
   },
 
-  /* ---- COLOR DE LAS LETRAS (inicio + menú de films/comercials/proyecto) ----
+  /* ---- COLOR DE LAS LETRAS ------------------------------------------
      modo:
-       "tabla-mezcla" → la web mira el color de la foto detrás de cada texto,
-                        busca en la tabla el fondo más parecido y usa su letra
-                        y su borde, PERO mezclados con la foto (efecto
-                        diferencia): donde la foto cambia de color, la letra
-                        también cambia. ← recomendado
-       "tabla"        → los colores de la tabla, planos (sin mezcla)
-       "diferencia"   → solo el negativo, sin tabla                        */
+       "diferencia"   → ← ACTUAL. Todas las letras usan el mismo color de
+                        letra y de borde (ajustes.css sección 2b) y se
+                        mezclan con la foto en tiempo real, píxel a píxel.
+                        Sin cálculos: reacciona al instante al cambiar la
+                        foto o al hacer scroll.
+       "tabla-mezcla" → (experimental) elige letra/borde de la tabla de abajo
+                        según la foto, y los mezcla.
+       "tabla"        → (experimental) colores de la tabla, planos.       */
   colores: {
-    modo: "tabla-mezcla",
+    modo: "diferencia",
   },
 
-  /* ---- TABLA DE COLORES -----------------------------------------------
+  /* ---- TABLA DE COLORES (solo modos "tabla" y "tabla-mezcla") --------
      Cada fila:  si el fondo se parece a…  →  color de la letra  +  color del borde
      Colores flúor / chillones. Añade, quita o cambia filas (colores #hex).
      Para un proyecto concreto se puede forzar en su info.txt:
@@ -75,6 +76,7 @@ window.AJUSTES = {
 
   /* ---- Scroll automático (films, comercials, proyecto) -------------- */
   autoScroll: {
+    mostrarBoton: false,         // botón "auto" (true = se ve abajo a la derecha)
     velocidad: 42,               // píxeles por segundo
     empezarSolo: false,          // true = empieza solo al entrar en la página
     volverArriba: true,          // al llegar al final vuelve arriba

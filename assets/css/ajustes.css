@@ -44,12 +44,29 @@
   --inicio-espaciado-menu: 0.14em;    /* separación entre letras del menú */
   --inicio-negrita-titulo: 400;       /* 400 normal · 700 negrita           */
 
+/* ---------- 2b. EFECTO DIFERENCIA (TODAS las letras sobre fotos) -----
+   Un único color de letra y uno de borde para todo (menú, títulos del
+   inicio, info del ratón). El navegador los mezcla con la foto que hay
+   debajo EN TIEMPO REAL, píxel a píxel:  color que se ve = |foto − color|
+     · sobre negro sale el color tal cual   (#fff200 → amarillo flúor)
+     · sobre blanco sale su opuesto          (#fff200 → azul eléctrico)
+     · sobre rojo, verde, piel... el tono que toque en cada punto
+   Parejas flúor para probar (letra / borde):
+     #fff200 / #ff1a1a   amarillo / rojo      ← actual
+     #39ff14 / #ff00c8   verde / magenta
+     #00f0ff / #fff200   cian / amarillo
+     #ff00c8 / #39ff14   magenta / verde
+   Ver el resultado sobre cada tipo de fondo: laboratorio.html          */
+  --dif-letra:  #fff200;
+  --dif-borde:  #ff1a1a;
+  --dif-mezcla: difference;   /* normal = sin mezcla (colores planos) */
+
 /* ---------- 3. MENÚ EN EL RESTO DE PÁGINAS -------------------------- */
   --menu-tam-nombre: .95rem;
   --menu-tam-otros:  .8rem;           /* about, films, comercials */
   --menu-borde-grosor: 0.08em;        /* borde de las letras del menú (films, comercials, proyecto) */
-  --menu-mezcla: difference;          /* sin tabla (about): el menú se "invierte" */
-  --menu-color:  #f2ece2;
+  --menu-mezcla: var(--dif-mezcla);
+  --menu-color:  var(--dif-letra);
 
 /* ---------- 4. CUADRÍCULAS (formato cine) ----------------------------
    Formato de cada rectángulo = ancho / alto
@@ -72,13 +89,14 @@
   /* Texto que sigue al ratón en FILMS / COMERCIALS (sale a las 4 del cursor) */
   --etiqueta-tam:        .8rem;
   --etiqueta-separacion: 18px;        /* distancia al cursor */
-  --texto-mezcla: difference;          /* se invierte sobre la foto */
-  --texto-color:  #f2ece2;
+  --texto-mezcla: var(--dif-mezcla);  /* igual que el resto: sección 2b */
+  --texto-color:  var(--dif-letra);
 
 /* ---------- 5. ABOUT (columna abajo a la derecha) ------------------ */
   --about-tam:        .8rem;          /* todo el texto del about */
   --about-tam-nombre: .8rem;
   --about-ancho:      380px;          /* ancho de la columna */
+  --about-alto-lista: 34vh;           /* alto de la lista de trabajos (el resto se ve con scroll) */
 
 /* ---------- 6. COLORES GENERALES ------------------------------------ */
   --color-fondo:  #0d0c0b;
@@ -93,7 +111,7 @@
   --curva:     cubic-bezier(.65, 0, .35, 1);
   --margen: clamp(16px, 2.6vw, 40px);
 
-  /* (lo usa el modo "diferencia" del inicio, si se activa en ajustes.js) */
+  /* (nombres antiguos, se mantienen por compatibilidad) */
   --trazo-grosor: var(--inicio-borde-grosor);
-  --trazo-color:  #5a5d63;
+  --trazo-color:  var(--dif-borde);
 }

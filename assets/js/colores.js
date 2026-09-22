@@ -5,12 +5,14 @@
    2. Se busca en AJUSTES.tablaColores la fila con el "fondo" más parecido
       → color de letra y color de borde deseados.
    3. Según AJUSTES.colores.modo:
+      "diferencia"   → (POR DEFECTO) este archivo no hace nada: todo lo hace
+                       el CSS (mix-blend-mode), en tiempo real.
       "tabla-mezcla" → el texto se MEZCLA con la foto (efecto diferencia),
                        calculado para que sobre ese fondo medio salga el
                        color de la tabla; donde la foto cambia, la letra
                        cambia con ella (efecto translúcido).
       "tabla"        → colores de la tabla tal cual, planos.
-      "diferencia"   → solo el negativo de antes, sin tabla.
+      (los dos modos "tabla" son experimentales)
 
    Se usa en el texto del inicio (inicio.js) y en el menú de las páginas
    con fotos (inicio, films, comercials, proyecto): cada enlace del menú

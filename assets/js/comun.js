@@ -55,6 +55,7 @@
 
   /* ---------- AUTO-SCROLL ---------- */
   function autoScroll() {
+    if (A.autoScroll.mostrarBoton === false) return;   // botón desactivado en ajustes.js
     const b = document.createElement("button");
     b.className = "boton-auto";
     b.textContent = "auto";

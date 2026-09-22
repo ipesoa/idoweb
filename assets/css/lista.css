@@ -27,7 +27,9 @@
   font-size: var(--etiqueta-tam);
   line-height: 1.3;
   text-align: left;
-  color: var(--texto-color); mix-blend-mode: var(--texto-mezcla);
+  color: var(--dif-letra); mix-blend-mode: var(--dif-mezcla);   /* mismo efecto que el menú */
+  -webkit-text-stroke: var(--menu-borde-grosor) var(--dif-borde);
+  paint-order: stroke fill;
   pointer-events: none;
 }
 .celda-proyecto__txt span, .etiqueta-cursor span { display: block; }

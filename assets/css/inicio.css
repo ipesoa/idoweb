@@ -64,18 +64,20 @@ html, body { height: 100%; overflow: hidden; }
    --inicio-letra y --inicio-borde según la foto.
    (el menú del inicio se colorea igual, desde base.css)          */
 .pase__pie {
-  -webkit-text-stroke-width: var(--inicio-borde-grosor);
-  paint-order: stroke fill;              /* el borde va por fuera: la letra no adelgaza */
-  transition: color var(--t-color) var(--curva), -webkit-text-stroke-color var(--t-color) var(--curva);
+  color: var(--dif-letra);
+  mix-blend-mode: var(--dif-mezcla);           /* diferencia en tiempo real (ajustes.css 2b) */
+  -webkit-text-stroke: var(--inicio-borde-grosor) var(--dif-borde);
+  paint-order: stroke fill;                    /* el borde va por fuera: la letra no adelgaza */
 }
+/* Modos opcionales con TABLA (ajustes.js → colores.modo) */
 .modo-mezcla .pase__pie,
 .modo-tabla .pase__pie {
-  color: var(--inicio-letra, #fff);
-  -webkit-text-stroke-color: var(--inicio-borde, #000);
+  color: var(--inicio-letra, var(--dif-letra));
+  -webkit-text-stroke-color: var(--inicio-borde, var(--dif-borde));
+  transition: color var(--t-color) var(--curva), -webkit-text-stroke-color var(--t-color) var(--curva);
 }
-.modo-mezcla .pase__pie { mix-blend-mode: difference; }   /* se mezcla con la foto */
-.modo-tabla  .pase__pie { mix-blend-mode: normal; }       /* colores planos        */
-.modo-diferencia .pase__pie { -webkit-text-stroke-color: var(--trazo-color); }
+.modo-mezcla .pase__pie { mix-blend-mode: difference; }
+.modo-tabla  .pase__pie { mix-blend-mode: normal; }
 
 /* Letra a letra: aparecen desde desenfocadas */
 .pase__pie .palabra { display: inline-block; white-space: nowrap; }
