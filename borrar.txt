@@ -1,0 +1,4 @@
+# Archivos viejos que ya no se usan (el gestor los borra de la web)
+assets/js/colores.js
+assets/js/hilo.js
+assets/gestor/

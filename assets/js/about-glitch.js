@@ -75,6 +75,7 @@ const CONTAINER = ".about__columna";
       this.el = el;
       this.extra = extra;
       this.texto = extra ? "" : el.textContent;
+      this.html = el.innerHTML;             // para devolver enlaces (email, teléfono…) tal cual
       const cs = getComputedStyle(el);
       medidor.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
       const r = el.getBoundingClientRect();
@@ -100,8 +101,8 @@ const CONTAINER = ".about__columna";
     bloquear() {   // mismo tamaño durante la animación: nada se mueve alrededor
       Object.assign(this.el.style, { width: this.ancho + "px", minHeight: this.alto + "px", overflow: "hidden", whiteSpace: "pre" });
     }
-    liberar() {    // deja el texto exactamente como estaba
-      this.el.textContent = this.texto;
+    liberar() {    // deja el texto exactamente como estaba (con sus enlaces)
+      this.el.innerHTML = this.html;
       ["width", "minHeight", "overflow", "whiteSpace"].forEach((k) => (this.el.style[k] = ""));
     }
     pintar(sA, sB) {

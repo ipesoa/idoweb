@@ -62,6 +62,8 @@ Se abre `https://ipesoa.github.io/idoweb/gestor.html` en el navegador. La primer
 
 Nada se sube hasta pulsar **Publicar cambios**. El **LED**: 🟡 cambios sin publicar · 🔵 subiendo · 🟠 GitHub actualizando la web (1-2 min) · 🟢 la web ya está al día · 🔴 error.
 
+**Instalar actualización (.zip)** (abajo a la derecha del gestor): cuando alguien te pase una versión nueva del diseño o del código en un `.zip`, elígelo ahí y el gestor sube todo a GitHub él solo. Tus films, comercials, fotos y about no se tocan nunca.
+
 Los scripts de abajo (`herramientas-mac` / `herramientas-windows`) siguen funcionando para trabajar con la carpeta en el ordenador, pero ya no hacen falta.
 
 ## 🖱 El día a día (con la carpeta en el ordenador, opcional)

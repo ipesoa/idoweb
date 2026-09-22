@@ -16,6 +16,8 @@
 
 .about__datos { margin-bottom: 3.5em; }
 .about__datos p:first-child { font-size: var(--about-tam-nombre); }
+.about__datos a { border-bottom: 1px solid transparent; transition: border-color .3s; }
+.about__datos a:hover { border-color: currentColor; }
 
 .filtros { display: flex; gap: 1.4em; margin-bottom: 1.2em; }
 .filtros button { color: var(--color-suave); font-size: inherit; transition: color .3s; }

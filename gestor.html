@@ -8,8 +8,145 @@
   <!-- GESTOR DE LA WEB: página interna (no enlazada) para editar todo el
        contenido sin tocar archivos: películas, comercials, fotos, inicio y about.
        Trabaja directamente sobre GitHub con el token (se guarda solo en el
-       navegador de ese ordenador). Código: assets/gestor/ -->
-  <link rel="stylesheet" href="assets/gestor/gestor.css?v=202609221710">
+       navegador de ese ordenador). Todo el gestor está en ESTE archivo (estilos y código incluidos),
+       así funciona aunque falte cualquier otra carpeta. -->
+  <style>
+/* =====================================================================
+   GESTOR · estilos (página interna gestor.html)
+   ===================================================================== */
+:root {
+  --fondo: #f4f3ef; --papel: #fff; --tinta: #161616; --suave: #7a766f; --linea: #dedad2;
+  --verde: #1fbf5f; --amarillo: #f2b705; --azul: #2d7ff9; --naranja: #ff8a1f; --rojo: #e5484d;
+  --radio: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font: 14px/1.45 Arial, "Helvetica Neue", sans-serif; background: var(--fondo); color: var(--tinta); min-height: 100vh; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; }
+[hidden] { display: none !important; }
+
+/* ---- barra superior ---- */
+.barra { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 20px;
+  padding: 12px 24px; background: var(--papel); border-bottom: 1px solid var(--linea); }
+.barra__marca { font-weight: 700; letter-spacing: .02em; }
+.barra__marca span { font-weight: 400; color: var(--suave); margin-left: 6px; }
+.barra__acciones { margin-left: auto; display: flex; gap: 10px; }
+
+.boton { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 999px;
+  border: 1px solid var(--linea); background: var(--papel); text-decoration: none; white-space: nowrap; }
+.boton:hover { border-color: var(--tinta); }
+.boton--principal { background: var(--tinta); color: #fff; border-color: var(--tinta); }
+.boton--principal:disabled { opacity: .35; cursor: default; }
+.boton--peligro { color: var(--rojo); border-color: #f2c5c6; }
+.boton--suave { color: var(--suave); }
+.enlace { color: var(--suave); text-decoration: underline; }
+
+/* ---- LED ---- */
+.led { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--suave); }
+.led i { width: 12px; height: 12px; border-radius: 50%; background: #bbb; box-shadow: 0 0 0 3px #0000000d; }
+.led.ok i { background: var(--verde); box-shadow: 0 0 10px var(--verde); }
+.led.pendiente i { background: var(--amarillo); box-shadow: 0 0 10px var(--amarillo); }
+.led.subiendo i { background: var(--azul); animation: latir 1s infinite; }
+.led.construyendo i { background: var(--naranja); animation: latir 1.4s infinite; }
+.led.error i { background: var(--rojo); box-shadow: 0 0 10px var(--rojo); }
+.led.ok { color: #117a3c; } .led.error { color: var(--rojo); }
+@keyframes latir { 50% { opacity: .25; } }
+
+/* ---- entrar ---- */
+.entrar { min-height: calc(100vh - 60px); display: grid; place-items: center; padding: 24px; }
+.entrar__caja { width: min(420px, 100%); background: var(--papel); border: 1px solid var(--linea); border-radius: 16px; padding: 28px; display: grid; gap: 14px; }
+.entrar h1 { font-size: 20px; }
+.entrar input { width: 100%; padding: 11px 12px; border: 1px solid var(--linea); border-radius: 8px; background: #fbfbfa; }
+.error { color: var(--rojo); min-height: 1em; }
+.nota { color: var(--suave); font-size: 12px; }
+
+/* ---- pestañas ---- */
+.pestanas { display: flex; gap: 4px; padding: 16px 24px 0; }
+.pestanas button { padding: 10px 18px; border-radius: 999px; color: var(--suave); }
+.pestanas button.activa { background: var(--tinta); color: #fff; }
+#vista { padding: 20px 24px 80px; }
+.pie { position: fixed; bottom: 0; left: 0; right: 0; display: flex; gap: 18px; align-items: center; padding: 10px 24px;
+  background: var(--papel); border-top: 1px solid var(--linea); font-size: 13px; color: var(--suave); }
+.pie #instalar { margin-left: auto; }
+
+.cabecera { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.cabecera h2 { font-size: 18px; margin-right: auto; }
+.cabecera p { width: 100%; color: var(--suave); }
+.seleccion { display: flex; gap: 8px; align-items: center; padding: 8px 12px; background: #fff7d6; border-radius: 999px; }
+
+/* ---- tarjetas ---- */
+.rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+.tarjeta { position: relative; background: var(--papel); border: 2px solid transparent; border-radius: var(--radio); overflow: hidden; cursor: pointer; transition: border-color .15s, transform .15s; }
+.tarjeta:hover { transform: translateY(-2px); }
+.tarjeta img, .tarjeta .sin-foto { width: 100%; aspect-ratio: 1.85 / 1; object-fit: cover; display: block; background: #e6e3dc; }
+.tarjeta .sin-foto { display: grid; place-items: center; color: var(--suave); font-size: 12px; }
+.tarjeta__txt { padding: 9px 11px 11px; }
+.tarjeta__txt b { display: block; font-weight: 600; }
+.tarjeta__txt small { color: var(--suave); }
+.tarjeta.elegida { border-color: var(--azul); }
+.tarjeta .marca { position: absolute; top: 8px; left: 8px; width: 24px; height: 24px; border-radius: 6px; background: #fffd; border: 1px solid #0003; display: grid; place-items: center; font-size: 15px; }
+.tarjeta.elegida .marca { background: var(--azul); color: #fff; border-color: var(--azul); }
+.tarjeta .etiqueta { position: absolute; top: 8px; right: 8px; font-size: 11px; padding: 3px 8px; border-radius: 999px; background: #0008; color: #fff; }
+.tarjeta .etiqueta.nuevo { background: var(--azul); } .tarjeta .etiqueta.editado { background: var(--amarillo); color: #000; }
+
+/* Inicio: interruptor grande */
+.tarjeta.en-inicio { border-color: var(--verde); }
+.interruptor { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; font-size: 13px; }
+.interruptor i { width: 40px; height: 22px; border-radius: 999px; background: #ccc; position: relative; transition: background .15s; flex: none; }
+.interruptor i::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: left .15s; }
+.en-inicio .interruptor i, .interruptor.si i { background: var(--verde); }
+.en-inicio .interruptor i::after, .interruptor.si i::after { left: 21px; }
+
+/* ---- editor ---- */
+.capa { position: fixed; inset: 0; z-index: 50; background: #0006; display: flex; justify-content: flex-end; }
+.panel { width: min(1100px, 100%); height: 100%; overflow: auto; background: var(--fondo); padding: 24px 28px 100px; }
+.panel__cabecera { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.panel__cabecera h2 { font-size: 20px; margin-right: auto; }
+.campos { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px 16px; margin-bottom: 26px; }
+.campo { display: grid; gap: 5px; }
+.campo span { font-size: 12px; color: var(--suave); }
+.campo input, .campo select, .campo textarea { padding: 9px 10px; border: 1px solid var(--linea); border-radius: 8px; background: var(--papel); }
+.campo textarea { min-height: 80px; resize: vertical; }
+.campo--ancho { grid-column: 1 / -1; }
+
+.fotos-barra { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+.fotos-barra h3 { font-size: 15px; margin-right: auto; }
+.fotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.foto { position: relative; background: var(--papel); border: 2px solid transparent; border-radius: 8px; overflow: hidden; cursor: grab; user-select: none; }
+.foto img, .foto video { width: 100%; aspect-ratio: 1.85 / 1; object-fit: cover; display: block; background: #ddd; pointer-events: none; }
+.foto.elegida { border-color: var(--azul); }
+.foto.arrastrando { opacity: .35; }
+.foto.encima { border-color: var(--naranja); }
+.foto .num { position: absolute; left: 6px; bottom: 6px; font-size: 11px; background: #000a; color: #fff; padding: 2px 7px; border-radius: 999px; }
+.foto .portada { position: absolute; left: 6px; top: 6px; font-size: 10px; letter-spacing: .08em; background: var(--verde); color: #fff; padding: 3px 7px; border-radius: 999px; }
+.foto .marca { position: absolute; right: 6px; top: 6px; width: 22px; height: 22px; border-radius: 6px; background: #fffd; border: 1px solid #0003; display: grid; place-items: center; font-size: 13px; }
+.foto.elegida .marca { background: var(--azul); color: #fff; }
+.foto .mover { position: absolute; right: 6px; bottom: 6px; display: flex; gap: 4px; opacity: 0; transition: opacity .15s; }
+.foto:hover .mover { opacity: 1; }
+.foto .mover button { width: 24px; height: 24px; border-radius: 6px; background: #fffe; }
+.soltar { border: 2px dashed var(--linea); border-radius: 10px; padding: 18px; text-align: center; color: var(--suave); margin-top: 12px; }
+.soltar.activo { border-color: var(--azul); color: var(--azul); background: #eef4ff; }
+.movil-slot { display: flex; gap: 12px; align-items: center; margin-top: 18px; }
+.movil-slot img { width: 70px; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 6px; background: #ddd; }
+
+/* ---- about ---- */
+.bloque { background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: 20px; margin-bottom: 20px; }
+.bloque h3 { font-size: 15px; margin-bottom: 4px; }
+.bloque > p { color: var(--suave); margin-bottom: 14px; }
+.tabla { width: 100%; border-collapse: collapse; }
+.tabla td { padding: 4px; }
+.tabla input, .tabla select { width: 100%; padding: 7px 8px; border: 1px solid var(--linea); border-radius: 6px; }
+.tabla td:first-child { width: 80px; } .tabla td:last-child { width: 40px; }
+
+/* ---- aviso ---- */
+.aviso { position: fixed; left: 50%; bottom: 60px; transform: translateX(-50%); z-index: 80; background: var(--tinta); color: #fff; padding: 12px 18px; border-radius: 999px; max-width: 90vw; }
+.aviso.mal { background: var(--rojo); }
+
+@media (max-width: 700px) {
+  .barra { flex-wrap: wrap; padding: 10px 14px; } .barra__acciones { width: 100%; }
+  #vista { padding: 16px 14px 80px; } .panel { padding: 18px 14px 100px; }
+}
+  </style>
 </head>
 <body>
   <header class="barra">
@@ -48,6 +185,8 @@
     <footer class="pie">
       <span id="pendientes"></span>
       <button class="enlace" id="descartar" hidden>Descartar cambios</button>
+      <button class="enlace" id="instalar" title="Sube a GitHub una versión nueva del código de la web (.zip). No toca tu contenido.">Instalar actualización (.zip)</button>
+      <input type="file" id="zip" accept=".zip,application/zip" hidden>
       <button class="enlace" id="salir">Olvidar token</button>
     </footer>
   </main>
@@ -57,6 +196,789 @@
 
   <div class="aviso" id="aviso" hidden></div>
 
-  <script src="assets/gestor/gestor.js?v=202609221710"></script>
+  <script>
+/* =====================================================================
+   GESTOR DE LA WEB
+   ---------------------------------------------------------------------
+   Edita el contenido directamente en GitHub (sin archivos locales):
+     · Inicio      qué proyectos salen en el pase de imágenes
+     · Films       añadir / editar / borrar (selección múltiple), fotos
+     · Comercials  igual, con orden de fotos arrastrando
+     · About       líneas de datos + trabajos sin fotos de la lista
+   Todos los cambios se acumulan y se suben JUNTOS con "Publicar cambios"
+   en un único commit (Git Data API). El LED indica el estado:
+     gris   sin conectar          amarillo  cambios sin publicar
+     azul   subiendo              naranja   GitHub está actualizando la web
+     verde  la web ya está al día rojo      error
+   Genera contenido/datos-generados.js con el MISMO formato que
+   herramientas-mac/_generar-datos.sh.
+   ===================================================================== */
+(function () {
+  "use strict";
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const esc = (t) => String(t ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const MEDIO = /\.(jpe?g|png|webp|gif|avif|mp4|webm|mov|m4v)$/i;
+  const VIDEO = /\.(mp4|webm|mov|m4v)$/i;
+  const MAX_LADO = 2600, CALIDAD = 0.82;
+
+  /* ================= repositorio y token ================= */
+  function repoDesdeUrl() {
+    const m = location.hostname.match(/^([^.]+)\.github\.io$/i);
+    if (!m) return null;
+    const seg = location.pathname.split("/").filter(Boolean)[0];
+    return !seg || /\.html?$/.test(seg) ? `${m[1]}/${m[1]}.github.io` : `${m[1]}/${seg}`;
+  }
+  let REPO = repoDesdeUrl() || localStorage.getItem("gestor_repo") || "ipesoa/idoweb";
+  let TOKEN = localStorage.getItem("gestor_token_" + REPO) || "";
+  let RAMA = "main";
+  const webBase = () => {
+    if (location.hostname.endsWith("github.io")) return new URL(".", location.href).href;
+    const [o, r] = REPO.split("/");
+    return r.toLowerCase() === `${o.toLowerCase()}.github.io` ? `https://${o}.github.io/` : `https://${o}.github.io/${r}/`;
+  };
+
+  async function gh(metodo, ruta, cuerpo) {
+    const r = await fetch("https://api.github.com" + ruta, {
+      method: metodo, cache: "no-store",
+      headers: { Authorization: "Bearer " + TOKEN, Accept: "application/vnd.github+json", ...(cuerpo ? { "Content-Type": "application/json" } : {}) },
+      body: cuerpo ? JSON.stringify(cuerpo) : undefined,
+    });
+    if (!r.ok) {
+      const t = await r.text();
+      const e = new Error(`GitHub ${r.status}: ${t.slice(0, 180)}`); e.status = r.status; throw e;
+    }
+    return r.status === 204 ? null : r.json();
+  }
+  const b64ATexto = (b64) => new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\s/g, "")), (c) => c.charCodeAt(0)));
+  const textoAB64 = (t) => { const b = new TextEncoder().encode(t); let s = ""; for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode(...b.subarray(i, i + 0x8000)); return btoa(s); };
+  const blobAB64 = (blob) => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1]); r.onerror = no; r.readAsDataURL(blob); });
+  const leerBlobTexto = async (sha) => b64ATexto((await gh("GET", `/repos/${REPO}/git/blobs/${sha}`)).content);
+
+  /* ================= estado ================= */
+  let E = null;          // { head, arbol: Map(ruta→sha), datosTexto, contenido, proyectos[], borrados[], about, aboutSucio }
+  let pestana = "inicio";
+  let seleccion = new Set();
+
+  /* ---------- info.txt ---------- */
+  const normal = (k) => k.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim().replace(/\s+/g, "_");
+  function leerInfo(txt) {
+    const campos = {}, orden = [];
+    const lineas = (txt || "").replace(/\r/g, "").split("\n");
+    let i = 0;
+    for (; i < lineas.length; i++) {
+      const l = lineas[i];
+      if (/^\s*---\s*$/.test(l)) { i++; break; }
+      if (!l.trim() || /^\s*#/.test(l)) continue;
+      const m = l.match(/^\s*([^:]+?)\s*:\s*(.*)$/);
+      if (m) { const k = normal(m[1]); campos[k] = m[2].trim(); orden.push(k); }
+    }
+    return { campos, orden, texto: lineas.slice(i).join("\n").trim() };
+  }
+  const NOMBRE_CLAVE = { ano: "año" };
+  const ORDEN_CLAVES = ["titulo", "ano", "labor", "director", "productora", "cliente", "formato", "mostrar_en_inicio", "encuadre", "video", "orden", "imdb", "color_letra", "color_borde"];
+  const SIEMPRE = ["titulo", "ano", "labor", "director", "mostrar_en_inicio"];
+  function infoATexto(p) {
+    const c = p.info.campos, lineas = [];
+    const claves = ORDEN_CLAVES.concat(Object.keys(c).filter((k) => !ORDEN_CLAVES.includes(k)));
+    for (const k of claves) {
+      const v = (c[k] ?? "").toString().trim();
+      if (v === "" && !SIEMPRE.includes(k)) continue;
+      lineas.push(`${NOMBRE_CLAVE[k] || k}: ${v}`);
+    }
+    return lineas.join("\n") + "\n---\n" + (p.info.texto ? p.info.texto + "\n" : "");
+  }
+
+  /* ---------- cargar todo desde GitHub ---------- */
+  async function cargar() {
+    led("subiendo", "Cargando…");
+    const repo = await gh("GET", `/repos/${REPO}`);
+    if (!repo.permissions || !repo.permissions.push) throw new Error("El token no tiene permiso para escribir en " + REPO);
+    RAMA = repo.default_branch || "main";
+    const ref = await gh("GET", `/repos/${REPO}/git/ref/heads/${RAMA}`);
+    const head = ref.object.sha;
+    const arbolJson = await gh("GET", `/repos/${REPO}/git/trees/${head}?recursive=1`);
+    if (arbolJson.truncated) aviso("El repositorio es muy grande: puede que falte algún archivo en la lista", true);
+    const arbol = new Map(arbolJson.tree.filter((t) => t.type === "blob").map((t) => [t.path, t.sha]));
+
+    const datosTexto = arbol.has("contenido/datos-generados.js") ? await leerBlobTexto(arbol.get("contenido/datos-generados.js")) : "";
+    const w = {}; try { new Function("window", datosTexto)(w); } catch (e) { /* vacío */ }
+    const contenido = w.CONTENIDO || { films: [], comercials: [], about: { info: "", filmografia: "", archivos: [] } };
+
+    // proyectos = carpetas que existen en GitHub (como hace el script de las carpetas)
+    const proyectos = [];
+    for (const tipo of ["films", "comercials"]) {
+      const carpetas = new Set();
+      for (const ruta of arbol.keys()) {
+        const m = ruta.match(new RegExp(`^contenido/${tipo}/([^/]+)/`));
+        if (m && !m[1].startsWith("_")) carpetas.add(m[1]);
+      }
+      for (const carpeta of [...carpetas].sort()) {
+        const base = `contenido/${tipo}/${carpeta}/`;
+        if (!arbol.has(base + "info.txt")) continue;
+        const dato = (contenido[tipo] || []).find((d) => d.carpeta === carpeta);
+        const infoTexto = dato ? dato.info : await leerBlobTexto(arbol.get(base + "info.txt"));
+        const medidas = new Map((dato ? dato.archivos : []).map((a) => [a.f, a]));
+        const medios = [...arbol.keys()].filter((r) => r.startsWith(base) && !r.slice(base.length).includes("/") && MEDIO.test(r))
+          .map((r) => { const f = r.slice(base.length), a = medidas.get(f) || {}; return { f, ruta: r, sha: arbol.get(r), w: a.w, h: a.h, video: VIDEO.test(f) }; })
+          .sort((a, b) => a.f.localeCompare(b.f));
+        const info = leerInfo(infoTexto);
+        const esPortada = (m) => (info.campos.portada ? m.f.toLowerCase() === info.campos.portada.toLowerCase() : /^portada\./i.test(m.f));
+        const esMovil = (m) => (info.campos.portada_movil ? m.f.toLowerCase() === info.campos.portada_movil.toLowerCase() : /^portada[-_]movil\./i.test(m.f));
+        const portada = medios.find(esPortada) || medios.find((m) => !m.video && !esMovil(m));
+        const movil = medios.find(esMovil) || null;
+        const resto = medios.filter((m) => m !== portada && m !== movil);
+        delete info.campos.portada; delete info.campos.portada_movil;
+        proyectos.push({
+          tipo, carpeta, info, infoOriginal: infoTexto,
+          fotos: (portada ? [portada] : []).concat(resto), movil,
+          rutasOriginales: medios.map((m) => m.ruta),
+          archivosOriginales: (dato ? dato.archivos : medios.map((m) => ({ f: m.f }))),
+          sucio: false, nuevo: false,
+        });
+      }
+    }
+    const aboutDato = contenido.about || { info: "", filmografia: "", archivos: [] };
+    E = {
+      head, arbol, datosTexto, contenido, proyectos, borrados: [],
+      about: { info: leerInfo(aboutDato.info), infoOriginal: aboutDato.info, extra: leerExtra(aboutDato.filmografia), extraOriginal: aboutDato.filmografia, archivos: aboutDato.archivos || [] },
+      aboutSucio: false,
+    };
+    seleccion.clear();
+    pintar();
+    comprobarWeb();
+  }
+
+  /* ---------- filmografía extra (trabajos sin fotos) ---------- */
+  function leerExtra(txt) {
+    return (txt || "").replace(/\r/g, "").split("\n").filter((l) => l.trim() && !/^\s*#/.test(l)).map((l) => {
+      const [ano, titulo, labor, quien, tipo] = l.split("|").map((s) => (s || "").trim());
+      return { ano, titulo, labor, quien, tipo: (tipo || "films").toLowerCase() };
+    });
+  }
+  function extraATexto(filas) {
+    return `# =====================================================================
+#  FILMOGRAFÍA EXTRA  ·  trabajos que salen en la lista del about
+#  pero que NO tienen página propia (sin fotos). (Editado con el gestor)
+#  Una línea por trabajo:  año | título | labor | director o cliente | films o comercials
+# =====================================================================
+` + filas.filter((f) => f.titulo).map((f) => [f.ano, f.titulo, f.labor, f.quien, f.tipo].map((v) => (v || "").replace(/\|/g, "/")).join(" | ")).join("\n") + "\n";
+  }
+
+  /* ================= LED ================= */
+  function led(estado, texto) {
+    const l = $("#led");
+    l.className = "led " + estado;
+    $("#ledTexto").textContent = texto;
+  }
+  const hayCambios = () => E && (E.proyectos.some((p) => p.sucio || p.nuevo) || E.borrados.length > 0 || E.aboutSucio);
+  function actualizarEstado() {
+    const n = E ? E.proyectos.filter((p) => p.sucio || p.nuevo).length + E.borrados.length + (E.aboutSucio ? 1 : 0) : 0;
+    $("#publicar").disabled = !n;
+    $("#publicar").textContent = n ? `Publicar cambios (${n})` : "Publicar cambios";
+    $("#pendientes").textContent = n ? `${n} cambio${n > 1 ? "s" : ""} sin publicar` : "Todo publicado";
+    $("#descartar").hidden = !n;
+    if (n) led("pendiente", "Hay cambios sin publicar");
+    else if (!comprobando) led(ultimoEstadoWeb.estado, ultimoEstadoWeb.texto);
+  }
+  let comprobando = false, ultimoEstadoWeb = { estado: "ok", texto: "La web está al día" };
+  async function comprobarWeb(esperar = false) {
+    comprobando = true;
+    const objetivo = E.datosTexto;
+    const inicio = Date.now();
+    while (true) {
+      let vivo = null;
+      try { vivo = await (await fetch(webBase() + "contenido/datos-generados.js?t=" + Date.now(), { cache: "no-store" })).text(); } catch (e) { /* sin red */ }
+      if (vivo !== null && vivo.trim() === objetivo.trim()) {
+        ultimoEstadoWeb = { estado: "ok", texto: "La web está al día" };
+        break;
+      }
+      if (!esperar && Date.now() - inicio > 0 && vivo === null) { ultimoEstadoWeb = { estado: "error", texto: "No se puede comprobar la web" }; break; }
+      ultimoEstadoWeb = { estado: "construyendo", texto: "GitHub está actualizando la web…" };
+      if (!hayCambios()) led(ultimoEstadoWeb.estado, ultimoEstadoWeb.texto);
+      if (Date.now() - inicio > 10 * 60 * 1000) { ultimoEstadoWeb = { estado: "error", texto: "La web tarda en actualizarse (revisa GitHub → Actions)" }; break; }
+      await new Promise((r) => setTimeout(r, 6000));
+    }
+    comprobando = false;
+    actualizarEstado();
+  }
+
+  /* ================= vistas ================= */
+  const urlDe = (f) => f.local || `https://raw.githubusercontent.com/${REPO}/${E.head}/${f.ruta.split("/").map(encodeURIComponent).join("/")}`;
+  const miniatura = (p) => {
+    const f = p.fotos.find((x) => !x.video);
+    return f ? `<img src="${esc(urlDe(f))}" alt="" loading="lazy">` : `<div class="sin-foto">sin fotos</div>`;
+  };
+  const enInicio = (p) => /^(si|sí|yes|true|1|x)$/i.test((p.info.campos.mostrar_en_inicio || "").trim());
+  const ordenar = (a, b) => (parseInt(b.info.campos.ano) || 0) - (parseInt(a.info.campos.ano) || 0) || (a.info.campos.titulo || "").localeCompare(b.info.campos.titulo || "");
+  const etiquetaEstado = (p) => (p.nuevo ? `<span class="etiqueta nuevo">nuevo</span>` : p.sucio ? `<span class="etiqueta editado">editado</span>` : "");
+
+  function pintar() {
+    $$("#pestanas button").forEach((b) => b.classList.toggle("activa", b.dataset.p === pestana));
+    const v = $("#vista");
+    if (pestana === "inicio") v.innerHTML = vistaInicio();
+    else if (pestana === "about") v.innerHTML = vistaAbout();
+    else v.innerHTML = vistaLista(pestana);
+    actualizarEstado();
+  }
+
+  function vistaInicio() {
+    const todos = E.proyectos.slice().sort(ordenar);
+    const n = todos.filter(enInicio).length;
+    const grupo = (tipo, titulo) => {
+      const lista = todos.filter((p) => p.tipo === tipo);
+      return `<h3 style="margin:22px 0 10px">${titulo}</h3><div class="rejilla">${lista.map((p) => `
+        <div class="tarjeta ${enInicio(p) ? "en-inicio" : ""}" data-inicio="${esc(p.tipo + "/" + p.carpeta)}">
+          ${miniatura(p)}${etiquetaEstado(p)}
+          <div class="tarjeta__txt"><b>${esc(p.info.campos.titulo || p.carpeta)}</b><small>${esc(p.info.campos.ano || "")}</small>
+            <div class="interruptor"><span>${enInicio(p) ? "Sale en el inicio" : "No sale"}</span><i></i></div></div>
+        </div>`).join("")}</div>`;
+    };
+    return `<div class="cabecera"><h2>Pase de imágenes del inicio</h2>
+        <button class="boton" data-accion="inicio-todos">Todos</button><button class="boton" data-accion="inicio-ninguno">Ninguno</button>
+        <p>Pincha una película o anuncio para que salga (verde) o no salga en el inicio. Ahora salen <b>${n}</b>. El orden en la web es aleatorio.</p></div>
+      ${grupo("films", "Films")}${grupo("comercials", "Comercials")}`;
+  }
+
+  function vistaLista(tipo) {
+    const lista = E.proyectos.filter((p) => p.tipo === tipo).sort(ordenar);
+    const nombre = tipo === "films" ? "película" : "anuncio";
+    const sel = [...seleccion].filter((k) => k.startsWith(tipo + "/"));
+    return `<div class="cabecera"><h2>${tipo === "films" ? "Films" : "Comercials"} <small style="color:var(--suave);font-weight:400">(${lista.length})</small></h2>
+        ${sel.length ? `<div class="seleccion"><b>${sel.length} seleccionad${sel.length > 1 ? "os" : "o"}</b>
+          <button class="boton" data-accion="sel-inicio-si">Poner en el inicio</button>
+          <button class="boton" data-accion="sel-inicio-no">Quitar del inicio</button>
+          <button class="boton boton--peligro" data-accion="sel-borrar">Eliminar</button>
+          <button class="enlace" data-accion="sel-nada">Deseleccionar</button></div>` : ""}
+        <button class="boton boton--principal" data-accion="nuevo" data-tipo="${tipo}">＋ Nueva ${nombre}</button>
+        <p>Pincha para editar. Marca la casilla (arriba a la izquierda) para seleccionar varias y borrarlas o ponerlas en el inicio a la vez.</p></div>
+      <div class="rejilla">${lista.map((p) => {
+        const k = p.tipo + "/" + p.carpeta;
+        return `<div class="tarjeta ${seleccion.has(k) ? "elegida" : ""}" data-editar="${esc(k)}">
+          ${miniatura(p)}<button class="marca" data-marcar="${esc(k)}" title="Seleccionar">${seleccion.has(k) ? "✓" : ""}</button>${etiquetaEstado(p)}
+          <div class="tarjeta__txt"><b>${esc(p.info.campos.titulo || p.carpeta)}</b>
+            <small>${esc([p.info.campos.ano, p.info.campos.labor].filter(Boolean).join(" · "))} · ${p.fotos.length} foto${p.fotos.length === 1 ? "" : "s"}${enInicio(p) ? " · en el inicio" : ""}</small></div>
+        </div>`;
+      }).join("")}</div>`;
+  }
+
+  function vistaAbout() {
+    const c = E.about.info.campos;
+    const campo = (k, etiqueta, ph = "") => `<label class="campo"><span>${etiqueta}</span><input data-about="${k}" value="${esc(c[k] || "")}" placeholder="${esc(ph)}"></label>`;
+    return `<div class="bloque"><h3>Datos del about</h3>
+        <p>Cada dato relleno es una línea en la web, en este orden. Deja vacío lo que no quieras que salga.</p>
+        <div class="campos">
+          ${campo("nombre", "Nombre", "Idoia Esteban Galván")}
+          ${campo("subtitulo", "Labor", "Diseño de producción")}
+          ${campo("ubicacion", "Ciudad", "Based in Madrid")}
+          ${campo("email", "Email (también para el botón Contact)", "nombre@correo.com")}
+          ${campo("telefono", "Teléfono", "+34 600 000 000")}
+          ${campo("instagram", "Instagram", "@usuario")}
+        </div></div>
+      <div class="bloque"><h3>Lista de trabajos: los que no tienen fotos</h3>
+        <p>Los films y comercials de las otras pestañas ya salen solos en la lista del about. Aquí puedes añadir trabajos sin página ni fotos.</p>
+        <table class="tabla"><tbody>${E.about.extra.map((f, i) => `<tr>
+          <td><input data-extra="${i}" data-k="ano" value="${esc(f.ano)}" placeholder="Año"></td>
+          <td><input data-extra="${i}" data-k="titulo" value="${esc(f.titulo)}" placeholder="Título"></td>
+          <td><input data-extra="${i}" data-k="labor" value="${esc(f.labor)}" placeholder="Labor"></td>
+          <td><input data-extra="${i}" data-k="quien" value="${esc(f.quien)}" placeholder="Director o cliente"></td>
+          <td><select data-extra="${i}" data-k="tipo"><option value="films"${f.tipo !== "comercials" ? " selected" : ""}>Film</option><option value="comercials"${f.tipo === "comercials" ? " selected" : ""}>Comercial</option></select></td>
+          <td><button class="boton boton--peligro" data-quitar-extra="${i}" title="Quitar">✕</button></td></tr>`).join("")}</tbody></table>
+        <button class="boton" data-accion="extra-anadir" style="margin-top:10px">＋ Añadir trabajo</button></div>`;
+  }
+
+  /* ================= editor de proyecto ================= */
+  let ed = null;   // { p, copia }
+  function abrirEditor(p) {
+    ed = { p, fotos: p.fotos.slice(), movil: p.movil, campos: { ...p.info.campos }, texto: p.info.texto, sel: new Set() };
+    pintarEditor();
+    $("#editor").hidden = false;
+  }
+  function pintarEditor() {
+    const { p, campos } = ed;
+    const films = p.tipo === "films";
+    const campo = (k, etiqueta, ph = "", ancho = false) => `<label class="campo ${ancho ? "campo--ancho" : ""}"><span>${etiqueta}</span><input data-campo="${k}" value="${esc(campos[k] || "")}" placeholder="${esc(ph)}"></label>`;
+    const encuadres = [["", "Centro"], ["top", "Arriba"], ["bottom", "Abajo"], ["left", "Izquierda"], ["right", "Derecha"]];
+    const si = /^(si|sí)$/i.test(campos.mostrar_en_inicio || "");
+    $("#editor").innerHTML = `<div class="panel">
+      <div class="panel__cabecera"><h2>${esc(campos.titulo || "Sin título")}</h2>
+        <button class="boton boton--peligro" data-ed="borrar">Eliminar ${films ? "película" : "anuncio"}</button>
+        <button class="boton" data-ed="cancelar">Cancelar</button>
+        <button class="boton boton--principal" data-ed="guardar">Guardar</button></div>
+      <div class="campos">
+        ${campo("titulo", "Título", "", false)}
+        ${campo("ano", "Año", "2024")}
+        ${campo("labor", "Labor", "Dirección de arte")}
+        ${campo("director", "Dirección", "Nombre del director/a")}
+        ${films ? campo("productora", "Productora") : campo("cliente", "Cliente / marca")}
+        ${campo("formato", "Formato (opcional)", "Cortometraje, serie…")}
+        ${campo("video", "Vídeo de Vimeo / YouTube (opcional)", "https://vimeo.com/…")}
+        ${campo("imdb", "Enlace IMDb (opcional)")}
+        <label class="campo"><span>Encuadre de la portada</span><select data-campo="encuadre">${encuadres.map(([v, t]) => `<option value="${v}"${(campos.encuadre || "") === v ? " selected" : ""}>${t}</option>`).join("")}</select></label>
+        <label class="campo"><span>Pase del inicio</span><button type="button" class="interruptor ${si ? "si" : ""}" data-ed="inicio" style="justify-content:flex-start;padding:8px 0"><i></i><span>${si ? "Sale en el inicio" : "No sale en el inicio"}</span></button></label>
+        <label class="campo campo--ancho"><span>Texto (se guarda; ahora no se muestra en la web)</span><textarea data-campo="texto">${esc(ed.texto)}</textarea></label>
+      </div>
+      <div class="fotos-barra"><h3>Fotos (${ed.fotos.length}) · arrastra para ordenar · la primera es la portada</h3>
+        ${ed.sel.size ? `<button class="boton" data-ed="portada">Poner de portada</button><button class="boton boton--peligro" data-ed="borrar-fotos">Eliminar ${ed.sel.size} foto${ed.sel.size > 1 ? "s" : ""}</button><button class="enlace" data-ed="sel-nada">Deseleccionar</button>` : ""}
+        <button class="boton" data-ed="todas">Seleccionar todas</button>
+        <label class="boton boton--principal">＋ Añadir fotos<input type="file" id="subirFotos" accept="image/*,video/mp4,video/webm,video/quicktime" multiple hidden></label></div>
+      <div class="fotos" id="fotos">${ed.fotos.map((f, i) => `
+        <div class="foto ${ed.sel.has(f) ? "elegida" : ""}" draggable="true" data-i="${i}">
+          ${f.video ? `<video src="${esc(urlDe(f))}" muted></video>` : `<img src="${esc(urlDe(f))}" alt="">`}
+          ${i === 0 ? `<span class="portada">PORTADA</span>` : ""}<span class="num">${i + 1}</span>
+          <button class="marca" data-sel="${i}">${ed.sel.has(f) ? "✓" : ""}</button>
+          <div class="mover"><button data-mover="${i}" data-d="-1" title="Antes">◀</button><button data-mover="${i}" data-d="1" title="Después">▶</button></div>
+        </div>`).join("")}</div>
+      <div class="soltar" id="soltar">Arrastra aquí fotos desde tu ordenador (JPG, PNG… se reducen solas a ${MAX_LADO}px)</div>
+      <div class="movil-slot">${ed.movil ? `<img src="${esc(urlDe(ed.movil))}" alt="">` : ""}
+        <div><b>Portada vertical para móvil</b> <span class="nota">(opcional)</span><br>
+          <label class="boton" style="margin-top:6px">${ed.movil ? "Cambiar" : "Añadir"}<input type="file" id="subirMovil" accept="image/*" hidden></label>
+          ${ed.movil ? `<button class="enlace" data-ed="quitar-movil">Quitar</button>` : ""}</div></div>
+    </div>`;
+    activarArrastre();
+  }
+
+  function leerCamposEditor() {
+    $$("[data-campo]", $("#editor")).forEach((el) => {
+      if (el.dataset.campo === "texto") ed.texto = el.value.trim();
+      else ed.campos[el.dataset.campo] = el.value.trim();
+    });
+  }
+
+  // ---- arrastrar para ordenar ----
+  function activarArrastre() {
+    let desde = null;
+    $$(".foto", $("#editor")).forEach((el) => {
+      el.addEventListener("dragstart", (e) => { desde = +el.dataset.i; el.classList.add("arrastrando"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", "foto"); });
+      el.addEventListener("dragend", () => el.classList.remove("arrastrando"));
+      el.addEventListener("dragover", (e) => { if (desde === null) return; e.preventDefault(); el.classList.add("encima"); });
+      el.addEventListener("dragleave", () => el.classList.remove("encima"));
+      el.addEventListener("drop", (e) => {
+        if (desde === null) return;
+        e.preventDefault(); e.stopPropagation();
+        const hasta = +el.dataset.i;
+        leerCamposEditor();
+        const [f] = ed.fotos.splice(desde, 1); ed.fotos.splice(hasta, 0, f);
+        desde = null; pintarEditor();
+      });
+    });
+    const zona = $("#soltar");
+    ["dragover", "dragenter"].forEach((ev) => zona.addEventListener(ev, (e) => { if (e.dataTransfer.types.includes("Files")) { e.preventDefault(); zona.classList.add("activo"); } }));
+    zona.addEventListener("dragleave", () => zona.classList.remove("activo"));
+    zona.addEventListener("drop", (e) => { e.preventDefault(); zona.classList.remove("activo"); anadirArchivos([...e.dataTransfer.files]); });
+    $("#subirFotos").addEventListener("change", (e) => anadirArchivos([...e.target.files]));
+    $("#subirMovil").addEventListener("change", async (e) => {
+      const f = e.target.files[0]; if (!f) return;
+      const r = await prepararArchivo(f); if (r) { leerCamposEditor(); ed.movil = r; pintarEditor(); }
+    });
+  }
+
+  // ---- preparar fotos nuevas: girar según EXIF, reducir y pasar a JPG ----
+  async function prepararArchivo(archivo) {
+    if (VIDEO.test(archivo.name) || archivo.type.startsWith("video/")) {
+      if (archivo.size > 45 * 1024 * 1024) { aviso(`${archivo.name}: el vídeo pesa más de 45 MB. Súbelo a Vimeo y pon el enlace.`, true); return null; }
+      const ext = (archivo.name.match(/\.(\w+)$/) || [, "mp4"])[1].toLowerCase();
+      return { f: "nuevo." + ext, blob: archivo, local: URL.createObjectURL(archivo), video: true, ext };
+    }
+    let img;
+    try { img = await createImageBitmap(archivo, { imageOrientation: "from-image" }); }
+    catch (e) {
+      try {
+        img = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = URL.createObjectURL(archivo); });
+      } catch (e2) { aviso(`${archivo.name}: este navegador no puede leer ese formato (¿HEIC?). Pásala a JPG.`, true); return null; }
+    }
+    const w0 = img.width, h0 = img.height, k = Math.min(1, MAX_LADO / Math.max(w0, h0));
+    const w = Math.round(w0 * k), h = Math.round(h0 * k);
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, w, h); x.drawImage(img, 0, 0, w, h);
+    const blob = await new Promise((ok) => c.toBlob(ok, "image/jpeg", CALIDAD));
+    return { f: "nuevo.jpg", blob, local: URL.createObjectURL(blob), w, h, video: false, ext: "jpg" };
+  }
+  async function anadirArchivos(archivos) {
+    leerCamposEditor();
+    aviso(`Preparando ${archivos.length} archivo${archivos.length > 1 ? "s" : ""}…`);
+    for (const a of archivos) { const r = await prepararArchivo(a); if (r) ed.fotos.push(r); }
+    aviso("Listo");
+    pintarEditor();
+  }
+
+  function guardarEditor() {
+    leerCamposEditor();
+    const { p } = ed;
+    if (!ed.campos.titulo) { aviso("Falta el título", true); return; }
+    if (ed.fotos.length && ed.fotos[0].video) { aviso("La primera (portada) tiene que ser una foto, no un vídeo", true); return; }
+    p.info.campos = { ...ed.campos };
+    if (!p.info.campos.encuadre) delete p.info.campos.encuadre;
+    p.info.texto = ed.texto;
+    p.fotos = ed.fotos; p.movil = ed.movil;
+    if (!p.nuevo) p.sucio = true;
+    cerrarEditor();
+    pintar();
+  }
+  function cerrarEditor() { $("#editor").hidden = true; $("#editor").innerHTML = ""; ed = null; }
+
+  function borrarProyectos(lista) {
+    for (const p of lista) {
+      E.proyectos = E.proyectos.filter((x) => x !== p);
+      if (!p.nuevo) E.borrados.push(p);
+      seleccion.delete(p.tipo + "/" + p.carpeta);
+    }
+    pintar();
+  }
+
+  const slug = (t) => t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ñ/g, "n").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  function nuevoProyecto(tipo) {
+    const titulo = prompt(tipo === "films" ? "Título de la película:" : "Título del anuncio:");
+    if (!titulo) return;
+    const ano = prompt("Año:", String(new Date().getFullYear())) || "";
+    let carpeta = `${ano}-${slug(titulo)}`.replace(/^-/, ""), n = 2;
+    while (E.proyectos.some((p) => p.tipo === tipo && p.carpeta === carpeta) || E.borrados.some((p) => p.tipo === tipo && p.carpeta === carpeta)) carpeta = `${ano}-${slug(titulo)}-${n++}`;
+    const p = {
+      tipo, carpeta, nuevo: true, sucio: false, fotos: [], movil: null, rutasOriginales: [], archivosOriginales: [],
+      info: { campos: { titulo, ano, labor: "Dirección de arte", director: "", mostrar_en_inicio: "no" }, orden: [], texto: "" },
+    };
+    E.proyectos.push(p);
+    abrirEditor(p);
+  }
+
+  /* ================= publicar ================= */
+  const escJs = (t) => t.replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$/g, "\\$");
+  const escJson = (t) => t.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+  function generarDatos(listaPorTipo, about, version) {
+    let s = "/* ARCHIVO GENERADO AUTOMÁTICAMENTE por herramientas-mac/_generar-datos.sh o herramientas-windows/_generar-datos.ps1\n";
+    s += "   No lo edites a mano: cambia las carpetas de /contenido y vuelve a generarlo. */\n";
+    s += "window.CONTENIDO = {\n";
+    const archivos = (lista) => "[" + lista.map((a) => `\n      {"f":"${escJson(a.f)}"${a.w && a.h ? `,"w":${a.w},"h":${a.h}` : ""}}`).join(",") + "]";
+    for (const tipo of ["films", "comercials"]) {
+      s += `  "${tipo}": [\n`;
+      for (const d of listaPorTipo[tipo].slice().sort((a, b) => (a.carpeta < b.carpeta ? -1 : 1))) {
+        s += `    {\n      "carpeta": "${escJson(d.carpeta)}",\n      "info": \`${escJs(d.info)}\`,\n      "archivos": ${archivos(d.archivos)}\n    },\n`;
+      }
+      s += "  ],\n";
+    }
+    s += `  "about": {\n    "info": \`${escJs(about.info)}\`,\n    "filmografia": \`${escJs(about.filmografia)}\`,\n    "archivos": ${archivos(about.archivos)}\n  }\n};\n`;
+    s += `/* gestor: ${version} */\n`;
+    return s;
+  }
+
+  async function publicar() {
+    if (!hayCambios()) return;
+    const boton = $("#publicar");
+    boton.disabled = true;
+    led("subiendo", "Subiendo cambios…");
+    try {
+      // ¿alguien cambió GitHub mientras tanto?
+      const ref = await gh("GET", `/repos/${REPO}/git/ref/heads/${RAMA}`);
+      if (ref.object.sha !== E.head) throw new Error("La web ha cambiado desde otro sitio mientras editabas. Pulsa \"Descartar cambios\" para recargar y vuelve a hacerlo.");
+      const commit = await gh("GET", `/repos/${REPO}/git/commits/${E.head}`);
+      const entradas = [];
+      const blobTexto = async (texto) => (await gh("POST", `/repos/${REPO}/git/blobs`, { content: textoAB64(texto), encoding: "base64" })).sha;
+      const blobArchivo = async (blob) => (await gh("POST", `/repos/${REPO}/git/blobs`, { content: await blobAB64(blob), encoding: "base64" })).sha;
+      const poner = (path, sha) => entradas.push({ path, mode: "100644", type: "blob", sha });
+
+      const datos = { films: [], comercials: [] };
+      let subidas = 0, totalSubidas = E.proyectos.reduce((n, p) => n + p.fotos.filter((f) => f.blob).length + (p.movil && p.movil.blob ? 1 : 0), 0);
+
+      for (const p of E.proyectos) {
+        const base = `contenido/${p.tipo}/${p.carpeta}/`;
+        if (!p.sucio && !p.nuevo) { datos[p.tipo].push({ carpeta: p.carpeta, info: p.infoOriginal, archivos: p.archivosOriginales }); continue; }
+        const infoTxt = infoATexto(p);
+        poner(base + "info.txt", await blobTexto(infoTxt));
+        const finales = p.fotos.map((f, i) => ({ f, nombre: (i === 0 && !f.video ? "portada" : String(i).padStart(2, "0")) + "." + (f.ext || (f.f.match(/\.(\w+)$/) || [, "jpg"])[1].toLowerCase()) }));
+        if (p.movil) finales.push({ f: p.movil, nombre: "portada-movil." + (p.movil.ext || (p.movil.f.match(/\.(\w+)$/) || [, "jpg"])[1].toLowerCase()) });
+        const rutasFinales = new Set();
+        for (const { f, nombre } of finales) {
+          const ruta = base + nombre;
+          rutasFinales.add(ruta);
+          if (f.blob) {
+            led("subiendo", `Subiendo fotos… ${++subidas}/${totalSubidas}`);
+            poner(ruta, await blobArchivo(f.blob));
+          } else if (E.arbol.get(ruta) !== f.sha) poner(ruta, f.sha);   // renombrada / movida
+        }
+        for (const r of p.rutasOriginales) if (!rutasFinales.has(r)) poner(r, null);   // ya no está
+        datos[p.tipo].push({ carpeta: p.carpeta, info: infoTxt, archivos: finales.map(({ f, nombre }) => ({ f: nombre, w: f.w, h: f.h })).sort((a, b) => (a.f < b.f ? -1 : 1)) });
+      }
+      for (const p of E.borrados) {
+        const base = `contenido/${p.tipo}/${p.carpeta}/`;
+        for (const r of E.arbol.keys()) if (r.startsWith(base)) poner(r, null);
+      }
+      let aboutInfo = E.about.infoOriginal, aboutExtra = E.about.extraOriginal;
+      if (E.aboutSucio) {
+        const c = E.about.info.campos;
+        const orden = ["nombre", "subtitulo", "ubicacion", "email", "telefono", "instagram", "imdb", "showreel"];
+        const claves = orden.concat(Object.keys(c).filter((k) => !orden.includes(k)));
+        aboutInfo = "# =====================================================================\n#  ABOUT  ·  cada dato relleno es una línea en la web (editado con el gestor)\n# =====================================================================\n"
+          + claves.map((k) => `${k}: ${(c[k] || "").trim()}`).join("\n") + "\n---\n" + (E.about.info.texto ? E.about.info.texto + "\n" : "");
+        aboutExtra = extraATexto(E.about.extra);
+        poner("contenido/about/info.txt", await blobTexto(aboutInfo));
+        poner("contenido/about/filmografia-extra.txt", await blobTexto(aboutExtra));
+      }
+
+      // datos que lee la web + número de versión nuevo en las páginas (para la caché)
+      const version = new Date().toISOString().replace(/\D/g, "").slice(0, 12);
+      const datosTexto = generarDatos(datos, { info: aboutInfo, filmografia: aboutExtra, archivos: E.about.archivos }, version);
+      poner("contenido/datos-generados.js", await blobTexto(datosTexto));
+      for (const r of E.arbol.keys()) {
+        if (!/^[^/]+\.html$/.test(r)) continue;
+        const t = await leerBlobTexto(E.arbol.get(r));
+        const t2 = t.replace(/\?v=\d+"/g, `?v=${version}"`);
+        if (t2 !== t) poner(r, await blobTexto(t2));
+      }
+
+      led("subiendo", "Guardando en GitHub…");
+      const arbol = await gh("POST", `/repos/${REPO}/git/trees`, { base_tree: commit.tree.sha, tree: entradas });
+      const resumen = [
+        E.proyectos.filter((p) => p.nuevo).length && `${E.proyectos.filter((p) => p.nuevo).length} nuevo(s)`,
+        E.proyectos.filter((p) => p.sucio).length && `${E.proyectos.filter((p) => p.sucio).length} editado(s)`,
+        E.borrados.length && `${E.borrados.length} eliminado(s)`,
+        E.aboutSucio && "about",
+      ].filter(Boolean).join(", ");
+      const nuevo = await gh("POST", `/repos/${REPO}/git/commits`, { message: `Gestor: ${resumen}`, tree: arbol.sha, parents: [E.head] });
+      await gh("PATCH", `/repos/${REPO}/git/refs/heads/${RAMA}`, { sha: nuevo.sha, force: false });
+
+      aviso("Publicado. GitHub está actualizando la web (1-2 minutos)");
+      await cargar();                 // vuelve a leer todo desde GitHub y vigila la web:
+                                      // LED naranja hasta que la web ya lo tenga → verde
+    } catch (e) {
+      console.error(e);
+      led("error", "Error al publicar");
+      aviso(e.message, true);
+      boton.disabled = false;
+    }
+  }
+
+  /* ================= instalar actualización (.zip de código) =================
+     Para cuando alguien (o una IA) te pasa una versión nueva de la web en un .zip.
+     Sube TODOS sus archivos a GitHub en un solo paso, sin tocar tu contenido:
+       · se ignora todo lo que haya dentro de contenido/ (tus films, fotos, about)
+       · se ignoran __MACOSX, .DS_Store, .git y .config-local
+       · si el zip trae un archivo borrar.txt (una ruta por línea, "carpeta/" para
+         una carpeta entera), esos archivos se eliminan de la web
+       · solo se suben los archivos que han cambiado de verdad
+       · los .html reciben un ?v= nuevo para que los navegadores no usen copias viejas */
+  async function leerZip(archivo) {
+    const buf = new Uint8Array(await archivo.arrayBuffer());
+    const dv = new DataView(buf.buffer);
+    let fin = -1;
+    for (let i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) if (dv.getUint32(i, true) === 0x06054b50) { fin = i; break; }
+    if (fin < 0) throw new Error("Ese archivo no parece un .zip");
+    const total = dv.getUint16(fin + 10, true);
+    let p = dv.getUint32(fin + 16, true);
+    const utf8 = new TextDecoder("utf-8");
+    const salida = [];
+    for (let n = 0; n < total; n++) {
+      if (dv.getUint32(p, true) !== 0x02014b50) throw new Error("El .zip está dañado");
+      const metodo = dv.getUint16(p + 10, true), comp = dv.getUint32(p + 20, true);
+      const lNombre = dv.getUint16(p + 28, true), lExtra = dv.getUint16(p + 30, true), lComent = dv.getUint16(p + 32, true);
+      const local = dv.getUint32(p + 42, true);
+      const nombre = utf8.decode(buf.subarray(p + 46, p + 46 + lNombre)).replace(/\\/g, "/");
+      p += 46 + lNombre + lExtra + lComent;
+      if (nombre.endsWith("/")) continue;
+      const ini = local + 30 + dv.getUint16(local + 26, true) + dv.getUint16(local + 28, true);
+      const datos = buf.subarray(ini, ini + comp);
+      salida.push({ nombre, leer: async () => {
+        if (metodo === 0) return datos;
+        if (metodo !== 8) throw new Error(`No sé abrir "${nombre}" (compresión ${metodo})`);
+        return new Uint8Array(await new Response(new Blob([datos]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());
+      } });
+    }
+    return salida;
+  }
+  async function shaGit(bytes) {   // el mismo "sha" que calcula git para un archivo
+    const cab = new TextEncoder().encode(`blob ${bytes.length}\0`);
+    const todo = new Uint8Array(cab.length + bytes.length); todo.set(cab); todo.set(bytes, cab.length);
+    return [...new Uint8Array(await crypto.subtle.digest("SHA-1", todo))].map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
+  const bytesAB64 = (b) => { let s = ""; for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode(...b.subarray(i, i + 0x8000)); return btoa(s); };
+  async function ghPaciente(metodo, ruta, cuerpo) {   // si GitHub pide calma, espera y reintenta
+    for (let intento = 0; ; intento++) {
+      try { return await gh(metodo, ruta, cuerpo); } catch (e) {
+        if (intento < 4 && (e.status === 403 || e.status === 429) && /rate limit/i.test(e.message)) {
+          led("subiendo", "GitHub pide una pausa, sigo en un minuto…");
+          await new Promise((r) => setTimeout(r, 61000));
+        } else throw e;
+      }
+    }
+  }
+
+  async function instalarZip(archivo) {
+    if (hayCambios()) { aviso("Primero publica o descarta los cambios pendientes", true); return; }
+    led("subiendo", "Leyendo el .zip…");
+    try {
+      const entradasZip = (await leerZip(archivo)).filter((e) => !/(^|\/)(__MACOSX|\.git)\//.test(e.nombre) && !/(^|\/)(\.DS_Store|Thumbs\.db|\.config-local)$/.test(e.nombre));
+      // carpeta raíz de la web dentro del zip = donde está index.html (puede venir dentro de una carpeta)
+      const indices = entradasZip.filter((e) => /(^|\/)index\.html$/.test(e.nombre)).sort((a, b) => a.nombre.split("/").length - b.nombre.split("/").length);
+      if (!indices.length) throw new Error("El .zip no contiene la web (falta index.html)");
+      const raiz = indices[0].nombre.slice(0, -"index.html".length);
+      const archivos = entradasZip.filter((e) => e.nombre.startsWith(raiz)).map((e) => ({ ...e, ruta: e.nombre.slice(raiz.length) }));
+
+      const version = new Date().toISOString().replace(/\D/g, "").slice(0, 12);
+      const aSubir = [], borrar = new Set();
+      for (const a of archivos) {
+        if (a.ruta === "borrar.txt") {
+          const lineas = new TextDecoder().decode(await a.leer()).replace(/\r/g, "").split("\n").map((l) => l.trim().replace(/^\.?\//, "")).filter((l) => l && !l.startsWith("#"));
+          for (const l of lineas) {
+            if (/^contenido(\/|$)/.test(l)) continue;             // nunca tocar el contenido
+            for (const r of E.arbol.keys()) if (r === l || (l.endsWith("/") && r.startsWith(l))) borrar.add(r);
+          }
+          continue;
+        }
+        if (/^contenido\//.test(a.ruta)) continue;
+        let bytes = await a.leer();
+        if (/^[^/]+\.html$/.test(a.ruta)) bytes = new TextEncoder().encode(new TextDecoder().decode(bytes).replace(/\?v=\d+"/g, `?v=${version}"`));
+        const sha = await shaGit(bytes);
+        borrar.delete(a.ruta);
+        if (E.arbol.get(a.ruta) !== sha) aSubir.push({ ruta: a.ruta, bytes });
+      }
+      const nombres = aSubir.map((a) => a.ruta);
+      if (!aSubir.length && !borrar.size) { led("ok", "La web está al día"); aviso("Esa actualización ya estaba instalada"); return; }
+      const lista = (l) => l.slice(0, 12).map((r) => "  · " + r).join("\n") + (l.length > 12 ? `\n  … y ${l.length - 12} más` : "");
+      if (!confirm(`Instalar actualización de la web\n\n${aSubir.length} archivo(s) nuevos o cambiados:\n${lista(nombres)}` +
+        (borrar.size ? `\n\n${borrar.size} archivo(s) que se eliminan:\n${lista([...borrar])}` : "") +
+        `\n\nTus films, comercials, fotos y about NO se tocan.`)) { actualizarEstado(); return; }
+
+      const ref = await gh("GET", `/repos/${REPO}/git/ref/heads/${RAMA}`);
+      const commit = await gh("GET", `/repos/${REPO}/git/commits/${ref.object.sha}`);
+      const arbol = [];
+      let n = 0;
+      for (const a of aSubir) {
+        led("subiendo", `Subiendo archivos… ${++n}/${aSubir.length}`);
+        const b = await ghPaciente("POST", `/repos/${REPO}/git/blobs`, { content: bytesAB64(a.bytes), encoding: "base64" });
+        arbol.push({ path: a.ruta, mode: /\.(command|sh)$/.test(a.ruta) ? "100755" : "100644", type: "blob", sha: b.sha });
+      }
+      for (const r of borrar) arbol.push({ path: r, mode: "100644", type: "blob", sha: null });
+      // los .html que no vienen en el zip también reciben el ?v= nuevo
+      for (const r of E.arbol.keys()) {
+        if (!/^[^/]+\.html$/.test(r) || nombres.includes(r) || borrar.has(r)) continue;
+        const t = await leerBlobTexto(E.arbol.get(r)), t2 = t.replace(/\?v=\d+"/g, `?v=${version}"`);
+        if (t2 !== t) arbol.push({ path: r, mode: "100644", type: "blob", sha: (await ghPaciente("POST", `/repos/${REPO}/git/blobs`, { content: textoAB64(t2), encoding: "base64" })).sha });
+      }
+      led("subiendo", "Guardando en GitHub…");
+      const t = await gh("POST", `/repos/${REPO}/git/trees`, { base_tree: commit.tree.sha, tree: arbol });
+      const nuevo = await gh("POST", `/repos/${REPO}/git/commits`, { message: `Actualización de la web (código): ${aSubir.length} archivo(s)${borrar.size ? `, ${borrar.size} eliminado(s)` : ""}`, tree: t.sha, parents: [ref.object.sha] });
+      await gh("PATCH", `/repos/${REPO}/git/refs/heads/${RAMA}`, { sha: nuevo.sha, force: false });
+      aviso("Actualización instalada. La web tarda 1-2 minutos en cambiar" + (nombres.includes("gestor.html") ? "; después recarga esta página" : ""));
+      await cargar();
+    } catch (e) {
+      console.error(e);
+      led("error", "Error al instalar");
+      aviso(e.message, true);
+    }
+  }
+
+  /* ================= avisos ================= */
+  let tAviso;
+  function aviso(texto, mal) {
+    const a = $("#aviso"); a.textContent = texto; a.className = "aviso" + (mal ? " mal" : ""); a.hidden = false;
+    clearTimeout(tAviso); tAviso = setTimeout(() => (a.hidden = true), mal ? 7000 : 3000);
+  }
+
+  /* ================= eventos ================= */
+  document.addEventListener("click", (e) => {
+    const t = e.target.closest("button, .tarjeta, [data-inicio]");
+    if (!t) return;
+    // pestañas
+    if (t.closest("#pestanas") && t.dataset.p) { pestana = t.dataset.p; seleccion.clear(); pintar(); return; }
+    // inicio
+    if (t.dataset.inicio) {
+      const p = E.proyectos.find((x) => x.tipo + "/" + x.carpeta === t.dataset.inicio);
+      p.info.campos.mostrar_en_inicio = enInicio(p) ? "no" : "si"; if (!p.nuevo) p.sucio = true; pintar(); return;
+    }
+    const acc = t.dataset.accion;
+    if (acc === "inicio-todos" || acc === "inicio-ninguno") {
+      E.proyectos.forEach((p) => { const v = acc === "inicio-todos" ? "si" : "no"; if ((enInicio(p) ? "si" : "no") !== v) { p.info.campos.mostrar_en_inicio = v; if (!p.nuevo) p.sucio = true; } });
+      pintar(); return;
+    }
+    if (acc === "nuevo") { nuevoProyecto(t.dataset.tipo); return; }
+    const elegidos = () => E.proyectos.filter((p) => seleccion.has(p.tipo + "/" + p.carpeta));
+    if (acc === "sel-nada") { seleccion.clear(); pintar(); return; }
+    if (acc === "sel-inicio-si" || acc === "sel-inicio-no") {
+      elegidos().forEach((p) => { p.info.campos.mostrar_en_inicio = acc === "sel-inicio-si" ? "si" : "no"; if (!p.nuevo) p.sucio = true; });
+      seleccion.clear(); pintar(); return;
+    }
+    if (acc === "sel-borrar") {
+      const l = elegidos();
+      if (confirm(`¿Eliminar ${l.length} proyecto(s) con todas sus fotos?\n\n${l.map((p) => "· " + (p.info.campos.titulo || p.carpeta)).join("\n")}\n\n(No se borra nada de verdad hasta que pulses "Publicar cambios")`)) borrarProyectos(l);
+      return;
+    }
+    if (acc === "extra-anadir") { E.about.extra.push({ ano: "", titulo: "", labor: "Dirección de arte", quien: "", tipo: "films" }); E.aboutSucio = true; pintar(); return; }
+    if (t.dataset.quitarExtra !== undefined) { E.about.extra.splice(+t.dataset.quitarExtra, 1); E.aboutSucio = true; pintar(); return; }
+    if (t.dataset.marcar) {
+      e.stopPropagation();
+      seleccion.has(t.dataset.marcar) ? seleccion.delete(t.dataset.marcar) : seleccion.add(t.dataset.marcar);
+      pintar(); return;
+    }
+    if (t.dataset.editar) { abrirEditor(E.proyectos.find((x) => x.tipo + "/" + x.carpeta === t.dataset.editar)); return; }
+
+    // editor
+    if (!ed) return;
+    const d = t.dataset.ed;
+    if (d === "cancelar") { if (ed.p.nuevo && !ed.p.fotos.length && !ed.p.sucio) E.proyectos = E.proyectos.filter((x) => x !== ed.p); cerrarEditor(); pintar(); return; }
+    if (d === "guardar") { guardarEditor(); return; }
+    if (d === "borrar") { if (confirm("¿Eliminar este proyecto con todas sus fotos?\n(No se borra de verdad hasta que pulses \"Publicar cambios\")")) { const p = ed.p; cerrarEditor(); borrarProyectos([p]); } return; }
+    if (d === "inicio") { leerCamposEditor(); ed.campos.mostrar_en_inicio = /^(si|sí)$/i.test(ed.campos.mostrar_en_inicio || "") ? "no" : "si"; pintarEditor(); return; }
+    if (t.dataset.sel !== undefined) { leerCamposEditor(); const f = ed.fotos[+t.dataset.sel]; ed.sel.has(f) ? ed.sel.delete(f) : ed.sel.add(f); pintarEditor(); return; }
+    if (d === "todas") { leerCamposEditor(); ed.sel = new Set(ed.fotos); pintarEditor(); return; }
+    if (d === "sel-nada") { leerCamposEditor(); ed.sel.clear(); pintarEditor(); return; }
+    if (d === "borrar-fotos") { leerCamposEditor(); ed.fotos = ed.fotos.filter((f) => !ed.sel.has(f)); ed.sel.clear(); pintarEditor(); return; }
+    if (d === "portada") { leerCamposEditor(); const elegidas = ed.fotos.filter((f) => ed.sel.has(f) && !f.video); if (elegidas.length) { ed.fotos = [elegidas[0]].concat(ed.fotos.filter((f) => f !== elegidas[0])); } ed.sel.clear(); pintarEditor(); return; }
+    if (d === "quitar-movil") { leerCamposEditor(); ed.movil = null; pintarEditor(); return; }
+    if (t.dataset.mover !== undefined) {
+      leerCamposEditor();
+      const i = +t.dataset.mover, j = i + +t.dataset.d;
+      if (j >= 0 && j < ed.fotos.length) { [ed.fotos[i], ed.fotos[j]] = [ed.fotos[j], ed.fotos[i]]; pintarEditor(); }
+    }
+  });
+
+  // campos del about (se guardan al escribir)
+  document.addEventListener("input", (e) => {
+    const el = e.target;
+    if (el.dataset.about) { E.about.info.campos[el.dataset.about] = el.value; E.aboutSucio = true; actualizarEstado(); }
+    if (el.dataset.extra !== undefined) { E.about.extra[+el.dataset.extra][el.dataset.k] = el.value; E.aboutSucio = true; actualizarEstado(); }
+  });
+  document.addEventListener("change", (e) => {
+    const el = e.target;
+    if (el.dataset.extra !== undefined) { E.about.extra[+el.dataset.extra][el.dataset.k] = el.value; E.aboutSucio = true; actualizarEstado(); }
+  });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && ed) { cerrarEditor(); pintar(); } });
+
+  $("#publicar").addEventListener("click", publicar);
+  $("#instalar").addEventListener("click", () => $("#zip").click());
+  $("#zip").addEventListener("change", (e) => { const f = e.target.files[0]; e.target.value = ""; if (f) instalarZip(f); });
+  $("#descartar").addEventListener("click", () => { if (confirm("¿Descartar todos los cambios sin publicar?")) cargar().catch(fallo); });
+  $("#salir").addEventListener("click", () => { if (confirm("¿Olvidar el token en este ordenador?")) { localStorage.removeItem("gestor_token_" + REPO); location.reload(); } });
+  window.addEventListener("beforeunload", (e) => { if (hayCambios()) { e.preventDefault(); e.returnValue = ""; } });
+
+  /* ================= arranque ================= */
+  function fallo(e) {
+    console.error(e);
+    led("error", e.status === 401 ? "Token no válido" : "Error");
+    if (e.status === 401 || e.status === 403 || e.status === 404) {
+      $("#app").hidden = true; $("#entrar").hidden = false;
+      $("#errorEntrar").textContent = e.status === 404 ? `No encuentro ${REPO} (¿nombre del repositorio o permisos del token?)` : "El token no es válido o no tiene permisos.";
+    } else aviso(e.message, true);
+  }
+  async function entrar() {
+    $("#repoNombre").textContent = REPO;
+    $("#verWeb").href = webBase();
+    $("#entrar").hidden = true; $("#app").hidden = false;
+    try { await cargar(); } catch (e) { fallo(e); }
+  }
+  $("#botonEntrar").addEventListener("click", () => {
+    const t = $("#token").value.trim(); const r = $("#repo").value.trim();
+    if (!t) { $("#errorEntrar").textContent = "Pega el token"; return; }
+    if (r && r.includes("/")) { REPO = r; localStorage.setItem("gestor_repo", r); }
+    TOKEN = t; localStorage.setItem("gestor_token_" + REPO, t);
+    entrar();
+  });
+  $("#token").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#botonEntrar").click(); });
+  $("#repo").value = REPO;
+  $("#repoDetalles").hidden = !!repoDesdeUrl();   // en la web publicada el repositorio se sabe solo
+  $("#verWeb").href = webBase();
+
+  if (TOKEN) entrar();
+  else { $("#entrar").hidden = false; led("", "Sin conectar"); }
+})();
+  </script>
 </body>
 </html>
