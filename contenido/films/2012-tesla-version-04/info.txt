@@ -1,0 +1,9 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: Tesla. Versión 04
+año: 2012
+labor: Dirección de arte
+director: 
+formato: Cortometraje
+imdb: https://www.imdb.com/es/title/tt2200634/
+mostrar_en_inicio: no
+---

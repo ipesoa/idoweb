@@ -1,0 +1,9 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: Hileta
+año: 2016
+labor: Dirección de arte
+director: 
+formato: Cortometraje
+imdb: https://www.imdb.com/es/title/tt5343760/
+mostrar_en_inicio: no
+---

@@ -1,0 +1,8 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: A 1000 km de la Navidad
+año: 2021
+labor: Dirección de arte
+director: 
+imdb: https://www.imdb.com/es/title/tt13782052/
+mostrar_en_inicio: si
+---

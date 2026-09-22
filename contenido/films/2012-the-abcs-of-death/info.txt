@@ -1,0 +1,9 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: The ABCs of Death
+año: 2012
+labor: Dirección de arte
+director: 
+formato: segmento "A is for Apocalypse"
+imdb: https://www.imdb.com/es/title/tt1935896/
+mostrar_en_inicio: no
+---

@@ -1,0 +1,8 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: Asalto a la Casa de Moneda
+año: 2021
+labor: Dirección de arte
+director: 
+imdb: https://www.imdb.com/es/title/tt9742794/
+mostrar_en_inicio: si
+---

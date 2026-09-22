@@ -1,0 +1,8 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: El doble más quince
+año: 2019
+labor: Dirección de arte
+director: 
+imdb: https://www.imdb.com/es/title/tt8586448/
+mostrar_en_inicio: no
+---

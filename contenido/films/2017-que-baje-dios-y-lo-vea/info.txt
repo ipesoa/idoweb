@@ -1,0 +1,8 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: Que baje Dios y lo vea
+año: 2017
+labor: Dirección de arte
+director: 
+imdb: https://www.imdb.com/es/title/tt6197484/
+mostrar_en_inicio: si
+---

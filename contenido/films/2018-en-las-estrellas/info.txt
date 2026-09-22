@@ -1,0 +1,8 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: En las estrellas
+año: 2018
+labor: Dirección de arte
+director: 
+imdb: https://www.imdb.com/es/title/tt6984530/
+mostrar_en_inicio: no
+---

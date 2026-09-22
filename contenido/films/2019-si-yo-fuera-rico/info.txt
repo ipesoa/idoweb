@@ -1,0 +1,8 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: Si yo fuera rico
+año: 2019
+labor: Dirección de arte
+director: 
+imdb: https://www.imdb.com/es/title/tt9010802/
+mostrar_en_inicio: si
+---

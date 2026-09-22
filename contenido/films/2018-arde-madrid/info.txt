@@ -1,0 +1,9 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: Arde Madrid
+año: 2018
+labor: Dirección de arte
+director: 
+formato: Miniserie de TV · 8 episodios
+imdb: https://www.imdb.com/es/title/tt7684260/
+mostrar_en_inicio: si
+---

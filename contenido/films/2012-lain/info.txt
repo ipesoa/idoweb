@@ -1,0 +1,9 @@
+# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
+titulo: Laín
+año: 2012
+labor: Dirección de arte
+director: 
+formato: Película de TV
+imdb: https://www.imdb.com/es/title/tt5237074/
+mostrar_en_inicio: no
+---
