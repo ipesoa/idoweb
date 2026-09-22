@@ -188,7 +188,7 @@
   const capa = document.createElement("canvas");
   capa.className = "dif-capa";
   capa.setAttribute("aria-hidden", "true");
-  capa.style.cssText = "position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:80;pointer-events:none;";
+  capa.style.cssText = "position:fixed;left:0;top:0;z-index:80;pointer-events:none;";
   document.body.appendChild(capa);
   const cc = capa.getContext("2d");
 
@@ -432,7 +432,11 @@
       const t0 = performance.now();
       memo = new Map(); medios = null;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // la capa mide EXACTAMENTE lo visible (en móvil "100vh" es más alto que la pantalla con la barra del navegador)
       tam(capa, Math.ceil(innerWidth * dpr), Math.ceil(innerHeight * dpr));
+      const ancho = innerWidth + "px", alto = innerHeight + "px";
+      if (capa.style.width !== ancho) capa.style.width = ancho;
+      if (capa.style.height !== alto) capa.style.height = alto;
       cc.setTransform(1, 0, 0, 1, 0, 0);
       cc.clearRect(0, 0, capa.width, capa.height);
       for (const el of document.querySelectorAll(TEXTOS)) {

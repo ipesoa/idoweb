@@ -32,7 +32,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
    Sin la capa (p. ej. abriendo con doble clic en Chrome) se ve el
    Difference base con CSS: letra #FFFFFF, borde #18A8FF.            */
 .dif-capa {
-  position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+  position: fixed; left: 0; top: 0;   /* el tamaño lo pone diferencia.js (= pantalla visible) */
   z-index: 80; pointer-events: none;
 }
 .dif-activo :is(.menu a, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]),
@@ -106,6 +106,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     bottom: calc(var(--margen) + env(safe-area-inset-bottom));
     font-size: .9rem;
   }
+  .pagina-inicio .menu__films, .pagina-inicio .menu__comercials { font-size: var(--inicio-tam-menu); }
   .pagina-inicio .menu__nombre { font-size: var(--inicio-tam-nombre-movil); }
   .pagina-inicio .menu__about  { top: calc(var(--margen) * .7 + var(--inicio-tam-nombre-movil) * 1.3); }
 }
