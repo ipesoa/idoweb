@@ -178,9 +178,17 @@
   if (!ACTIVO) return;
 
   /* =================== 2. DIBUJO SOBRE LA PÁGINA =================== */
+  // Estilos propios: así la capa funciona aunque el navegador tenga guardado un CSS antiguo
+  const estilo = document.createElement("style");
+  estilo.textContent = `
+    .dif-activo :is(${TEXTOS}), .dif-activo :is(${TEXTOS}) * {
+      color: transparent !important; -webkit-text-stroke-color: transparent !important; text-decoration-color: transparent !important;
+    }`;
+  document.head.appendChild(estilo);
   const capa = document.createElement("canvas");
   capa.className = "dif-capa";
   capa.setAttribute("aria-hidden", "true");
+  capa.style.cssText = "position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:80;pointer-events:none;";
   document.body.appendChild(capa);
   const cc = capa.getContext("2d");
 
@@ -440,6 +448,7 @@
   function apagar() {
     document.documentElement.classList.remove("dif-activo");
     capa.remove();
+    estilo.remove();
   }
 
   document.documentElement.classList.add("dif-activo");

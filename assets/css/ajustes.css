@@ -24,17 +24,18 @@
   --fuente-titulos:  "Instrument Serif", "Times New Roman", serif;  /* solo laboratorio */
 
 /* ---------- 2. INICIO (index) · TAMAÑOS Y BORDE ----------------------
-   clamp(mínimo, tamaño según ancho de pantalla, máximo)
-   "vw" = % del ancho de la pantalla. Cambia sobre todo el número del medio. */
-  --inicio-tam-nombre:  clamp(.72rem, 1.05vw, 1.05rem); /* IDOIA ESTEBAN GALVÁN */
-  --inicio-tam-about:   clamp(.66rem, .8vw, .8rem);    /* about                */
-  --inicio-tam-menu:    clamp(.7rem, .95vw, .95rem);   /* FILMS / COMERCIALS   */
-  --inicio-tam-titulo:  clamp(.95rem, 1.6vw, 1.6rem);  /* título de la peli    */
-  --inicio-tam-datos:   clamp(.6rem, .72vw, .72rem);   /* año · labor          */
+   Ahora todo va igual que el texto del about (--about-tam, sección 5).
+   Para un tamaño propio pon un valor, p. ej.  .9rem  o
+   clamp(mínimo, tamaño según ancho de pantalla, máximo)                */
+  --inicio-tam-nombre:  var(--about-tam);   /* IDOIA ESTEBAN GALVÁN  (= texto del about) */
+  --inicio-tam-about:   var(--about-tam);   /* about                 (= texto del about) */
+  --inicio-tam-menu:    var(--about-tam);   /* FILMS / COMERCIALS    (= texto del about) */
+  --inicio-tam-titulo:  var(--inicio-tam-nombre);   /* título de la peli (= IDOIA ESTEBAN GALVÁN) */
+  --inicio-tam-datos:   .66rem;             /* año · labor          */
 
   /* en el móvil */
-  --inicio-tam-nombre-movil: .78rem;
-  --inicio-tam-titulo-movil: 1rem;
+  --inicio-tam-nombre-movil: var(--about-tam);
+  --inicio-tam-titulo-movil: var(--about-tam);
 
   /* Grosor del BORDE de las letras del inicio (em = proporcional a cada letra)
      0 = sin borde · 0.06em = fino · 0.08em · 0.12em = medio · 0.18em = gordo

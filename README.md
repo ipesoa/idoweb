@@ -63,6 +63,8 @@ Mac: carpeta `herramientas-mac` (archivos `.command`). Windows: carpeta `herrami
 
 También puedes editar a mano: cambiar un `info.txt`, borrar una foto, renombrar… y luego **3** para ver y **4** para publicar.
 
+> **Caché del navegador:** cada vez que publicas con `4-Publicar`, las páginas reciben un número de versión nuevo (`?v=…`) para que ningún navegador mezcle archivos viejos con nuevos. Si subes archivos a mano a GitHub, cambia ese número en los `.html` (o usa `4-Publicar`).
+>
 > **La primera vez que abras un `.command`**, macOS puede decir que "no se puede abrir porque es de un desarrollador no identificado": clic derecho → **Abrir** → **Abrir**. Solo pasa una vez por archivo.
 > Si pide instalar "herramientas de línea de comandos", acepta (es de Apple, necesario para git).
 >

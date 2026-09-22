@@ -69,6 +69,9 @@ Espejo de las de Mac. Cada `.bat` (ASCII, CRLF) llama a `_tareas.ps1 <tarea>` (P
 ## Herramientas Mac (`herramientas-mac/`)
 `.command` = scripts bash que se abren con doble clic en macOS. Diálogos con `osascript`. Token de GitHub en el Llavero (`security`, servicio `web-portfolio-github`), usuario/repo en `.config-local` (gitignored). Push/pull con URL que lleva el token en el momento (nunca se guarda en `.git/config`). Imágenes nuevas se reducen a 2600px JPG con `sips`.
 
+## Caché
+Todos los `<link>`/`<script>` locales llevan `?v=AAAAMMDDHHMM`. `4-Publicar` (Mac y Windows) lo renueva solo. Si se edita a mano, cambiarlo en TODOS los .html a la vez. `diferencia.js` inyecta sus propios estilos para no depender de base.css.
+
 ## Convenciones
 - Todo en español (nombres de variables, clases, comentarios), porque la dueña lee los archivos.
 - Rutas relativas siempre (la web vive en `usuario.github.io/repo/`).

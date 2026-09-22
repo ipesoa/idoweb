@@ -36,7 +36,9 @@
     pase.innerHTML = `<p class="pase__vacio">Todavía no hay proyectos marcados con<br><code>mostrar_en_inicio: si</code></p>`;
     return;
   }
-  if (A.orden === "aleatorio") lista.sort(() => Math.random() - 0.5);
+  if (A.orden === "aleatorio") {            // barajar (Fisher-Yates): cada visita un orden distinto
+    for (let i = lista.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [lista[i], lista[j]] = [lista[j], lista[i]]; }
+  }
   else lista.sort((a, b) => (parseInt(b.ano) || 0) - (parseInt(a.ano) || 0));
 
   const esVertical = () => window.innerHeight > window.innerWidth;
@@ -59,7 +61,8 @@
   }
 
   let turno = 0; // cambia cada vez que se salta a mano → cancela esperas viejas
-  const esperar = (ms, t) => new Promise((ok, no) => setTimeout(() => (t === turno ? ok() : no()), ms));
+  const CANCELADO = {};                     // "error" que solo significa: se ha saltado a mano
+  const esperar = (ms, t) => new Promise((ok, no) => setTimeout(() => (t === turno ? ok() : no(CANCELADO)), ms));
 
   let pos = 0, capa = 0, actual = null;
 
@@ -116,7 +119,12 @@
         await mostrar(pos, t);
         pos = (pos + 1) % lista.length;
       }
-    } catch (e) { /* salto manual: otro bucle ha tomado el relevo */ }
+    } catch (e) {
+      if (e === CANCELADO) return;          // salto manual: otro bucle ha tomado el relevo
+      console.error(e);                     // cualquier otro fallo: se avisa y el pase sigue
+      pos = (pos + 1) % lista.length;
+      setTimeout(bucle, 1000);
+    }
   }
 
   function saltar(d) {
