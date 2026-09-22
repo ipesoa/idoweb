@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Gestor de la web</title>
+  <!-- GESTOR DE LA WEB: página interna (no enlazada) para editar todo el
+       contenido sin tocar archivos: películas, comercials, fotos, inicio y about.
+       Trabaja directamente sobre GitHub con el token (se guarda solo en el
+       navegador de ese ordenador). Código: assets/gestor/ -->
+  <link rel="stylesheet" href="assets/gestor/gestor.css?v=202609221520">
+</head>
+<body>
+  <header class="barra">
+    <div class="barra__marca">Gestor <span id="repoNombre"></span></div>
+    <div class="led" id="led" title=""><i></i><span id="ledTexto">Sin conectar</span></div>
+    <div class="barra__acciones">
+      <a class="boton boton--suave" id="verWeb" target="_blank" rel="noopener">Ver web ↗</a>
+      <button class="boton boton--principal" id="publicar" disabled>Publicar cambios</button>
+    </div>
+  </header>
+
+  <!-- Entrar: solo el token -->
+  <section class="entrar" id="entrar" hidden>
+    <div class="entrar__caja">
+      <h1>Gestor de la web</h1>
+      <p>Pega tu token de GitHub. Se guarda solo en este ordenador.</p>
+      <input type="password" id="token" placeholder="github_pat_…" autocomplete="off">
+      <details id="repoDetalles"><summary>Repositorio</summary>
+        <input type="text" id="repo" placeholder="usuario/repositorio">
+      </details>
+      <button class="boton boton--principal" id="botonEntrar">Entrar</button>
+      <p class="error" id="errorEntrar"></p>
+      <p class="nota">El token se crea en GitHub → Settings → Developer settings → Fine-grained tokens,
+        con permiso <b>Contents: Read and write</b> solo para este repositorio.</p>
+    </div>
+  </section>
+
+  <main id="app" hidden>
+    <nav class="pestanas" id="pestanas">
+      <button data-p="inicio" class="activa">Inicio</button>
+      <button data-p="films">Films</button>
+      <button data-p="comercials">Comercials</button>
+      <button data-p="about">About</button>
+    </nav>
+    <div id="vista"></div>
+    <footer class="pie">
+      <span id="pendientes"></span>
+      <button class="enlace" id="descartar" hidden>Descartar cambios</button>
+      <button class="enlace" id="salir">Olvidar token</button>
+    </footer>
+  </main>
+
+  <!-- Editor de un proyecto -->
+  <div class="capa" id="editor" hidden></div>
+
+  <div class="aviso" id="aviso" hidden></div>
+
+  <script src="assets/gestor/gestor.js?v=202609221520"></script>
+</body>
+</html>

@@ -232,12 +232,14 @@
       const nw = m.naturalWidth || m.videoWidth, nh = m.naturalHeight || m.videoHeight;
       if (!nw || !nh || (m.tagName === "IMG" && !m.complete)) continue;
       const r = m.getBoundingClientRect();
-      if (!r.width || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) continue;
+      if (!r.width || r.bottom < -200 || r.top > innerHeight + 200 || r.right < 0 || r.left > innerWidth) continue;
       medios.push({ m, r, nw, nh });
     }
     return medios;
   }
+  let estable = true;
   function dibujarFondo(R) {
+    estable = true;
     xFondo.setTransform(1, 0, 0, 1, 0, 0);
     xFondo.globalAlpha = 1; xFondo.filter = "none";
     xFondo.fillStyle = colorFondoPagina();
@@ -245,6 +247,7 @@
     for (const { m, r, nw, nh } of mediosDelFotograma()) {
       if (r.right <= R.x0 || r.left >= R.x1 || r.bottom <= R.y0 || r.top >= R.y1) continue;
       const { alfa, filtro, cs } = estiloAcumulado(m);
+      if (alfa < 0.99 || cs.transform !== "none" && cs.transform !== "matrix(1, 0, 0, 1, 0, 0)") estable = false;
       if (alfa <= 0.003) continue;
       // object-fit / object-position (como lo pinta el navegador)
       let s;
@@ -340,22 +343,24 @@
 
   // ---------- pintar un texto ----------
   let fallo = false;
-  function pintarTexto(el, dpr) {
+  // local = null → capa fija (textos que no se mueven: menú, inicio, ratón)
+  // local = {c, x} → lienzo propio pegado al texto (textos que se mueven con la página)
+  function pintarTexto(el, dpr, local = null) {
     const t0 = performance.now();
     const G = glifos(el);
     T.glifos += performance.now() - t0;
-    if (!G.length) return;
+    if (!G.length) return true;
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity, margen = 0;
     for (const g of G) {
       x0 = Math.min(x0, g.x); y0 = Math.min(y0, g.y); x1 = Math.max(x1, g.x + g.w); y1 = Math.max(y1, g.y + g.h);
       margen = Math.max(margen, g.trazo + g.blur * 2 + g.tam * 0.25);
     }
-    const R = {
-      x0: Math.floor(Math.max(0, x0 - margen)), y0: Math.floor(Math.max(0, y0 - margen)),
-      x1: Math.ceil(Math.min(innerWidth, x1 + margen)), y1: Math.ceil(Math.min(innerHeight, y1 + margen)),
-    };
+    const R = local
+      ? { x0: Math.floor(x0 - margen), y0: Math.floor(y0 - margen), x1: Math.ceil(x1 + margen), y1: Math.ceil(y1 + margen) }
+      : { x0: Math.floor(Math.max(0, x0 - margen)), y0: Math.floor(Math.max(0, y0 - margen)),
+          x1: Math.ceil(Math.min(innerWidth, x1 + margen)), y1: Math.ceil(Math.min(innerHeight, y1 + margen)) };
     const w = R.x1 - R.x0, h = R.y1 - R.y0;
-    if (w <= 0 || h <= 0) return;
+    if (w <= 0 || h <= 0) return true;
 
     // a. fondo real
     let t = performance.now();
@@ -377,6 +382,12 @@
     // c. recortar con la forma de las letras: primero el borde, luego la letra
     const W = Math.ceil(w * dpr), H = Math.ceil(h * dpr);
     tam(cMascara, W, H); tam(cComp, W, H);
+    if (local) {   // el lienzo propio se coloca justo encima del texto, dentro de su caja
+      const caja = local.caja.getBoundingClientRect();
+      tam(local.c, W, H);
+      Object.assign(local.c.style, { left: (R.x0 - caja.left - local.caja.clientLeft) + "px", top: (R.y0 - caja.top - local.caja.clientTop) + "px", width: w + "px", height: h + "px" });
+      local.x.clearRect(0, 0, W, H);
+    }
     for (const pasada of ["borde", "letra"]) {
       xMascara.setTransform(1, 0, 0, 1, 0, 0);
       xMascara.clearRect(0, 0, W, H);
@@ -419,11 +430,44 @@
       xComp.drawImage(pasada === "borde" ? cCampoB : cCampoL, 0, 0, W, H);
       xComp.globalCompositeOperation = "destination-in";
       xComp.drawImage(cMascara, 0, 0);
-      cc.drawImage(cComp, R.x0 * dpr, R.y0 * dpr);
+      if (local) local.x.drawImage(cComp, 0, 0);
+      else cc.drawImage(cComp, R.x0 * dpr, R.y0 * dpr);
     }
     T.letras += performance.now() - t;
+    return estable;
   }
   const T = { fondo: 0, mapa: 0, letras: 0, glifos: 0 };
+
+  // ---------- textos que se mueven con la página (títulos sobre las fotos en el móvil) ----------
+  // Van en un lienzo propio dentro de su foto: se desplazan con ella sin retraso
+  // y solo se recalculan cuando cambia algo (foto cargada, aparición, tamaño).
+  const fijos = new WeakMap(), locales = new Map();
+  function esFijo(el) {
+    if (!fijos.has(el)) {
+      let f = false;
+      for (let e = el; e && e !== document.body; e = e.parentElement) if (getComputedStyle(e).position === "fixed") { f = true; break; }
+      fijos.set(el, f);
+    }
+    return fijos.get(el);
+  }
+  function lienzoLocal(el) {
+    let L = locales.get(el);
+    if (!L) {
+      const caja = el.offsetParent;
+      if (!caja) return null;
+      const c = document.createElement("canvas");
+      c.className = "dif-local"; c.setAttribute("aria-hidden", "true");
+      c.style.cssText = "position:absolute;pointer-events:none;z-index:4;";
+      caja.appendChild(c);
+      L = { c, x: c.getContext("2d"), caja, sucio: true };
+      locales.set(el, L);
+    }
+    return L;
+  }
+  const ensuciar = () => locales.forEach((L) => (L.sucio = true));
+  document.addEventListener("load", ensuciar, true);
+  document.addEventListener("transitionend", ensuciar, true);
+  window.addEventListener("resize", ensuciar);
 
   // ---------- bucle ----------
   function fotograma() {
@@ -439,10 +483,19 @@
       if (capa.style.height !== alto) capa.style.height = alto;
       cc.setTransform(1, 0, 0, 1, 0, 0);
       cc.clearRect(0, 0, capa.width, capa.height);
+      let localesEsteFotograma = 0;
       for (const el of document.querySelectorAll(TEXTOS)) {
         const r = el.getBoundingClientRect();
-        if (!r.width || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) continue;
-        pintarTexto(el, dpr);
+        if (esFijo(el)) {
+          if (!r.width || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) continue;
+          pintarTexto(el, dpr);
+        } else {
+          const L = lienzoLocal(el);
+          if (!L || !L.sucio || localesEsteFotograma >= 4) continue;
+          if (!r.width || r.bottom < -100 || r.top > innerHeight + 100 || r.right < 0 || r.left > innerWidth) continue;
+          localesEsteFotograma++;
+          L.sucio = !pintarTexto(el, dpr, L);   // si las fotos aún están apareciendo, se repite
+        }
         if (fallo) break;
       }
       window.Diferencia.ms = performance.now() - t0;   // tiempo del último fotograma (para medir)
@@ -452,6 +505,7 @@
   function apagar() {
     document.documentElement.classList.remove("dif-activo");
     capa.remove();
+    locales.forEach((L) => L.c.remove());
     estilo.remove();
   }
 
