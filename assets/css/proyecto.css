@@ -1,9 +1,71 @@
 /* =====================================================================
-   PROYECTO  ·  rejilla regular formato cine + botón Contact
-   Columnas y formato: ajustes.css sección 4 (--proyecto-...)
+   PROYECTO  ·  vídeo + ficha + crew + texto + rejilla + botón
+   Tamaños y anchos: ajustes.css sección 5 (--video-... y --proyecto-...)
    La rejilla en sí está en base.css (.rejilla-cine)
    ===================================================================== */
 
+/* ---- 1. Vídeo de arriba (lo más limpio posible: sin marco ni fondo) ---- */
+.proyecto__video {
+  /* no más ancho de lo que cabe de alto, para que se vea que hay más abajo */
+  width: min(var(--video-ancho), calc(var(--video-alto-max) * var(--video-formato)));
+  margin: 0 auto;
+  aspect-ratio: var(--video-formato);
+  background: #000;
+}
+.proyecto__video iframe,
+.proyecto__video video {
+  width: 100%; height: 100%; border: 0; display: block;
+  object-fit: cover;
+}
+
+/* ---- 2. Ficha: título, directed by, produced by, año ---- */
+.proyecto__ficha {
+  text-align: center;
+  font-family: var(--fuente-texto);
+  padding: clamp(40px, 7vh, 90px) var(--margen) 0;
+}
+/* si el proyecto no tiene vídeo, la ficha empieza más abajo (el menú es fijo) */
+.sin-video .proyecto__ficha { padding-top: clamp(150px, 24vh, 240px); }
+
+.proyecto__titulo {
+  font-size: var(--proyecto-tam-titulo);
+  font-weight: 400; letter-spacing: .06em; text-transform: uppercase;
+  line-height: 1.2;
+}
+.proyecto__linea {
+  font-size: var(--proyecto-tam-ficha);
+  color: var(--color-suave);
+  letter-spacing: .06em;
+  margin-top: .5em;
+}
+
+/* ---- 3. Crew: a dos columnas ---- */
+.proyecto__crew {
+  width: min(100%, var(--proyecto-ancho-crew));
+  margin: clamp(30px, 5vh, 60px) auto 0;
+  padding: 0 var(--margen);
+  columns: 2; column-gap: 3em;
+  font-size: var(--proyecto-tam-crew);
+  color: var(--color-suave);
+  line-height: 1.7;
+}
+.proyecto__crew p { break-inside: avoid; }
+
+/* ---- 4. Texto sobre la película ---- */
+.proyecto__texto {
+  width: min(100%, var(--proyecto-ancho-texto));
+  margin: clamp(30px, 5vh, 60px) auto clamp(50px, 9vh, 110px);
+  padding: 0 var(--margen);
+  font-size: var(--proyecto-tam-texto);
+  line-height: 1.75;
+}
+.proyecto__texto p + p { margin-top: 1em; }
+
+/* si no hay crew ni texto, la rejilla no se pega a la ficha */
+.proyecto__ficha + .rejilla-cine,
+.proyecto__crew + .rejilla-cine { margin-top: clamp(40px, 8vh, 100px); }
+
+/* ---- 5. Rejilla de fotos ---- */
 .proyecto-cine {
   --cols: var(--proyecto-columnas);
   --formato: var(--proyecto-formato);
@@ -13,7 +75,7 @@
 .proyecto-cine .celda { cursor: zoom-in; }
 .proyecto-cine .celda-video { cursor: auto; }
 
-/* ---- Botón Contact ---- */
+/* ---- 6. Botón "Start a conversation" ---- */
 .pie-contacto {
   display: flex; justify-content: center;
   padding: clamp(60px, 12vh, 140px) var(--margen) calc(var(--margen) * 3 + 2rem);
@@ -28,3 +90,8 @@
 .boton-contacto:hover { background: var(--color-tinta); color: var(--color-fondo); }
 
 .no-encontrado { min-height: 100vh; display: grid; place-items: center; text-align: center; padding: 2rem; color: var(--color-suave); }
+
+@media (max-width: 700px) {
+  .proyecto__crew { columns: 1; }
+  .proyecto__ficha { padding-top: clamp(30px, 5vh, 60px); }
+}

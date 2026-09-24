@@ -1,0 +1,23 @@
+/* =====================================================================
+   CONTACT  ·  una columna de texto abajo a la derecha, con mucho hueco
+   Fuente, tamaño y ancho de la columna: ajustes.css sección 6
+   ===================================================================== */
+
+.contacto {
+  min-height: 100vh; min-height: 100svh;
+  display: flex; justify-content: flex-end; align-items: flex-end;
+  padding: calc(var(--margen) * 5) var(--margen) calc(var(--margen) * 3.2);
+  font-family: var(--fuente-about);
+  font-size: var(--about-tam);
+  line-height: 1.7;
+}
+.contacto__columna { width: min(100%, var(--about-ancho)); }
+
+.contacto__texto p + p { margin-top: 1em; }
+.contacto__datos { margin-top: 2.6em; }
+.contacto__datos a { border-bottom: 1px solid transparent; transition: border-color .3s; }
+.contacto__datos a:hover { border-color: currentColor; }
+
+@media (max-width: 700px) {
+  .contacto { padding-bottom: calc(var(--margen) + 4rem); }  /* deja sitio al menú de abajo */
+}

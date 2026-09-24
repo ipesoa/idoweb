@@ -1,7 +1,8 @@
 /* =====================================================================
    COMÚN  ·  piezas que usan todas las páginas
    ---------------------------------------------------------------------
-   - pintarMenu()      menú fijo (nombre, about, films, comercials)
+   - pintarMenu()      menú fijo (nombre, production designer, work,
+                       las secciones de AJUSTES.secciones y contact)
    - cortina           fundido al entrar/salir de página
    - Comun.autoScroll  botón y lógica del scroll automático
    - Comun.visor       visor de fotos a pantalla completa
@@ -12,19 +13,36 @@
    ===================================================================== */
 (function () {
   const A = window.AJUSTES;
-  const pagina = document.body.dataset.pagina; // inicio | films | comercials | proyecto | about
+  const pagina = document.body.dataset.pagina; // inicio | work | films | series | comercials | videoclips | proyecto | contact
 
-  /* ---------- MENÚ ---------- */
+  /* ---------- MENÚ ----------
+     Arriba en el centro:  NOMBRE · production designer · work
+     A la izquierda:       las secciones con lado "izquierda"  (films, series)
+     A la derecha:         las secciones con lado "derecha"    (commercials, videoclips)
+     Abajo en el centro:   contact
+     Todo sale de AJUSTES.secciones y AJUSTES.textos (assets/js/ajustes.js) */
   function pintarMenu() {
     const nombre = (Web.about && Web.about.nombre) || "Idoia Esteban Galván";
+    const labor = A.textos.labor || "";
+    const activa = document.body.dataset.seccion || pagina;   // en proyecto.html, la sección del proyecto
+    const enlace = (s) =>
+      `<a class="menu__seccion menu__${s.id} ${activa === s.id ? "activo" : ""}" href="${s.pagina}">${s.titulo}</a>`;
+    const lado = (cual) => A.secciones.filter((s) => (s.lado || "izquierda") === cual).map(enlace).join("");
+
     const nav = document.createElement("nav");
     nav.className = "menu";
     nav.setAttribute("aria-label", "Menú principal");
     nav.innerHTML = `
-      <a class="menu__nombre" href="index.html">${nombre}</a>
-      <a class="menu__about ${pagina === "about" ? "activo" : ""}" href="about.html">about</a>
-      <a class="menu__films ${pagina === "films" ? "activo" : ""}" href="films.html">${A.textos.films}</a>
-      <a class="menu__comercials ${pagina === "comercials" ? "activo" : ""}" href="comercials.html">${A.textos.comercials}</a>`;
+      <div class="menu__centro">
+        <a class="menu__nombre" href="index.html">${nombre}</a>
+        ${labor ? `<span class="menu__labor">${labor}</span>` : ""}
+        <a class="menu__work ${activa === "work" ? "activo" : ""}" href="work.html">${A.textos.work}</a>
+      </div>
+      <div class="menu__izq">${lado("izquierda")}</div>
+      <div class="menu__der">${lado("derecha")}</div>
+      <div class="menu__pie">
+        <a class="menu__contacto ${activa === "contact" ? "activo" : ""}" href="contact.html">${A.textos.contacto}</a>
+      </div>`;
     document.body.prepend(nav);
     if (!document.title) document.title = nombre;
   }
@@ -163,18 +181,60 @@
     return ((h >>> 0) % 10000) / 10000;
   }
 
-  /* ---------- VÍDEO: enlace de Vimeo/YouTube → dirección para incrustar ---------- */
+  /* ---------- VÍDEO ----------
+     Comun.embed(url)        → dirección para incrustar (Vimeo / YouTube)
+     Comun.reproductor(url)  → el trozo de HTML ya montado, lo más limpio
+                               posible: sin títulos, sin logotipos y, si
+                               AJUSTES.proyecto lo dice, con autoplay.
+     Vale un enlace de Vimeo o YouTube, la dirección de un archivo .mp4
+     colgado en cualquier servidor, la dirección de un reproductor
+     cualquiera, o el código <iframe …> que te dé la página que lo aloja. */
+  const P = () => (A.proyecto || {});
   function embed(url) {
     if (!url) return "";
-    let m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{6,})/);
-    if (m) return `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0`;
+    const a = P().autoplay ? 1 : 0, s = P().silencio ? 1 : 0, c = P().controles === false ? 0 : 1;
+    let m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([\w-]{6,})/);
+    if (m) return `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0&modestbranding=1&playsinline=1&controls=${c}` +
+      `&autoplay=${a}&mute=${s}${P().bucle ? `&loop=1&playlist=${m[1]}` : ""}`;
     m = url.match(/vimeo\.com\/(?:video\/)?(\d+)(?:\/(\w+))?/);
-    if (m) return `https://player.vimeo.com/video/${m[1]}${m[2] ? "?h=" + m[2] + "&" : "?"}dnt=1&title=0&byline=0&portrait=0`;
+    if (m) return `https://player.vimeo.com/video/${m[1]}?${m[2] ? "h=" + m[2] + "&" : ""}dnt=1&title=0&byline=0&portrait=0` +
+      `&autoplay=${a}&muted=${s}&controls=${c}${P().bucle ? "&loop=1" : ""}`;
     return "";
+  }
+  const esArchivoVideo = (u) => /\.(mp4|webm|ogv|m4v|mov)(\?|#|$)/i.test(u);
+  function reproductor(url, titulo = "") {
+    if (!url) return "";
+    if (/^\s*</.test(url)) return url;                       // código <iframe …> pegado tal cual
+    if (esArchivoVideo(url)) {
+      return `<video src="${url}" playsinline preload="metadata"
+        ${P().autoplay ? "autoplay" : ""} ${P().silencio ? "muted" : ""} ${P().bucle ? "loop" : ""}
+        ${P().controles === false ? "" : "controls"}></video>`;
+    }
+    const src = embed(url) || url;                            // otro reproductor cualquiera
+    return `<iframe src="${src}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+      allowfullscreen frameborder="0" title="${titulo}"></iframe>`;
+  }
+
+  /* ---------- FICHA: título / directed by / produced by ---------- */
+  function ficha(p) {
+    return [
+      p.titulo,
+      p.director ? `${A.textos.dirigido} ${p.director}` : "",
+      (p.productora || p.cliente) ? `${A.textos.producido} ${p.productora || p.cliente}` : "",
+    ].filter(Boolean);
   }
 
   pintarMenu();
   montarCortina();
 
-  window.Comun = { autoScroll, visor, aparecer, letras, azar, irA, embed };
+  /* En la página de un proyecto, el nombre de arriba se aparta al bajar
+     para que no se cruce con el título y la ficha (vuelve al subir). */
+  if (pagina === "proyecto") {
+    const nav = document.querySelector(".menu");
+    const mirar = () => nav.classList.toggle("menu--baja", window.scrollY > 60);
+    window.addEventListener("scroll", mirar, { passive: true });
+    mirar();
+  }
+
+  window.Comun = { autoScroll, visor, aparecer, letras, azar, irA, embed, reproductor, ficha };
 })();

@@ -28,9 +28,9 @@
 
 
   // ---- Qué proyectos salen ----
-  let lista = Web.proyectos("films").filter((p) => p.enInicio);
-  if (A.incluirComercials) lista = lista.concat(Web.proyectos("comercials").filter((p) => p.enInicio));
-  lista = lista.filter((p) => p.portada);
+  // Los que llevan "mostrar_en_inicio: si", de las secciones de AJUSTES.inicio.secciones
+  const cuales = A.secciones === "todas" || !A.secciones ? Web.tipos() : A.secciones;
+  let lista = cuales.flatMap((t) => Web.proyectos(t)).filter((p) => p.enInicio && p.portada);
 
   if (!lista.length) {
     pase.innerHTML = `<p class="pase__vacio">Todavía no hay proyectos marcados con<br><code>mostrar_en_inicio: si</code></p>`;
@@ -67,6 +67,7 @@
   let pos = 0, capa = 0, actual = null;
 
   function pintarPie(p) {
+    if (A.mostrarTitulos === false) return;   // ajustes.js: el inicio va solo con la imagen
     const datos = [p.ano, p.labor].filter(Boolean).join(" · ");
     pie.querySelector(".pase__titulo").innerHTML = Comun.letras(p.titulo, A.retrasoLetra);
     pie.querySelector(".pase__datos").innerHTML =
@@ -97,6 +98,12 @@
 
     // precargar la siguiente
     cargar(imagenDe(lista[(indice + 1) % lista.length]));
+
+    // Sin títulos: solo la imagen, el tiempo que dure (ajustes.js)
+    if (A.mostrarTitulos === false) {
+      await esperar(A.entradaImagen + A.textoVisible + A.salidaTexto, t);
+      return;
+    }
 
     // 2. texto entra
     await esperar(A.entradaImagen * 0.55 + A.esperaTexto, t);

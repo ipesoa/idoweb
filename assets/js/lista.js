@@ -1,20 +1,37 @@
 /* =====================================================================
-   LISTA  ·  cuadrícula de portadas de films o de comercials
+   LISTA  ·  cuadrícula de portadas de una sección
    ---------------------------------------------------------------------
-   El tipo sale de <body data-pagina="films"> o "comercials".
-   Orden: del más reciente al más antiguo (o por "orden:" en info.txt).
-   Columnas y formato de cada rectángulo: ajustes.css (sección 4, --lista-...).
+   La sección sale de <body data-pagina="films"> (o series, comercials,
+   videoclips) y "work" = TODOS los trabajos juntos, del más nuevo al
+   más antiguo, con filtros arriba: All · Films · Series · Commercials ·
+   Videoclips (los nombres y el orden: assets/js/ajustes.js).
+   Columnas y formato de cada rectángulo: ajustes.css (sección 4).
    Al pasar el ratón, la info sale a las 4 del cursor (abajo a la derecha):
-       Título / labor / año   (un párrafo alineado a la izquierda)
+       Título / directed by … / produced by …
    ===================================================================== */
 (function () {
   const tipo = document.body.dataset.pagina;
   const lista = document.getElementById("lista");
   const etiqueta = document.getElementById("etiqueta");
+  const filtros = document.getElementById("filtros");
   const proyectos = Web.proyectos(tipo);
 
+  // Filtros (solo en work.html): All + una por sección
+  if (filtros) {
+    const T = AJUSTES.textos;
+    filtros.innerHTML = [`<button data-f="todo" class="activo">${T.todo}</button>`]
+      .concat(AJUSTES.secciones.map((s) => `<button data-f="${s.id}">${s.titulo}</button>`)).join("");
+    filtros.addEventListener("click", (e) => {
+      const b = e.target.closest("button");
+      if (!b) return;
+      filtros.querySelectorAll("button").forEach((x) => x.classList.toggle("activo", x === b));
+      lista.querySelectorAll(".celda-proyecto").forEach((c) =>
+        c.classList.toggle("oculta", b.dataset.f !== "todo" && c.dataset.tipo !== b.dataset.f));
+    });
+  }
+
   if (!proyectos.length) {
-    lista.outerHTML = `<p class="lista-vacia">Aún no hay proyectos en contenido/${tipo}/</p>`;
+    lista.outerHTML = `<p class="lista-vacia">Aún no hay nada en contenido/${tipo}/</p>`;
     return;
   }
 
@@ -22,7 +39,8 @@
     const a = document.createElement("a");
     a.className = "celda-proyecto";
     a.href = p.enlace;
-    const info = [p.titulo, p.labor, p.ano].filter(Boolean).map((t) => `<span>${t}</span>`).join("");
+    a.dataset.tipo = p.tipo;
+    const info = Comun.ficha(p).map((t) => `<span>${t}</span>`).join("");
     a.innerHTML = `
       <img src="${(p.portada || {}).url || ""}" alt="${p.titulo}" loading="lazy" decoding="async"
            style="object-position:${p.encuadre}">

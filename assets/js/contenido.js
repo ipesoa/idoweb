@@ -5,9 +5,13 @@
    contenido/datos-generados.js) y lo transforma en objetos fáciles:
 
      Web.proyectos("films")     → lista de películas
-     Web.proyectos("comercials")→ lista de anuncios
+     Web.proyectos("series")    → series · "comercials" · "videoclips"
+     Web.todos()                → todos juntos, del más nuevo al más viejo
      Web.proyecto(tipo, id)     → uno concreto
-     Web.about                  → datos de la página about
+     Web.about                  → datos de la página contact
+
+   Si una clave se repite (por ejemplo varias líneas "crew:"), se guardan
+   todas, una debajo de otra.
 
    Formato de cada info.txt:
        clave: valor            (una por línea, arriba)
@@ -31,7 +35,10 @@
       if (/^\s*---\s*$/.test(l)) { i++; break; }
       if (!l.trim() || /^\s*#/.test(l)) continue;
       const m = l.match(/^\s*([^:]+?)\s*:\s*(.*)$/);
-      if (m) out[normalizar(m[1])] = m[2].trim();
+      if (m) {
+        const k = normalizar(m[1]), v = m[2].trim();
+        out[k] = out[k] ? out[k] + "\n" + v : v;   // claves repetidas (crew:) → una debajo de otra
+      }
     }
     out.texto = lineas.slice(i).join("\n").trim();
     return out;
@@ -66,9 +73,12 @@
       titulo: info.titulo || bruto.carpeta,
       ano: info.ano || "",
       labor: info.labor || "",
-      director: info.director || "",
-      productora: info.productora || "",
+      // "director:" o "directed by:" · "productora:", "produced by:" o "cliente:"
+      director: info.director || info.directed_by || info.dirigido_por || "",
+      productora: info.productora || info.produced_by || info.producido_por || "",
       cliente: info.cliente || "",
+      // "crew:" (se puede repetir una línea por persona) → lista
+      crew: (info.crew || "").split("\n").map((l) => l.trim()).filter(Boolean),
       enInicio: esSi(info.mostrar_en_inicio),
       orden: parseFloat(info.orden) || 0,
       encuadre: info.encuadre || "center",
@@ -89,8 +99,17 @@
 
   const cache = {};
   function proyectos(tipo) {
+    if (tipo === "work" || tipo === "todo") return todos();
     if (!cache[tipo]) cache[tipo] = (DATOS[tipo] || []).map((b) => crearProyecto(tipo, b)).sort(ordenar);
     return cache[tipo];
+  }
+
+  // Los tipos de la web (films, series, comercials, videoclips): ajustes.js
+  const tipos = () => ((window.AJUSTES && AJUSTES.secciones) || [{ id: "films" }, { id: "comercials" }]).map((s) => s.id);
+
+  // Todos los trabajos con página propia, del más nuevo al más viejo
+  function todos() {
+    return tipos().flatMap((t) => proyectos(t)).sort(ordenar);
   }
 
   function proyecto(tipo, id) {
@@ -130,12 +149,12 @@
     };
   }
 
-  // Todos los trabajos (web + extra) ordenados por año, para la filmografía
+  // Todos los trabajos (los de la web + los de filmografia-extra.txt) por año
   function filmografia() {
-    const todos = [...proyectos("films"), ...proyectos("comercials")]
+    return todos()
       .map((p) => ({ ano: p.ano, titulo: p.titulo, labor: p.labor, director: p.director || p.cliente, tipo: p.tipo, enlace: p.enlace }))
-      .concat(about ? about.extra : []);
-    return todos.sort((a, b) => (parseInt(b.ano) || 0) - (parseInt(a.ano) || 0));
+      .concat(about ? about.extra : [])
+      .sort((a, b) => (parseInt(b.ano) || 0) - (parseInt(a.ano) || 0));
   }
 
   // Convierte texto libre en párrafos HTML (línea en blanco = párrafo nuevo)
@@ -146,5 +165,5 @@
         .replace(/\*([^*]+)\*/g, "<em>$1</em>")}</p>`).join("");
   }
 
-  window.Web = { proyectos, proyecto, about, filmografia, parrafos, leerInfo };
+  window.Web = { proyectos, proyecto, todos, tipos, about, filmografia, parrafos, leerInfo };
 })();

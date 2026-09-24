@@ -1,0 +1,13 @@
+# Finales de línea correctos en Mac y en Windows
+*            text=auto eol=lf
+*.command    text eol=lf
+*.sh         text eol=lf
+*.bat        text eol=crlf
+*.ps1        text eol=crlf
+*.jpg  binary
+*.jpeg binary
+*.png  binary
+*.webp binary
+*.gif  binary
+*.mp4  binary
+*.mov  binary

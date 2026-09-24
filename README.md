@@ -56,9 +56,9 @@ Se abre `https://ipesoa.github.io/idoweb/gestor.html` en el navegador. La primer
 | Pestaña | Qué se hace |
 |---|---|
 | **Inicio** | Pinchar cada película/anuncio para que salga (verde) o no en el pase del inicio |
-| **Films / Comercials** | ＋ Nueva · pinchar para editar (datos, fotos, portada) · casillas para seleccionar varias y eliminar o poner/quitar del inicio a la vez |
-| **Editor** | Arrastrar fotos para ordenarlas (la primera es la portada), añadir (se reducen solas), seleccionar y eliminar |
-| **About** | Líneas: nombre, labor, ciudad, email, teléfono, instagram (las vacías no salen) · trabajos sin fotos para la lista |
+| **Films / Series / Commercials / Videoclips** | ＋ Nuevo · pinchar para editar (datos, fotos, portada) · casillas para seleccionar varias y eliminar o poner/quitar del inicio a la vez |
+| **Editor** | Vídeo de arriba, crew (una línea por persona), texto · arrastrar fotos para ordenarlas (la primera es la portada), añadir (se reducen solas), seleccionar y eliminar |
+| **Contact** | El texto de la página Contact + nombre, email, teléfono e instagram · trabajos sin fotos para la lista |
 
 Nada se sube hasta pulsar **Publicar cambios**. El **LED**: 🟡 cambios sin publicar · 🔵 subiendo · 🟠 GitHub actualizando la web (1-2 min) · 🟢 la web ya está al día · 🔴 error.
 

@@ -176,10 +176,7 @@ button { cursor: pointer; background: none; border: 0; }
 
   <main id="app" hidden>
     <nav class="pestanas" id="pestanas">
-      <button data-p="inicio" class="activa">Inicio</button>
-      <button data-p="films">Films</button>
-      <button data-p="comercials">Comercials</button>
-      <button data-p="about">About</button>
+      <!-- las pestañas de las secciones las pone gestor.js (TIPOS) -->
     </nav>
     <div id="vista"></div>
     <footer class="pie">
@@ -221,6 +218,17 @@ button { cursor: pointer; background: none; border: 0; }
   const MEDIO = /\.(jpe?g|png|webp|gif|avif|mp4|webm|mov|m4v)$/i;
   const VIDEO = /\.(mp4|webm|mov|m4v)$/i;
   const MAX_LADO = 2600, CALIDAD = 0.82;
+
+  /* Las secciones de la web. Si algún día se añade otra, se pone aquí y en
+     assets/js/ajustes.js (AJUSTES.secciones) y en los generadores de datos. */
+  const TIPOS = [
+    { id: "films",      titulo: "Films",       uno: "película",  cliente: false },
+    { id: "series",     titulo: "Series",      uno: "serie",     cliente: false },
+    { id: "comercials", titulo: "Commercials", uno: "anuncio",   cliente: true },
+    { id: "videoclips", titulo: "Videoclips",  uno: "videoclip", cliente: true },
+  ];
+  const IDS = TIPOS.map((t) => t.id);
+  const deTipo = (id) => TIPOS.find((t) => t.id === id) || { id, titulo: id, uno: "proyecto", cliente: false };
 
   /* ================= repositorio y token ================= */
   function repoDesdeUrl() {
@@ -271,12 +279,16 @@ button { cursor: pointer; background: none; border: 0; }
       if (/^\s*---\s*$/.test(l)) { i++; break; }
       if (!l.trim() || /^\s*#/.test(l)) continue;
       const m = l.match(/^\s*([^:]+?)\s*:\s*(.*)$/);
-      if (m) { const k = normal(m[1]); campos[k] = m[2].trim(); orden.push(k); }
+      if (m) {
+        const k = normal(m[1]), v = m[2].trim();
+        campos[k] = campos[k] ? campos[k] + "\n" + v : v;   // claves repetidas (crew:) → una debajo de otra
+        orden.push(k);
+      }
     }
     return { campos, orden, texto: lineas.slice(i).join("\n").trim() };
   }
   const NOMBRE_CLAVE = { ano: "año" };
-  const ORDEN_CLAVES = ["titulo", "ano", "labor", "director", "productora", "cliente", "formato", "mostrar_en_inicio", "encuadre", "video", "orden", "imdb", "color_letra", "color_borde"];
+  const ORDEN_CLAVES = ["titulo", "ano", "labor", "director", "productora", "cliente", "formato", "mostrar_en_inicio", "video", "crew", "encuadre", "orden", "imdb", "color_letra", "color_borde"];
   const SIEMPRE = ["titulo", "ano", "labor", "director", "mostrar_en_inicio"];
   function infoATexto(p) {
     const c = p.info.campos, lineas = [];
@@ -284,7 +296,8 @@ button { cursor: pointer; background: none; border: 0; }
     for (const k of claves) {
       const v = (c[k] ?? "").toString().trim();
       if (v === "" && !SIEMPRE.includes(k)) continue;
-      lineas.push(`${NOMBRE_CLAVE[k] || k}: ${v}`);
+      // un valor con varias líneas (crew) se guarda como varias líneas "clave: ..."
+      for (const linea of v.split("\n")) lineas.push(`${NOMBRE_CLAVE[k] || k}: ${linea.trim()}`);
     }
     return lineas.join("\n") + "\n---\n" + (p.info.texto ? p.info.texto + "\n" : "");
   }
@@ -303,11 +316,11 @@ button { cursor: pointer; background: none; border: 0; }
 
     const datosTexto = arbol.has("contenido/datos-generados.js") ? await leerBlobTexto(arbol.get("contenido/datos-generados.js")) : "";
     const w = {}; try { new Function("window", datosTexto)(w); } catch (e) { /* vacío */ }
-    const contenido = w.CONTENIDO || { films: [], comercials: [], about: { info: "", filmografia: "", archivos: [] } };
+    const contenido = w.CONTENIDO || { about: { info: "", filmografia: "", archivos: [] } };
 
     // proyectos = carpetas que existen en GitHub (como hace el script de las carpetas)
     const proyectos = [];
-    for (const tipo of ["films", "comercials"]) {
+    for (const tipo of IDS) {
       const carpetas = new Set();
       for (const ruta of arbol.keys()) {
         const m = ruta.match(new RegExp(`^contenido/${tipo}/([^/]+)/`));
@@ -413,7 +426,13 @@ button { cursor: pointer; background: none; border: 0; }
   const ordenar = (a, b) => (parseInt(b.info.campos.ano) || 0) - (parseInt(a.info.campos.ano) || 0) || (a.info.campos.titulo || "").localeCompare(b.info.campos.titulo || "");
   const etiquetaEstado = (p) => (p.nuevo ? `<span class="etiqueta nuevo">nuevo</span>` : p.sucio ? `<span class="etiqueta editado">editado</span>` : "");
 
+  function pintarPestanas() {
+    $("#pestanas").innerHTML = [`<button data-p="inicio">Inicio</button>`]
+      .concat(TIPOS.map((t) => `<button data-p="${t.id}">${t.titulo}</button>`))
+      .concat([`<button data-p="about">Contact</button>`]).join("");
+  }
   function pintar() {
+    if (!$("#pestanas button")) pintarPestanas();
     $$("#pestanas button").forEach((b) => b.classList.toggle("activa", b.dataset.p === pestana));
     const v = $("#vista");
     if (pestana === "inicio") v.innerHTML = vistaInicio();
@@ -437,20 +456,20 @@ button { cursor: pointer; background: none; border: 0; }
     return `<div class="cabecera"><h2>Pase de imágenes del inicio</h2>
         <button class="boton" data-accion="inicio-todos">Todos</button><button class="boton" data-accion="inicio-ninguno">Ninguno</button>
         <p>Pincha una película o anuncio para que salga (verde) o no salga en el inicio. Ahora salen <b>${n}</b>. El orden en la web es aleatorio.</p></div>
-      ${grupo("films", "Films")}${grupo("comercials", "Comercials")}`;
+      ${TIPOS.map((t) => grupo(t.id, t.titulo)).join("")}`;
   }
 
   function vistaLista(tipo) {
     const lista = E.proyectos.filter((p) => p.tipo === tipo).sort(ordenar);
-    const nombre = tipo === "films" ? "película" : "anuncio";
+    const T = deTipo(tipo), nombre = T.uno;
     const sel = [...seleccion].filter((k) => k.startsWith(tipo + "/"));
-    return `<div class="cabecera"><h2>${tipo === "films" ? "Films" : "Comercials"} <small style="color:var(--suave);font-weight:400">(${lista.length})</small></h2>
+    return `<div class="cabecera"><h2>${T.titulo} <small style="color:var(--suave);font-weight:400">(${lista.length})</small></h2>
         ${sel.length ? `<div class="seleccion"><b>${sel.length} seleccionad${sel.length > 1 ? "os" : "o"}</b>
           <button class="boton" data-accion="sel-inicio-si">Poner en el inicio</button>
           <button class="boton" data-accion="sel-inicio-no">Quitar del inicio</button>
           <button class="boton boton--peligro" data-accion="sel-borrar">Eliminar</button>
           <button class="enlace" data-accion="sel-nada">Deseleccionar</button></div>` : ""}
-        <button class="boton boton--principal" data-accion="nuevo" data-tipo="${tipo}">＋ Nueva ${nombre}</button>
+        <button class="boton boton--principal" data-accion="nuevo" data-tipo="${tipo}">＋ ${/a$/.test(nombre) ? "Nueva" : "Nuevo"} ${nombre}</button>
         <p>Pincha para editar. Marca la casilla (arriba a la izquierda) para seleccionar varias y borrarlas o ponerlas en el inicio a la vez.</p></div>
       <div class="rejilla">${lista.map((p) => {
         const k = p.tipo + "/" + p.carpeta;
@@ -465,24 +484,27 @@ button { cursor: pointer; background: none; border: 0; }
   function vistaAbout() {
     const c = E.about.info.campos;
     const campo = (k, etiqueta, ph = "") => `<label class="campo"><span>${etiqueta}</span><input data-about="${k}" value="${esc(c[k] || "")}" placeholder="${esc(ph)}"></label>`;
-    return `<div class="bloque"><h3>Datos del about</h3>
-        <p>Cada dato relleno es una línea en la web, en este orden. Deja vacío lo que no quieras que salga.</p>
+    return `<div class="bloque"><h3>Texto de la página Contact</h3>
+        <p>Es lo único que se lee en esa página (una línea en blanco = párrafo nuevo).</p>
+        <label class="campo campo--ancho"><textarea data-about-texto rows="7">${esc(E.about.info.texto || "")}</textarea></label></div>
+      <div class="bloque"><h3>Datos de contacto</h3>
+        <p>Los rellenos salen como enlaces debajo del texto. El nombre es el que se ve arriba en toda la web.</p>
         <div class="campos">
-          ${campo("nombre", "Nombre", "Idoia Esteban Galván")}
-          ${campo("subtitulo", "Labor", "Diseño de producción")}
-          ${campo("ubicacion", "Ciudad", "Based in Madrid")}
-          ${campo("email", "Email (también para el botón Contact)", "nombre@correo.com")}
+          ${campo("nombre", "Nombre (menú)", "Idoia Esteban Galván")}
+          ${campo("email", "Email", "nombre@correo.com")}
           ${campo("telefono", "Teléfono", "+34 600 000 000")}
           ${campo("instagram", "Instagram", "@usuario")}
+          ${campo("subtitulo", "Labor (no se usa ahora)", "Production designer")}
+          ${campo("ubicacion", "Ciudad (no se usa ahora)", "Based in Madrid")}
         </div></div>
       <div class="bloque"><h3>Lista de trabajos: los que no tienen fotos</h3>
-        <p>Los films y comercials de las otras pestañas ya salen solos en la lista del about. Aquí puedes añadir trabajos sin página ni fotos.</p>
+        <p>Los trabajos de las otras pestañas ya salen solos. Aquí se guardan los que no tienen página ni fotos.</p>
         <table class="tabla"><tbody>${E.about.extra.map((f, i) => `<tr>
           <td><input data-extra="${i}" data-k="ano" value="${esc(f.ano)}" placeholder="Año"></td>
           <td><input data-extra="${i}" data-k="titulo" value="${esc(f.titulo)}" placeholder="Título"></td>
           <td><input data-extra="${i}" data-k="labor" value="${esc(f.labor)}" placeholder="Labor"></td>
           <td><input data-extra="${i}" data-k="quien" value="${esc(f.quien)}" placeholder="Director o cliente"></td>
-          <td><select data-extra="${i}" data-k="tipo"><option value="films"${f.tipo !== "comercials" ? " selected" : ""}>Film</option><option value="comercials"${f.tipo === "comercials" ? " selected" : ""}>Comercial</option></select></td>
+          <td><select data-extra="${i}" data-k="tipo">${TIPOS.map((t) => `<option value="${t.id}"${f.tipo === t.id ? " selected" : ""}>${t.titulo}</option>`).join("")}</select></td>
           <td><button class="boton boton--peligro" data-quitar-extra="${i}" title="Quitar">✕</button></td></tr>`).join("")}</tbody></table>
         <button class="boton" data-accion="extra-anadir" style="margin-top:10px">＋ Añadir trabajo</button></div>`;
   }
@@ -496,13 +518,13 @@ button { cursor: pointer; background: none; border: 0; }
   }
   function pintarEditor() {
     const { p, campos } = ed;
-    const films = p.tipo === "films";
+    const T = deTipo(p.tipo);
     const campo = (k, etiqueta, ph = "", ancho = false) => `<label class="campo ${ancho ? "campo--ancho" : ""}"><span>${etiqueta}</span><input data-campo="${k}" value="${esc(campos[k] || "")}" placeholder="${esc(ph)}"></label>`;
     const encuadres = [["", "Centro"], ["top", "Arriba"], ["bottom", "Abajo"], ["left", "Izquierda"], ["right", "Derecha"]];
     const si = /^(si|sí)$/i.test(campos.mostrar_en_inicio || "");
     $("#editor").innerHTML = `<div class="panel">
       <div class="panel__cabecera"><h2>${esc(campos.titulo || "Sin título")}</h2>
-        <button class="boton boton--peligro" data-ed="borrar">Eliminar ${films ? "película" : "anuncio"}</button>
+        <button class="boton boton--peligro" data-ed="borrar">Eliminar ${T.uno}</button>
         <button class="boton" data-ed="cancelar">Cancelar</button>
         <button class="boton boton--principal" data-ed="guardar">Guardar</button></div>
       <div class="campos">
@@ -510,13 +532,14 @@ button { cursor: pointer; background: none; border: 0; }
         ${campo("ano", "Año", "2024")}
         ${campo("labor", "Labor", "Dirección de arte")}
         ${campo("director", "Dirección", "Nombre del director/a")}
-        ${films ? campo("productora", "Productora") : campo("cliente", "Cliente / marca")}
-        ${campo("formato", "Formato (opcional)", "Cortometraje, serie…")}
-        ${campo("video", "Vídeo de Vimeo / YouTube (opcional)", "https://vimeo.com/…")}
+        ${T.cliente ? campo("cliente", "Cliente / marca") : campo("productora", "Productora")}
+        ${campo("formato", "Formato (opcional)", "Largometraje, serie…")}
+        ${campo("video", "Vídeo de arriba (Vimeo, YouTube, .mp4 o código iframe)", "https://vimeo.com/…", true)}
         ${campo("imdb", "Enlace IMDb (opcional)")}
         <label class="campo"><span>Encuadre de la portada</span><select data-campo="encuadre">${encuadres.map(([v, t]) => `<option value="${v}"${(campos.encuadre || "") === v ? " selected" : ""}>${t}</option>`).join("")}</select></label>
         <label class="campo"><span>Pase del inicio</span><button type="button" class="interruptor ${si ? "si" : ""}" data-ed="inicio" style="justify-content:flex-start;padding:8px 0"><i></i><span>${si ? "Sale en el inicio" : "No sale en el inicio"}</span></button></label>
-        <label class="campo campo--ancho"><span>Texto (se guarda; ahora no se muestra en la web)</span><textarea data-campo="texto">${esc(ed.texto)}</textarea></label>
+        <label class="campo campo--ancho"><span>Crew · una línea por persona (sale a dos columnas)</span><textarea data-campo="crew" rows="5" placeholder="Fotografía · Nombre Apellido&#10;Vestuario · Nombre Apellido">${esc(campos.crew || "")}</textarea></label>
+        <label class="campo campo--ancho"><span>Texto sobre el proyecto (sale debajo del crew)</span><textarea data-campo="texto">${esc(ed.texto)}</textarea></label>
       </div>
       <div class="fotos-barra"><h3>Fotos (${ed.fotos.length}) · arrastra para ordenar · la primera es la portada</h3>
         ${ed.sel.size ? `<button class="boton" data-ed="portada">Poner de portada</button><button class="boton boton--peligro" data-ed="borrar-fotos">Eliminar ${ed.sel.size} foto${ed.sel.size > 1 ? "s" : ""}</button><button class="enlace" data-ed="sel-nada">Deseleccionar</button>` : ""}
@@ -628,7 +651,7 @@ button { cursor: pointer; background: none; border: 0; }
 
   const slug = (t) => t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ñ/g, "n").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   function nuevoProyecto(tipo) {
-    const titulo = prompt(tipo === "films" ? "Título de la película:" : "Título del anuncio:");
+    const titulo = prompt(`Título (${deTipo(tipo).uno}):`);
     if (!titulo) return;
     const ano = prompt("Año:", String(new Date().getFullYear())) || "";
     let carpeta = `${ano}-${slug(titulo)}`.replace(/^-/, ""), n = 2;
@@ -649,8 +672,9 @@ button { cursor: pointer; background: none; border: 0; }
     s += "   No lo edites a mano: cambia las carpetas de /contenido y vuelve a generarlo. */\n";
     s += "window.CONTENIDO = {\n";
     const archivos = (lista) => "[" + lista.map((a) => `\n      {"f":"${escJson(a.f)}"${a.w && a.h ? `,"w":${a.w},"h":${a.h}` : ""}}`).join(",") + "]";
-    for (const tipo of ["films", "comercials"]) {
+    for (const tipo of IDS) {
       s += `  "${tipo}": [\n`;
+      listaPorTipo[tipo] = listaPorTipo[tipo] || [];
       for (const d of listaPorTipo[tipo].slice().sort((a, b) => (a.carpeta < b.carpeta ? -1 : 1))) {
         s += `    {\n      "carpeta": "${escJson(d.carpeta)}",\n      "info": \`${escJs(d.info)}\`,\n      "archivos": ${archivos(d.archivos)}\n    },\n`;
       }
@@ -676,7 +700,7 @@ button { cursor: pointer; background: none; border: 0; }
       const blobArchivo = async (blob) => (await gh("POST", `/repos/${REPO}/git/blobs`, { content: await blobAB64(blob), encoding: "base64" })).sha;
       const poner = (path, sha) => entradas.push({ path, mode: "100644", type: "blob", sha });
 
-      const datos = { films: [], comercials: [] };
+      const datos = {}; IDS.forEach((t) => (datos[t] = []));
       let subidas = 0, totalSubidas = E.proyectos.reduce((n, p) => n + p.fotos.filter((f) => f.blob).length + (p.movil && p.movil.blob ? 1 : 0), 0);
 
       for (const p of E.proyectos) {
@@ -934,6 +958,7 @@ button { cursor: pointer; background: none; border: 0; }
   document.addEventListener("input", (e) => {
     const el = e.target;
     if (el.dataset.about) { E.about.info.campos[el.dataset.about] = el.value; E.aboutSucio = true; actualizarEstado(); }
+    if (el.dataset.aboutTexto !== undefined) { E.about.info.texto = el.value; E.aboutSucio = true; actualizarEstado(); }
     if (el.dataset.extra !== undefined) { E.about.extra[+el.dataset.extra][el.dataset.k] = el.value; E.aboutSucio = true; actualizarEstado(); }
   });
   document.addEventListener("change", (e) => {

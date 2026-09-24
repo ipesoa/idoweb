@@ -3,65 +3,84 @@
    ---------------------------------------------------------------------
    Tipografías, tamaños, grosor del borde de las letras, cuadrículas...
    todo lo que se suele retocar está AQUÍ, por secciones.
-   Los COLORES de las letras del inicio (tabla fondo → letra → borde)
-   y los tiempos de las animaciones están en  assets/js/ajustes.js
+   Lo que más se toca (EL NOMBRE) está lo primero, en la sección 0.
+   Los textos (Films, Series, Commercials...), los tiempos y el color
+   de las letras están en  assets/js/ajustes.js
    ===================================================================== */
 
 /* ---------- 1. TIPOGRAFÍAS -------------------------------------------
    Arial viene en todos los ordenadores (no hay que cargar nada).
    Para usar una de Google Fonts: añade su @import aquí debajo y pon
-   su nombre en la variable que quieras.                               */
+   su nombre en la variable que quieras (por ejemplo en --nombre-fuente). */
 @import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap");
 
 :root {
   --arial: Arial, "Helvetica Neue", Helvetica, sans-serif;
 
-  --fuente-inicio:   var(--arial);   /* título, año y labor del pase del inicio */
-  --fuente-menu:     var(--arial);   /* IDOIA ESTEBAN GALVÁN, about, films, comercials */
-  --fuente-etiqueta: var(--arial);   /* texto que sigue al ratón en films/comercials */
-  --fuente-about:    var(--arial);   /* página about */
-  --fuente-texto:    var(--arial);   /* resto (botón contact, auto...) */
+/* =====================================================================
+   0. EL NOMBRE  ·  IDOIA ESTEBAN GALVÁN  (lo primero, se toca a menudo)
+   ---------------------------------------------------------------------
+   TAMAÑO: 0.8rem = pequeño (como el resto) · 1rem · 1.2rem · 1.6rem…
+   FUENTE: var(--arial) o el nombre de una fuente que hayas importado
+           arriba, por ejemplo: "Instrument Serif", serif
+   ESPACIO ENTRE LETRAS: 0 = normal · .08em · .12em · .3em = muy suelto
+   ===================================================================== */
+  --nombre-tam:       1.15rem;
+  --nombre-fuente:    var(--arial);
+  --nombre-espaciado: .12em;
+  --nombre-negrita:   400;            /* 400 normal · 700 negrita */
+  --nombre-tam-movil: 1rem;           /* en el móvil */
+
+  /* Las demás letras del menú (production designer, work, films, series,
+     commercials, videoclips, contact) van todas con este tamaño        */
+  --menu-tam: .8rem;
+
+  --fuente-inicio:   var(--arial);   /* textos del pase del inicio */
+  --fuente-menu:     var(--arial);   /* menú (menos el nombre, que tiene la suya) */
+  --fuente-etiqueta: var(--arial);   /* texto que sigue al ratón en las cuadrículas */
+  --fuente-about:    var(--arial);   /* página contact */
+  --fuente-texto:    var(--arial);   /* resto (botones, ficha del proyecto...) */
   --fuente-titulos:  "Instrument Serif", "Times New Roman", serif;  /* solo laboratorio */
 
-/* ---------- 2. INICIO (index) · TAMAÑOS Y BORDE ----------------------
-   Ahora todo va igual que el texto del about (--about-tam, sección 5).
-   Para un tamaño propio pon un valor, p. ej.  .9rem  o
-   clamp(mínimo, tamaño según ancho de pantalla, máximo)                */
-  --inicio-tam-nombre:  var(--about-tam);   /* IDOIA ESTEBAN GALVÁN  (= texto del about) */
-  --inicio-tam-about:   var(--about-tam);   /* about                 (= texto del about) */
-  --inicio-tam-menu:    var(--about-tam);   /* FILMS / COMERCIALS    (= texto del about) */
-  --inicio-tam-titulo:  var(--inicio-tam-nombre);   /* título de la peli (= IDOIA ESTEBAN GALVÁN) */
-  --inicio-tam-datos:   .66rem;             /* año · labor          */
+/* ---------- 2. INICIO (index) ----------------------------------------
+   El pase del inicio ya no lleva títulos: solo la imagen.
+   Aquí se ajusta el menú que va encima de las fotos.                   */
+  --inicio-tam-nombre:  var(--nombre-tam);  /* nombre en el inicio */
+  --inicio-tam-menu:    var(--menu-tam);    /* production designer, work, films… */
+  --inicio-tam-nombre-movil: var(--nombre-tam-movil);
 
-  /* en el móvil */
-  --inicio-tam-nombre-movil: var(--about-tam);
-  --inicio-tam-titulo-movil: var(--about-tam);
+  --inicio-separacion-lineas: 1.1em;  /* hueco entre nombre / production designer / work */
+  --inicio-separacion-columna: .55em; /* hueco entre films y series (y entre los de la derecha) */
 
   /* Grosor del BORDE de las letras del inicio (em = proporcional a cada letra)
-     0 = sin borde · 0.06em = fino · 0.08em · 0.12em = medio · 0.18em = gordo
-     (la mitad queda por fuera de la letra, así que se ve la mitad)    */
+     0 = sin borde · 0.04em · 0.08em · 0.12em = medio · 0.18em = gordo   */
   --inicio-borde-grosor: 0.04em;
 
-  --inicio-espaciado-menu: 0.14em;    /* separación entre letras del menú */
-  --inicio-negrita-titulo: 400;       /* 400 normal · 700 negrita           */
+  --inicio-espaciado-menu: 0.14em;    /* separación entre letras del menú del inicio */
+
+  /* (solo por si algún día se vuelven a poner los títulos en el pase) */
+  --inicio-tam-titulo:  var(--nombre-tam);
+  --inicio-tam-titulo-movil: var(--nombre-tam-movil);
+  --inicio-tam-datos:   .66rem;
+  --inicio-negrita-titulo: 400;
 
 /* ---------- 2b. COLOR DE LAS LETRAS: "Difference dirigido" -----------
    El color de letra y de borde se calcula píxel a píxel a partir de la
    foto que hay debajo (assets/js/diferencia.js) con el modelo de
    assets/js/diferencia-modelo.js (Difference + boyas).
    Estas variables son solo el "plan B" si la capa no puede funcionar
-   (abrir la web con doble clic en Chrome): Difference base con CSS.
-   (Se rellenan solas con los colores de mezcla del modelo.)           */
+   (abrir la web con doble clic en Chrome): Difference base con CSS.   */
   --dif-letra:  #FFFFFF;
   --dif-borde:  #18A8FF;
   --dif-mezcla: difference;
 
 /* ---------- 3. MENÚ EN EL RESTO DE PÁGINAS -------------------------- */
-  --menu-tam-nombre: .95rem;
-  --menu-tam-otros:  .8rem;           /* about, films, comercials */
-  --menu-borde-grosor: 0.08em;        /* borde de las letras del menú (films, comercials, proyecto) */
+  --menu-tam-nombre: var(--nombre-tam);
+  --menu-tam-otros:  var(--menu-tam);   /* work, films, series, commercials, videoclips, contact */
+  --menu-borde-grosor: 0.08em;          /* borde de las letras del menú */
   --menu-mezcla: var(--dif-mezcla);
   --menu-color:  var(--dif-letra);
+  --menu-separacion: 1.6em;             /* hueco entre las secciones de la fila de arriba */
 
 /* ---------- 4. CUADRÍCULAS (formato cine) ----------------------------
    Formato de cada rectángulo = ancho / alto
@@ -70,38 +89,50 @@
      16 / 9    tele (1.78)
      1.5 / 1   foto
    Columnas = cuántos rectángulos por fila.                            */
-  --lista-formato:          1.85 / 1;   /* FILMS y COMERCIALS */
+  --lista-formato:          1.85 / 1;   /* work, films, series, commercials, videoclips */
   --lista-columnas:         2;
   --lista-columnas-movil:   1;
 
-  --proyecto-formato:        1.85 / 1;  /* página de cada peli / anuncio */
+  --proyecto-formato:        1.85 / 1;  /* fotos dentro de cada proyecto */
   --proyecto-columnas:       2;
   --proyecto-columnas-movil: 1;
 
   --hilo:       1px;         /* hilo blanco alrededor de cada imagen (no cambia el color de las letras) */
   --hilo-color: #f4f1ec;
 
-  --hover-luz:  .7;          /* FILMS/COMERCIALS: luz de las demás fotos al pasar el ratón (1 = igual) */
+  --hover-luz:  .7;          /* luz de las demás fotos al pasar el ratón (1 = igual) */
 
-  /* Texto que sigue al ratón en FILMS / COMERCIALS (sale a las 4 del cursor) */
+  /* Texto que sigue al ratón (sale a las 4 del cursor):
+     título / directed by / produced by                                */
   --etiqueta-tam:        .8rem;
   --etiqueta-separacion: 18px;        /* distancia al cursor */
   --texto-mezcla: var(--dif-mezcla);  /* igual que el resto: sección 2b */
   --texto-color:  var(--dif-letra);
 
-/* ---------- 5. ABOUT (columna abajo a la derecha) ------------------ */
-  --about-tam:        .8rem;          /* todo el texto del about */
-  --about-tam-nombre: .8rem;
-  --about-ancho:      380px;          /* ancho de la columna */
-  --about-alto-lista: 34vh;           /* alto de la lista de trabajos (el resto se ve con scroll) */
+/* ---------- 5. PÁGINA DE PROYECTO (vídeo + ficha + crew + texto) ---- */
+  --video-formato:     1.78;          /* formato del vídeo de arriba: 1.78 = 16/9 · 1.85 = cine · 2.39 = scope */
+  --video-ancho:       100vw;         /* 100vw = de lado a lado · min(100vw, 1400px) = con márgenes */
+  --video-alto-max:    86vh;          /* no más alto que esto, para que se vea que sigue abajo */
+  --proyecto-tam-titulo: 1.3rem;      /* título debajo del vídeo */
+  --proyecto-tam-ficha:  .8rem;       /* directed by / produced by */
+  --proyecto-tam-crew:   .78rem;      /* lista de crew (dos columnas) */
+  --proyecto-tam-texto:  .85rem;      /* texto sobre la película */
+  --proyecto-ancho-texto: 620px;      /* ancho de la columna de texto */
+  --proyecto-ancho-crew:  760px;      /* ancho del bloque de crew */
 
-/* ---------- 6. COLORES GENERALES ------------------------------------ */
+/* ---------- 6. CONTACT (antes about) -------------------------------- */
+  --about-tam:        .8rem;          /* todo el texto del contact */
+  --about-tam-nombre: .8rem;
+  --about-ancho:      420px;          /* ancho de la columna de texto */
+  --about-alto-lista: 34vh;
+
+/* ---------- 7. COLORES GENERALES ------------------------------------ */
   --color-fondo:  #0d0c0b;
   --color-tinta:  #f2ece2;
   --color-suave:  #8f877c;
   --color-acento: #c9a36b;
 
-/* ---------- 7. TIEMPOS Y ESPACIOS ----------------------------------- */
+/* ---------- 8. TIEMPOS Y ESPACIOS ----------------------------------- */
   --t-cortina: 650ms;          /* fundido al cambiar de página      */
   --t-hover:   600ms;          /* zoom/oscurecer al pasar el ratón  */
   --t-color:   900ms;          /* cambio de color de letra/borde */
@@ -111,4 +142,5 @@
   /* (nombres antiguos, se mantienen por compatibilidad) */
   --trazo-grosor: var(--inicio-borde-grosor);
   --trazo-color:  var(--dif-borde);
+  --inicio-tam-about: var(--menu-tam);
 }

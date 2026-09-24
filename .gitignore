@@ -1,0 +1,7 @@
+# configuración personal (usuario/repositorio). El token NO está aquí:
+# en Mac va en el Llavero; en Windows, cifrado en %APPDATA%\web-portfolio
+herramientas-mac/.config-local
+herramientas-windows/.config-local
+.DS_Store
+Thumbs.db
+*.tmp

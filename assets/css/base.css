@@ -35,8 +35,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   position: fixed; left: 0; top: 0;   /* el tamaño lo pone diferencia.js (= pantalla visible) */
   z-index: 80; pointer-events: none;
 }
-.dif-activo :is(.menu a, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]),
-.dif-activo :is(.menu a, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]) * {
+.dif-activo :is(.menu a, .menu__labor, .filtros-work button, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]),
+.dif-activo :is(.menu a, .menu__labor, .filtros-work button, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]) * {
   color: transparent !important;
   -webkit-text-stroke-color: transparent !important;
   text-decoration-color: transparent !important;
@@ -52,7 +52,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .cortina.abierta { opacity: 0; }
 
-/* ---------- MENÚ --------------------------------------------------- */
+/* ---------- MENÚ ---------------------------------------------------
+   Arriba en el centro:  NOMBRE · production designer · work
+   A la izquierda:       films · series      (a media altura)
+   A la derecha:         commercials · videoclips
+   Abajo en el centro:   contact
+   Qué secciones y en qué lado: assets/js/ajustes.js (AJUSTES.secciones)
+   Tamaños: ajustes.css secciones 0, 2 y 3                             */
 .menu {
   position: fixed; inset: 0; z-index: 50;
   pointer-events: none;
@@ -60,55 +66,64 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   mix-blend-mode: var(--menu-mezcla);
   font-family: var(--fuente-menu);
   text-transform: uppercase;
+  line-height: 1;
 }
-.menu a {
+.menu a, .menu span {
   pointer-events: auto; transition: opacity .3s;
   /* borde de las letras (colores y grosor: ajustes.css 2b y 3) */
   -webkit-text-stroke: var(--menu-borde-grosor) var(--dif-borde);
   paint-order: stroke fill;
 }
+.menu span { pointer-events: none; }
 .menu a:hover { opacity: .6; }
-.pagina-inicio .menu a { -webkit-text-stroke-width: var(--inicio-borde-grosor); }
-
+.pagina-inicio .menu a, .pagina-inicio .menu span { -webkit-text-stroke-width: var(--inicio-borde-grosor); }
 .menu a.activo { text-decoration: underline; text-underline-offset: .25em; text-decoration-thickness: 1px; }
 
-.menu__nombre {
+/* columnas del menú */
+.menu__centro {
   position: absolute; left: 50%; top: calc(var(--margen) * .7);
   transform: translateX(-50%);
-  font-size: var(--menu-tam-nombre);
-  letter-spacing: .12em; line-height: 1; white-space: nowrap;
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--inicio-separacion-lineas);
+  text-align: center;
 }
-.menu__about {
-  position: absolute; left: 50%; transform: translateX(-50%);
-  top: calc(var(--margen) * .7 + var(--menu-tam-nombre) * 1.5);
-  font-size: var(--menu-tam-otros);
-  text-transform: lowercase; letter-spacing: .04em;
+.menu__izq, .menu__der {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column;
+  gap: var(--inicio-separacion-columna);
 }
-.menu__films, .menu__comercials {
-  position: absolute; top: calc(var(--margen) * .7);
-  font-size: var(--menu-tam-otros);
-  letter-spacing: .14em;
+.menu__izq { left: var(--margen); align-items: flex-start; text-align: left; }
+.menu__der { right: var(--margen); align-items: flex-end; text-align: right; }
+.menu__pie {
+  position: absolute; left: 50%; bottom: calc(var(--margen) * .9 + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
 }
-.menu__films      { left: var(--margen); }
-.menu__comercials { right: var(--margen); }
 
-/* ---- Menú en el INICIO (tamaños: ajustes.css sección 2) ---- */
-.pagina-inicio .menu__nombre { font-size: var(--inicio-tam-nombre); letter-spacing: .02em; }
-.pagina-inicio .menu__about  { font-size: var(--inicio-tam-about); top: calc(var(--margen) * .7 + var(--inicio-tam-nombre) * 1.2); }
-.pagina-inicio .menu__films,
-.pagina-inicio .menu__comercials { top: 50%; transform: translateY(-50%); font-size: var(--inicio-tam-menu); letter-spacing: var(--inicio-espaciado-menu); }
+/* al bajar en la página de un proyecto, el bloque del nombre se va */
+.menu--baja .menu__centro { opacity: 0; pointer-events: none; transition: opacity .4s var(--curva); }
+.menu__centro { transition: opacity .4s var(--curva); }
 
-/* ---- Móvil: films y comercials abajo, en las esquinas ---- */
+.menu__nombre {
+  font-family: var(--nombre-fuente);
+  font-weight: var(--nombre-negrita);
+  font-size: var(--nombre-tam);
+  letter-spacing: var(--nombre-espaciado);
+  white-space: nowrap;
+}
+.menu__labor, .menu__work, .menu__seccion, .menu__contacto {
+  font-size: var(--menu-tam);
+  letter-spacing: var(--inicio-espaciado-menu);
+  white-space: nowrap;
+}
+
+/* ---- Móvil: las secciones bajan a las esquinas de abajo ---- */
 @media (max-width: 700px) {
-  .menu__films, .menu__comercials,
-  .pagina-inicio .menu__films, .pagina-inicio .menu__comercials {
+  .menu__nombre { font-size: var(--nombre-tam-movil); }
+  .menu__izq, .menu__der {
     top: auto; transform: none;
     bottom: calc(var(--margen) + env(safe-area-inset-bottom));
-    font-size: .9rem;
   }
-  .pagina-inicio .menu__films, .pagina-inicio .menu__comercials { font-size: var(--inicio-tam-menu); }
-  .pagina-inicio .menu__nombre { font-size: var(--inicio-tam-nombre-movil); }
-  .pagina-inicio .menu__about  { top: calc(var(--margen) * .7 + var(--inicio-tam-nombre-movil) * 1.3); }
+  .menu__pie { bottom: calc(var(--margen) + env(safe-area-inset-bottom)); }
 }
 
 /* ---------- REJILLA FORMATO CINE (films, comercials y proyecto) ------

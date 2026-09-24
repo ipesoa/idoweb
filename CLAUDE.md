@@ -13,31 +13,34 @@ La dueña de la web **no programa**. Cualquier cambio debe mantener:
 contenido/<tipo>/<carpeta>/info.txt + imágenes
         │  herramientas-mac/_generar-datos.sh   (bash 3.2 compatible, macOS; usa `sips` para medir imágenes)
         ▼
-contenido/datos-generados.js   → window.CONTENIDO = { films:[{carpeta, info, archivos:[{f,w,h}]}], comercials:[…], about:{info, filmografia, archivos} }
+contenido/datos-generados.js   → window.CONTENIDO = { films:[{carpeta, info, archivos:[{f,w,h}]}], series:[…], comercials:[…], videoclips:[…], about:{info, filmografia, archivos} }
         │  assets/js/contenido.js  (parsea info.txt → objetos)
         ▼
-window.Web = { proyectos(tipo), proyecto(tipo,id), about, filmografia(), parrafos(txt), leerInfo(txt) }
+window.Web = { proyectos(tipo), proyecto(tipo,id), todos(), tipos(), about, filmografia(), parrafos(txt), leerInfo(txt) }
 ```
 
 - `datos-generados.js` **se regenera**; nunca editarlo a mano. Tras tocar `contenido/`, ejecutar `bash herramientas-mac/_generar-datos.sh`.
 - `info.txt`: líneas `clave: valor` hasta una línea `---`; después, texto libre. Las claves se normalizan (minúsculas, sin tildes, espacios→`_`): `año`→`ano`. Líneas con `#` = comentarios. Carpetas que empiezan por `_` se ignoran.
 - Portada: clave `portada:` o archivo `portada.*`; versión móvil `portada-movil.*` o clave `portada_movil:`. El resto de imágenes/vídeos = galería, en orden alfabético.
-- Claves reconocidas: `titulo, año, labor, director, productora, cliente, mostrar_en_inicio (si/no), encuadre (object-position), video (Vimeo/YouTube), orden`. Cualquier otra clave queda disponible en `proyecto.extra`.
+- Claves reconocidas: `titulo, año, labor, director (o "directed by"), productora (o "produced by"), cliente, mostrar_en_inicio (si/no), encuadre (object-position), video, crew (repetible), orden`. Una clave repetida acumula sus valores separados por `\n` (así funciona `crew:`). Cualquier otra clave queda disponible en `proyecto.extra`.
+- **Secciones**: films, series, comercials (se lee "Commercials"), videoclips. La lista manda desde `AJUSTES.secciones` (assets/js/ajustes.js) y debe coincidir con: los generadores de datos (bash y ps1), `TIPOS` del gestor y las páginas .html.
 
 ## Páginas
 
 | Archivo | JS | CSS | Qué hace |
 |---|---|---|---|
-| `index.html` | `inicio.js` | `inicio.css` | Pase fullscreen: proyectos con `mostrar_en_inicio: si`. Doble capa de imagen con fundido+desenfoque, texto Arial letra a letra. Colores: ver "Difference dirigido" abajo. Zoom lento de cada foto por JS (`transition` inline de 20 s sobre el `<img>`, reiniciado solo cuando la capa vuelve a entrar) para que no salte al cambiar. Clic → proyecto. ←/→ y swipe. |
-| `films.html`, `comercials.html` | `lista.js` | `lista.css` | `.rejilla-cine.lista-cine` desde arriba (sin título). `--lista-columnas`, `--lista-formato`. Info Arial pequeña (Título / labor / año, alineada a la izquierda) a las 4 del cursor (`--etiqueta-separacion`). |
-| `proyecto.html?tipo=films&id=CARPETA` | `proyecto.js` | `proyecto.css` | `.rejilla-cine.proyecto-cine` desde arriba: portada + galería (+ iframe si `video:`), sin textos. Al final solo botón Contact (mailto a `about.email`). |
-| `about.html` | `about.js` | `about.css` | Minimal Arial, columna estrecha abajo a la derecha (`--about-ancho`): nombre, subtitulo, ubicacion + lista de trabajos (films + comercials + `filmografia-extra.txt`) con filtros Films (por defecto) / Comercials / Todo. |
+| `index.html` | `inicio.js` | `inicio.css` | Pase fullscreen SIN textos (`AJUSTES.inicio.mostrarTitulos: false`): solo la imagen, fundido+desenfoque y zoom lento. Clic → proyecto. ←/→ y swipe. |
+| `work.html` | `lista.js` | `lista.css` | Todos los trabajos juntos, del más nuevo al más viejo, con filtros arriba a la izquierda (All · Films · Series · Commercials · Videoclips) que ocultan celdas. |
+| `films.html`, `series.html`, `comercials.html`, `videoclips.html` | `lista.js` | `lista.css` | Rejilla de una sección. Info a las 4 del cursor: **título / directed by / produced by** (`Comun.ficha`). |
+| `proyecto.html?tipo=films&id=CARPETA` | `proyecto.js` | `proyecto.css` | 1 vídeo limpio arriba (`Comun.reproductor`, autoplay mudo), 2 ficha centrada, 3 crew a dos columnas, 4 texto, 5 rejilla de fotos, 6 botón "Start a conversation" → contact.html. Al bajar, el bloque central del menú se oculta (`.menu--baja`). |
+| `contact.html` (antes about.html, que ahora redirige) | `contact.js` | `contact.css` | Solo el texto libre de `contenido/about/info.txt` + email/teléfono/instagram. Sin efectos. |
 | `laboratorio.html` | inline + `diferencia.js` | inline | Herramienta interna: el modelo de color sobre las fotos, boyas (✓ exactas), rampas de continuidad, radio, pegar JSON. No enlazada en el menú. |
 
 Orden de scripts en cada página: `datos-generados.js → ajustes.js → contenido.js → comun.js → <página>.js`.
 
 ## Piezas compartidas (`assets/js/comun.js` → `window.Comun`)
-- Menú inyectado (`pintarMenu`), clases `.menu__nombre/.menu__about/.menu__films/.menu__comercials`. En `body.pagina-inicio` films/comercials van a media altura; en el resto, arriba; en móvil abajo.
+- Menú inyectado (`pintarMenu`) desde `AJUSTES.secciones` + `AJUSTES.textos`: `.menu__centro` (nombre · production designer · work) arriba en el centro, `.menu__izq` (films, series) y `.menu__der` (commercials, videoclips) a media altura, `.menu__pie` (contact) abajo en el centro. En móvil las columnas bajan a las esquinas inferiores. `body[data-seccion]` marca la sección activa.
+- `Comun.reproductor(url)` → HTML del vídeo (Vimeo/YouTube con autoplay mudo, archivo .mp4 → `<video>`, código `<iframe…>` tal cual). `Comun.ficha(p)` → [título, directed by…, produced by…].
 - Cortina de transición entre páginas (`.cortina`, `Comun.irA(href)`).
 - `Comun.autoScroll()` botón "auto" (se para al tocar/rueda/teclado).
 - `Comun.visor(urls, i)` visor de fotos.
@@ -53,11 +56,12 @@ Aplicación píxel a píxel: capa `<canvas class="dif-capa">` fija encima (z 80)
 `window.Diferencia`: `colorPara(hex)`, `construir(modelo)`, `letra(rgb)`, `borde(rgb)`, `tiempos()`, `ms`.
 Para añadir un texto nuevo al sistema: añadir su selector a `AJUSTES.diferencia.textos` (o ponerle `data-dif`).
 
-## About glitch (`assets/js/about-glitch.js` + `assets/css/about-glitch.css`)
-Reimplementación vanilla de `src/line.ts` de ikeryou/sketch491 con la MISMA fuente del about: cada línea (p de datos, filtros, cada fila de la lista) anima su propio texto: `a` (ExpoOut) escribe de izq. a der., `b` (ExpoInOut, +0,75·t) borra el ruido; el texto real aparece tal cual y el hueco a su derecha se llena de caracteres aleatorios (y `WORDS`). Ancho bloqueado durante la animación; al terminar se restaura el texto original sin estilos. `REPEAT = false` (aparece y se queda). `LINE_COUNT = 0` (sin bloque de datos extra). Se reinicia la lista al pulsar un filtro. No modifica about.js.
+## (Eliminado) About glitch
+El efecto tipo "matrix" del about se quitó a petición de la dueña; los archivos `about-glitch.*` y `about.*` ya no existen. Texto plano en `contact.html`.
+
 
 ## Estilo
-- Todo lo ajustable en `assets/css/ajustes.css`, por secciones numeradas (1 fuentes, 2 inicio: tamaños y `--inicio-borde-grosor`, 3 menú resto, 4 rejillas: `--lista-*`/`--proyecto-*` formato y columnas + etiqueta, 5 about, 6 colores, 7 tiempos). No poner números sueltos en otros CSS: crear variable aquí.
+- Todo lo ajustable en `assets/css/ajustes.css`, por secciones numeradas: **0 EL NOMBRE** (`--nombre-tam`, `--nombre-fuente`, `--nombre-espaciado`, `--nombre-negrita`, `--nombre-tam-movil`, `--menu-tam`) lo primero del archivo porque es lo que más se toca, 1 fuentes, 2 inicio, 2b color de letras, 3 menú, 4 rejillas, 5 página de proyecto (`--video-*`, `--proyecto-tam-*`), 6 contact, 7 colores, 8 tiempos. No poner números sueltos en otros CSS: crear variable aquí.
 - Borde de letras del inicio: `-webkit-text-stroke-width` + `paint-order: stroke fill` en `.pase__pie` y `.pagina-inicio .menu` (inicio.css).
 - `.rejilla-cine` (base.css): grid de `--cols` columnas, celdas `aspect-ratio: var(--formato)`, hilo blanco `::after`, imágenes `object-fit: cover` que aparecen con `.visible` (IntersectionObserver en `Comun.aparecer`).
 - `.mezcla` = `mix-blend-mode: var(--texto-mezcla)` (etiqueta del ratón, modo diferencia). Los ancestros no deben crear aislamiento (`isolation`, `opacity<1`, `transform`, `filter`).
@@ -70,7 +74,7 @@ Espejo de las de Mac. Cada `.bat` (ASCII, CRLF) llama a `_tareas.ps1 <tarea>` (P
 `.command` = scripts bash que se abren con doble clic en macOS. Diálogos con `osascript`. Token de GitHub en el Llavero (`security`, servicio `web-portfolio-github`), usuario/repo en `.config-local` (gitignored). Push/pull con URL que lleva el token en el momento (nunca se guarda en `.git/config`). Imágenes nuevas se reducen a 2600px JPG con `sips`.
 
 ## Gestor (`gestor.html`, UN SOLO ARCHIVO con su CSS y JS dentro)
-App web interna (noindex, no enlazada) que edita el repo directamente con la API de GitHub y un token fine-grained (Contents RW) guardado en localStorage. Repo detectado de la URL `usuario.github.io/repo/` (o campo manual / `ipesoa/idoweb`). Carga: ref → árbol recursivo → `datos-generados.js` (evaluado) + carpetas reales. Estado en memoria; "Publicar" = un único commit con Git Data API (blobs → tree con base_tree, `sha:null` para borrar, renombrados reutilizando el sha del blob → commit → PATCH ref sin force). Reescribe info.txt de los proyectos tocados, renombra fotos a `portada.jpg`, `01.jpg`… según el orden, regenera `datos-generados.js` con el MISMO formato que `_generar-datos.sh` (verificado) + comentario `/* gestor: versión */`, y renueva `?v=` en los .html. Fotos nuevas: `createImageBitmap(imageOrientation: from-image)` → canvas → JPEG 0.82, máx. 2600 px. LED: compara `datos-generados.js` publicado (fetch a `usuario.github.io`) con el del repo. Accesos directos en `gestor-accesos/`.
+Pestañas: Inicio · Films · Series · Commercials · Videoclips · Contact (las de sección salen de `TIPOS` dentro del propio archivo). App web interna (noindex, no enlazada) que edita el repo directamente con la API de GitHub y un token fine-grained (Contents RW) guardado en localStorage. Repo detectado de la URL `usuario.github.io/repo/` (o campo manual / `ipesoa/idoweb`). Carga: ref → árbol recursivo → `datos-generados.js` (evaluado) + carpetas reales. Estado en memoria; "Publicar" = un único commit con Git Data API (blobs → tree con base_tree, `sha:null` para borrar, renombrados reutilizando el sha del blob → commit → PATCH ref sin force). Reescribe info.txt de los proyectos tocados, renombra fotos a `portada.jpg`, `01.jpg`… según el orden, regenera `datos-generados.js` con el MISMO formato que `_generar-datos.sh` (verificado) + comentario `/* gestor: versión */`, y renueva `?v=` en los .html. Fotos nuevas: `createImageBitmap(imageOrientation: from-image)` → canvas → JPEG 0.82, máx. 2600 px. LED: compara `datos-generados.js` publicado (fetch a `usuario.github.io`) con el del repo. Accesos directos en `gestor-accesos/`.
 **Instalar actualización (.zip)** (pie del gestor): lee el zip en el navegador (directorio central + `DecompressionStream('deflate-raw')`), toma como raíz la carpeta donde está `index.html`, ignora `contenido/`, `__MACOSX`, `.git`, `.DS_Store`, `.config-local`; `borrar.txt` en la raíz = rutas a eliminar (una por línea, `carpeta/` para carpetas; nunca contenido/). Sube solo los archivos cuyo sha git cambia, renueva `?v=` en todos los .html y hace un único commit. Es la forma de entregar cambios de código a la dueña: un zip sin `contenido/`.
 
 ## Caché

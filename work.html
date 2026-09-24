@@ -3,18 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Commercials · Idoia Esteban Galván</title>
+  <title>Work · Idoia Esteban Galván</title>
   <link rel="stylesheet" href="assets/css/ajustes.css?v=202609242206">
   <link rel="stylesheet" href="assets/css/base.css?v=202609242206">
   <link rel="stylesheet" href="assets/css/lista.css?v=202609242206">
 </head>
-<body data-pagina="comercials">
+<body data-pagina="work">
 
-  <!-- LISTA DE Comercials: rejilla regular con la portada de cada proyecto (formato cine).
+  <!-- LISTA DE Work: rejilla regular con la portada de cada proyecto (formato cine).
        Columnas y formato: ajustes.css sección 4 (--lista-...).
-       La monta assets/js/lista.js con las carpetas de contenido/comercials/ -->
+       La monta assets/js/lista.js con TODOS los trabajos (films, series,
+       commercials y videoclips) y los filtros de arriba a la izquierda -->
+  <nav class="filtros-work" id="filtros" aria-label="Filtros"></nav>
   <main>
-    <section class="rejilla-cine lista-cine" id="lista" aria-label="Comercials"></section>
+    <section class="rejilla-cine lista-cine" id="lista" aria-label="Work"></section>
   </main>
   <div class="etiqueta-cursor mezcla" id="etiqueta" aria-hidden="true"></div>
 

@@ -4,29 +4,37 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title></title>
-  <link rel="stylesheet" href="assets/css/ajustes.css?v=202609241033">
-  <link rel="stylesheet" href="assets/css/base.css?v=202609241033">
-  <link rel="stylesheet" href="assets/css/proyecto.css?v=202609241033">
+  <link rel="stylesheet" href="assets/css/ajustes.css?v=202609242206">
+  <link rel="stylesheet" href="assets/css/base.css?v=202609242206">
+  <link rel="stylesheet" href="assets/css/proyecto.css?v=202609242206">
 </head>
 <body data-pagina="proyecto">
 
-  <!-- PÁGINA DE PROYECTO (película o anuncio).
-       Rejilla regular de imágenes horizontales en formato cine, desde arriba,
-       y un botón "Contact" al final. Sin textos.
+  <!-- PÁGINA DE UN TRABAJO (film, serie, commercial o videoclip)
        Dirección: proyecto.html?tipo=films&id=NOMBRE-DE-CARPETA
-       Lo monta assets/js/proyecto.js con las fotos de esa carpeta.
-       Columnas y formato: ajustes.css sección 4 (--proyecto-...). -->
+       De arriba abajo:
+         1. el vídeo (clave "video:" del info.txt), lo más limpio posible
+         2. título, directed by, produced by, año
+         3. crew (a dos columnas, una línea "crew:" por persona)
+         4. texto sobre la película (lo que va después del --- en info.txt)
+         5. rejilla de fotos de la carpeta
+         6. botón "Start a conversation" → contact
+       Lo monta assets/js/proyecto.js · tamaños: ajustes.css sección 5 -->
   <main>
+    <section class="proyecto__video" id="video"></section>
+    <header class="proyecto__ficha" id="ficha"></header>
+    <section class="proyecto__crew" id="crew"></section>
+    <section class="proyecto__texto" id="texto"></section>
     <section class="rejilla-cine proyecto-cine" id="rejilla" aria-label="Imágenes del proyecto"></section>
     <footer class="pie-contacto" id="contacto"></footer>
   </main>
 
-  <script src="contenido/datos-generados.js?v=202609241033"></script>
-  <script src="assets/js/ajustes.js?v=202609241033"></script>
-  <script src="assets/js/contenido.js?v=202609241033"></script>
-  <script src="assets/js/comun.js?v=202609241033"></script>
-  <script src="assets/js/diferencia-modelo.js?v=202609241033"></script>
-  <script src="assets/js/diferencia.js?v=202609241033"></script>
-  <script src="assets/js/proyecto.js?v=202609241033"></script>
+  <script src="contenido/datos-generados.js?v=202609242206"></script>
+  <script src="assets/js/ajustes.js?v=202609242206"></script>
+  <script src="assets/js/contenido.js?v=202609242206"></script>
+  <script src="assets/js/comun.js?v=202609242206"></script>
+  <script src="assets/js/diferencia-modelo.js?v=202609242206"></script>
+  <script src="assets/js/diferencia.js?v=202609242206"></script>
+  <script src="assets/js/proyecto.js?v=202609242206"></script>
 </body>
 </html>
