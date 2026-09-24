@@ -37,7 +37,13 @@
 
   function filtrar(f) {
     filtros.querySelectorAll("button").forEach((b) => b.classList.toggle("activo", b.dataset.f === f));
-    ol.querySelectorAll("li").forEach((li) => li.classList.toggle("oculta", f !== "todo" && li.dataset.tipo !== f));
+    let hay = 0;
+    ol.querySelectorAll("li").forEach((li) => {
+      const fuera = f !== "todo" && li.dataset.tipo !== f;
+      li.classList.toggle("oculta", fuera);
+      if (!fuera) hay++;
+    });
+    ol.classList.toggle("vacia", hay === 0);   // sin nada en esa sección: sale una raya y no se mueve nada
     ol.scrollTop = 0;
   }
   filtros.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) filtrar(b.dataset.f); });

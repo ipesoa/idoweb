@@ -14,25 +14,6 @@
 .celda-proyecto { cursor: pointer; }
 .celda-proyecto.oculta { display: none; }
 
-/* Filtros de WORK (All · Films · Series · Commercials · Videoclips):
-   el menú los coloca debajo del nombre (lista.js los mete en .menu__centro) */
-.filtros-work {
-  display: flex; gap: 1.2em; justify-content: center; flex-wrap: wrap;
-  font-size: var(--menu-tam);
-  letter-spacing: var(--inicio-espaciado-menu);
-}
-.filtros-work button {
-  pointer-events: auto;
-  -webkit-text-stroke: var(--menu-borde-grosor) var(--dif-borde);
-  paint-order: stroke fill;
-  font: inherit; letter-spacing: inherit; text-transform: uppercase;
-  padding: var(--menu-zona-alto) 0;
-  margin: calc(var(--menu-zona-alto) * -1) 0;
-  opacity: .5; transition: opacity .3s;
-}
-.filtros-work button.activo, .filtros-work button:hover { opacity: 1; }
-@media (max-width: 700px) { .filtros-work { gap: .9em; font-size: .7rem; } }
-
 /* Al pasar el ratón: la elegida se acerca, las demás bajan un poco la luz
    (cuánto: ajustes.css → --hover-luz) */
 @media (hover: hover) {

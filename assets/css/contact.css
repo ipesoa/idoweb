@@ -23,7 +23,8 @@
 /* la lista, con scroll propio (alto: ajustes.css) y un fundido abajo */
 .trabajos {
   list-style: none;
-  max-height: var(--about-alto-lista);
+  /* alto fijo: al cambiar de filtro (aunque no haya nada) no se mueve nada */
+  height: var(--about-alto-lista);
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: none;
@@ -36,6 +37,7 @@
 .trabajos .fila span:not(.titulo) { color: var(--color-suave); }
 .trabajos a.fila:hover .titulo { text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; }
 .trabajos li.oculta { display: none; }
+.trabajos.vacia::after { content: "—"; display: block; color: var(--color-suave); }
 
 .contacto__datos { margin-top: 2.2em; }
 .contacto__datos a { border-bottom: 1px solid transparent; transition: border-color .3s; }

@@ -35,8 +35,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   position: fixed; left: 0; top: 0;   /* el tamaño lo pone diferencia.js (= pantalla visible) */
   z-index: 80; pointer-events: none;
 }
-.dif-activo :is(.menu a, .menu__labor, .filtros-work button, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]),
-.dif-activo :is(.menu a, .menu__labor, .filtros-work button, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]) * {
+.dif-activo :is(.menu a, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]),
+.dif-activo :is(.menu a, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]) * {
   color: transparent !important;
   -webkit-text-stroke-color: transparent !important;
   text-decoration-color: transparent !important;
@@ -96,6 +96,15 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   gap: var(--inicio-separacion-lineas);
   text-align: center;
 }
+/* films y series a la izquierda · commercials y videoclips a la derecha
+   (solo en el inicio), a media altura y en móvil abajo en las esquinas */
+.menu__izq, .menu__der {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column;
+  gap: var(--inicio-separacion-columna);
+}
+.menu__izq { left: var(--margen); align-items: flex-start; text-align: left; }
+.menu__der { right: var(--margen); align-items: flex-end; text-align: right; }
 .menu__pie {
   position: absolute; left: 50%; bottom: calc(var(--margen) * .9 + env(safe-area-inset-bottom));
   transform: translateX(-50%);
@@ -108,7 +117,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   letter-spacing: var(--nombre-espaciado);
   white-space: nowrap;
 }
-.menu__labor, .menu__work, .menu__donde, .menu__contacto {
+.menu__labor, .menu__work, .menu__donde, .menu__contacto, .menu__seccion {
   font-size: var(--menu-tam);
   letter-spacing: var(--inicio-espaciado-menu);
   white-space: nowrap;
@@ -116,6 +125,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 @media (max-width: 700px) {
   .menu__nombre { font-size: var(--nombre-tam-movil); }
+  .menu__izq, .menu__der {
+    top: auto; transform: none;
+    bottom: calc(var(--margen) + env(safe-area-inset-bottom));
+  }
   .menu__pie { bottom: calc(var(--margen) + env(safe-area-inset-bottom)); }
 }
 

@@ -3,8 +3,7 @@
    ---------------------------------------------------------------------
    La sección sale de <body data-pagina="films"> (o series, comercials,
    videoclips) y "work" = TODOS los trabajos juntos, del más nuevo al
-   más antiguo, con filtros arriba: All · Films · Series · Commercials ·
-   Videoclips (los nombres y el orden: assets/js/ajustes.js).
+   más antiguo. Arriba solo va el nombre y debajo dónde estás (comun.js).
    Columnas y formato de cada rectángulo: ajustes.css (sección 4).
    Al pasar el ratón, la info sale a las 4 del cursor (abajo a la derecha):
        Título / directed by … / produced by …
@@ -13,24 +12,7 @@
   const tipo = document.body.dataset.pagina;
   const lista = document.getElementById("lista");
   const etiqueta = document.getElementById("etiqueta");
-  const filtros = document.getElementById("filtros");
   const proyectos = Web.proyectos(tipo);
-
-  // Filtros (solo en work.html): All + una por sección.
-  // Van dentro del menú, justo debajo del nombre y de "Work".
-  if (filtros) {
-    const T = AJUSTES.textos;
-    document.querySelector(".menu__centro").append(filtros);
-    filtros.innerHTML = [`<button data-f="todo" class="activo">${T.todo}</button>`]
-      .concat(AJUSTES.secciones.map((s) => `<button data-f="${s.id}">${s.titulo}</button>`)).join("");
-    filtros.addEventListener("click", (e) => {
-      const b = e.target.closest("button");
-      if (!b) return;
-      filtros.querySelectorAll("button").forEach((x) => x.classList.toggle("activo", x === b));
-      lista.querySelectorAll(".celda-proyecto").forEach((c) =>
-        c.classList.toggle("oculta", b.dataset.f !== "todo" && c.dataset.tipo !== b.dataset.f));
-    });
-  }
 
   if (!proyectos.length) {
     lista.outerHTML = `<p class="lista-vacia">Aún no hay nada en contenido/${tipo}/</p>`;

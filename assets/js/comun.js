@@ -17,18 +17,20 @@
 
   /* ---------- MENÚ ----------
      INICIO      arriba en el centro: NOMBRE · production designer · work
-                 abajo en el centro:  contact
-     SECCIONES   (work, films, series, commercials, videoclips, contact)
+                 a la izquierda: films y series · a la derecha: commercials
+                 y videoclips · abajo en el centro: contact
+     SECCIONES   (work, films, series, commercials, videoclips)
                  arriba en el centro: NOMBRE (lleva al inicio) y, debajo,
-                 el nombre de la sección en la que estás
+                 dónde estás. Nada más: ni laterales ni contact.
+     CONTACT     NOMBRE y debajo "work" (para volver a la lista de todo)
      PROYECTO    arriba en el centro: solo el NOMBRE, siempre visible
      Textos y secciones: assets/js/ajustes.js (AJUSTES.secciones / .textos) */
   function pintarMenu() {
     const nombre = (Web.about && Web.about.nombre) || "Idoia Esteban Galván";
     const seccion = A.secciones.find((s) => s.id === pagina);
-    const donde = pagina === "work" ? A.textos.work
-      : pagina === "contact" ? A.textos.contacto
-      : seccion ? seccion.titulo : "";
+    const donde = pagina === "work" ? A.textos.work : seccion ? seccion.titulo : "";
+    const lado = (cual) => A.secciones.filter((s) => (s.lado || "izquierda") === cual)
+      .map((s) => `<a class="menu__seccion menu__${s.id}" href="${s.pagina}">${s.titulo}</a>`).join("");
 
     let dentro;
     if (pagina === "inicio") {
@@ -38,8 +40,16 @@
         ${A.textos.labor ? `<span class="menu__labor">${A.textos.labor}</span>` : ""}
         <a class="menu__work" href="work.html">${A.textos.work}</a>
       </div>
+      <div class="menu__izq">${lado("izquierda")}</div>
+      <div class="menu__der">${lado("derecha")}</div>
       <div class="menu__pie">
         <a class="menu__contacto" href="contact.html">${A.textos.contacto}</a>
+      </div>`;
+    } else if (pagina === "contact") {
+      dentro = `
+      <div class="menu__centro">
+        <a class="menu__nombre" href="index.html">${nombre}</a>
+        <a class="menu__work" href="work.html">${A.textos.work}</a>
       </div>`;
     } else {
       dentro = `
