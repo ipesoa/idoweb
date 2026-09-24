@@ -513,6 +513,28 @@ mostrar_en_inicio: no
       {"f":"portada.jpg","w":1200,"h":1200}]
     },
     {
+      "carpeta": "2019-niebla",
+      "info": `# ⚠ PROYECTO DE EJEMPLO (este NO sale en el inicio)
+titulo: Niebla
+año: 2019
+labor: Ambientación
+director: Nombre Apellido
+mostrar_en_inicio: no
+---
+Proyecto de ejemplo.
+`,
+      "archivos": [
+      {"f":"01.jpg"},
+      {"f":"02.jpg"},
+      {"f":"03.jpg"},
+      {"f":"04.jpg"},
+      {"f":"05.jpg"},
+      {"f":"06.jpg"},
+      {"f":"07.jpg"},
+      {"f":"08.jpg"},
+      {"f":"portada.jpg"}]
+    },
+    {
       "carpeta": "2019-si-yo-fuera-rico",
       "info": `# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
 titulo: Si yo fuera rico
@@ -564,6 +586,32 @@ mostrar_en_inicio: si
       {"f":"portada.jpg","w":884,"h":1200}]
     },
     {
+      "carpeta": "2021-el-ultimo-verano",
+      "info": `# ⚠ PROYECTO DE EJEMPLO
+titulo: El último verano
+año: 2021
+labor: Dirección de arte
+director: Nombre Apellido
+mostrar_en_inicio: si
+---
+Proyecto de ejemplo. Paleta de ocres y terracotas, un pueblo de interior en agosto.
+`,
+      "archivos": [
+      {"f":"01.jpg"},
+      {"f":"02.jpg"},
+      {"f":"03.jpg"},
+      {"f":"04.jpg"},
+      {"f":"05.jpg"},
+      {"f":"06_ancha.jpg"},
+      {"f":"07.jpg"},
+      {"f":"08.jpg"},
+      {"f":"09.jpg"},
+      {"f":"10.jpg"},
+      {"f":"11.jpg"},
+      {"f":"portada-movil.jpg"},
+      {"f":"portada.jpg"}]
+    },
+    {
       "carpeta": "2022-rainbow",
       "info": `# Fotos de EJEMPLO (repetidas): cámbialas por las reales del proyecto
 titulo: Rainbow
@@ -579,6 +627,36 @@ mostrar_en_inicio: si
       {"f":"02.jpg","w":884,"h":1200},
       {"f":"03.jpg","w":1200,"h":800},
       {"f":"portada.jpg","w":1200,"h":800}]
+    },
+    {
+      "carpeta": "2023-la-casa-del-lago",
+      "info": `titulo: La casa del lago
+año: 2023
+labor: Diseño de producción
+director: Nombre Apellido
+productora: Productora Ejemplo
+mostrar_en_inicio: si
+---
+Proyecto de ejemplo para ver cómo se compone el mosaico. Una casa de los años setenta junto al agua: maderas oscuras, verdes húmedos y luz filtrada por la niebla.
+
+Se construyeron en plató el salón y la escalera, y el resto se rodó en una casa real intervenida durante seis semanas.
+`,
+      "archivos": [
+      {"f":"01.jpg"},
+      {"f":"02.jpg"},
+      {"f":"03.jpg"},
+      {"f":"04.jpg"},
+      {"f":"05.jpg"},
+      {"f":"06.jpg"},
+      {"f":"07.jpg"},
+      {"f":"08.jpg"},
+      {"f":"09.jpg"},
+      {"f":"10.jpg"},
+      {"f":"11.jpg"},
+      {"f":"12.jpg"},
+      {"f":"13.jpg"},
+      {"f":"portada-movil.jpg"},
+      {"f":"portada.jpg"}]
     },
     {
       "carpeta": "superstar",
@@ -689,3 +767,4 @@ Aquí va la bio más larga: formación, trayectoria, con quién ha trabajado, pr
       {"f":"retrato.jpg","w":1200,"h":1500}]
   }
 };
+/* gestor: 202609241033 */

@@ -1,4 +1,3 @@
-# ⚠ PROYECTO DE EJEMPLO — bórralo cuando haya proyectos reales
 titulo: La casa del lago
 año: 2023
 labor: Diseño de producción
