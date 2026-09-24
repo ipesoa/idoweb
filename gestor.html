@@ -126,6 +126,10 @@ button { cursor: pointer; background: none; border: 0; }
 .foto .mover button { width: 24px; height: 24px; border-radius: 6px; background: #fffe; }
 .soltar { border: 2px dashed var(--linea); border-radius: 10px; padding: 18px; text-align: center; color: var(--suave); margin-top: 12px; }
 .soltar.activo { border-color: var(--azul); color: var(--azul); background: #eef4ff; }
+/* soltar un .zip de actualización encima de la ventana */
+.soltar-zip { position: fixed; inset: 0; z-index: 900; display: none; place-items: center;
+  background: rgba(17,24,39,.72); color: #fff; font-size: 20px; text-align: center; padding: 40px; }
+.soltar-zip.activo { display: grid; }
 .movil-slot { display: flex; gap: 12px; align-items: center; margin-top: 18px; }
 .movil-slot img { width: 70px; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 6px; background: #ddd; }
 
@@ -192,6 +196,9 @@ button { cursor: pointer; background: none; border: 0; }
   <div class="capa" id="editor" hidden></div>
 
   <div class="aviso" id="aviso" hidden></div>
+
+  <!-- Arrastrar un .zip de actualización a cualquier parte de la ventana -->
+  <div class="soltar-zip" id="soltarZip">Suelta aquí el .zip con la actualización de la web</div>
 
   <script>
 /* =====================================================================
@@ -969,6 +976,21 @@ button { cursor: pointer; background: none; border: 0; }
 
   $("#publicar").addEventListener("click", publicar);
   $("#instalar").addEventListener("click", () => $("#zip").click());
+  (function soltarZipEnLaVentana() {
+    const capa = $("#soltarZip");
+    const esZip = (e) => e.dataTransfer && [...(e.dataTransfer.types || [])].includes("Files") && $("#editor").hidden;
+    let dentro = 0;
+    window.addEventListener("dragenter", (e) => { if (!esZip(e)) return; e.preventDefault(); dentro++; capa.classList.add("activo"); });
+    window.addEventListener("dragover", (e) => { if (esZip(e)) e.preventDefault(); });
+    window.addEventListener("dragleave", () => { if (--dentro <= 0) { dentro = 0; capa.classList.remove("activo"); } });
+    window.addEventListener("drop", (e) => {
+      if (!esZip(e)) return;
+      e.preventDefault(); dentro = 0; capa.classList.remove("activo");
+      const f = [...e.dataTransfer.files].find((x) => /\.zip$/i.test(x.name));
+      if (f) instalarZip(f);
+      else aviso("Eso no es un .zip de actualización", true);
+    });
+  })();
   $("#zip").addEventListener("change", (e) => { const f = e.target.files[0]; e.target.value = ""; if (f) instalarZip(f); });
   $("#descartar").addEventListener("click", () => { if (confirm("¿Descartar todos los cambios sin publicar?")) cargar().catch(fallo); });
   $("#salir").addEventListener("click", () => { if (confirm("¿Olvidar el token en este ordenador?")) { localStorage.removeItem("gestor_token_" + REPO); location.reload(); } });

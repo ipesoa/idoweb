@@ -25,11 +25,11 @@
            arriba, por ejemplo: "Instrument Serif", serif
    ESPACIO ENTRE LETRAS: 0 = normal · .08em · .12em · .3em = muy suelto
    ===================================================================== */
-  --nombre-tam:       1.8rem;
+  --nombre-tam:       1.15rem;
   --nombre-fuente:    var(--arial);
-  --nombre-espaciado: .18em;
+  --nombre-espaciado: .12em;
   --nombre-negrita:   400;            /* 400 normal · 700 negrita */
-  --nombre-tam-movil: 1.5rem;           /* en el móvil */
+  --nombre-tam-movil: 1rem;           /* en el móvil */
 
   /* Las demás letras del menú (production designer, work, films, series,
      commercials, videoclips, contact) van todas con este tamaño        */
@@ -80,7 +80,10 @@
   --menu-borde-grosor: 0.08em;          /* borde de las letras del menú */
   --menu-mezcla: var(--dif-mezcla);
   --menu-color:  var(--dif-letra);
-  --menu-separacion: 1.6em;             /* hueco entre las secciones de la fila de arriba */
+  /* rectángulo invisible alrededor de cada enlace del menú, para poder
+     pinchar sin dar justo en las letras (arriba/abajo e izquierda/derecha) */
+  --menu-zona-alto:  .7em;
+  --menu-zona-ancho: 1.6em;
 
 /* ---------- 4. CUADRÍCULAS (formato cine) ----------------------------
    Formato de cada rectángulo = ancho / alto

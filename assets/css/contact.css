@@ -14,10 +14,35 @@
 .contacto__columna { width: min(100%, var(--about-ancho)); }
 
 .contacto__texto p + p { margin-top: 1em; }
-.contacto__datos { margin-top: 2.6em; }
+
+/* filtros de la lista: All · Films · Series · Commercials · Videoclips */
+.filtros { display: flex; flex-wrap: wrap; gap: 1.2em; margin: 2.6em 0 1.2em; }
+.filtros button { color: var(--color-suave); font: inherit; transition: color .3s; }
+.filtros button.activo, .filtros button:hover { color: var(--color-tinta); }
+
+/* la lista, con scroll propio (alto: ajustes.css) y un fundido abajo */
+.trabajos {
+  list-style: none;
+  max-height: var(--about-alto-lista);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  padding-bottom: 2em;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 3em), transparent);
+          mask-image: linear-gradient(to bottom, #000 calc(100% - 3em), transparent);
+}
+.trabajos::-webkit-scrollbar { display: none; }
+.trabajos .fila { display: grid; grid-template-columns: 3.4em 1fr auto; gap: .9em; }
+.trabajos .fila span:not(.titulo) { color: var(--color-suave); }
+.trabajos a.fila:hover .titulo { text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; }
+.trabajos li.oculta { display: none; }
+
+.contacto__datos { margin-top: 2.2em; }
 .contacto__datos a { border-bottom: 1px solid transparent; transition: border-color .3s; }
 .contacto__datos a:hover { border-color: currentColor; }
 
 @media (max-width: 700px) {
-  .contacto { padding-bottom: calc(var(--margen) + 4rem); }  /* deja sitio al menú de abajo */
+  .contacto { padding-bottom: calc(var(--margen) + 2rem); }
+  .trabajos .fila { grid-template-columns: 3em 1fr; gap: 0 .8em; }
+  .trabajos .fila span:nth-child(3) { grid-column: 2; margin-bottom: .4em; }
 }

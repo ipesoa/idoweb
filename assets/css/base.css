@@ -53,12 +53,15 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .cortina.abierta { opacity: 0; }
 
 /* ---------- MENÚ ---------------------------------------------------
-   Arriba en el centro:  NOMBRE · production designer · work
-   A la izquierda:       films · series      (a media altura)
-   A la derecha:         commercials · videoclips
-   Abajo en el centro:   contact
-   Qué secciones y en qué lado: assets/js/ajustes.js (AJUSTES.secciones)
-   Tamaños: ajustes.css secciones 0, 2 y 3                             */
+   INICIO:     arriba en el centro NOMBRE · production designer · work
+               abajo en el centro  contact
+   SECCIONES:  arriba en el centro NOMBRE y debajo dónde estás
+               (Work / Films / Series / Commercials / Videoclips / Contact)
+   PROYECTO:   arriba en el centro solo el NOMBRE
+   Cada enlace lleva alrededor un rectángulo transparente (no se ve) para
+   que sea fácil pinchar sin acertar justo en las letras: --menu-zona-alto
+   y --menu-zona-ancho en ajustes.css (sección 3).
+   Tamaños: ajustes.css secciones 0 y 3                                 */
 .menu {
   position: fixed; inset: 0; z-index: 50;
   pointer-events: none;
@@ -69,17 +72,23 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   line-height: 1;
 }
 .menu a, .menu span {
-  pointer-events: auto; transition: opacity .3s;
   /* borde de las letras (colores y grosor: ajustes.css 2b y 3) */
   -webkit-text-stroke: var(--menu-borde-grosor) var(--dif-borde);
   paint-order: stroke fill;
+}
+/* zona de clic: rectángulo invisible alrededor de cada enlace.
+   El margen negativo es el mismo que el relleno, así nada se mueve. */
+.menu a {
+  pointer-events: auto; transition: opacity .3s;
+  display: inline-block;
+  padding: var(--menu-zona-alto) var(--menu-zona-ancho);
+  margin: calc(var(--menu-zona-alto) * -1) calc(var(--menu-zona-ancho) * -1);
 }
 .menu span { pointer-events: none; }
 .menu a:hover { opacity: .6; }
 .pagina-inicio .menu a, .pagina-inicio .menu span { -webkit-text-stroke-width: var(--inicio-borde-grosor); }
 .menu a.activo { text-decoration: underline; text-underline-offset: .25em; text-decoration-thickness: 1px; }
 
-/* columnas del menú */
 .menu__centro {
   position: absolute; left: 50%; top: calc(var(--margen) * .7);
   transform: translateX(-50%);
@@ -87,21 +96,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   gap: var(--inicio-separacion-lineas);
   text-align: center;
 }
-.menu__izq, .menu__der {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  display: flex; flex-direction: column;
-  gap: var(--inicio-separacion-columna);
-}
-.menu__izq { left: var(--margen); align-items: flex-start; text-align: left; }
-.menu__der { right: var(--margen); align-items: flex-end; text-align: right; }
 .menu__pie {
   position: absolute; left: 50%; bottom: calc(var(--margen) * .9 + env(safe-area-inset-bottom));
   transform: translateX(-50%);
 }
-
-/* al bajar en la página de un proyecto, el bloque del nombre se va */
-.menu--baja .menu__centro { opacity: 0; pointer-events: none; transition: opacity .4s var(--curva); }
-.menu__centro { transition: opacity .4s var(--curva); }
 
 .menu__nombre {
   font-family: var(--nombre-fuente);
@@ -110,19 +108,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   letter-spacing: var(--nombre-espaciado);
   white-space: nowrap;
 }
-.menu__labor, .menu__work, .menu__seccion, .menu__contacto {
+.menu__labor, .menu__work, .menu__donde, .menu__contacto {
   font-size: var(--menu-tam);
   letter-spacing: var(--inicio-espaciado-menu);
   white-space: nowrap;
 }
 
-/* ---- Móvil: las secciones bajan a las esquinas de abajo ---- */
 @media (max-width: 700px) {
   .menu__nombre { font-size: var(--nombre-tam-movil); }
-  .menu__izq, .menu__der {
-    top: auto; transform: none;
-    bottom: calc(var(--margen) + env(safe-area-inset-bottom));
-  }
   .menu__pie { bottom: calc(var(--margen) + env(safe-area-inset-bottom)); }
 }
 

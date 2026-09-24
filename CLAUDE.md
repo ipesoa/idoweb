@@ -30,16 +30,16 @@ window.Web = { proyectos(tipo), proyecto(tipo,id), todos(), tipos(), about, film
 | Archivo | JS | CSS | Qué hace |
 |---|---|---|---|
 | `index.html` | `inicio.js` | `inicio.css` | Pase fullscreen SIN textos (`AJUSTES.inicio.mostrarTitulos: false`): solo la imagen, fundido+desenfoque y zoom lento. Clic → proyecto. ←/→ y swipe. |
-| `work.html` | `lista.js` | `lista.css` | Todos los trabajos juntos, del más nuevo al más viejo, con filtros arriba a la izquierda (All · Films · Series · Commercials · Videoclips) que ocultan celdas. |
+| `work.html` | `lista.js` | `lista.css` | Todos los trabajos juntos, del más nuevo al más viejo. `lista.js` mete `#filtros` dentro de `.menu__centro`: quedan debajo del nombre y de "Work" (All · Films · Series · Commercials · Videoclips) y ocultan celdas. |
 | `films.html`, `series.html`, `comercials.html`, `videoclips.html` | `lista.js` | `lista.css` | Rejilla de una sección. Info a las 4 del cursor: **título / directed by / produced by** (`Comun.ficha`). |
-| `proyecto.html?tipo=films&id=CARPETA` | `proyecto.js` | `proyecto.css` | 1 vídeo limpio arriba (`Comun.reproductor`, autoplay mudo), 2 ficha centrada, 3 crew a dos columnas, 4 texto, 5 rejilla de fotos, 6 botón "Start a conversation" → contact.html. Al bajar, el bloque central del menú se oculta (`.menu--baja`). |
-| `contact.html` (antes about.html, que ahora redirige) | `contact.js` | `contact.css` | Solo el texto libre de `contenido/about/info.txt` + email/teléfono/instagram. Sin efectos. |
+| `proyecto.html?tipo=films&id=CARPETA` | `proyecto.js` | `proyecto.css` | 1 vídeo limpio arriba (`Comun.reproductor`, autoplay mudo), 2 ficha centrada, 3 crew a dos columnas, 4 texto (alineado a la izquierda), 5 rejilla de fotos, 6 botón "Start a conversation" → contact.html. Arriba solo el nombre, siempre visible. |
+| `contact.html` (antes about.html, que ahora redirige) | `contact.js` | `contact.css` | Columna abajo a la derecha: texto libre de `contenido/about/info.txt`, lista de TODOS los trabajos con filtros (All por defecto · Films · Series · Commercials · Videoclips) y email/teléfono/instagram. Sin efectos. |
 | `laboratorio.html` | inline + `diferencia.js` | inline | Herramienta interna: el modelo de color sobre las fotos, boyas (✓ exactas), rampas de continuidad, radio, pegar JSON. No enlazada en el menú. |
 
 Orden de scripts en cada página: `datos-generados.js → ajustes.js → contenido.js → comun.js → <página>.js`.
 
 ## Piezas compartidas (`assets/js/comun.js` → `window.Comun`)
-- Menú inyectado (`pintarMenu`) desde `AJUSTES.secciones` + `AJUSTES.textos`: `.menu__centro` (nombre · production designer · work) arriba en el centro, `.menu__izq` (films, series) y `.menu__der` (commercials, videoclips) a media altura, `.menu__pie` (contact) abajo en el centro. En móvil las columnas bajan a las esquinas inferiores. `body[data-seccion]` marca la sección activa.
+- Menú inyectado (`pintarMenu`), distinto según `body[data-pagina]`: **inicio** = `.menu__centro` (nombre · production designer · work) arriba + `.menu__pie` (contact) abajo; **secciones** (work, films, series, comercials, videoclips, contact) = nombre (enlace al inicio) + `.menu__donde` con el nombre de la sección, nada más; **proyecto** = solo el nombre, fijo arriba todo el rato. No hay enlaces a los lados. Cada `<a>` del menú lleva un rectángulo de clic invisible (`--menu-zona-alto` / `--menu-zona-ancho`, relleno + margen negativo) para poder pinchar sin dar justo en las letras.
 - `Comun.reproductor(url)` → HTML del vídeo (Vimeo/YouTube con autoplay mudo, archivo .mp4 → `<video>`, código `<iframe…>` tal cual). `Comun.ficha(p)` → [título, directed by…, produced by…].
 - Cortina de transición entre páginas (`.cortina`, `Comun.irA(href)`).
 - `Comun.autoScroll()` botón "auto" (se para al tocar/rueda/teclado).

@@ -16,9 +16,11 @@
   const filtros = document.getElementById("filtros");
   const proyectos = Web.proyectos(tipo);
 
-  // Filtros (solo en work.html): All + una por sección
+  // Filtros (solo en work.html): All + una por sección.
+  // Van dentro del menú, justo debajo del nombre y de "Work".
   if (filtros) {
     const T = AJUSTES.textos;
+    document.querySelector(".menu__centro").append(filtros);
     filtros.innerHTML = [`<button data-f="todo" class="activo">${T.todo}</button>`]
       .concat(AJUSTES.secciones.map((s) => `<button data-f="${s.id}">${s.titulo}</button>`)).join("");
     filtros.addEventListener("click", (e) => {

@@ -51,11 +51,12 @@
 }
 .proyecto__crew p { break-inside: avoid; }
 
-/* ---- 4. Texto sobre la película ---- */
+/* ---- 4. Texto sobre la película (a la izquierda) ---- */
 .proyecto__texto {
   width: min(100%, var(--proyecto-ancho-texto));
-  margin: clamp(30px, 5vh, 60px) auto clamp(50px, 9vh, 110px);
+  margin: clamp(30px, 5vh, 60px) 0 clamp(50px, 9vh, 110px);
   padding: 0 var(--margen);
+  text-align: left;
   font-size: var(--proyecto-tam-texto);
   line-height: 1.75;
 }

@@ -16,33 +16,43 @@
   const pagina = document.body.dataset.pagina; // inicio | work | films | series | comercials | videoclips | proyecto | contact
 
   /* ---------- MENÚ ----------
-     Arriba en el centro:  NOMBRE · production designer · work
-     A la izquierda:       las secciones con lado "izquierda"  (films, series)
-     A la derecha:         las secciones con lado "derecha"    (commercials, videoclips)
-     Abajo en el centro:   contact
-     Todo sale de AJUSTES.secciones y AJUSTES.textos (assets/js/ajustes.js) */
+     INICIO      arriba en el centro: NOMBRE · production designer · work
+                 abajo en el centro:  contact
+     SECCIONES   (work, films, series, commercials, videoclips, contact)
+                 arriba en el centro: NOMBRE (lleva al inicio) y, debajo,
+                 el nombre de la sección en la que estás
+     PROYECTO    arriba en el centro: solo el NOMBRE, siempre visible
+     Textos y secciones: assets/js/ajustes.js (AJUSTES.secciones / .textos) */
   function pintarMenu() {
     const nombre = (Web.about && Web.about.nombre) || "Idoia Esteban Galván";
-    const labor = A.textos.labor || "";
-    const activa = document.body.dataset.seccion || pagina;   // en proyecto.html, la sección del proyecto
-    const enlace = (s) =>
-      `<a class="menu__seccion menu__${s.id} ${activa === s.id ? "activo" : ""}" href="${s.pagina}">${s.titulo}</a>`;
-    const lado = (cual) => A.secciones.filter((s) => (s.lado || "izquierda") === cual).map(enlace).join("");
+    const seccion = A.secciones.find((s) => s.id === pagina);
+    const donde = pagina === "work" ? A.textos.work
+      : pagina === "contact" ? A.textos.contacto
+      : seccion ? seccion.titulo : "";
 
-    const nav = document.createElement("nav");
-    nav.className = "menu";
-    nav.setAttribute("aria-label", "Menú principal");
-    nav.innerHTML = `
+    let dentro;
+    if (pagina === "inicio") {
+      dentro = `
       <div class="menu__centro">
         <a class="menu__nombre" href="index.html">${nombre}</a>
-        ${labor ? `<span class="menu__labor">${labor}</span>` : ""}
-        <a class="menu__work ${activa === "work" ? "activo" : ""}" href="work.html">${A.textos.work}</a>
+        ${A.textos.labor ? `<span class="menu__labor">${A.textos.labor}</span>` : ""}
+        <a class="menu__work" href="work.html">${A.textos.work}</a>
       </div>
-      <div class="menu__izq">${lado("izquierda")}</div>
-      <div class="menu__der">${lado("derecha")}</div>
       <div class="menu__pie">
-        <a class="menu__contacto ${activa === "contact" ? "activo" : ""}" href="contact.html">${A.textos.contacto}</a>
+        <a class="menu__contacto" href="contact.html">${A.textos.contacto}</a>
       </div>`;
+    } else {
+      dentro = `
+      <div class="menu__centro">
+        <a class="menu__nombre" href="index.html">${nombre}</a>
+        ${donde ? `<span class="menu__donde">${donde}</span>` : ""}
+      </div>`;
+    }
+
+    const nav = document.createElement("nav");
+    nav.className = "menu menu--" + (pagina || "otra");
+    nav.setAttribute("aria-label", "Menú principal");
+    nav.innerHTML = dentro;
     document.body.prepend(nav);
     if (!document.title) document.title = nombre;
   }
@@ -227,14 +237,6 @@
   pintarMenu();
   montarCortina();
 
-  /* En la página de un proyecto, el nombre de arriba se aparta al bajar
-     para que no se cruce con el título y la ficha (vuelve al subir). */
-  if (pagina === "proyecto") {
-    const nav = document.querySelector(".menu");
-    const mirar = () => nav.classList.toggle("menu--baja", window.scrollY > 60);
-    window.addEventListener("scroll", mirar, { passive: true });
-    mirar();
-  }
 
   window.Comun = { autoScroll, visor, aparecer, letras, azar, irA, embed, reproductor, ficha };
 })();
