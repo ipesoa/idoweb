@@ -1,20 +1,17 @@
 # =====================================================================
-#  ABOUT  ·  datos de contacto y bio
-#  Deja vacío lo que no quieras que salga.
+#  ABOUT  ·  cada dato relleno es una línea en la web (editado con el gestor)
 # =====================================================================
 nombre: Idoia Esteban Galván
 subtitulo: Diseño de producción
 ubicacion: Based in Madrid
-email:
-telefono:
-instagram:
-imdb:
-
-# Showreel: enlace de Vimeo o YouTube, o pon un archivo showreel.mp4 en esta carpeta
-showreel:
-
-# Foto: pon un archivo llamado retrato.jpg en esta carpeta
+email: 
+telefono: 
+instagram: 
+imdb: 
+showreel: 
 ---
-Texto de ejemplo: diseñadora de producción con base en Madrid. Trabaja en cine y publicidad construyendo mundos con *materia*, color y luz.
+aqui va un texto diver
+donde pones tu email 
+algun ascci emoji quizás
 
-Aquí va la bio más larga: formación, trayectoria, con quién ha trabajado, premios, etc. Una línea en blanco separa párrafos.
+⚞^◕⩊◕^⚟

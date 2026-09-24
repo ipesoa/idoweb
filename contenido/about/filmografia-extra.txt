@@ -1,8 +1,6 @@
 # =====================================================================
 #  FILMOGRAFÍA EXTRA  ·  trabajos que salen en la lista del about
-#  pero que NO tienen página propia (sin fotos).
-#  Los proyectos de films/ y comercials/ ya salen solos, no los repitas.
-#
-#  Una línea por trabajo, separado con |  :
-#  año | título | labor | director o cliente | films o comercials
+#  pero que NO tienen página propia (sin fotos). (Editado con el gestor)
+#  Una línea por trabajo:  año | título | labor | director o cliente | films o comercials
 # =====================================================================
+

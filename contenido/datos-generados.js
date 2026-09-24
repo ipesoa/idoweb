@@ -684,6 +684,8 @@ Una línea en blanco empieza un párrafo nuevo, y las palabras entre *asteriscos
       {"f":"portada.jpg","w":1800,"h":1273}]
     },
   ],
+  "series": [
+  ],
   "comercials": [
     {
       "carpeta": "2022-coche-electrico",
@@ -732,39 +734,36 @@ Anuncio de ejemplo. Un único decorado negro lacado con reflejos en rojo.
       {"f":"portada.jpg","w":1800,"h":1013}]
     },
   ],
+  "videoclips": [
+  ],
   "about": {
     "info": `# =====================================================================
-#  ABOUT  ·  datos de contacto y bio
-#  Deja vacío lo que no quieras que salga.
+#  ABOUT  ·  cada dato relleno es una línea en la web (editado con el gestor)
 # =====================================================================
 nombre: Idoia Esteban Galván
 subtitulo: Diseño de producción
 ubicacion: Based in Madrid
-email:
-telefono:
-instagram:
-imdb:
-
-# Showreel: enlace de Vimeo o YouTube, o pon un archivo showreel.mp4 en esta carpeta
-showreel:
-
-# Foto: pon un archivo llamado retrato.jpg en esta carpeta
+email: 
+telefono: 
+instagram: 
+imdb: 
+showreel: 
 ---
-Texto de ejemplo: diseñadora de producción con base en Madrid. Trabaja en cine y publicidad construyendo mundos con *materia*, color y luz.
+aqui va un texto diver
+donde pones tu email 
+algun ascci emoji quizás
 
-Aquí va la bio más larga: formación, trayectoria, con quién ha trabajado, premios, etc. Una línea en blanco separa párrafos.
+⚞^◕⩊◕^⚟
 `,
     "filmografia": `# =====================================================================
 #  FILMOGRAFÍA EXTRA  ·  trabajos que salen en la lista del about
-#  pero que NO tienen página propia (sin fotos).
-#  Los proyectos de films/ y comercials/ ya salen solos, no los repitas.
-#
-#  Una línea por trabajo, separado con |  :
-#  año | título | labor | director o cliente | films o comercials
+#  pero que NO tienen página propia (sin fotos). (Editado con el gestor)
+#  Una línea por trabajo:  año | título | labor | director o cliente | films o comercials
 # =====================================================================
+
 `,
     "archivos": [
       {"f":"retrato.jpg","w":1200,"h":1500}]
   }
 };
-/* gestor: 202609241033 */
+/* gestor: 202609242321 */
