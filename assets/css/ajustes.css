@@ -25,11 +25,11 @@
            arriba, por ejemplo: "Instrument Serif", serif
    ESPACIO ENTRE LETRAS: 0 = normal · .08em · .12em · .3em = muy suelto
    ===================================================================== */
-  --nombre-tam:       1.15rem;
+  --nombre-tam:       1.8rem;
   --nombre-fuente:    var(--arial);
-  --nombre-espaciado: .12em;
+  --nombre-espaciado: .18em;
   --nombre-negrita:   400;            /* 400 normal · 700 negrita */
-  --nombre-tam-movil: 1rem;           /* en el móvil */
+  --nombre-tam-movil: 1.5rem;           /* en el móvil */
 
   /* Las demás letras del menú (production designer, work, films, series,
      commercials, videoclips, contact) van todas con este tamaño        */
