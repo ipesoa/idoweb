@@ -30,7 +30,8 @@
   // ---- Qué proyectos salen ----
   // Los que llevan "mostrar_en_inicio: si", de las secciones de AJUSTES.inicio.secciones
   const cuales = A.secciones === "todas" || !A.secciones ? Web.tipos() : A.secciones;
-  let lista = cuales.flatMap((t) => Web.proyectos(t)).filter((p) => p.enInicio && p.portada);
+  let lista = cuales.flatMap((t) => Web.proyectos(t)).filter((p) => p.enInicio && p.portada)
+    .concat((Web.home || []).filter((h) => h.enInicio && h.portada));
 
   if (!lista.length) {
     pase.innerHTML = `<p class="pase__vacio">Todavía no hay proyectos marcados con<br><code>mostrar_en_inicio: si</code></p>`;
@@ -144,7 +145,7 @@
 
   pase.addEventListener("click", (e) => {
     if (e.target.closest(".menu")) return;
-    if (actual) Comun.irA(actual.enlace);
+    if (actual && actual.enlace) Comun.irA(actual.enlace);
   });
   document.addEventListener("keydown", (e) => {
     if (e.key === "ArrowRight") saltar(1);

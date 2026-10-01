@@ -112,6 +112,20 @@
     return tipos().flatMap((t) => proyectos(t)).sort(ordenar);
   }
 
+  // Imágenes independientes elegidas para el inicio (contenido/home/).
+  // Pueden enlazar con un proyecto o mostrarse sin enlace.
+  const home = (DATOS.home || []).map((h) => ({
+    titulo: h.titulo || "",
+    ano: h.ano || "",
+    labor: "",
+    enInicio: h.enInicio !== false,
+    encuadre: h.encuadre || "center",
+    portada: { url: "contenido/home/" + encodeURIComponent(h.f) },
+    portadaMovil: null,
+    enlace: h.tipo && h.carpeta
+      ? `proyecto.html?tipo=${encodeURIComponent(h.tipo)}&id=${encodeURIComponent(h.carpeta)}` : "",
+  }));
+
   function proyecto(tipo, id) {
     return proyectos(tipo).find((p) => p.id === id) || null;
   }
@@ -165,5 +179,5 @@
         .replace(/\*([^*]+)\*/g, "<em>$1</em>")}</p>`).join("");
   }
 
-  window.Web = { proyectos, proyecto, todos, tipos, about, filmografia, parrafos, leerInfo };
+  window.Web = { proyectos, proyecto, todos, tipos, home, about, filmografia, parrafos, leerInfo };
 })();

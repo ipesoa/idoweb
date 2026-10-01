@@ -361,6 +361,7 @@ button { cursor: pointer; background: none; border: 0; }
     const aboutDato = contenido.about || { info: "", filmografia: "", archivos: [] };
     E = {
       head, arbol, datosTexto, contenido, proyectos, borrados: [],
+      home: (contenido.home || []).map((h) => ({ ...h })), homeSucio: false,
       about: { info: leerInfo(aboutDato.info), infoOriginal: aboutDato.info, extra: leerExtra(aboutDato.filmografia), extraOriginal: aboutDato.filmografia, archivos: aboutDato.archivos || [] },
       aboutSucio: false,
     };
@@ -391,9 +392,9 @@ button { cursor: pointer; background: none; border: 0; }
     l.className = "led " + estado;
     $("#ledTexto").textContent = texto;
   }
-  const hayCambios = () => E && (E.proyectos.some((p) => p.sucio || p.nuevo) || E.borrados.length > 0 || E.aboutSucio);
+  const hayCambios = () => E && (E.proyectos.some((p) => p.sucio || p.nuevo) || E.borrados.length > 0 || E.aboutSucio || E.homeSucio);
   function actualizarEstado() {
-    const n = E ? E.proyectos.filter((p) => p.sucio || p.nuevo).length + E.borrados.length + (E.aboutSucio ? 1 : 0) : 0;
+    const n = E ? E.proyectos.filter((p) => p.sucio || p.nuevo).length + E.borrados.length + (E.aboutSucio ? 1 : 0) + (E.homeSucio ? 1 : 0) : 0;
     $("#publicar").disabled = !n;
     $("#publicar").textContent = n ? `Publicar cambios (${n})` : "Publicar cambios";
     $("#pendientes").textContent = n ? `${n} cambio${n > 1 ? "s" : ""} sin publicar` : "Todo publicado";
@@ -450,7 +451,7 @@ button { cursor: pointer; background: none; border: 0; }
 
   function vistaInicio() {
     const todos = E.proyectos.slice().sort(ordenar);
-    const n = todos.filter(enInicio).length;
+    const n = todos.filter(enInicio).length + E.home.filter((h) => h.enInicio !== false).length;
     const grupo = (tipo, titulo) => {
       const lista = todos.filter((p) => p.tipo === tipo);
       return `<h3 style="margin:22px 0 10px">${titulo}</h3><div class="rejilla">${lista.map((p) => `
@@ -462,7 +463,13 @@ button { cursor: pointer; background: none; border: 0; }
     };
     return `<div class="cabecera"><h2>Pase de imágenes del inicio</h2>
         <button class="boton" data-accion="inicio-todos">Todos</button><button class="boton" data-accion="inicio-ninguno">Ninguno</button>
-        <p>Pincha una película o anuncio para que salga (verde) o no salga en el inicio. Ahora salen <b>${n}</b>. El orden en la web es aleatorio.</p></div>
+        <p>Pincha una imagen para que salga (verde) o no salga en el inicio. Ahora salen <b>${n}</b>. El orden en la web es aleatorio.</p></div>
+      ${E.home.length ? `<h3 style="margin:22px 0 10px">Fotos especiales del inicio</h3><div class="rejilla">${E.home.map((h, i) => `
+        <div class="tarjeta ${h.enInicio !== false ? "en-inicio" : ""}" data-home="${i}">
+          <img src="https://raw.githubusercontent.com/${REPO}/${E.head}/contenido/home/${encodeURIComponent(h.f)}" alt="" loading="lazy">
+          <div class="tarjeta__txt"><b>${esc(h.titulo || h.f)}</b><small>${esc(h.ano || "")}</small>
+            <div class="interruptor"><span>${h.enInicio !== false ? "Sale en el inicio" : "No sale"}</span><i></i></div></div>
+        </div>`).join("")}</div>` : ""}
       ${TIPOS.map((t) => grupo(t.id, t.titulo)).join("")}`;
   }
 
@@ -505,11 +512,10 @@ button { cursor: pointer; background: none; border: 0; }
           ${campo("ubicacion", "Ciudad (no se usa ahora)", "Based in Madrid")}
         </div></div>
       <div class="bloque"><h3>Lista de trabajos: los que no tienen fotos</h3>
-        <p>Los trabajos de las otras pestañas ya salen solos. Aquí se guardan los que no tienen página ni fotos.</p>
+        <p>Los trabajos de las otras pestañas ya salen solos. Aquí puedes cambiar año, título y sección de los que no tienen fotos.</p>
         <table class="tabla"><tbody>${E.about.extra.map((f, i) => `<tr>
           <td><input data-extra="${i}" data-k="ano" value="${esc(f.ano)}" placeholder="Año"></td>
           <td><input data-extra="${i}" data-k="titulo" value="${esc(f.titulo)}" placeholder="Título"></td>
-          <td><input data-extra="${i}" data-k="labor" value="${esc(f.labor)}" placeholder="Labor"></td>
           <td><input data-extra="${i}" data-k="quien" value="${esc(f.quien)}" placeholder="Director o cliente"></td>
           <td><select data-extra="${i}" data-k="tipo">${TIPOS.map((t) => `<option value="${t.id}"${f.tipo === t.id ? " selected" : ""}>${t.titulo}</option>`).join("")}</select></td>
           <td><button class="boton boton--peligro" data-quitar-extra="${i}" title="Quitar">✕</button></td></tr>`).join("")}</tbody></table>
@@ -537,7 +543,7 @@ button { cursor: pointer; background: none; border: 0; }
       <div class="campos">
         ${campo("titulo", "Título", "", false)}
         ${campo("ano", "Año", "2024")}
-        ${campo("labor", "Labor", "Dirección de arte")}
+        ${campo("labor", "Labor", "Product Designer")}
         ${campo("director", "Dirección", "Nombre del director/a")}
         ${T.cliente ? campo("cliente", "Cliente / marca") : campo("productora", "Productora")}
         ${campo("formato", "Formato (opcional)", "Largometraje, serie…")}
@@ -665,7 +671,7 @@ button { cursor: pointer; background: none; border: 0; }
     while (E.proyectos.some((p) => p.tipo === tipo && p.carpeta === carpeta) || E.borrados.some((p) => p.tipo === tipo && p.carpeta === carpeta)) carpeta = `${ano}-${slug(titulo)}-${n++}`;
     const p = {
       tipo, carpeta, nuevo: true, sucio: false, fotos: [], movil: null, rutasOriginales: [], archivosOriginales: [],
-      info: { campos: { titulo, ano, labor: "Dirección de arte", director: "", mostrar_en_inicio: "no" }, orden: [], texto: "" },
+      info: { campos: { titulo, ano, labor: "Product Designer", director: "", mostrar_en_inicio: "no" }, orden: [], texto: "" },
     };
     E.proyectos.push(p);
     abrirEditor(p);
@@ -674,7 +680,7 @@ button { cursor: pointer; background: none; border: 0; }
   /* ================= publicar ================= */
   const escJs = (t) => t.replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$/g, "\\$");
   const escJson = (t) => t.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-  function generarDatos(listaPorTipo, about, version) {
+  function generarDatos(listaPorTipo, about, home, version) {
     let s = "/* ARCHIVO GENERADO AUTOMÁTICAMENTE por herramientas-mac/_generar-datos.sh o herramientas-windows/_generar-datos.ps1\n";
     s += "   No lo edites a mano: cambia las carpetas de /contenido y vuelve a generarlo. */\n";
     s += "window.CONTENIDO = {\n";
@@ -687,6 +693,7 @@ button { cursor: pointer; background: none; border: 0; }
       }
       s += "  ],\n";
     }
+    s += `  "home": ${JSON.stringify(home)},\n`;
     s += `  "about": {\n    "info": \`${escJs(about.info)}\`,\n    "filmografia": \`${escJs(about.filmografia)}\`,\n    "archivos": ${archivos(about.archivos)}\n  }\n};\n`;
     s += `/* gestor: ${version} */\n`;
     return s;
@@ -747,7 +754,7 @@ button { cursor: pointer; background: none; border: 0; }
 
       // datos que lee la web + número de versión nuevo en las páginas (para la caché)
       const version = new Date().toISOString().replace(/\D/g, "").slice(0, 12);
-      const datosTexto = generarDatos(datos, { info: aboutInfo, filmografia: aboutExtra, archivos: E.about.archivos }, version);
+      const datosTexto = generarDatos(datos, { info: aboutInfo, filmografia: aboutExtra, archivos: E.about.archivos }, E.home, version);
       poner("contenido/datos-generados.js", await blobTexto(datosTexto));
       for (const r of E.arbol.keys()) {
         if (!/^[^/]+\.html$/.test(r)) continue;
@@ -763,6 +770,7 @@ button { cursor: pointer; background: none; border: 0; }
         E.proyectos.filter((p) => p.sucio).length && `${E.proyectos.filter((p) => p.sucio).length} editado(s)`,
         E.borrados.length && `${E.borrados.length} eliminado(s)`,
         E.aboutSucio && "about",
+        E.homeSucio && "inicio",
       ].filter(Boolean).join(", ");
       const nuevo = await gh("POST", `/repos/${REPO}/git/commits`, { message: `Gestor: ${resumen}`, tree: arbol.sha, parents: [E.head] });
       await gh("PATCH", `/repos/${REPO}/git/refs/heads/${RAMA}`, { sha: nuevo.sha, force: false });
@@ -915,9 +923,14 @@ button { cursor: pointer; background: none; border: 0; }
       const p = E.proyectos.find((x) => x.tipo + "/" + x.carpeta === t.dataset.inicio);
       p.info.campos.mostrar_en_inicio = enInicio(p) ? "no" : "si"; if (!p.nuevo) p.sucio = true; pintar(); return;
     }
+    if (t.dataset.home !== undefined) {
+      const h = E.home[+t.dataset.home];
+      h.enInicio = h.enInicio === false; E.homeSucio = true; pintar(); return;
+    }
     const acc = t.dataset.accion;
     if (acc === "inicio-todos" || acc === "inicio-ninguno") {
       E.proyectos.forEach((p) => { const v = acc === "inicio-todos" ? "si" : "no"; if ((enInicio(p) ? "si" : "no") !== v) { p.info.campos.mostrar_en_inicio = v; if (!p.nuevo) p.sucio = true; } });
+      E.home.forEach((h) => { const v = acc === "inicio-todos"; if ((h.enInicio !== false) !== v) { h.enInicio = v; E.homeSucio = true; } });
       pintar(); return;
     }
     if (acc === "nuevo") { nuevoProyecto(t.dataset.tipo); return; }
@@ -932,7 +945,7 @@ button { cursor: pointer; background: none; border: 0; }
       if (confirm(`¿Eliminar ${l.length} proyecto(s) con todas sus fotos?\n\n${l.map((p) => "· " + (p.info.campos.titulo || p.carpeta)).join("\n")}\n\n(No se borra nada de verdad hasta que pulses "Publicar cambios")`)) borrarProyectos(l);
       return;
     }
-    if (acc === "extra-anadir") { E.about.extra.push({ ano: "", titulo: "", labor: "Dirección de arte", quien: "", tipo: "films" }); E.aboutSucio = true; pintar(); return; }
+    if (acc === "extra-anadir") { E.about.extra.push({ ano: "", titulo: "", labor: "", quien: "", tipo: "films" }); E.aboutSucio = true; pintar(); return; }
     if (t.dataset.quitarExtra !== undefined) { E.about.extra.splice(+t.dataset.quitarExtra, 1); E.aboutSucio = true; pintar(); return; }
     if (t.dataset.marcar) {
       e.stopPropagation();

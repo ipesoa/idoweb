@@ -1,5 +1,13 @@
 # Web de Idoia Esteban Galván
 
+## Importación de octubre de 2026
+
+`uploader.html` permite instalar `idoweb-contenido-v5.zip` en `ipesoa/idoweb` en un solo cambio de GitHub. Antes de publicar muestra los títulos, años, texto de Contact, selección del inicio y número de archivos de demostración que se eliminarán. Solo sustituye `contenido/`; conserva el diseño y el gestor.
+
+Después de la importación, usar `gestor.html` para el trabajo diario. Su pestaña **Inicio** también controla las dos fotos especiales de *Extraterrestre* además de las portadas de proyectos. Los trabajos sin fotos se editan en **Contact**, dentro de la lista de filmografía. No volver a importar el ZIP antiguo después de añadir contenido nuevo: reemplazaría esas incorporaciones.
+
+El contenido de esta versión procede de los paquetes `PELÍCULAS`, `SERIES`, `COMMERCIALS` y `HOME`, más la selección en naranja del CV y los años y el texto de `filmografía 2026.pages`. Las dos fotos `TWADIS` se excluyeron por indicación expresa. La presentación usa «production designer».
+
 Web de portfolio (diseño de producción): **inicio** con pase de imágenes, **Films** y **Comercials** (rejilla de portadas en formato cine), página de cada **proyecto** (rejilla de fotos + botón Contact) y **About** minimal.
 
 No hace falta saber programar para mantenerla: todo el contenido son **carpetas con fotos + un archivo de texto** (`info.txt`).

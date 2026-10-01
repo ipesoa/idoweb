@@ -29,7 +29,7 @@
   // 3. la lista de trabajos
   const ol = document.getElementById("trabajos");
   ol.innerHTML = Web.filmografia().map((t) => {
-    const dentro = `<span>${esc(t.ano || "")}</span><span class="titulo">${esc(t.titulo)}</span><span>${esc(t.labor || "")}</span>`;
+    const dentro = `<span>${esc(t.ano || "")}</span><span class="titulo">${esc(t.titulo)}</span>`;
     return `<li data-tipo="${esc(t.tipo)}">${t.enlace
       ? `<a class="fila" href="${t.enlace}">${dentro}</a>`
       : `<div class="fila">${dentro}</div>`}</li>`;

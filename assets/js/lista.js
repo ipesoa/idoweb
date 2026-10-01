@@ -15,7 +15,7 @@
   const proyectos = Web.proyectos(tipo);
 
   if (!proyectos.length) {
-    lista.outerHTML = `<p class="lista-vacia">Aún no hay nada en contenido/${tipo}/</p>`;
+    lista.outerHTML = `<p class="lista-vacia">Aún no hay imágenes en esta sección.</p>`;
     return;
   }
 

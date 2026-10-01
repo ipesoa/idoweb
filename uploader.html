@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Importar contenido · Idoia</title>
+  <style>
+    :root { color-scheme: light; font-family: Arial, sans-serif; background: #f7f6f2; color: #222; }
+    * { box-sizing: border-box; }
+    body { max-width: 940px; margin: auto; padding: 30px 18px 80px; }
+    h1 { font-size: clamp(30px, 5vw, 52px); letter-spacing: -.04em; margin-bottom: 8px; }
+    h2 { margin: 34px 0 12px; font-size: 22px; }
+    p { line-height: 1.5; }
+    .muted { color: #666; }
+    .panel { background: white; border: 1px solid #ddd; padding: 22px; margin-top: 20px; }
+    label { display: block; font-weight: 600; margin: 12px 0 6px; }
+    input, textarea, button { font: inherit; }
+    input[type="text"], input[type="password"], textarea { width: 100%; border: 1px solid #bdbdbd; padding: 11px; background: white; border-radius: 4px; }
+    textarea { min-height: 220px; line-height: 1.5; }
+    button, .link { display: inline-block; padding: 11px 16px; border: 1px solid #222; background: #222; color: white; border-radius: 4px; cursor: pointer; text-decoration: none; }
+    button:disabled { opacity: .4; cursor: not-allowed; }
+    button.secondary, .link { background: transparent; color: #222; }
+    .drop { display: grid; place-items: center; min-height: 145px; text-align: center; border: 2px dashed #888; background: #fafafa; cursor: pointer; padding: 20px; }
+    .drop.hover { border-color: #237c57; background: #eaf7ef; }
+    .drop b { font-size: 20px; }
+    .summary { display: flex; flex-wrap: wrap; gap: 12px; }
+    .summary span { padding: 10px 14px; background: #eee; border-radius: 4px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+    .card { border: 1px solid #ddd; padding: 10px; background: #fff; }
+    .card img { width: 100%; aspect-ratio: 1.7; object-fit: cover; background: #eee; }
+    .card label { display: flex; gap: 7px; align-items: center; margin: 8px 0 0; font-weight: 400; }
+    .card small { display: block; color: #666; margin-top: 5px; }
+    .rows { width: 100%; border-collapse: collapse; }
+    .rows th, .rows td { border-bottom: 1px solid #ddd; padding: 7px; text-align: left; }
+    .rows input { min-width: 0; width: 100%; border: 1px solid #ddd; padding: 7px; }
+    .rows input.year { width: 78px; }
+    .actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 20px; }
+    #status { white-space: pre-wrap; min-height: 2em; }
+    .error { color: #9d2020; }
+    .success { color: #176d42; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <h1>Importar contenido</h1>
+  <p>Arrastra el archivo <b>idoweb-contenido-v5.zip</b>. Revisa el texto, los años y las imágenes del inicio. Después publica todo junto en GitHub. El diseño de la web permanece igual.</p>
+  <p class="muted">Este importador sustituye todo el contenido anterior. Úsalo para la migración inicial; después, usa el <a href="gestor.html">gestor de la web</a> para añadir trabajos, editar Contact y elegir qué imágenes aparecen en el inicio.</p>
+
+  <div class="panel">
+    <label for="repo">Repositorio</label>
+    <input id="repo" type="text" value="ipesoa/idoweb" autocomplete="off">
+    <label for="token">Token de GitHub con permiso Contents: Read and write</label>
+    <input id="token" type="password" placeholder="github_pat_…" autocomplete="off">
+    <label><input id="remember" type="checkbox"> Recordar el token en este navegador para el gestor</label>
+  </div>
+
+  <div class="panel">
+    <div class="drop" id="drop" role="button" tabindex="0"><div><b>Arrastra aquí el ZIP de contenido</b><br><span class="muted">o haz clic para elegirlo</span></div></div>
+    <input id="file" type="file" accept=".zip,application/zip" hidden>
+    <p id="filename" class="muted"></p>
+  </div>
+  <p id="status" role="status"></p>
+
+  <div id="review" hidden>
+    <h2>Resumen</h2><div class="summary" id="summary"></div>
+    <h2>Inicio</h2><p>Marca las fotos que aparecerán en el pase. Puedes cambiarlo después desde el gestor.</p>
+    <div class="grid" id="home"></div>
+    <h2>Contact · presentación</h2><p>El texto aparece encima de la filmografía.</p>
+    <textarea id="hello" spellcheck="true"></textarea>
+    <h2>Filmografía</h2><p>Se ordena automáticamente por año, del más reciente al más antiguo. Los trabajos sin fotos aparecen solo en Contact.</p>
+    <div style="overflow-x:auto"><table class="rows"><thead><tr><th>Año</th><th>Título</th><th>Sección</th><th>Fotos</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <div class="actions"><button id="publish">Publicar contenido</button></div>
+    <p class="muted">Antes de guardar se muestra cuántos archivos de contenido anteriores se borrarán. Los archivos de diseño, el gestor y este uploader no se borran.</p>
+  </div>
+
+  <script>
+  (() => {
+    const $ = (s) => document.querySelector(s);
+    const enc = new TextEncoder(), dec = new TextDecoder();
+    const TYPES = ["films", "series", "comercials", "videoclips"];
+    let source = null, state = null, objectUrls = [];
+    const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    const status = (msg, kind = "") => { $("#status").textContent = msg; $("#status").className = kind; };
+    const field = (info, key) => (info.match(new RegExp(`^${key}:\\s*(.*)$`, "im")) || [," "])[1].trim();
+    function putField(info, key, value) {
+      const lines = info.replace(/\r/g, "").split("\n"), i = lines.findIndex((l) => l.toLowerCase().startsWith(key.toLowerCase() + ":"));
+      if (i >= 0) lines[i] = key + ": " + value;
+      else lines.splice(Math.max(0, lines.indexOf("---")), 0, key + ": " + value);
+      return lines.join("\n");
+    }
+    const body = (info) => info.split(/\n---\s*\n/).slice(1).join("\n---\n").trim();
+    const putBody = (info, text) => info.split(/\n---\s*\n/)[0].trimEnd() + "\n---\n" + text.trim() + "\n";
+
+    async function readZip(file) {
+      const buf = new Uint8Array(await file.arrayBuffer()), dv = new DataView(buf.buffer);
+      let eocd = -1;
+      for (let i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+      if (eocd < 0) throw Error("El archivo no es un ZIP válido.");
+      const total = dv.getUint16(eocd + 10, true), entries = new Map();
+      let p = dv.getUint32(eocd + 16, true);
+      for (let n = 0; n < total; n++) {
+        if (dv.getUint32(p, true) !== 0x02014b50) throw Error("El ZIP está dañado.");
+        const method = dv.getUint16(p + 10, true), compressed = dv.getUint32(p + 20, true);
+        const nl = dv.getUint16(p + 28, true), el = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true), local = dv.getUint32(p + 42, true);
+        const name = dec.decode(buf.subarray(p + 46, p + 46 + nl)).replace(/\\/g, "/");
+        p += 46 + nl + el + cl;
+        if (name.endsWith("/")) continue;
+        if (!name.startsWith("contenido/") || name.split("/").some((part) => part === ".." || part === "." || !part)) throw Error(`Ruta no permitida en el ZIP: ${name}`);
+        if (entries.has(name)) throw Error(`Archivo duplicado: ${name}`);
+        const start = local + 30 + dv.getUint16(local + 26, true) + dv.getUint16(local + 28, true);
+        const compressedBytes = buf.subarray(start, start + compressed);
+        entries.set(name, async () => {
+          if (method === 0) return compressedBytes;
+          if (method !== 8) throw Error(`Compresión no compatible: ${name}`);
+          return new Uint8Array(await new Response(new Blob([compressedBytes]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());
+        });
+      }
+      return entries;
+    }
+
+    async function openFile(file) {
+      status(""); $("#review").hidden = true;
+      objectUrls.forEach((u) => URL.revokeObjectURL(u)); objectUrls = [];
+      source = await readZip(file);
+      const manifestEntry = source.get("contenido/manifest.json");
+      if (!manifestEntry) throw Error("Falta contenido/manifest.json. Usa el ZIP de contenido preparado para esta web.");
+      state = JSON.parse(dec.decode(await manifestEntry()));
+      if (state.schema !== 1 || !state.data || !state.data.about) throw Error("El manifiesto de contenido no es compatible.");
+      for (const type of TYPES) for (const p of state.data[type] || []) {
+        if (!source.has(`contenido/${type}/${p.carpeta}/info.txt`)) throw Error(`Falta info.txt de ${p.carpeta}`);
+        for (const image of p.archivos || []) if (!source.has(`contenido/${type}/${p.carpeta}/${image.f}`)) throw Error(`Falta ${image.f} de ${p.carpeta}`);
+      }
+      for (const h of state.data.home || []) if (!source.has(`contenido/home/${h.f}`)) throw Error(`Falta la imagen de inicio ${h.f}`);
+      state.extra = (state.data.about.filmografia || "").trim().split("\n").filter(Boolean).map((l) => {
+        const [ano, titulo, labor, quien, tipo] = l.split("|").map((x) => x.trim());
+        return { ano, titulo, labor, quien, tipo };
+      });
+      $("#filename").textContent = `${file.name} · ${(file.size / 1e6).toFixed(1)} MB`;
+      $("#hello").value = body(state.data.about.info);
+      render(); $("#review").hidden = false;
+    }
+
+    function render() {
+      const projects = TYPES.flatMap((type) => (state.data[type] || []).map((p) => ({ type, p })));
+      $("#summary").innerHTML = [
+        `${projects.length} trabajos con fotos`, `${state.extra.length} sin fotos`,
+        `${projects.reduce((n, x) => n + x.p.archivos.length, 0)} fotos de proyectos`,
+        `${(state.data.home || []).length} fotos especiales del inicio`,
+      ].map((t) => `<span>${esc(t)}</span>`).join("");
+      $("#rows").innerHTML = projects.map(({ type, p }) => `
+        <tr><td><input class="year" data-kind="project" data-type="${type}" data-folder="${esc(p.carpeta)}" data-key="año" value="${esc(field(p.info, "año"))}" inputmode="numeric"></td>
+        <td><input data-kind="project" data-type="${type}" data-folder="${esc(p.carpeta)}" data-key="titulo" value="${esc(field(p.info, "titulo"))}"></td>
+        <td>${esc(type)}</td><td>${p.archivos.length}</td></tr>`).join("") + state.extra.map((x, i) => `
+        <tr><td><input class="year" data-kind="extra" data-index="${i}" data-key="ano" value="${esc(x.ano)}" inputmode="numeric"></td>
+        <td><input data-kind="extra" data-index="${i}" data-key="titulo" value="${esc(x.titulo)}"></td>
+        <td>${esc(x.tipo)}</td><td>—</td></tr>`).join("");
+      const cards = [];
+      for (const { type, p } of projects) {
+        const first = p.archivos[0];
+        cards.push({ title: field(p.info, "titulo"), subtitle: `${field(p.info, "año")} · ${type}`,
+          checked: /^s[ií]$/i.test(field(p.info, "mostrar_en_inicio")),
+          image: `contenido/${type}/${p.carpeta}/${first.f}`, key: `project:${type}:${p.carpeta}` });
+      }
+      for (const [i, h] of (state.data.home || []).entries()) cards.push({ title: h.titulo || h.f, subtitle: "Foto especial · " + (h.ano || ""),
+        checked: h.enInicio !== false, image: `contenido/home/${h.f}`, key: `home:${i}` });
+      $("#home").innerHTML = cards.map((c) => `<div class="card" data-image="${esc(c.image)}">
+        <img alt="" loading="lazy"><b>${esc(c.title)}</b><small>${esc(c.subtitle)}</small>
+        <label><input type="checkbox" data-home-key="${esc(c.key)}" ${c.checked ? "checked" : ""}> Mostrar en inicio</label></div>`).join("");
+      for (const card of $("#home").querySelectorAll(".card")) {
+        const entry = source.get(card.dataset.image);
+        entry().then((bytes) => { const u = URL.createObjectURL(new Blob([bytes], { type: "image/jpeg" })); objectUrls.push(u); card.querySelector("img").src = u; });
+      }
+    }
+
+    $("#rows").addEventListener("input", (e) => {
+      const el = e.target;
+      if (el.dataset.kind === "project") {
+        const p = state.data[el.dataset.type].find((x) => x.carpeta === el.dataset.folder);
+        p.info = putField(p.info, el.dataset.key, el.value);
+      } else if (el.dataset.kind === "extra") state.extra[+el.dataset.index][el.dataset.key] = el.value;
+    });
+    $("#home").addEventListener("change", (e) => {
+      const key = e.target.dataset.homeKey;
+      if (!key) return;
+      const [kind, type, folder] = key.split(":");
+      if (kind === "home") state.data.home[+type].enInicio = e.target.checked;
+      else {
+        const p = state.data[type].find((x) => x.carpeta === folder);
+        p.info = putField(p.info, "mostrar_en_inicio", e.target.checked ? "si" : "no");
+      }
+    });
+
+    const b64 = (bytes) => { let s = ""; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000)); return btoa(s); };
+    async function shaGit(bytes) {
+      const header = enc.encode(`blob ${bytes.length}\0`), all = new Uint8Array(header.length + bytes.length);
+      all.set(header); all.set(bytes, header.length);
+      return [...new Uint8Array(await crypto.subtle.digest("SHA-1", all))].map((x) => x.toString(16).padStart(2, "0")).join("");
+    }
+    async function gh(method, path, body, token, retry = 0) {
+      const r = await fetch("https://api.github.com" + path, { method, cache: "no-store",
+        headers: { Authorization: "Bearer " + token, Accept: "application/vnd.github+json", ...(body ? { "Content-Type": "application/json" } : {}) },
+        body: body ? JSON.stringify(body) : undefined });
+      if ((r.status === 429 || r.status === 403) && retry < 3 && /rate limit/i.test(await r.clone().text())) {
+        status("GitHub pide una pausa; reintentando…"); await new Promise((ok) => setTimeout(ok, 61000));
+        return gh(method, path, body, token, retry + 1);
+      }
+      if (!r.ok) throw Error(`GitHub ${r.status}: ${(await r.text()).slice(0, 250)}`);
+      return r.status === 204 ? null : r.json();
+    }
+    async function finalFiles() {
+      const map = new Map();
+      for (const [name, read] of source) map.set(name, await read());
+      state.data.about.info = putBody(state.data.about.info, $("#hello").value);
+      state.data.about.filmografia = state.extra.filter((x) => x.titulo.trim()).map((x) =>
+        [x.ano, x.titulo, x.labor, x.quien, x.tipo].map((v) => String(v || "").replace(/\|/g, "/")).join(" | ")).join("\n") + "\n";
+      for (const type of TYPES) for (const p of state.data[type] || []) map.set(`contenido/${type}/${p.carpeta}/info.txt`, enc.encode(p.info));
+      map.set("contenido/about/info.txt", enc.encode(state.data.about.info));
+      map.set("contenido/about/filmografia-extra.txt", enc.encode(state.data.about.filmografia));
+      const clean = { schema: 1, source: state.source, data: state.data, inventory: state.inventory };
+      map.set("contenido/manifest.json", enc.encode(JSON.stringify(clean, null, 2) + "\n"));
+      map.set("contenido/datos-generados.js", enc.encode("window.CONTENIDO = " + JSON.stringify(state.data, null, 2).replace(/</g, "\\u003c") + ";\n"));
+      return map;
+    }
+    async function publish() {
+      const repo = $("#repo").value.trim(), token = $("#token").value.trim();
+      if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) throw Error("Escribe el repositorio como usuario/nombre.");
+      if (!token) throw Error("Introduce el token de GitHub.");
+      $("#publish").disabled = true;
+      try {
+        status("Preparando archivos…");
+        const files = await finalFiles();
+        const metadata = await gh("GET", `/repos/${repo}`, null, token);
+        if (!metadata.permissions?.push) throw Error("El token no tiene permiso de escritura en " + repo);
+        const branch = metadata.default_branch || "main";
+        const ref = await gh("GET", `/repos/${repo}/git/ref/heads/${branch}`, null, token);
+        const head = ref.object.sha;
+        const oldCommit = await gh("GET", `/repos/${repo}/git/commits/${head}`, null, token);
+        const tree = await gh("GET", `/repos/${repo}/git/trees/${head}?recursive=1`, null, token);
+        if (tree.truncated) throw Error("El listado de GitHub está incompleto. No se ha borrado nada.");
+        const old = new Map(tree.tree.filter((x) => x.type === "blob").map((x) => [x.path, x.sha]));
+        const remove = [...old.keys()].filter((p) => p.startsWith("contenido/") && !files.has(p));
+        const changed = [];
+        for (const [path, bytes] of files) if (old.get(path) !== await shaGit(bytes)) changed.push({ path, bytes });
+        if (!changed.length && !remove.length) { status("Este contenido ya está publicado.", "success"); return; }
+        if (!confirm(`Publicar en ${repo}\n\n${changed.length} archivos nuevos o actualizados.\n${remove.length} archivos de contenido anterior eliminados.\n\nEl diseño y las herramientas permanecen intactos. ¿Continuar?`)) { status("Publicación cancelada."); return; }
+        const entries = remove.map((path) => ({ path, mode: "100644", type: "blob", sha: null }));
+        let n = 0;
+        for (const item of changed) {
+          status(`Subiendo ${++n}/${changed.length}: ${item.path}`);
+          const blob = await gh("POST", `/repos/${repo}/git/blobs`, { content: b64(item.bytes), encoding: "base64" }, token);
+          entries.push({ path: item.path, mode: "100644", type: "blob", sha: blob.sha });
+        }
+        const version = new Date().toISOString().replace(/\D/g, "").slice(0, 12);
+        for (const [path, sha] of old) {
+          if (!/^[^/]+\.html$/.test(path)) continue;
+          const blob = await gh("GET", `/repos/${repo}/git/blobs/${sha}`, null, token);
+          const original = dec.decode(Uint8Array.from(atob(blob.content.replace(/\s/g, "")), (c) => c.charCodeAt(0)));
+          const updated = original.replace(/\?v=\d+"/g, `?v=${version}"`);
+          if (updated !== original) {
+            const b = await gh("POST", `/repos/${repo}/git/blobs`, { content: b64(enc.encode(updated)), encoding: "base64" }, token);
+            entries.push({ path, mode: "100644", type: "blob", sha: b.sha });
+          }
+        }
+        status("Guardando un único cambio en GitHub…");
+        const newTree = await gh("POST", `/repos/${repo}/git/trees`, { base_tree: oldCommit.tree.sha, tree: entries }, token);
+        const commit = await gh("POST", `/repos/${repo}/git/commits`, { message: `Contenido real de Idoia: ${changed.length} archivos, ${remove.length} demos retiradas`, tree: newTree.sha, parents: [head] }, token);
+        await gh("PATCH", `/repos/${repo}/git/refs/heads/${branch}`, { sha: commit.sha, force: false }, token);
+        if ($("#remember").checked) localStorage.setItem("gestor_token_" + repo, token);
+        status("Publicado. GitHub Pages puede tardar un par de minutos en mostrarlo. Abre la web y el gestor para revisar el resultado.", "success");
+      } finally { $("#publish").disabled = false; }
+    }
+
+    const savedToken = localStorage.getItem("gestor_token_" + $("#repo").value.trim());
+    if (savedToken) { $("#token").value = savedToken; $("#remember").checked = true; }
+    $("#publish").addEventListener("click", () => publish().catch((e) => { console.error(e); status(e.message, "error"); }));
+    $("#drop").addEventListener("click", () => $("#file").click());
+    $("#drop").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("#file").click(); } });
+    $("#file").addEventListener("change", (e) => { const file = e.target.files[0]; if (file) openFile(file).catch((err) => status(err.message, "error")); });
+    $("#drop").addEventListener("dragover", (e) => { e.preventDefault(); $("#drop").classList.add("hover"); });
+    $("#drop").addEventListener("dragleave", () => $("#drop").classList.remove("hover"));
+    $("#drop").addEventListener("drop", (e) => { e.preventDefault(); $("#drop").classList.remove("hover"); const file = [...e.dataTransfer.files].find((f) => /\.zip$/i.test(f.name)); if (file) openFile(file).catch((err) => status(err.message, "error")); else status("Suelta un archivo .zip", "error"); });
+  })();
+  </script>
+</body>
+</html>

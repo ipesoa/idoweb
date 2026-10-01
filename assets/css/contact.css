@@ -33,7 +33,7 @@
           mask-image: linear-gradient(to bottom, #000 calc(100% - 3em), transparent);
 }
 .trabajos::-webkit-scrollbar { display: none; }
-.trabajos .fila { display: grid; grid-template-columns: 3.4em 1fr auto; gap: .9em; }
+.trabajos .fila { display: grid; grid-template-columns: 3.4em 1fr; gap: .9em; }
 .trabajos .fila span:not(.titulo) { color: var(--color-suave); }
 .trabajos a.fila:hover .titulo { text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; }
 .trabajos li.oculta { display: none; }
@@ -46,5 +46,4 @@
 @media (max-width: 700px) {
   .contacto { padding-bottom: calc(var(--margen) + 2rem); }
   .trabajos .fila { grid-template-columns: 3em 1fr; gap: 0 .8em; }
-  .trabajos .fila span:nth-child(3) { grid-column: 2; margin-bottom: .4em; }
 }
