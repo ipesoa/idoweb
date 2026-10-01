@@ -1,17 +1,15 @@
-# =====================================================================
-#  ABOUT  ·  cada dato relleno es una línea en la web (editado con el gestor)
-# =====================================================================
 nombre: Idoia Esteban Galván
-subtitulo: Diseño de producción
-ubicacion: Based in Madrid
-email: 
-telefono: 
-instagram: 
-imdb: 
-showreel: 
+email: ido.idoia@gmail.com
+telefono: (+34) 653 719 740
+instagram:
 ---
-aqui va un texto diver
-donde pones tu email 
-algun ascci emoji quizás
+HELLO!
 
-⚞^◕⩊◕^⚟
+I'm a production designer based in Madrid.
+I was born in Bilbao (Basque country) in 1980, and I've a degree in Fine Arts.
+I work as production designer since 2002, mostly on feature films, commercials and music videos.
+
+In this site you can see a selection of my work.
+Please, feel free to contact.
+
+Enjoy!

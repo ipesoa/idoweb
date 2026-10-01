@@ -1,0 +1,6 @@
+titulo: Salitre
+año: 2027
+director: Norma Vila
+productora: Pris&Batty / Bondi
+mostrar_en_inicio: si
+---

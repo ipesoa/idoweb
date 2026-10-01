@@ -1,6 +1,17 @@
-# =====================================================================
-#  FILMOGRAFÍA EXTRA  ·  trabajos que salen en la lista del about
-#  pero que NO tienen página propia (sin fotos). (Editado con el gestor)
-#  Una línea por trabajo:  año | título | labor | director o cliente | films o comercials
-# =====================================================================
-
+2027 | El acercamiento de la mujer cactus y el hombre globo |  | Kike Maíllo | films
+2026 | Aída y vuelta |  | Paco León | films
+2025 | Asisa - Reemplazo |  | Miguel Angulo | comercials
+2025 | Superestar |  | Nacho Vigalondo / Claudia Costafreda | series
+2024 | Daniela Forever |  | Nacho Vigalondo | films
+2023 | Maridos |  | Lucía Alemany | films
+2022 | La piedad |  |  | films
+2022 | Rainbow |  | Paco León | films
+2021 | Santander - Otro camino |  | Diego Núñez Irigoyen | comercials
+2019 | Samsung - Copiloto |  | Martin Jalfen | comercials
+2019 | Si yo fuera rico |  | Álvaro Fernández Armero | films
+2019 | Vidal - Dipper |  | Eduardo Casanova | comercials
+2018 | Arde Madrid |  | Paco León | series
+2018 | Just Eat |  | María Sosa | comercials
+2017 | Aquarius - Photoshooting |  | Javier Tles | comercials
+2017 | Que baje Dios y lo vea |  | Curro Velázquez | films
+2017 | Volkswagen - Día del padre |  | Miguel Angulo | comercials
