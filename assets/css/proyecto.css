@@ -66,6 +66,10 @@
 .proyecto__ficha + .rejilla-cine,
 .proyecto__crew + .rejilla-cine { margin-top: clamp(40px, 8vh, 100px); }
 
+/* Las entradas de la filmografía que aún no tienen fotos conservan una ficha limpia. */
+.sin-fotos main { min-height: 100svh; display: flex; flex-direction: column; }
+.sin-fotos .pie-contacto { margin-top: auto; }
+
 /* ---- 5. Rejilla de fotos ---- */
 .proyecto-cine {
   --cols: var(--proyecto-columnas);

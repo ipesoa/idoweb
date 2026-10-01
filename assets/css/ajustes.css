@@ -1,7 +1,7 @@
 /* =====================================================================
    AJUSTES VISUALES  ·  el "panel de control" de toda la web
    ---------------------------------------------------------------------
-   Tipografías, tamaños, grosor del borde de las letras, cuadrículas...
+   Tipografías, tamaños, contraste de las letras, cuadrículas...
    todo lo que se suele retocar está AQUÍ, por secciones.
    Lo que más se toca (EL NOMBRE) está lo primero, en la sección 0.
    Los textos (Films, Series, Commercials...), los tiempos y el color
@@ -52,9 +52,7 @@
   --inicio-separacion-lineas: 1.1em;  /* hueco entre nombre / production designer / work */
   --inicio-separacion-columna: .55em; /* hueco entre films y series (y entre los de la derecha) */
 
-  /* Grosor del BORDE de las letras del inicio (em = proporcional a cada letra)
-     0 = sin borde · 0.04em · 0.08em · 0.12em = medio · 0.18em = gordo   */
-  --inicio-borde-grosor: 0.04em;
+  --inicio-borde-grosor: 0;
 
   --inicio-espaciado-menu: 0.14em;    /* separación entre letras del menú del inicio */
 
@@ -64,20 +62,18 @@
   --inicio-tam-datos:   .66rem;
   --inicio-negrita-titulo: 400;
 
-/* ---------- 2b. COLOR DE LAS LETRAS: "Difference dirigido" -----------
-   El color de letra y de borde se calcula píxel a píxel a partir de la
-   foto que hay debajo (assets/js/diferencia.js) con el modelo de
-   assets/js/diferencia-modelo.js (Difference + boyas).
-   Estas variables son solo el "plan B" si la capa no puede funcionar
-   (abrir la web con doble clic en Chrome): Difference base con CSS.   */
+/* ---------- 2b. CONTRASTE BLANCO / NEGRO -----------------------------
+   La capa de assets/js/diferencia.js lee la foto detrás de cada letra.
+   En fondos claros pinta negro; en fondos oscuros pinta blanco.
+   Blanco es el color de reserva si el navegador no permite leerla.    */
   --dif-letra:  #FFFFFF;
-  --dif-borde:  #18A8FF;
-  --dif-mezcla: difference;
+  --dif-borde:  transparent;
+  --dif-mezcla: normal;
 
 /* ---------- 3. MENÚ EN EL RESTO DE PÁGINAS -------------------------- */
   --menu-tam-nombre: var(--nombre-tam);
   --menu-tam-otros:  var(--menu-tam);   /* work, films, series, commercials, videoclips, contact */
-  --menu-borde-grosor: 0.08em;          /* borde de las letras del menú */
+  --menu-borde-grosor: 0;
   --menu-mezcla: var(--dif-mezcla);
   --menu-color:  var(--dif-letra);
   /* rectángulo invisible alrededor de cada enlace del menú, para poder
@@ -138,7 +134,7 @@
 /* ---------- 8. TIEMPOS Y ESPACIOS ----------------------------------- */
   --t-cortina: 650ms;          /* fundido al cambiar de página      */
   --t-hover:   600ms;          /* zoom/oscurecer al pasar el ratón  */
-  --t-color:   900ms;          /* cambio de color de letra/borde */
+  --t-color:   900ms;          /* reservado para cambios de color */
   --curva:     cubic-bezier(.65, 0, .35, 1);
   --margen: clamp(16px, 2.6vw, 40px);
 

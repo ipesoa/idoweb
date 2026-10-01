@@ -59,6 +59,10 @@
 
   /* ---- 5. fotos ---- */
   const medios = (p.portada ? [p.portada] : []).concat(p.galeria);
+  if (!medios.length) {
+    rejilla.remove();
+    document.body.classList.add("sin-fotos");
+  }
   const fotos = medios.filter((m) => !/\.(mp4|webm|mov|m4v)$/i.test(m.f)).map((m) => m.url);
 
   medios.forEach((m, i) => {

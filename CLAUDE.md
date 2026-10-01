@@ -34,7 +34,7 @@ window.Web = { proyectos(tipo), proyecto(tipo,id), todos(), tipos(), about, film
 | `films.html`, `series.html`, `comercials.html`, `videoclips.html` | `lista.js` | `lista.css` | Rejilla de una sección. Info a las 4 del cursor: **título / directed by / produced by** (`Comun.ficha`). |
 | `proyecto.html?tipo=films&id=CARPETA` | `proyecto.js` | `proyecto.css` | 1 vídeo limpio arriba (`Comun.reproductor`, autoplay mudo), 2 ficha centrada, 3 crew a dos columnas, 4 texto (alineado a la izquierda), 5 rejilla de fotos, 6 botón "Start a conversation" → contact.html. Arriba solo el nombre, siempre visible. |
 | `contact.html` (antes about.html, que ahora redirige) | `contact.js` | `contact.css` | Columna abajo a la derecha: texto libre de `contenido/about/info.txt`, lista de TODOS los trabajos con filtros (All por defecto · Films · Series · Commercials · Videoclips) y email/teléfono/instagram. La lista tiene alto fijo (`--about-alto-lista`) para que al cambiar de filtro no se mueva nada; si esa sección está vacía sale una raya (`.trabajos.vacia`). Sin efectos. |
-| `laboratorio.html` | inline + `diferencia.js` | inline | Herramienta interna: el modelo de color sobre las fotos, boyas (✓ exactas), rampas de continuidad, radio, pegar JSON. No enlazada en el menú. |
+| `laboratorio.html` | inline + `diferencia.js` | inline | Herramienta interna para probar el umbral blanco/negro sobre fotos reales. No enlazada en el menú. |
 
 Orden de scripts en cada página: `datos-generados.js → ajustes.js → contenido.js → comun.js → <página>.js`.
 
@@ -49,11 +49,10 @@ Orden de scripts en cada página: `datos-generados.js → ajustes.js → conteni
 - Textos de menú/filtros/botón desde `AJUSTES.textos`.
 - `Comun.embed(url)` Vimeo/YouTube → URL de iframe.
 
-## Color de las letras: "Difference dirigido" (`assets/js/diferencia.js` + `diferencia-modelo.js`)
-Función de la dueña (NO cambiar la matemática sin que lo pida):
-`salida(fondo) = OKLab→sRGB( OKLab(|fondo − mezcla|) + Σ wᵢ·exp(−(|OKLab(fondo) − OKLab(bgᵢ)|/radio)²) )`, con `w` resuelto (Φw = residuos) para que en cada boya la salida sea exacta. Letra (mezcla #FFFFFF) y borde (#18A8FF) con boyas independientes. Nada de tablas/categorías/vecino más cercano.
-Aplicación píxel a píxel: capa `<canvas class="dif-capa">` fija encima (z 80). Cada fotograma, para cada texto de `AJUSTES.diferencia.textos`: reconstruye en un canvas el fondo real detrás (imgs/vídeos con su rect, object-fit/position, opacidad y filtros acumulados, recorte por overflow; el hilo blanco NO se dibuja), mapea cada píxel con una LUT 33³ trilineal (+ valor exacto si el píxel coincide con una boya), y recorta con máscaras de las letras dibujadas con la misma fuente/posición (Range por carácter), opacidad y desenfoque que el DOM (borde = strokeText con el ancho de `-webkit-text-stroke`). El DOM queda con texto transparente (`.dif-activo`). Si `getImageData` falla (file:// en Chrome) → se quita `.dif-activo` y queda el Difference base con CSS.
-`window.Diferencia`: `colorPara(hex)`, `construir(modelo)`, `letra(rgb)`, `borde(rgb)`, `tiempos()`, `ms`.
+## Contraste monocromo de las letras (`assets/js/diferencia.js`)
+La dueña pidió sustituir el modelo de color por blanco sobre fondo oscuro y negro sobre fondo claro, sin contornos. El umbral de luminancia lineal está en `AJUSTES.diferencia.umbral` (0.179); `AJUSTES.diferencia.suavizado` suaviza las texturas antes de decidir el color.
+Aplicación píxel a píxel: capa `<canvas class="dif-capa">` fija encima (z 80). Cada fotograma, para cada texto de `AJUSTES.diferencia.textos`: reconstruye en un canvas el fondo real detrás (imgs/vídeos con su rect, object-fit/position, opacidad y filtros acumulados, recorte por overflow), suaviza ese fondo, compara su luminancia con el umbral y recorta el campo blanco/negro con máscaras de las letras dibujadas con la misma fuente, posición, opacidad y desenfoque que el DOM. El DOM queda con texto transparente (`.dif-activo`). Si `getImageData` falla (file:// en Chrome), se quita `.dif-activo` y queda texto blanco sin contorno.
+`window.Diferencia`: `colorPara(hex)`, `umbral(valor?)`, `tiempos()`, `ms`.
 Para añadir un texto nuevo al sistema: añadir su selector a `AJUSTES.diferencia.textos` (o ponerle `data-dif`).
 
 ## (Eliminado) About glitch
@@ -62,9 +61,9 @@ El efecto tipo "matrix" del about se quitó a petición de la dueña; los archiv
 
 ## Estilo
 - Todo lo ajustable en `assets/css/ajustes.css`, por secciones numeradas: **0 EL NOMBRE** (`--nombre-tam`, `--nombre-fuente`, `--nombre-espaciado`, `--nombre-negrita`, `--nombre-tam-movil`, `--menu-tam`) lo primero del archivo porque es lo que más se toca, 1 fuentes, 2 inicio, 2b color de letras, 3 menú, 4 rejillas, 5 página de proyecto (`--video-*`, `--proyecto-tam-*`), 6 contact, 7 colores, 8 tiempos. No poner números sueltos en otros CSS: crear variable aquí.
-- Borde de letras del inicio: `-webkit-text-stroke-width` + `paint-order: stroke fill` en `.pase__pie` y `.pagina-inicio .menu` (inicio.css).
+- Las letras del inicio y del menú no tienen contorno (`-webkit-text-stroke: 0`).
 - `.rejilla-cine` (base.css): grid de `--cols` columnas, celdas `aspect-ratio: var(--formato)`, hilo blanco `::after`, imágenes `object-fit: cover` que aparecen con `.visible` (IntersectionObserver en `Comun.aparecer`).
-- `.mezcla` = `mix-blend-mode: var(--texto-mezcla)` (etiqueta del ratón, modo diferencia). Los ancestros no deben crear aislamiento (`isolation`, `opacity<1`, `transform`, `filter`).
+- `.mezcla` conserva el selector antiguo; el color visible lo calcula el canvas en blanco o negro.
 - Tiempos del pase: `AJUSTES.inicio` → variables CSS en `inicio.js`.
 
 ## Herramientas Windows (`herramientas-windows/`)

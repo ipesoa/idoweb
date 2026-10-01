@@ -373,17 +373,17 @@ button { cursor: pointer; background: none; border: 0; }
   /* ---------- filmografía extra (trabajos sin fotos) ---------- */
   function leerExtra(txt) {
     return (txt || "").replace(/\r/g, "").split("\n").filter((l) => l.trim() && !/^\s*#/.test(l)).map((l) => {
-      const [ano, titulo, labor, quien, tipo] = l.split("|").map((s) => (s || "").trim());
-      return { ano, titulo, labor, quien, tipo: (tipo || "films").toLowerCase() };
+      const [ano, titulo, labor, quien, tipo, url] = l.split("|").map((s) => (s || "").trim());
+      return { ano, titulo, labor, quien, tipo: (tipo || "films").toLowerCase(), url };
     });
   }
   function extraATexto(filas) {
     return `# =====================================================================
 #  FILMOGRAFÍA EXTRA  ·  trabajos que salen en la lista del about
-#  pero que NO tienen página propia (sin fotos). (Editado con el gestor)
-#  Una línea por trabajo:  año | título | labor | director o cliente | films o comercials
+#  con ficha propia (sin fotos). Una URL opcional enlaza directamente fuera.
+#  Una línea por trabajo: año | título | labor | director o cliente | sección | URL
 # =====================================================================
-` + filas.filter((f) => f.titulo).map((f) => [f.ano, f.titulo, f.labor, f.quien, f.tipo].map((v) => (v || "").replace(/\|/g, "/")).join(" | ")).join("\n") + "\n";
+` + filas.filter((f) => f.titulo).map((f) => [f.ano, f.titulo, f.labor, f.quien, f.tipo, f.url].map((v) => (v || "").replace(/\|/g, "/")).join(" | ")).join("\n") + "\n";
   }
 
   /* ================= LED ================= */
@@ -512,12 +512,13 @@ button { cursor: pointer; background: none; border: 0; }
           ${campo("ubicacion", "Ciudad (no se usa ahora)", "Based in Madrid")}
         </div></div>
       <div class="bloque"><h3>Lista de trabajos: los que no tienen fotos</h3>
-        <p>Los trabajos de las otras pestañas ya salen solos. Aquí puedes cambiar año, título y sección de los que no tienen fotos.</p>
+        <p>Los trabajos de las otras pestañas ya salen solos. Estos abren una ficha dentro de la web; si añades una URL, enlazan directamente a esa página.</p>
         <table class="tabla"><tbody>${E.about.extra.map((f, i) => `<tr>
           <td><input data-extra="${i}" data-k="ano" value="${esc(f.ano)}" placeholder="Año"></td>
           <td><input data-extra="${i}" data-k="titulo" value="${esc(f.titulo)}" placeholder="Título"></td>
           <td><input data-extra="${i}" data-k="quien" value="${esc(f.quien)}" placeholder="Director o cliente"></td>
           <td><select data-extra="${i}" data-k="tipo">${TIPOS.map((t) => `<option value="${t.id}"${f.tipo === t.id ? " selected" : ""}>${t.titulo}</option>`).join("")}</select></td>
+          <td><input data-extra="${i}" data-k="url" value="${esc(f.url)}" placeholder="URL de la película (opcional)" type="url"></td>
           <td><button class="boton boton--peligro" data-quitar-extra="${i}" title="Quitar">✕</button></td></tr>`).join("")}</tbody></table>
         <button class="boton" data-accion="extra-anadir" style="margin-top:10px">＋ Añadir trabajo</button></div>`;
   }
@@ -945,7 +946,7 @@ button { cursor: pointer; background: none; border: 0; }
       if (confirm(`¿Eliminar ${l.length} proyecto(s) con todas sus fotos?\n\n${l.map((p) => "· " + (p.info.campos.titulo || p.carpeta)).join("\n")}\n\n(No se borra nada de verdad hasta que pulses "Publicar cambios")`)) borrarProyectos(l);
       return;
     }
-    if (acc === "extra-anadir") { E.about.extra.push({ ano: "", titulo: "", labor: "", quien: "", tipo: "films" }); E.aboutSucio = true; pintar(); return; }
+    if (acc === "extra-anadir") { E.about.extra.push({ ano: "", titulo: "", labor: "", quien: "", tipo: "films", url: "" }); E.aboutSucio = true; pintar(); return; }
     if (t.dataset.quitarExtra !== undefined) { E.about.extra.splice(+t.dataset.quitarExtra, 1); E.aboutSucio = true; pintar(); return; }
     if (t.dataset.marcar) {
       e.stopPropagation();

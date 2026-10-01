@@ -64,13 +64,14 @@ window.AJUSTES = {
     controles: true,             // enseñar los controles del reproductor
   },
 
-  /* ---- COLOR DE LAS LETRAS (Difference dirigido) ---------------------
-     La fórmula y las boyas están en assets/js/diferencia-modelo.js
-     (se prueban en laboratorio.html). Aquí solo:
-       activo: true  → letras pintadas píxel a píxel con el modelo
-       textos: qué textos se pintan con el modelo                        */
+  /* ---- CONTRASTE DE LAS LETRAS EN FOTOS ------------------------------
+     El umbral usa luminancia entre 0 y 1. Más alto = más zonas blancas;
+     más bajo = más zonas negras. 0.179 iguala el contraste de ambos.
+     El desenfoque suaviza el cambio en fondos con mucho detalle.        */
   diferencia: {
     activo: true,
+    umbral: 0.179,
+    suavizado: 10,
     textos: ".menu a, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]",
   },
 

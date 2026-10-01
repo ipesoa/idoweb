@@ -29,13 +29,13 @@ contenido/                 ← AQUÍ VA TODO EL CONTENIDO
   about/
     info.txt               ← nombre, email, instagram, showreel, bio
     retrato.jpg
-    filmografia-extra.txt  ← trabajos sin fotos para la lista del about
+    filmografia-extra.txt  ← trabajos sin fotos; cada uno abre una ficha
   datos-generados.js       ← lo crea el script solo. No tocar.
 
 herramientas-mac/          ← los botones para el día a día en Mac (doble clic)
 herramientas-windows/      ← lo mismo para Windows (.bat)
 assets/                    ← diseño y efectos (css = aspecto, js = comportamiento)
-laboratorio.html           ← página para probar colores y tipografías
+  laboratorio.html           ← página para ajustar el umbral blanco/negro
 ```
 
 ## ✏️ Un info.txt
@@ -50,7 +50,7 @@ mostrar_en_inicio: si        ← si / no: sale o no en el pase del inicio
 Texto libre. Una línea en blanco = párrafo nuevo. *Así* sale en cursiva.
 ```
 
-Opcionales: `productora:`, `cliente:`, `encuadre:` (qué parte de la portada se ve: `top`, `left`, `30% 50%`…), `video:` (enlace de Vimeo/YouTube), `orden:` (número; mayor = antes), `color_letra:` / `color_borde:` (fuerzan los colores del texto de ese proyecto en el inicio).
+Opcionales: `productora:`, `cliente:`, `encuadre:` (qué parte de la portada se ve: `top`, `left`, `30% 50%`…), `video:` (enlace de Vimeo/YouTube), `orden:` (número; mayor = antes).
 
 Las fotos salen en la rejilla por orden de nombre (portada primero). Mejor horizontales: se recortan a formato cine. También vale vídeo `.mp4` corto (sin sonido, en bucle). El texto de debajo de `---` se guarda pero ahora no se muestra.
 
@@ -66,7 +66,7 @@ Se abre `https://ipesoa.github.io/idoweb/gestor.html` en el navegador. La primer
 | **Inicio** | Pinchar cada película/anuncio para que salga (verde) o no en el pase del inicio |
 | **Films / Series / Commercials / Videoclips** | ＋ Nuevo · pinchar para editar (datos, fotos, portada) · casillas para seleccionar varias y eliminar o poner/quitar del inicio a la vez |
 | **Editor** | Vídeo de arriba, crew (una línea por persona), texto · arrastrar fotos para ordenarlas (la primera es la portada), añadir (se reducen solas), seleccionar y eliminar |
-| **Contact** | El texto de la página Contact + nombre, email, teléfono e instagram · trabajos sin fotos para la lista |
+| **Contact** | El texto de Contact + nombre, email, teléfono e instagram · trabajos sin fotos con ficha propia o URL externa opcional |
 
 Nada se sube hasta pulsar **Publicar cambios**. El **LED**: 🟡 cambios sin publicar · 🔵 subiendo · 🟠 GitHub actualizando la web (1-2 min) · 🟢 la web ya está al día · 🔴 error.
 
@@ -117,21 +117,20 @@ También puedes editar a mano: cambiar un `info.txt`, borrar una foto, renombrar
 
 **`assets/css/ajustes.css`** (tamaños y formas), por secciones:
 1. Tipografías (todo en Arial ahora)
-2. **Inicio**: tamaño de IDOIA ESTEBAN GALVÁN, about, FILMS/COMERCIALS, título de la peli, año·labor, y **grosor del borde** de las letras
+2. **Inicio**: tamaño de IDOIA ESTEBAN GALVÁN, Contact, FILMS/COMMERCIALS y textos del pase
 3. Menú en el resto de páginas
 4. **Rejillas**: formato de cada rectángulo (`1.85 / 1`…) y columnas, para Films/Comercials y para la página de cada proyecto; tamaño del texto que sigue al ratón
 5. About
 6–7. Colores generales, tiempos, márgenes
 
-**Colores de las letras** (`assets/js/diferencia-modelo.js`): tu modelo "Difference + boyas". La web calcula letra y borde píxel a píxel según la foto que hay debajo. Si generas un modelo nuevo con tu herramienta, pega el JSON en ese archivo (pruébalo antes en `laboratorio.html`, que tiene un botón para pegarlo). El hilo blanco no afecta al color.
+**Contraste de las letras** (`assets/js/ajustes.js`, apartado `diferencia`): la web pinta cada letra en blanco sobre zonas oscuras y en negro sobre zonas claras. No hay bordes de color. `umbral: 0.179` decide dónde cambia; un número más alto produce más letra blanca. `suavizado: 10` evita cambios bruscos en fotos con mucho detalle. Puedes probar el umbral sobre las fotos reales en `laboratorio.html`.
 
 **`assets/js/ajustes.js`**: tiempos del pase de imágenes, textos de los botones (Films, Comercials, Todo, Contact), botón de auto-scroll (apagado).
 
 **Efecto del About** (`assets/js/about-glitch.js`, parámetros arriba del todo): número de líneas de datos, velocidad, tiempo que se queda el texto, palabras que aparecen entre el ruido…
 
-**`laboratorio.html`**: el modelo de color sobre las fotos reales, las boyas (✓ = sale exacto), las transiciones continuas, el radio de influencia y un hueco para pegar un modelo nuevo.
+**`laboratorio.html`**: vista interna para probar el umbral blanco/negro sobre las fotos reales.
 
-> Abriendo la web con doble clic en Chrome, el navegador no deja leer las fotos y se ve el Difference base (sin boyas). En la web publicada y en Safari funciona el modelo completo.
-- **Probar combinaciones** → abre `laboratorio.html`: eliges modo de mezcla, color y fuente sobre las fotos reales, y te da las líneas para copiar. Tiene una calculadora: "sobre este color de fondo quiero que el texto salga de este otro".
+> Si abres la web como archivo local y el navegador impide leer las fotos, las letras se muestran blancas. En la web publicada funciona el contraste blanco/negro.
 
 Para cambios más grandes, pásale la carpeta a una IA o a quien sea con `CLAUDE.md`: ahí está el mapa técnico de la web.

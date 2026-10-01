@@ -46,6 +46,8 @@
 
   const esSi = (v) => /^(si|sí|yes|true|1|x)$/i.test((v || "").trim());
   const esVideo = (f) => /\.(mp4|webm|mov|m4v)$/i.test(f);
+  const slug = (s) => (s || "").toLowerCase().normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   function ruta(tipo, carpeta, archivo) {
     return ["contenido", tipo, carpeta, archivo].map(encodeURIComponent).join("/")
@@ -127,7 +129,8 @@
   }));
 
   function proyecto(tipo, id) {
-    return proyectos(tipo).find((p) => p.id === id) || null;
+    return proyectos(tipo).find((p) => p.id === id)
+      || (about && about.extra.find((p) => p.tipo === tipo && p.id === id)) || null;
   }
 
   // ---------- About ----------
@@ -140,12 +143,18 @@
       || archivos.find((a) => /^retrato\./i.test(a.f));
     const showreelArchivo = archivos.find((a) => /^showreel\./i.test(a.f));
 
-    // filmografia-extra.txt: "año | título | labor | director/cliente"
+    // filmografia-extra.txt: año | título | labor | director/cliente | tipo | URL opcional
     const extra = (DATOS.about.filmografia || "").replace(/\r/g, "").split("\n")
       .filter((l) => l.trim() && !/^\s*#/.test(l))
       .map((l) => {
-        const [ano, titulo, labor, quien, tipo] = l.split("|").map((s) => (s || "").trim());
-        return { ano, titulo, labor, director: quien, tipo: (tipo || "").toLowerCase() || "films", enlace: null };
+        const [ano, titulo, labor, quien, tipo, url] = l.split("|").map((s) => (s || "").trim());
+        const seccion = (tipo || "films").toLowerCase();
+        const id = `filmografia-${slug(titulo)}-${slug(ano)}`;
+        return {
+          ano, titulo, labor, director: quien, tipo: seccion, id,
+          enlace: /^https?:\/\//i.test(url) ? url : `proyecto.html?tipo=${encodeURIComponent(seccion)}&id=${encodeURIComponent(id)}`,
+          video: "", productora: "", cliente: "", crew: [], texto: "", portada: null, galeria: [],
+        };
       });
 
     about = {

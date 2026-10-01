@@ -9,7 +9,7 @@
      4. el texto se disuelve → siguiente foto
    Pinchar en cualquier sitio lleva a la página de ese proyecto.
    Flechas del teclado ← → para pasar a mano.
-   Colores de letra y borde: assets/js/diferencia.js (según la foto,
+   Letras blancas o negras, sin borde: assets/js/diferencia.js (según la foto,
    píxel a píxel, en cada fotograma).
    Tiempos: assets/js/ajustes.js → AJUSTES.inicio
    ===================================================================== */

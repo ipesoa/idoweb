@@ -20,17 +20,15 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 ::selection { background: var(--color-tinta); color: var(--color-fondo); }
 
-/* Texto que se invierte sobre la imagen (efecto diferencia) */
+/* Texto contrastado sobre la imagen. El lienzo lo pinta blanco o negro. */
 .mezcla {
   color: var(--texto-color);
   mix-blend-mode: var(--texto-mezcla);
 }
 
-/* ---------- DIFERENCIA DIRIGIDA (assets/js/diferencia.js) ------------
-   Las letras se dibujan en esta capa con el color calculado píxel a
-   píxel. El texto real se queda en su sitio pero invisible.
-   Sin la capa (p. ej. abriendo con doble clic en Chrome) se ve el
-   Difference base con CSS: letra #FFFFFF, borde #18A8FF.            */
+/* ---------- CONTRASTE MONOCROMO (assets/js/diferencia.js) ------------
+   Las letras se dibujan en esta capa en blanco o negro según la foto.
+   El texto real conserva los enlaces y la accesibilidad.             */
 .dif-capa {
   position: fixed; left: 0; top: 0;   /* el tamaño lo pone diferencia.js (= pantalla visible) */
   z-index: 80; pointer-events: none;
@@ -71,11 +69,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   text-transform: uppercase;
   line-height: 1;
 }
-.menu a, .menu span {
-  /* borde de las letras (colores y grosor: ajustes.css 2b y 3) */
-  -webkit-text-stroke: var(--menu-borde-grosor) var(--dif-borde);
-  paint-order: stroke fill;
-}
+.menu a, .menu span { -webkit-text-stroke: 0; }
 /* zona de clic: rectángulo invisible alrededor de cada enlace.
    El margen negativo es el mismo que el relleno, así nada se mueve. */
 .menu a {
@@ -86,7 +80,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .menu span { pointer-events: none; }
 .menu a:hover { opacity: .6; }
-.pagina-inicio .menu a, .pagina-inicio .menu span { -webkit-text-stroke-width: var(--inicio-borde-grosor); }
+.pagina-inicio .menu a, .pagina-inicio .menu span { -webkit-text-stroke-width: 0; }
 .menu a.activo { text-decoration: underline; text-underline-offset: .25em; text-decoration-thickness: 1px; }
 
 .menu__centro {

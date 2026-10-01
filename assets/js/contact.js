@@ -31,7 +31,7 @@
   ol.innerHTML = Web.filmografia().map((t) => {
     const dentro = `<span>${esc(t.ano || "")}</span><span class="titulo">${esc(t.titulo)}</span>`;
     return `<li data-tipo="${esc(t.tipo)}">${t.enlace
-      ? `<a class="fila" href="${t.enlace}">${dentro}</a>`
+      ? `<a class="fila" href="${esc(t.enlace)}"${/^https?:\/\//i.test(t.enlace) ? ' target="_blank" rel="noopener noreferrer"' : ""}>${dentro}</a>`
       : `<div class="fila">${dentro}</div>`}</li>`;
   }).join("");
 
