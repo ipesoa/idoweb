@@ -1,0 +1,5 @@
+titulo: Daniela Forever
+año: 2024
+director: Nacho Vigalondo
+mostrar_en_inicio: si
+---

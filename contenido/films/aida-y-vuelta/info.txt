@@ -1,0 +1,5 @@
+titulo: Aída y vuelta
+año: 2026
+director: Paco León
+mostrar_en_inicio: si
+---
