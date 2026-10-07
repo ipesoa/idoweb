@@ -1,0 +1,5 @@
+titulo: Superestar
+año: 2025
+director: Nacho Vigalondo / Claudia Costafreda
+mostrar_en_inicio: si
+---
