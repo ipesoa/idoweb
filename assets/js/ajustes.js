@@ -56,16 +56,12 @@ window.AJUSTES = {
     incluirComercials: true,     // (antiguo, ya manda "secciones")
   },
 
-  /* ---- CARTELES EN LAS REJILLAS ---------------------------------------
-     Si un proyecto tiene cartel (gestor → editor → «Cartel»), en su
-     rectángulo sale el cartel a la izquierda, encima de la portada.
-     Al pasar el ratón el cartel se desvanece y la portada «se enciende».
-     Tamaños, oscuridad y tiempos: ajustes.css sección 4b.
-       paginas = en qué rejillas sale ("work" = la vista general)       */
+  /* Carteles opcionales en las rejillas. El gestor guarda el archivo como
+     cartel.* dentro de cada trabajo; la galería conserva solo sus fotos. */
   carteles: {
     activo: true,
     paginas: ["work", "films", "series", "comercials", "videoclips"],
-    mostrarAno: true,            // el año abajo, separado del título
+    mostrarAno: true,
   },
 
   /* ---- Página de cada proyecto -------------------------------------- */
@@ -77,27 +73,13 @@ window.AJUSTES = {
   },
 
   /* ---- CONTRASTE DE LAS LETRAS EN FOTOS ------------------------------
-     Las letras son BLANCAS y solo pasan a NEGRO cuando el fondo es tan
-     claro que el blanco no se leería. Sirve para leer, no para lucirse:
-     cambia lo menos posible y siempre con un fundido suave.
-     Luz del fondo: 0 = negro · 1 = blanco (luminancia real, no "a ojo").
-       negroDesde   a partir de esta luz pasa a negro.
-                    Más alto = se queda blanco más tiempo (cambia menos).
-       blancoDesde  vuelve a blanco solo cuando baja de esta luz.
-                    La distancia entre los dos evita parpadeos.
-       percentil    qué parte de lo que hay debajo de la palabra cuenta:
-                    0.75 = se fija en la parte clara (lo que molesta al leer).
-       fundido      ms que tarda en pasar de blanco a negro o al revés.
-       decidir      "texto" = cada texto entero (el nombre, cada opción,
-                    cada ficha) de un solo color · "palabra" = cada
-                    palabra puede ir de un color distinto.               */
+     El umbral usa luminancia entre 0 y 1. Más alto = más zonas blancas;
+     más bajo = más zonas negras. 0.179 iguala el contraste de ambos.
+     El desenfoque suaviza el cambio en fondos con mucho detalle.        */
   diferencia: {
     activo: true,
-    negroDesde: 0.36,
-    blancoDesde: 0.24,
-    percentil: 0.75,
-    fundido: 450,
-    decidir: "texto",
+    umbral: 0.179,
+    suavizado: 10,
     textos: ".menu a, .menu button, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]",
   },
 

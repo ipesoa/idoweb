@@ -133,24 +133,16 @@
   --texto-mezcla: var(--dif-mezcla);  /* igual que el resto: sección 2b */
   --texto-color:  var(--dif-letra);
 
-/* ---------- 4b. CARTELES EN LAS REJILLAS (work, films…) ---------------
-   El cartel ocupa todo el alto del rectángulo, a la izquierda, y todos
-   miden lo mismo (se recortan al formato si el archivo no encaja).
-   La portada queda detrás, apenas oscurecida; al pasar el ratón el
-   cartel se desvanece y la portada recupera su luz, los dos a la vez y
-   sin zoom. Qué páginas lo usan: ajustes.js → carteles.               */
-  --cartel-formato:   70 / 100;      /* cartel español 70×100 · 27 / 40 = americano */
-  --cartel-oscuro:    .9;            /* luz de la portada con el cartel encima (1 = igual) */
-  --t-cartel:         900ms;         /* lo que tarda el cartel en irse / volver */
-
-  /* Texto encima de la portada: título / directed by … y el año abajo.
-     Va pegado al cartel y al borde de abajo, en bloque (estilo editorial). */
+/* ---------- 4b. CARTELES EN LAS REJILLAS ----------------------------- */
+  --cartel-formato:   70 / 100;
+  --cartel-oscuro:    .9;
+  --t-cartel:         900ms;
   --cartel-texto-tam:    .7rem;
-  --cartel-texto-fuente: var(--fuente-etiqueta);   /* p. ej. "Instrument Serif", serif */
-  --cartel-texto-linea:  1.3;                      /* interlineado */
-  --cartel-texto-izq:    calc(37.84% + .7rem);     /* 37.84% = ancho del cartel (0.7 / 1.85) */
-  --cartel-texto-abajo:  .7rem;                    /* distancia al borde de abajo */
-  --cartel-texto-hueco:  1.3em;                    /* hueco entre el bloque y el año */
+  --cartel-texto-fuente: var(--fuente-etiqueta);
+  --cartel-texto-linea:  1.3;
+  --cartel-texto-izq:    calc(37.84% + .7rem);
+  --cartel-texto-abajo:  .7rem;
+  --cartel-texto-hueco:  1.3em;
   --cartel-texto-tam-movil: .64rem;
 
 /* ---------- 5. PÁGINA DE PROYECTO (vídeo + ficha + crew + texto) ---- */
@@ -180,10 +172,6 @@
   --t-cortina: 650ms;          /* fundido al cambiar de página      */
   --t-hover:   600ms;          /* zoom/oscurecer al pasar el ratón  */
   --t-color:   900ms;          /* reservado para cambios de color */
-  --t-menu:         1300ms;    /* despliegue de films / series / … al pulsar WORK */
-  --t-menu-escalon: 90ms;      /* retraso entre una opción y la siguiente */
-  --t-menu-cierre:  550ms;     /* al plegarse (más rápido) */
-  --menu-recorrido: .9em;      /* cuánto bajan las opciones al aparecer */
   --curva:     cubic-bezier(.65, 0, .35, 1);
   --margen: clamp(16px, 2.6vw, 40px);
 
