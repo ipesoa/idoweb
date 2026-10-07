@@ -18,8 +18,8 @@
 
   /* ---------- MENÚ ----------
      INICIO      arriba en el centro: NOMBRE · production designer · work
-                 a la izquierda: films y series · a la derecha: commercials
-                 y videoclips · abajo en el centro: contact
+                 work despliega films, series, commercials y archive en el centro;
+                 contact aparece abajo. Los enlaces laterales siguen iguales.
      SECCIONES   (work, films, series, commercials, videoclips)
                  arriba en el centro: NOMBRE (lleva al inicio) y, debajo,
                  dónde estás. Nada más: ni laterales ni contact.
@@ -30,21 +30,27 @@
     const nombre = (Web.about && Web.about.nombre) || "Idoia Esteban Galván";
     const seccion = A.secciones.find((s) => s.id === pagina);
     const donde = pagina === "work" ? A.textos.work : seccion ? seccion.titulo : "";
+    const enlaceSeccion = (s, clase = "menu__seccion") =>
+      `<a class="${clase} menu__${s.id}" href="${s.pagina}">${htmlSeguro(s.titulo)}</a>`;
     const lado = (cual) => A.secciones.filter((s) => (s.lado || "izquierda") === cual)
-      .map((s) => `<a class="menu__seccion menu__${s.id}" href="${s.pagina}">${s.titulo}</a>`).join("");
+      .map((s) => enlaceSeccion(s)).join("");
 
     let dentro;
     if (pagina === "inicio") {
       dentro = `
       <div class="menu__centro">
         <a class="menu__nombre" href="index.html">${htmlSeguro(nombre)}</a>
-        ${A.textos.labor ? `<span class="menu__labor">${A.textos.labor}</span>` : ""}
-        <a class="menu__work" href="work.html">${A.textos.work}</a>
+        ${A.textos.labor ? `<span class="menu__labor">${htmlSeguro(A.textos.labor)}</span>` : ""}
+        <button class="menu__work" type="button" aria-expanded="false" aria-controls="menu-inicio-opciones">${htmlSeguro(A.textos.work)}</button>
+      </div>
+      <div class="menu__opciones" id="menu-inicio-opciones" hidden>
+        ${A.secciones.filter((s) => ["films", "series", "comercials"].includes(s.id)).map((s) => enlaceSeccion(s)).join("")}
+        <a class="menu__archivo" href="work.html">Archive</a>
       </div>
       <div class="menu__izq">${lado("izquierda")}</div>
       <div class="menu__der">${lado("derecha")}</div>
-      <div class="menu__pie">
-        <a class="menu__contacto" href="contact.html">${A.textos.contacto}</a>
+      <div class="menu__pie" hidden>
+        <a class="menu__contacto" href="contact.html">${htmlSeguro(A.textos.contacto)}</a>
       </div>`;
     } else if (pagina === "contact") {
       dentro = `
@@ -65,6 +71,23 @@
     nav.setAttribute("aria-label", "Menú principal");
     nav.innerHTML = dentro;
     document.body.prepend(nav);
+    if (pagina === "inicio") {
+      const boton = nav.querySelector(".menu__work");
+      const opciones = nav.querySelector(".menu__opciones");
+      const contacto = nav.querySelector(".menu__pie");
+      const mostrar = (abierto) => {
+        boton.setAttribute("aria-expanded", String(abierto));
+        opciones.hidden = !abierto;
+        contacto.hidden = !abierto;
+      };
+      boton.addEventListener("click", () => mostrar(boton.getAttribute("aria-expanded") !== "true"));
+      nav.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && boton.getAttribute("aria-expanded") === "true") {
+          mostrar(false);
+          boton.focus();
+        }
+      });
+    }
     if (!document.title) document.title = nombre;
   }
 

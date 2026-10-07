@@ -72,7 +72,7 @@ window.AJUSTES = {
     activo: true,
     umbral: 0.179,
     suavizado: 10,
-    textos: ".menu a, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]",
+    textos: ".menu a, .menu button, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]",
   },
 
   /* ---- Scroll automático -------------------------------------------- */

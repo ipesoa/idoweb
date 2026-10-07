@@ -33,8 +33,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   position: fixed; left: 0; top: 0;   /* el tamaño lo pone diferencia.js (= pantalla visible) */
   z-index: 80; pointer-events: none;
 }
-.dif-activo :is(.menu a, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]),
-.dif-activo :is(.menu a, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]) * {
+.dif-activo :is(.menu a, .menu button, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]),
+.dif-activo :is(.menu a, .menu button, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]) * {
   color: transparent !important;
   -webkit-text-stroke-color: transparent !important;
   text-decoration-color: transparent !important;
@@ -69,19 +69,20 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   text-transform: uppercase;
   line-height: 1;
 }
-.menu a, .menu span { -webkit-text-stroke: 0; }
+.menu a, .menu button, .menu span { -webkit-text-stroke: 0; }
 /* zona de clic: rectángulo invisible alrededor de cada enlace.
    El margen negativo es el mismo que el relleno, así nada se mueve. */
-.menu a {
+.menu a, .menu button {
   pointer-events: auto; transition: opacity .3s;
   display: inline-block;
   padding: var(--menu-zona-alto) var(--menu-zona-ancho);
   margin: calc(var(--menu-zona-alto) * -1) calc(var(--menu-zona-ancho) * -1);
 }
 .menu span { pointer-events: none; }
-.menu a:hover { opacity: .6; }
-.pagina-inicio .menu a, .pagina-inicio .menu span { -webkit-text-stroke-width: 0; }
+.menu a:hover, .menu button:hover { opacity: .6; }
+.pagina-inicio .menu a, .pagina-inicio .menu button, .pagina-inicio .menu span { -webkit-text-stroke-width: 0; }
 .menu a.activo { text-decoration: underline; text-underline-offset: .25em; text-decoration-thickness: 1px; }
+[hidden] { display: none !important; }
 
 .menu__centro {
   position: absolute; left: 50%; top: calc(var(--margen) * .7);
@@ -90,6 +91,15 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   gap: var(--inicio-separacion-lineas);
   text-align: center;
 }
+/* El botón Work revela solo la columna central del inicio. */
+.menu__opciones {
+  position: absolute; left: 50%; top: 37%;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(24px, 5.5vh, 58px);
+  text-align: center;
+}
+.menu__opciones .menu__archivo { margin-top: clamp(38px, 7vh, 78px); }
 /* films y series a la izquierda · commercials y videoclips a la derecha
    (solo en el inicio), a media altura y en móvil abajo en las esquinas */
 .menu__izq, .menu__der {
@@ -114,7 +124,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   letter-spacing: var(--nombre-espaciado);
   white-space: nowrap;
 }
-.menu__labor, .menu__work, .menu__donde, .menu__contacto, .menu__seccion {
+.menu__labor, .menu__work, .menu__donde, .menu__contacto, .menu__seccion, .menu__archivo {
   font-size: var(--menu-tam);
   letter-spacing: var(--inicio-espaciado-menu);
   white-space: nowrap;
@@ -122,6 +132,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 @media (max-width: 700px) {
   .menu__nombre { font-size: var(--nombre-tam-movil); }
+  .menu__opciones { top: 34%; gap: clamp(16px, 4.5vh, 38px); }
+  .menu__opciones .menu__archivo { margin-top: clamp(20px, 6vh, 48px); }
   .menu__izq, .menu__der {
     top: auto; transform: none;
     bottom: calc(var(--margen) + env(safe-area-inset-bottom));
