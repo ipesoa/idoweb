@@ -80,6 +80,11 @@ window.AJUSTES = {
     activo: true,
     umbral: 0.179,
     suavizado: 10,
+    negroDesde: 0.36,
+    blancoDesde: 0.24,
+    percentil: 0.75,
+    fundido: 450,
+    decidir: "texto",
     textos: ".menu a, .menu button, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]",
   },
 

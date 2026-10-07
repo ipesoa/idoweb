@@ -172,6 +172,10 @@
   --t-cortina: 650ms;          /* fundido al cambiar de página      */
   --t-hover:   600ms;          /* zoom/oscurecer al pasar el ratón  */
   --t-color:   900ms;          /* reservado para cambios de color */
+  --t-menu:         1300ms;
+  --t-menu-escalon: 90ms;
+  --t-menu-cierre:  550ms;
+  --menu-recorrido: .9em;
   --curva:     cubic-bezier(.65, 0, .35, 1);
   --margen: clamp(16px, 2.6vw, 40px);
 
