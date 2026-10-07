@@ -1,4 +1,6 @@
 titulo: La piedad
 año: 2022
+labor: 
+director: 
 mostrar_en_inicio: no
 ---

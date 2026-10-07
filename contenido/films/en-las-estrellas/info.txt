@@ -1,5 +1,6 @@
 titulo: En las estrellas
 año: 2018
+labor: 
 director: Zoe Berriatúa
 productora: Pokeepsie Films
 mostrar_en_inicio: si

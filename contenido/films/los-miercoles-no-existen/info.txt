@@ -1,5 +1,6 @@
 titulo: Los miércoles no existen
 año: 2015
+labor: 
 director: Peris Romano
 productora: José Frade PC
 mostrar_en_inicio: si

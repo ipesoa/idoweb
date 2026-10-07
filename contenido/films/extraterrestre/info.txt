@@ -1,5 +1,6 @@
 titulo: Extraterrestre
 año: 2011
+labor: 
 director: Nacho Vigalondo
 productora: Sayaka
 mostrar_en_inicio: no

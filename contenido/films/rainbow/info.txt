@@ -1,5 +1,6 @@
 titulo: Rainbow
 año: 2022
+labor: 
 director: Paco León
 mostrar_en_inicio: si
 ---

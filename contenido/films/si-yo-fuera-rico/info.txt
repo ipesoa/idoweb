@@ -1,5 +1,6 @@
 titulo: Si yo fuera rico
 año: 2019
+labor: 
 director: Álvaro Fernández Armero
 mostrar_en_inicio: no
 ---
