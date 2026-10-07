@@ -41,11 +41,11 @@
         ${A.textos.labor ? `<span class="menu__labor">${htmlSeguro(A.textos.labor)}</span>` : ""}
         <button class="menu__work" type="button" aria-expanded="false" aria-controls="menu-inicio-opciones">${htmlSeguro(A.textos.work)}</button>
       </div>
-      <div class="menu__opciones" id="menu-inicio-opciones" hidden>
+      <div class="menu__opciones menu__plegable" id="menu-inicio-opciones" inert>
         ${A.secciones.filter((s) => ["films", "series", "comercials"].includes(s.id)).map((s) => enlaceSeccion(s)).join("")}
         <a class="menu__archivo" href="work.html">Archive</a>
       </div>
-      <div class="menu__pie" hidden>
+      <div class="menu__pie menu__plegable" inert>
         <a class="menu__contacto" href="contact.html">${htmlSeguro(A.textos.contacto)}</a>
       </div>`;
     } else if (pagina === "contact") {
@@ -71,11 +71,22 @@
       const boton = nav.querySelector(".menu__work");
       const opciones = nav.querySelector(".menu__opciones");
       const contacto = nav.querySelector(".menu__pie");
+      // Cada opción lleva su número (--i) para salir una detrás de otra.
+      // Al abrir caen desde WORK en cascada; al cerrar se recogen al revés.
+      // Tiempos: ajustes.css sección 8 (--t-menu, --t-menu-escalon…)
+      const items = [...opciones.children, ...contacto.children];
+      items.forEach((el, i) => { el.style.setProperty("--i", i); el.style.setProperty("--j", items.length - 1 - i); });
       const mostrar = (abierto) => {
         boton.setAttribute("aria-expanded", String(abierto));
-        opciones.hidden = !abierto;
-        contacto.hidden = !abierto;
+        nav.classList.toggle("menu--abierto", abierto);
+        nav.classList.remove("menu--listo");
+        opciones.inert = !abierto;
+        contacto.inert = !abierto;
       };
+      // ya desplegado del todo: el hover vuelve a ser rápido (sin la cascada)
+      items[items.length - 1].addEventListener("transitionend", (e) => {
+        if (e.propertyName === "opacity" && nav.classList.contains("menu--abierto")) nav.classList.add("menu--listo");
+      });
       boton.addEventListener("click", () => mostrar(boton.getAttribute("aria-expanded") !== "true"));
       nav.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && boton.getAttribute("aria-expanded") === "true") {

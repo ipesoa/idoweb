@@ -21,7 +21,7 @@ window.Web = { proyectos(tipo), proyecto(tipo,id), todos(), tipos(), about, film
 
 - `datos-generados.js` **se regenera**; nunca editarlo a mano. Tras tocar `contenido/`, ejecutar `bash herramientas-mac/_generar-datos.sh`.
 - `info.txt`: líneas `clave: valor` hasta una línea `---`; después, texto libre. Las claves se normalizan (minúsculas, sin tildes, espacios→`_`): `año`→`ano`. Líneas con `#` = comentarios. Carpetas que empiezan por `_` se ignoran.
-- Portada: clave `portada:` o archivo `portada.*`; versión móvil `portada-movil.*` o clave `portada_movil:`. El resto de imágenes/vídeos = galería, en orden alfabético.
+- Portada: clave `portada:` o archivo `portada.*`; versión móvil `portada-movil.*` o clave `portada_movil:`. Cartel (póster): archivo `cartel.*` o clave `cartel:` → `p.cartel`; NO entra en la galería. El resto de imágenes/vídeos = galería, en orden alfabético.
 - Claves reconocidas: `titulo, año, labor, director (o "directed by"), productora (o "produced by"), cliente, mostrar_en_inicio (si/no), encuadre (object-position), video, crew (repetible), orden`. Una clave repetida acumula sus valores separados por `\n` (así funciona `crew:`). Cualquier otra clave queda disponible en `proyecto.extra`.
 - **Secciones**: films, series, comercials (se lee "Commercials"), videoclips. La lista manda desde `AJUSTES.secciones` (assets/js/ajustes.js) y debe coincidir con: los generadores de datos (bash y ps1), `TIPOS` del gestor y las páginas .html.
 
@@ -38,6 +38,12 @@ window.Web = { proyectos(tipo), proyecto(tipo,id), todos(), tipos(), about, film
 
 Orden de scripts en cada página: `datos-generados.js → ajustes.js → contenido.js → comun.js → <página>.js`.
 
+## Carteles en las rejillas (`lista.js` + `lista.css`, ajustes en `AJUSTES.carteles` y `ajustes.css` 4b)
+En las páginas de `AJUSTES.carteles.paginas` la rejilla lleva `.modo-cartel`: cada celda = portada a todo el rectángulo (`.celda__fondo`) + cartel a la izquierda a todo lo alto con formato fijo `--cartel-formato` (`.celda__cartel`, solo si `p.cartel`) + texto fijo encima de la portada (`.celda__texto`: ficha y año abajo; sin etiqueta de cursor). Con cartel la portada está a `--cartel-oscuro`; en hover/focus el cartel se desvanece y la portada hace la animación `cartel-brillo` (oscura → `--cartel-brillo` → 1). Gestor: recuadro «Cartel» en el editor (subir/arrastrar, o botón «Cartel» en una foto); se publica como `cartel.jpg`.
+
+## Menú WORK del inicio
+`.menu__plegable` (opciones + contact) con `inert` cuando está cerrado; `.menu--abierto` en el nav despliega en cascada (`--i`, `--t-menu`, `--t-menu-escalon`), al cerrar en orden inverso (`--j`, `--t-menu-cierre`). `.menu--listo` cuando acaba, para que el hover vuelva a ser rápido.
+
 ## Piezas compartidas (`assets/js/comun.js` → `window.Comun`)
 - Menú inyectado (`pintarMenu`), distinto según `body[data-pagina]`: **inicio** = `.menu__centro` (nombre · production designer · work) arriba, `.menu__izq` (films, series) y `.menu__der` (commercials, videoclips) a media altura, `.menu__pie` (contact) abajo; **secciones** (work, films, series, comercials, videoclips) = nombre (enlace al inicio) + `.menu__donde` con dónde estás, nada más; **contact** = nombre + enlace "Work"; **proyecto** = solo el nombre, fijo arriba todo el rato. Los laterales existen SOLO en el inicio. Cada `<a>` del menú lleva un rectángulo de clic invisible (`--menu-zona-alto` / `--menu-zona-ancho`, relleno + margen negativo) para poder pinchar sin dar justo en las letras.
 - `Comun.reproductor(url)` → HTML del vídeo (Vimeo/YouTube con autoplay mudo, archivo .mp4 → `<video>`, código `<iframe…>` tal cual). `Comun.ficha(p)` → [título, directed by…, produced by…].
@@ -50,7 +56,7 @@ Orden de scripts en cada página: `datos-generados.js → ajustes.js → conteni
 - `Comun.embed(url)` Vimeo/YouTube → URL de iframe.
 
 ## Contraste monocromo de las letras (`assets/js/diferencia.js`)
-La dueña pidió sustituir el modelo de color por blanco sobre fondo oscuro y negro sobre fondo claro, sin contornos. El umbral de luminancia lineal está en `AJUSTES.diferencia.umbral` (0.179); `AJUSTES.diferencia.suavizado` suaviza las texturas antes de decidir el color.
+La dueña pidió sustituir el modelo de color por blanco sobre fondo oscuro y negro sobre fondo claro, sin contornos. El umbral de luminancia lineal está en `AJUSTES.diferencia.umbral` (0.179); `AJUSTES.diferencia.suavizado` (px, 1 por defecto; antes 10, que desplazaba el cambio de color respecto a la foto) suaviza las texturas antes de decidir el color. `AJUSTES.diferencia.modo`: "blanco-negro" o "photoshop" (255 − fondo por canal, como la fusión Diferencia). El fondo y el campo se calculan a resolución de dispositivo (dpr), sin reescalar. Mientras haya transiciones/animaciones en marcha (transitionrun/animationstart…) los lienzos locales se recalculan cada fotograma.
 Aplicación píxel a píxel: capa `<canvas class="dif-capa">` fija encima (z 80). Cada fotograma, para cada texto de `AJUSTES.diferencia.textos`: reconstruye en un canvas el fondo real detrás (imgs/vídeos con su rect, object-fit/position, opacidad y filtros acumulados, recorte por overflow), suaviza ese fondo, compara su luminancia con el umbral y recorta el campo blanco/negro con máscaras de las letras dibujadas con la misma fuente, posición, opacidad y desenfoque que el DOM. El DOM queda con texto transparente (`.dif-activo`). Si `getImageData` falla (file:// en Chrome), se quita `.dif-activo` y queda texto blanco sin contorno.
 `window.Diferencia`: `colorPara(hex)`, `umbral(valor?)`, `tiempos()`, `ms`.
 Para añadir un texto nuevo al sistema: añadir su selector a `AJUSTES.diferencia.textos` (o ponerle `data-dif`).

@@ -105,6 +105,34 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   transform: translateX(-50%);
 }
 
+/* Despliegue de WORK (inicio): cerradas, las opciones están arriba,
+   transparentes y desenfocadas; al abrir caen en cascada hasta su sitio
+   y se enfocan. Al cerrar se recogen al revés y más deprisa.
+   Tiempos: ajustes.css sección 8.                                      */
+.menu .menu__plegable > * {
+  opacity: 0;
+  filter: blur(8px);
+  transform: translateY(calc(var(--menu-recorrido) * -1));
+  pointer-events: none;
+  transition:
+    opacity   var(--t-menu-cierre) var(--curva) calc(var(--j, 0) * var(--t-menu-escalon) * .5),
+    filter    var(--t-menu-cierre) var(--curva) calc(var(--j, 0) * var(--t-menu-escalon) * .5),
+    transform var(--t-menu-cierre) var(--curva) calc(var(--j, 0) * var(--t-menu-escalon) * .5);
+}
+.menu.menu--abierto .menu__plegable > * {
+  opacity: 1;
+  filter: blur(0);
+  transform: none;
+  pointer-events: auto;
+  transition:
+    opacity   var(--t-menu) cubic-bezier(.22, .61, .36, 1) calc(var(--i, 0) * var(--t-menu-escalon)),
+    filter    var(--t-menu) cubic-bezier(.22, .61, .36, 1) calc(var(--i, 0) * var(--t-menu-escalon)),
+    transform var(--t-menu) cubic-bezier(.16, 1, .3, 1)    calc(var(--i, 0) * var(--t-menu-escalon));
+}
+/* ya desplegado: el «hover» (opacidad .6) va rápido, como en el resto */
+.menu.menu--listo .menu__plegable > * { transition: opacity .3s, filter .3s, transform .3s; }
+.menu.menu--abierto .menu__plegable > a:hover { opacity: .6; }
+
 .menu__nombre {
   font-family: var(--nombre-fuente);
   font-weight: var(--nombre-negrita);

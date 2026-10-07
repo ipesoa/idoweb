@@ -61,13 +61,17 @@
 
     // portada: la que diga info.txt, o un archivo llamado "portada.*", o la primera
     const buscar = (nombre) => nombre && archivos.find((a) => a.f.toLowerCase() === nombre.toLowerCase());
+    // cartel (póster): archivo "cartel.*" (lo pone el gestor) o clave "cartel:".
+    // Solo sale en las rejillas (work, films…), nunca en la galería del proyecto.
+    const cartel = buscar(info.cartel)
+      || archivos.find((a) => /^cartel\./i.test(a.f) && !esVideo(a.f));
     const portada = buscar(info.portada)
       || archivos.find((a) => /^portada\./i.test(a.f))
-      || archivos.find((a) => !esVideo(a.f));
+      || archivos.find((a) => !esVideo(a.f) && a !== cartel);
     const portadaMovil = buscar(info.portada_movil)
       || archivos.find((a) => /^portada[-_]movil\./i.test(a.f));
 
-    const galeria = archivos.filter((a) => a !== portada && a !== portadaMovil);
+    const galeria = archivos.filter((a) => a !== portada && a !== portadaMovil && a !== cartel);
 
     const p = {
       tipo,
@@ -89,6 +93,7 @@
       extra: info,
       portada: portada ? { ...portada, url: ruta(tipo, bruto.carpeta, portada.f) } : null,
       portadaMovil: portadaMovil ? { ...portadaMovil, url: ruta(tipo, bruto.carpeta, portadaMovil.f) } : null,
+      cartel: cartel ? { ...cartel, url: ruta(tipo, bruto.carpeta, cartel.f) } : null,
       galeria: galeria.map((a) => ({ ...a, url: ruta(tipo, bruto.carpeta, a.f), video: esVideo(a.f) })),
     };
     p.enlace = `proyecto.html?tipo=${tipo}&id=${encodeURIComponent(p.id)}`;

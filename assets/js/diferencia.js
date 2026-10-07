@@ -1,16 +1,21 @@
 /* =====================================================================
-   CONTRASTE MONOCROMO SOBRE FOTOS
+   CONTRASTE DE LAS LETRAS SOBRE FOTOS
    ---------------------------------------------------------------------
-   El texto conserva el efecto de adaptarse a los píxeles de la foto,
-   pero cada píxel de letra es negro o blanco y no tiene contorno.
-   El umbral se ajusta en assets/js/ajustes.js. La luminancia lineal
-   permite decidir cuál de los dos colores ofrece mayor contraste.
+   Cada píxel de letra mira el píxel de la foto que tiene justo debajo:
+     modo "blanco-negro"  → blanco sobre oscuro, negro sobre claro
+     modo "photoshop"     → el opuesto exacto del fondo (como el modo de
+                            fusión «Diferencia» de Photoshop con blanco)
+   Se calcula a la resolución real de la pantalla (también retina) y,
+   mientras algo se mueve o cambia de luz (fundidos, carteles…), se
+   recalcula en cada fotograma para que nunca vaya con retraso.
+   Modo, umbral y suavizado: assets/js/ajustes.js → diferencia.
    ===================================================================== */
 (function () {
   const AJ = (window.AJUSTES && window.AJUSTES.diferencia) || {};
   const ACTIVO = AJ.activo !== false;
   const TEXTOS = AJ.textos || ".menu a, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]";
   const suavizado = Math.max(0, Number(AJ.suavizado) || 0);
+  const INVERTIR = AJ.modo === "photoshop";
   let umbral = Number.isFinite(Number(AJ.umbral)) ? Number(AJ.umbral) : 0.179;
   const lineal = Float32Array.from({ length: 256 }, (_, i) => {
     const x = i / 255;
@@ -22,6 +27,13 @@
     return 0.2126 * lineal[r] + 0.7152 * lineal[g] + 0.0722 * lineal[b] >= umbral;
   }
   function mapear(src, dstL) {
+    if (INVERTIR) {   // «Diferencia» de Photoshop con letra blanca: 255 − fondo, canal a canal
+      for (let p = 0; p < src.length; p += 4) {
+        dstL[p] = 255 - src[p]; dstL[p + 1] = 255 - src[p + 1]; dstL[p + 2] = 255 - src[p + 2];
+        dstL[p + 3] = 255;
+      }
+      return;
+    }
     for (let p = 0; p < src.length; p += 4) {
       const tinta = claro(src[p], src[p + 1], src[p + 2]) ? 0 : 255;
       dstL[p] = dstL[p + 1] = dstL[p + 2] = tinta;
@@ -31,7 +43,8 @@
   function colorPara(hex) {
     const s = hex.replace("#", "");
     const c = s.length === 3 ? [...s].map((x) => parseInt(x + x, 16)) : [0, 2, 4].map((i) => parseInt(s.slice(i, i + 2), 16));
-    const tinta = claro(...c) ? "#000000" : "#FFFFFF";
+    const tinta = INVERTIR ? "#" + c.map((v) => (255 - v).toString(16).padStart(2, "0")).join("")
+      : claro(...c) ? "#000000" : "#FFFFFF";
     return { letra: tinta };
   }
   window.Diferencia = {
@@ -61,8 +74,8 @@
 
   const lienzo = () => { const c = document.createElement("canvas"); return [c, c.getContext("2d", { willReadFrequently: true })]; };
   const [cFondo, xFondo] = lienzo();
-  const [cSuave, xSuave] = lienzo();     // fondo reconstruido (1 px CSS)
-  const [cCampoL, xCampoL] = lienzo();   // campo de color letra (1 px CSS)
+  const [cSuave, xSuave] = lienzo();     // fondo reconstruido (a resolución de pantalla)
+  const [cCampoL, xCampoL] = lienzo();   // campo de color letra (a resolución de pantalla)
   const [cMascara, xMascara] = lienzo(); // forma de las letras (a resolución de pantalla)
   const [cComp, xComp] = lienzo();       // composición
   const [cTemp, xTemp] = lienzo();       // desenfoque a baja resolución
@@ -105,16 +118,19 @@
     return medios;
   }
   let estable = true;
-  function dibujarFondo(R) {
+  // k = píxeles reales por píxel CSS (2 en pantallas retina): así el
+  // blanco/negro cambia exactamente donde cambia la foto, sin escalones
+  function dibujarFondo(R, k) {
     estable = true;
     xFondo.setTransform(1, 0, 0, 1, 0, 0);
     xFondo.globalAlpha = 1; xFondo.filter = "none";
     xFondo.fillStyle = colorFondoPagina();
     xFondo.fillRect(0, 0, cFondo.width, cFondo.height);
+    xFondo.setTransform(k, 0, 0, k, 0, 0);
     for (const { m, r, nw, nh } of mediosDelFotograma()) {
       if (r.right <= R.x0 || r.left >= R.x1 || r.bottom <= R.y0 || r.top >= R.y1) continue;
       const { alfa, filtro, cs } = estiloAcumulado(m);
-      if (alfa < 0.99 || cs.transform !== "none" && cs.transform !== "matrix(1, 0, 0, 1, 0, 0)") estable = false;
+      if (alfa < 0.99 || cs.transform !== "none" && cs.transform !== "matrix(1, 0, 0, 1, 0, 0)" || cs.animationName !== "none") estable = false;
       if (alfa <= 0.003) continue;
       // object-fit / object-position (como lo pinta el navegador)
       let s;
@@ -144,15 +160,15 @@
       try {
         if (blur > 2) {
           // desenfoque a resolución reducida (se ve igual y cuesta mucho menos)
-          const k = Math.min(8, blur / 2), tw = Math.max(1, Math.ceil((ax1 - ax0) / k)), th = Math.max(1, Math.ceil((ay1 - ay0) / k));
+          const red = Math.min(8, blur / 2), tw = Math.max(1, Math.ceil((ax1 - ax0) / red)), th = Math.max(1, Math.ceil((ay1 - ay0) / red));
           tam(cTemp, tw, th);
           xTemp.filter = "none"; xTemp.clearRect(0, 0, tw, th);
-          xTemp.filter = filtro.replace(/blur\(([\d.]+)px\)/g, (_, v) => `blur(${(parseFloat(v) / k).toFixed(2)}px)`);
+          xTemp.filter = filtro.replace(/blur\(([\d.]+)px\)/g, (_, v) => `blur(${(parseFloat(v) / red).toFixed(2)}px)`);
           xTemp.drawImage(m, sx, sy, sw, sh, 0, 0, tw, th);
           xFondo.filter = "none";
           xFondo.drawImage(cTemp, 0, 0, tw, th, ax0 - R.x0, ay0 - R.y0, ax1 - ax0, ay1 - ay0);
         } else {
-          xFondo.filter = filtro;
+          xFondo.filter = k === 1 ? filtro : filtro.replace(/blur\(([\d.]+)px\)/g, (_, v) => `blur(${(parseFloat(v) * k).toFixed(2)}px)`);
           xFondo.drawImage(m, sx, sy, sw, sh, ax0 - R.x0, ay0 - R.y0, ax1 - ax0, ay1 - ay0);
         }
       } catch (e) { /* aún no listo */ }
@@ -228,34 +244,34 @@
     const w = R.x1 - R.x0, h = R.y1 - R.y0;
     if (w <= 0 || h <= 0) return true;
 
-    // a. fondo real
+    // a. fondo real, a la resolución de la pantalla
     let t = performance.now();
-    tam(cFondo, w, h);
-    dibujarFondo(R);
+    const W = Math.ceil(w * dpr), H = Math.ceil(h * dpr);
+    tam(cFondo, W, H);
+    dibujarFondo(R, dpr);
     let datos;
     try {
       if (suavizado) {
-        tam(cSuave, w, h);
+        tam(cSuave, W, H);
         xSuave.setTransform(1, 0, 0, 1, 0, 0);
-        xSuave.clearRect(0, 0, w, h);
-        xSuave.filter = `blur(${suavizado}px)`;
+        xSuave.clearRect(0, 0, W, H);
+        xSuave.filter = `blur(${suavizado * dpr}px)`;
         xSuave.drawImage(cFondo, 0, 0);
         xSuave.filter = "none";
-        datos = xSuave.getImageData(0, 0, w, h);
-      } else datos = xFondo.getImageData(0, 0, w, h);
+        datos = xSuave.getImageData(0, 0, W, H);
+      } else datos = xFondo.getImageData(0, 0, W, H);
     }
     catch (e) { fallo = true; return; }
     T.fondo += performance.now() - t; t = performance.now();
 
-    // b. campos de blanco o negro (luminancia del fondo)
-    tam(cCampoL, w, h);
-    const campoL = xCampoL.createImageData(w, h);
+    // b. campo de color de la letra, píxel a píxel (sin reescalar)
+    tam(cCampoL, W, H);
+    const campoL = xCampoL.createImageData(W, H);
     mapear(datos.data, campoL.data);
     xCampoL.putImageData(campoL, 0, 0);
     T.mapa += performance.now() - t; t = performance.now();
 
-    // c. recortar el campo blanco/negro con la forma de las letras
-    const W = Math.ceil(w * dpr), H = Math.ceil(h * dpr);
+    // c. recortar el campo con la forma de las letras
     tam(cMascara, W, H); tam(cComp, W, H);
     if (local) {   // el lienzo propio se coloca justo encima del texto, dentro de su caja
       const caja = local.caja.getBoundingClientRect();
@@ -292,8 +308,7 @@
         if (g.subrayado) xMascara.fillRect(g.x, base + g.tam * 0.25, g.w, 1);
       }
       xComp.globalCompositeOperation = "copy";
-      xComp.imageSmoothingEnabled = true;
-      xComp.drawImage(cCampoL, 0, 0, W, H);
+      xComp.drawImage(cCampoL, 0, 0);
       xComp.globalCompositeOperation = "destination-in";
       xComp.drawImage(cMascara, 0, 0);
       if (local) local.x.drawImage(cComp, 0, 0);
@@ -330,8 +345,21 @@
   }
   const ensuciar = () => locales.forEach((L) => (L.sucio = true));
   document.addEventListener("load", ensuciar, true);
-  document.addEventListener("transitionend", ensuciar, true);
   window.addEventListener("resize", ensuciar);
+  // Mientras haya algo animándose (fundidos, el cartel que se va, el brillo
+  // de la portada…) los textos se recalculan en cada fotograma: así el
+  // color sigue a la foto en tiempo real y no salta al final.
+  const animando = new Set();
+  const empieza = (e) => { animando.add(e.target); ensuciar(); };
+  const acaba = (e) => { animando.delete(e.target); ensuciar(); };
+  document.addEventListener("transitionrun", empieza, true);
+  document.addEventListener("transitionend", acaba, true);
+  document.addEventListener("transitioncancel", acaba, true);
+  document.addEventListener("animationstart", empieza, true);
+  document.addEventListener("animationend", acaba, true);
+  document.addEventListener("animationcancel", acaba, true);
+  // por si un evento de fin se pierde (elemento borrado, pestaña oculta…)
+  setInterval(() => { for (const el of animando) if (!el.isConnected) animando.delete(el); }, 2000);
 
   // ---------- bucle ----------
   function fotograma() {
@@ -348,6 +376,8 @@
       cc.setTransform(1, 0, 0, 1, 0, 0);
       cc.clearRect(0, 0, capa.width, capa.height);
       let localesEsteFotograma = 0;
+      if (animando.size) ensuciar();
+      const maxLocales = animando.size ? 12 : 4;
       for (const el of document.querySelectorAll(TEXTOS)) {
         const r = el.getBoundingClientRect();
         if (esFijo(el)) {
@@ -355,7 +385,7 @@
           pintarTexto(el, dpr);
         } else {
           const L = lienzoLocal(el);
-          if (!L || !L.sucio || localesEsteFotograma >= 4) continue;
+          if (!L || !L.sucio || localesEsteFotograma >= maxLocales) continue;
           if (!r.width || r.bottom < -100 || r.top > innerHeight + 100 || r.right < 0 || r.left > innerWidth) continue;
           localesEsteFotograma++;
           L.sucio = !pintarTexto(el, dpr, L);   // si las fotos aún están apareciendo, se repite

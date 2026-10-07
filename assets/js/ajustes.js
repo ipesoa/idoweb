@@ -56,6 +56,18 @@ window.AJUSTES = {
     incluirComercials: true,     // (antiguo, ya manda "secciones")
   },
 
+  /* ---- CARTELES EN LAS REJILLAS ---------------------------------------
+     Si un proyecto tiene cartel (gestor → editor → «Cartel»), en su
+     rectángulo sale el cartel a la izquierda, encima de la portada.
+     Al pasar el ratón el cartel se desvanece y la portada «se enciende».
+     Tamaños, oscuridad y tiempos: ajustes.css sección 4b.
+       paginas = en qué rejillas sale ("work" = la vista general)       */
+  carteles: {
+    activo: true,
+    paginas: ["work", "films", "series", "comercials", "videoclips"],
+    mostrarAno: true,            // el año abajo, separado del título
+  },
+
   /* ---- Página de cada proyecto -------------------------------------- */
   proyecto: {
     autoplay: true,              // el vídeo de arriba empieza solo
@@ -65,13 +77,24 @@ window.AJUSTES = {
   },
 
   /* ---- CONTRASTE DE LAS LETRAS EN FOTOS ------------------------------
-     El umbral usa luminancia entre 0 y 1. Más alto = más zonas blancas;
-     más bajo = más zonas negras. 0.179 iguala el contraste de ambos.
-     El desenfoque suaviza el cambio en fondos con mucho detalle.        */
+     Cada píxel de cada letra mira el píxel de la foto que tiene debajo
+     (a la resolución real de la pantalla, también en retina).
+     modo:
+       "blanco-negro" → letra blanca sobre zona oscura y negra sobre zona
+                        clara, cambiando a mitad de letra si hace falta.
+       "photoshop"    → igual que el modo de fusión «Diferencia» de
+                        Photoshop con letra blanca: cada píxel es el
+                        color opuesto exacto del fondo.
+     umbral (solo blanco-negro): luminancia entre 0 y 1. Más alto = más
+       zonas blancas; más bajo = más zonas negras. 0.179 = punto medio.
+     suavizado: píxeles de desenfoque del fondo ANTES de decidir.
+       0 = exacto, píxel a píxel (lo más fiel) · 1 = quita el grano
+       de la foto · 4 o más = cambios más blandos pero menos fieles.   */
   diferencia: {
     activo: true,
+    modo: "blanco-negro",
     umbral: 0.179,
-    suavizado: 10,
+    suavizado: 1,
     textos: ".menu a, .menu button, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]",
   },
 
