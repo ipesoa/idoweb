@@ -1,19 +1,17 @@
 /* =====================================================================
-   LETRAS LEGIBLES SOBRE FOTOS  (blanco o negro, solo cuando hace falta)
+   LETRAS LEGIBLES SOBRE FOTOS  (blanco, y negro solo donde hace falta)
    ---------------------------------------------------------------------
-   Las letras son BLANCAS. Solo pasan a NEGRO cuando lo que tienen debajo
-   es claro de verdad y el blanco ya no se leería bien; y no vuelven a
-   blanco hasta que el fondo se oscurece bastante (hay un margen, para que
-   no parpadeen al moverse la foto). El cambio es un fundido suave.
-
-   Se decide PALABRA a palabra (o texto entero, según ajustes): nunca
-   mitad de una letra de un color y mitad de otro.
+   Las letras son BLANCAS. Únicamente la parte de la letra que cae sobre
+   una zona tan clara que el blanco no se leería se vuelve NEGRA (con un
+   paso suave entre los dos). Si en blanco se sigue leyendo, no cambia.
+   Cada punto cambia con un fundido, así nada salta aunque la foto se
+   mueva o cambie de luz.
 
    Cómo mira el fondo: reconstruye en un lienzo invisible las fotos y
    vídeos que hay detrás de cada texto (con su encuadre, opacidad y
-   filtros) y mide la luz de la parte más clara que queda debajo de
-   cada palabra. Los textos de verdad siguen en la página (enlaces,
-   accesibilidad), transparentes; lo que se ve es lo que pinta esta capa.
+   filtros), le quita el grano y mide la luz de cada punto. Los textos de
+   verdad siguen en la página (enlaces, accesibilidad), transparentes;
+   lo que se ve es lo que pinta esta capa.
 
    Ajustes: assets/js/ajustes.js → diferencia
    Para añadir un texto: su selector a AJUSTES.diferencia.textos (o data-dif).
@@ -22,11 +20,10 @@
   const AJ = (window.AJUSTES && window.AJUSTES.diferencia) || {};
   const ACTIVO = AJ.activo !== false;
   const TEXTOS = AJ.textos || ".menu a, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]";
-  let negroDesde = num(AJ.negroDesde, 0.36);      // luz del fondo (0-1) a partir de la cual pasa a negro
-  let blancoDesde = num(AJ.blancoDesde, 0.24);    // luz por debajo de la cual vuelve a blanco
-  const PERCENTIL = Math.min(0.98, Math.max(0.3, num(AJ.percentil, 0.75)));
+  let negroDesde = num(AJ.negroDesde, 0.45);      // luz del fondo (0-1) donde el blanco empieza a no leerse
+  let negroTotal = num(AJ.negroTotal, 0.62);      // a partir de aquí, negro del todo
+  const SUAVIZADO = Math.max(0, num(AJ.suavizado, 3));  // px: ignora el grano y los detalles diminutos
   const FUNDIDO = Math.max(1, num(AJ.fundido, 450));   // ms del cambio blanco ↔ negro
-  const POR_TEXTO = AJ.decidir === "texto";            // "palabra" (por defecto) o "texto"
   function num(v, d) { return Number.isFinite(Number(v)) ? Number(v) : d; }
 
   // luminancia lineal (la que usa la norma de contraste WCAG)
@@ -46,8 +43,8 @@
     // (laboratorio) cambia el punto de paso a negro; el de vuelta va un poco por debajo
     umbral: (valor) => {
       if (valor !== undefined && Number.isFinite(Number(valor))) {
-        negroDesde = Math.max(0, Math.min(1, Number(valor)));
-        blancoDesde = negroDesde * 0.68;
+        negroDesde = Math.max(0, Math.min(0.95, Number(valor)));
+        negroTotal = Math.min(1, negroDesde + 0.17);
       }
       return negroDesde;
     },
@@ -72,6 +69,8 @@
   const lienzo = () => { const c = document.createElement("canvas"); return [c, c.getContext("2d", { willReadFrequently: true })]; };
   const [cFondo, xFondo] = lienzo();   // fondo reconstruido (1 px CSS: suficiente para medir la luz)
   const [cTemp, xTemp] = lienzo();     // desenfoques a baja resolución
+  const [cMascara, xMascara] = lienzo(); // forma de las letras (resolución de pantalla)
+  const [cComp, xComp] = lienzo();     // letras ya coloreadas
   const tam = (c, w, h) => { if (c.width !== w || c.height !== h) { c.width = w; c.height = h; } };
   const colorFondoPagina = () => getComputedStyle(document.body).backgroundColor;
 
@@ -195,7 +194,7 @@
         else if (cs.textTransform === "lowercase") ch = ch.toLowerCase();
         enPalabra = true;
         lista.push({ ch, dx: r.left - caja.left, dy: r.top - caja.top, w: r.width, h: r.height,
-          p, fuente, tam: parseFloat(cs.fontSize), subrayado, palabra: POR_TEXTO ? 0 : palabra });
+          p, fuente, tam: parseFloat(cs.fontSize), subrayado, palabra });
       }
     }
     disposiciones.set(el, { firma, lista });
@@ -204,23 +203,46 @@
   window.addEventListener("resize", () => versionLetras++);
   if (document.fonts) document.fonts.addEventListener("loadingdone", () => { versionLetras++; metricas.clear(); });
 
-  /* ---------- color de cada palabra: blanco (0) ↔ negro (1), con memoria ---------- */
-  const estados = new WeakMap();   // el → [{ negro, v }]
-  let ahora = performance.now(), dt = 16;
-  const histo = new Uint32Array(64);
-  function luzDeLaZona(datos, W, x0, y0, x1, y1) {
-    histo.fill(0);
-    let n = 0;
-    const d = datos.data;
-    for (let y = y0; y < y1; y++) {
-      for (let x = x0, i = (y * W + x0) * 4; x < x1; x++, i += 4) {
-        histo[Math.min(63, (luz(d[i], d[i + 1], d[i + 2]) * 64) | 0)]++; n++;
+  /* ---------- cuánto negro lleva cada punto (0 = blanco, 1 = negro) ----------
+     Blanco siempre, salvo donde el fondo es tan claro que el blanco no se
+     leería: ahí (y solo ahí) se vuelve negro, con un paso suave entre los
+     dos. Lo que ya se lee en blanco no se toca. Cada punto cambia con un
+     fundido, así nada salta aunque la foto se mueva. */
+  const previos = new WeakMap();   // el → { w, h, v: Float32Array } (lo que se pintó el fotograma anterior)
+  let ahora = performance.now(), dt = 16, cuadro = 0;
+  let sucioCapa = [];   // zonas de la capa pintadas en el fotograma anterior
+  const suave = (t) => t * t * (3 - 2 * t);
+  let bufA = new Float32Array(0), bufB = new Float32Array(0);
+  function luces(d, w, h) {
+    const n = w * h;
+    if (bufA.length < n) { bufA = new Float32Array(n); bufB = new Float32Array(n); }
+    for (let i = 0, q = 0; i < n; i++, q += 4) bufA[i] = luz(d[q], d[q + 1], d[q + 2]);
+    const r = Math.round(SUAVIZADO);
+    if (r < 1) return bufA;
+    for (let pasada = 0; pasada < 2; pasada++) {
+      for (let y = 0; y < h; y++) {          // horizontal: A → B
+        const f = y * w; let acc = 0, cnt = 0;
+        for (let x = -r; x < w; x++) {
+          if (x + r < w) { acc += bufA[f + x + r]; cnt++; }
+          if (x - r - 1 >= 0) { acc -= bufA[f + x - r - 1]; cnt--; }
+          if (x >= 0) bufB[f + x] = acc / cnt;
+        }
+      }
+      for (let x = 0; x < w; x++) {          // vertical: B → A
+        let acc = 0, cnt = 0;
+        for (let y = -r; y < h; y++) {
+          if (y + r < h) { acc += bufB[(y + r) * w + x]; cnt++; }
+          if (y - r - 1 >= 0) { acc -= bufB[(y - r - 1) * w + x]; cnt--; }
+          if (y >= 0) bufA[y * w + x] = acc / cnt;
+        }
       }
     }
-    if (!n) return 0;
-    let objetivo = n * PERCENTIL, acc = 0;
-    for (let b = 0; b < 64; b++) { acc += histo[b]; if (acc >= objetivo) return (b + 0.5) / 64; }
-    return 1;
+    return bufA;
+  }
+  function negrura(l) {
+    if (l <= negroDesde) return 0;
+    if (l >= negroTotal) return 1;
+    return suave((l - negroDesde) / (negroTotal - negroDesde));
   }
 
   /* ---------- pintar un texto ---------- */
@@ -250,69 +272,107 @@
     const w = R.x1 - R.x0, h = R.y1 - R.y0;
     if (w <= 0 || h <= 0) return true;
 
+    // Se mide el fondo un fotograma de cada dos (el fundido lo hace invisible);
+    // en el otro se reutiliza el color ya calculado.
+    let prev = previos.get(el);
+    const W = Math.ceil(w * dpr), H = Math.ceil(h * dpr);
+    if (prev && prev.w === w && prev.h === h && cuadro - prev.medido < 2 && cuadro !== prev.medido) {
+      return dibujar(el, prev, vivas, R, w, h, W, H, dpr, local) && prev.quieto;
+    }
+
     // a. fondo real detrás del texto
     tam(cFondo, w, h);
     dibujarFondo(R);
     let datos;
     try { datos = xFondo.getImageData(0, 0, w, h); }
     catch (e) { fallo = true; return true; }
-
-    // b. luz de la parte clara bajo cada palabra → color, con margen y fundido
-    const nPal = vivas.reduce((m, v) => Math.max(m, v.g.palabra), 0) + 1;
-    let est = estados.get(el);
-    if (!est || est.length !== nPal) { est = Array.from({ length: nPal }, () => null); estados.set(el, est); }
-    const zonas = Array.from({ length: nPal }, () => [Infinity, Infinity, -Infinity, -Infinity]);
-    for (const v of vivas) {
-      const z = zonas[v.g.palabra];
-      z[0] = Math.min(z[0], v.x); z[1] = Math.min(z[1], v.y); z[2] = Math.max(z[2], v.x + v.g.w); z[3] = Math.max(z[3], v.y + v.g.h);
-    }
-    let quieto = true;
-    for (let i = 0; i < nPal; i++) {
-      const z = zonas[i];
-      if (z[0] === Infinity) continue;
-      const zx0 = Math.max(0, Math.floor(z[0] - R.x0)), zy0 = Math.max(0, Math.floor(z[1] - R.y0));
-      const zx1 = Math.min(w, Math.ceil(z[2] - R.x0)), zy1 = Math.min(h, Math.ceil(z[3] - R.y0));
-      const l = luzDeLaZona(datos, w, zx0, zy0, zx1, zy1);
-      let e = est[i];
-      if (!e) { const negro = l >= negroDesde; e = est[i] = { negro, v: negro ? 1 : 0 }; }   // primera vez: sin fundido
-      else if (!e.negro && l >= negroDesde) e.negro = true;
-      else if (e.negro && l <= blancoDesde) e.negro = false;
-      const meta = e.negro ? 1 : 0;
-      if (e.v !== meta) {
-        const paso = dt / FUNDIDO;
-        e.v = meta > e.v ? Math.min(meta, e.v + paso) : Math.max(meta, e.v - paso);
-        quieto = false;
+    
+    // b. campo de color: blanco salvo en las zonas muy claras, con fundido
+    const d = datos.data, n = w * h;
+    const nuevo = !prev || prev.w !== w || prev.h !== h;
+    if (nuevo) { prev = { w, h, v: new Float32Array(n), cv: document.createElement("canvas") }; previos.set(el, prev); }
+    const paso = Math.min(1, dt / FUNDIDO);
+    const xc = prev.cv.getContext("2d");
+    tam(prev.cv, w, h);
+    const campo = xc.createImageData(w, h), c = campo.data;
+    let quieto = true, vMin = 1, vMax = 0;
+    // luz de cada punto, sin grano (desenfoque de caja en dos pasadas: rápido)
+    const lz = luces(d, w, h);
+    for (let i = 0, q = 0; i < n; i++, q += 4) {
+      const meta = negrura(lz[i]);
+      let v = prev.v[i];
+      if (nuevo) v = meta;                                   // primera vez: sin fundido
+      else if (v !== meta) {
+        v = meta > v ? Math.min(meta, v + paso) : Math.max(meta, v - paso);
+        if (Math.abs(v - meta) > 0.004) quieto = false; else v = meta;
       }
+      prev.v[i] = v;
+      if (v < vMin) vMin = v;
+      if (v > vMax) vMax = v;
+      const tono = 255 - Math.round(255 * v);
+      c[q] = c[q + 1] = c[q + 2] = tono; c[q + 3] = 255;
     }
+    prev.vMin = vMin; prev.vMax = vMax; prev.quieto = quieto; prev.medido = cuadro;
+    if (vMax - vMin >= 0.004) xc.putImageData(campo, 0, 0);
+    dibujar(el, prev, vivas, R, w, h, W, H, dpr, local);
+    return quieto;
+  }
 
-    // c. dibujar las letras con su color
+  /* ---------- dibujar las letras con el color calculado ---------- */
+  function dibujar(el, prev, vivas, R, w, h, W, H, dpr, local) {
     let x;
     if (local) {
-      const c = local.c, cajaL = local.caja.getBoundingClientRect();
-      tam(c, Math.ceil(w * dpr), Math.ceil(h * dpr));
-      Object.assign(c.style, { left: (R.x0 - cajaL.left - local.caja.clientLeft) + "px", top: (R.y0 - cajaL.top - local.caja.clientTop) + "px", width: w + "px", height: h + "px" });
+      const cv = local.c, cajaL = local.caja.getBoundingClientRect();
+      tam(cv, W, H);
+      Object.assign(cv.style, { left: (R.x0 - cajaL.left - local.caja.clientLeft) + "px", top: (R.y0 - cajaL.top - local.caja.clientTop) + "px", width: w + "px", height: h + "px" });
       x = local.x;
       x.setTransform(1, 0, 0, 1, 0, 0);
-      x.clearRect(0, 0, c.width, c.height);
-      x.setTransform(dpr, 0, 0, dpr, -R.x0 * dpr, -R.y0 * dpr);
+      x.clearRect(0, 0, W, H);
     } else {
       x = cc;
-      x.setTransform(dpr, 0, 0, dpr, 0, 0);
+      sucioCapa.push([R.x0 * dpr, R.y0 * dpr, W, H]);   // para borrar solo esto en el siguiente fotograma
     }
-    for (const { g, x: gx, y: gy, alfa, blur } of vivas) {
-      const m = medidas(g.fuente);
-      const base = gy + (g.h - (m.asc + m.desc)) / 2 + m.asc;
-      const ease = (t) => t * t * (3 - 2 * t);   // suave al principio y al final
-      const tono = Math.round(255 * (1 - ease(est[g.palabra].v)));
-      x.fillStyle = `rgb(${tono},${tono},${tono})`;
-      x.globalAlpha = Math.min(1, alfa);
-      x.filter = blur > 0.4 ? `blur(${(blur * dpr).toFixed(1)}px)` : "none";
-      x.font = g.fuente;
-      x.fillText(g.ch, gx, base);
-      if (g.subrayado) x.fillRect(gx, base + g.tam * 0.25, g.w, 1);
+    // (la fuente, la opacidad y el filtro solo se cambian cuando cambian: es lo que más cuesta)
+    const letras = (ctx, color) => {
+      ctx.fillStyle = color;
+      let fuente = "", alfaAct = -1, filtroAct = "";
+      ctx.filter = "none"; filtroAct = "none";
+      for (const { g, x: gx, y: gy, alfa, blur } of vivas) {
+        const m = medidas(g.fuente);
+        const base = gy + (g.h - (m.asc + m.desc)) / 2 + m.asc;
+        const a = Math.min(1, alfa);
+        if (a !== alfaAct) { ctx.globalAlpha = alfaAct = a; }
+        const f = blur > 0.4 ? `blur(${(blur * dpr).toFixed(1)}px)` : "none";
+        if (f !== filtroAct) { ctx.filter = filtroAct = f; }
+        if (g.fuente !== fuente) { ctx.font = fuente = g.fuente; }
+        ctx.fillText(g.ch, gx, base);
+        if (g.subrayado) ctx.fillRect(gx, base + g.tam * 0.25, g.w, 1);
+      }
+      ctx.filter = "none"; ctx.globalAlpha = 1;
+    };
+    // Todo el texto de un solo color (lo normal): se pinta directamente
+    if (prev.vMax - prev.vMin < 0.004) {
+      const t = 255 - Math.round(255 * prev.vMax);
+      x.setTransform(dpr, 0, 0, dpr, -(local ? R.x0 : 0) * dpr, -(local ? R.y0 : 0) * dpr);
+      letras(x, `rgb(${t},${t},${t})`);
+      x.setTransform(1, 0, 0, 1, 0, 0);
+      return true;
     }
-    x.filter = "none"; x.globalAlpha = 1;
-    return quieto;
+    // Mezcla: el campo blanco/negro recortado con la forma de las letras
+    tam(cMascara, W, H); tam(cComp, W, H);
+    xMascara.setTransform(1, 0, 0, 1, 0, 0);
+    xMascara.clearRect(0, 0, W, H);
+    xMascara.setTransform(dpr, 0, 0, dpr, -R.x0 * dpr, -R.y0 * dpr);
+    letras(xMascara, "#fff");
+    xComp.globalCompositeOperation = "copy";
+    xComp.imageSmoothingEnabled = true; xComp.imageSmoothingQuality = "high";
+    xComp.drawImage(prev.cv, 0, 0, W, H);
+    xComp.globalCompositeOperation = "destination-in";
+    xComp.drawImage(cMascara, 0, 0);
+    xComp.globalCompositeOperation = "source-over";
+    x.setTransform(1, 0, 0, 1, 0, 0);
+    x.drawImage(cComp, local ? 0 : R.x0 * dpr, local ? 0 : R.y0 * dpr);
+    return true;
   }
 
   /* ---------- textos que se mueven con la página (rejillas) ---------- */
@@ -364,12 +424,15 @@
       const t0 = performance.now();
       memo = new Map(); medios = null;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      tam(capa, Math.ceil(innerWidth * dpr), Math.ceil(innerHeight * dpr));
+      const cw = Math.ceil(innerWidth * dpr), ch = Math.ceil(innerHeight * dpr);
+      if (capa.width !== cw || capa.height !== ch) { tam(capa, cw, ch); sucioCapa = []; }
       const ancho = innerWidth + "px", alto = innerHeight + "px";
       if (capa.style.width !== ancho) capa.style.width = ancho;
       if (capa.style.height !== alto) capa.style.height = alto;
+      cuadro++;
       cc.setTransform(1, 0, 0, 1, 0, 0);
-      cc.clearRect(0, 0, capa.width, capa.height);
+      for (const [zx, zy, zw, zh] of sucioCapa) cc.clearRect(zx - 2, zy - 2, zw + 4, zh + 4);
+      sucioCapa = [];
       if (animando.size) ensuciar();
       let localesEsteFotograma = 0;
       const maxLocales = animando.size ? 12 : 4;

@@ -56,12 +56,16 @@ window.AJUSTES = {
     incluirComercials: true,     // (antiguo, ya manda "secciones")
   },
 
-  /* Carteles opcionales en las rejillas. El gestor guarda el archivo como
-     cartel.* dentro de cada trabajo; la galería conserva solo sus fotos. */
+  /* ---- CARTELES EN LAS REJILLAS ---------------------------------------
+     Si un proyecto tiene cartel (gestor → editor → «Cartel»), en su
+     rectángulo sale el cartel a la izquierda, encima de la portada.
+     Al pasar el ratón el cartel se desvanece y la portada «se enciende».
+     Tamaños, oscuridad y tiempos: ajustes.css sección 4b.
+       paginas = en qué rejillas sale ("work" = la vista general)       */
   carteles: {
     activo: true,
     paginas: ["work", "films", "series", "comercials", "videoclips"],
-    mostrarAno: true,
+    mostrarAno: true,            // el año abajo, separado del título
   },
 
   /* ---- Página de cada proyecto -------------------------------------- */
@@ -73,18 +77,24 @@ window.AJUSTES = {
   },
 
   /* ---- CONTRASTE DE LAS LETRAS EN FOTOS ------------------------------
-     El umbral usa luminancia entre 0 y 1. Más alto = más zonas blancas;
-     más bajo = más zonas negras. 0.179 iguala el contraste de ambos.
-     El desenfoque suaviza el cambio en fondos con mucho detalle.        */
+     Las letras son BLANCAS. Solo la parte que cae sobre una zona muy
+     clara (donde el blanco no se leería) se vuelve NEGRA. Si en blanco
+     se lee, no cambia nada.
+     Luz del fondo: 0 = negro · 1 = blanco (luz real, no "a ojo").
+       negroDesde  la luz a partir de la cual el blanco empieza a no
+                   leerse: ahí empieza a oscurecerse la letra.
+                   Más alto = cambia MENOS veces (solo en blancos muy claros).
+       negroTotal  a partir de esta luz la letra ya es negra del todo.
+                   Entre los dos hay un paso suave (gris).
+       suavizado   px: ignora el grano y los detalles diminutos de la foto
+                   (0 = punto a punto · 3 = normal · 8 = solo zonas grandes).
+       fundido     ms que tarda cada zona en pasar de blanco a negro o al revés. */
   diferencia: {
     activo: true,
-    umbral: 0.179,
-    suavizado: 10,
-    negroDesde: 0.36,
-    blancoDesde: 0.24,
-    percentil: 0.75,
+    negroDesde: 0.45,
+    negroTotal: 0.62,
+    suavizado: 3,
     fundido: 450,
-    decidir: "texto",
     textos: ".menu a, .menu button, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]",
   },
 

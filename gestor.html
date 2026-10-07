@@ -111,7 +111,7 @@ button { cursor: pointer; background: none; border: 0; }
 
 .fotos-barra { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
 .fotos-barra h3 { font-size: 15px; margin-right: auto; }
-.fotos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.fotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
 .foto { position: relative; background: var(--papel); border: 2px solid transparent; border-radius: 8px; overflow: hidden; cursor: grab; user-select: none; }
 .foto img, .foto video { width: 100%; aspect-ratio: 1.85 / 1; object-fit: cover; display: block; background: #ddd; pointer-events: none; }
 .foto.elegida { border-color: var(--azul); }

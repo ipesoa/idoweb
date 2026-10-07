@@ -68,9 +68,17 @@
   aspect-ratio: var(--cartel-formato);
   object-fit: cover;
 }
-/* sin zoom de entrada ni de hover en este modo */
+/* Sin ningún movimiento: cada imagen va en su propia capa fija desde el
+   principio (translateZ), así al desvanecerse el cartel no se recoloca ni
+   «tiembla» medio píxel. Solo cambian la opacidad del cartel y la luz de
+   la portada, a la vez y con la misma curva. */
 .modo-cartel .celda-proyecto img,
-.modo-cartel .celda-proyecto.visible img { transform: none; }
+.modo-cartel .celda-proyecto.visible img {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+.modo-cartel .celda__cartel { will-change: opacity; }
+.modo-cartel .celda__fondo  { will-change: filter; }
 .modo-cartel .celda__fondo,
 .modo-cartel .celda__cartel {
   transition:
@@ -91,7 +99,7 @@
 .modo-cartel .celda__texto {
   display: flex; flex-direction: column; justify-content: flex-end;
   gap: var(--cartel-texto-hueco);
-  left: var(--cartel-texto-izq); right: .7rem; bottom: var(--cartel-texto-abajo);
+  left: var(--cartel-texto-izq); right: var(--cartel-texto-margen); bottom: var(--cartel-texto-abajo);
   font-family: var(--cartel-texto-fuente);
   font-size: var(--cartel-texto-tam);
   line-height: var(--cartel-texto-linea);
@@ -103,7 +111,6 @@
 }
 @media (max-width: 700px) {
   .modo-cartel .celda__texto {
-    right: .55rem; bottom: .55rem;
     font-size: var(--cartel-texto-tam-movil);
     gap: 1em;
   }
