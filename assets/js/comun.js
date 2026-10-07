@@ -19,7 +19,7 @@
   /* ---------- MENÚ ----------
      INICIO      arriba en el centro: NOMBRE · production designer · work
                  work despliega films, series, commercials y archive en el centro;
-                 contact aparece abajo. Los enlaces laterales siguen iguales.
+                 contact aparece abajo. No hay enlaces laterales.
      SECCIONES   (work, films, series, commercials, videoclips)
                  arriba en el centro: NOMBRE (lleva al inicio) y, debajo,
                  dónde estás. Nada más: ni laterales ni contact.
@@ -32,8 +32,6 @@
     const donde = pagina === "work" ? A.textos.work : seccion ? seccion.titulo : "";
     const enlaceSeccion = (s, clase = "menu__seccion") =>
       `<a class="${clase} menu__${s.id}" href="${s.pagina}">${htmlSeguro(s.titulo)}</a>`;
-    const lado = (cual) => A.secciones.filter((s) => (s.lado || "izquierda") === cual)
-      .map((s) => enlaceSeccion(s)).join("");
 
     let dentro;
     if (pagina === "inicio") {
@@ -47,8 +45,6 @@
         ${A.secciones.filter((s) => ["films", "series", "comercials"].includes(s.id)).map((s) => enlaceSeccion(s)).join("")}
         <a class="menu__archivo" href="work.html">Archive</a>
       </div>
-      <div class="menu__izq">${lado("izquierda")}</div>
-      <div class="menu__der">${lado("derecha")}</div>
       <div class="menu__pie" hidden>
         <a class="menu__contacto" href="contact.html">${htmlSeguro(A.textos.contacto)}</a>
       </div>`;

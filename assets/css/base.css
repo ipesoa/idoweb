@@ -100,15 +100,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   text-align: center;
 }
 .menu__opciones .menu__archivo { margin-top: clamp(38px, 7vh, 78px); }
-/* films y series a la izquierda · commercials y videoclips a la derecha
-   (solo en el inicio), a media altura y en móvil abajo en las esquinas */
-.menu__izq, .menu__der {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  display: flex; flex-direction: column;
-  gap: var(--inicio-separacion-columna);
-}
-.menu__izq { left: var(--margen); align-items: flex-start; text-align: left; }
-.menu__der { right: var(--margen); align-items: flex-end; text-align: right; }
 .menu__pie {
   position: absolute; left: 50%; bottom: calc(var(--margen) * .9 + env(safe-area-inset-bottom));
   transform: translateX(-50%);
@@ -129,15 +120,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   letter-spacing: var(--inicio-espaciado-menu);
   white-space: nowrap;
 }
+.menu__work { text-transform: uppercase; }
 
 @media (max-width: 700px) {
   .menu__nombre { font-size: var(--nombre-tam-movil); }
   .menu__opciones { top: 34%; gap: clamp(16px, 4.5vh, 38px); }
   .menu__opciones .menu__archivo { margin-top: clamp(20px, 6vh, 48px); }
-  .menu__izq, .menu__der {
-    top: auto; transform: none;
-    bottom: calc(var(--margen) + env(safe-area-inset-bottom));
-  }
   .menu__pie { bottom: calc(var(--margen) + env(safe-area-inset-bottom)); }
 }
 
