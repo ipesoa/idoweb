@@ -77,24 +77,27 @@ window.AJUSTES = {
   },
 
   /* ---- CONTRASTE DE LAS LETRAS EN FOTOS ------------------------------
-     Cada píxel de cada letra mira el píxel de la foto que tiene debajo
-     (a la resolución real de la pantalla, también en retina).
-     modo:
-       "blanco-negro" → letra blanca sobre zona oscura y negra sobre zona
-                        clara, cambiando a mitad de letra si hace falta.
-       "photoshop"    → igual que el modo de fusión «Diferencia» de
-                        Photoshop con letra blanca: cada píxel es el
-                        color opuesto exacto del fondo.
-     umbral (solo blanco-negro): luminancia entre 0 y 1. Más alto = más
-       zonas blancas; más bajo = más zonas negras. 0.179 = punto medio.
-     suavizado: píxeles de desenfoque del fondo ANTES de decidir.
-       0 = exacto, píxel a píxel (lo más fiel) · 1 = quita el grano
-       de la foto · 4 o más = cambios más blandos pero menos fieles.   */
+     Las letras son BLANCAS y solo pasan a NEGRO cuando el fondo es tan
+     claro que el blanco no se leería. Sirve para leer, no para lucirse:
+     cambia lo menos posible y siempre con un fundido suave.
+     Luz del fondo: 0 = negro · 1 = blanco (luminancia real, no "a ojo").
+       negroDesde   a partir de esta luz pasa a negro.
+                    Más alto = se queda blanco más tiempo (cambia menos).
+       blancoDesde  vuelve a blanco solo cuando baja de esta luz.
+                    La distancia entre los dos evita parpadeos.
+       percentil    qué parte de lo que hay debajo de la palabra cuenta:
+                    0.75 = se fija en la parte clara (lo que molesta al leer).
+       fundido      ms que tarda en pasar de blanco a negro o al revés.
+       decidir      "texto" = cada texto entero (el nombre, cada opción,
+                    cada ficha) de un solo color · "palabra" = cada
+                    palabra puede ir de un color distinto.               */
   diferencia: {
     activo: true,
-    modo: "blanco-negro",
-    umbral: 0.179,
-    suavizado: 1,
+    negroDesde: 0.36,
+    blancoDesde: 0.24,
+    percentil: 0.75,
+    fundido: 450,
+    decidir: "texto",
     textos: ".menu a, .menu button, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]",
   },
 

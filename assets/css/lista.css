@@ -56,9 +56,11 @@
 /* =====================================================================
    CON CARTELES  (lista.js añade .modo-cartel; ajustes en ajustes.css 4b)
    ---------------------------------------------------------------------
-   capa 0  la portada (todo el rectángulo), un poco oscura
+   capa 0  la portada (todo el rectángulo), apenas oscurecida
    capa 1  el cartel, a la izquierda y a todo lo alto
    capa 2  el texto, encima de la portada
+   Al pasar el ratón: el cartel se desvanece y la portada vuelve a su luz,
+   los dos a la vez, con la misma curva y sin zoom.
    ===================================================================== */
 .modo-cartel .celda__cartel {
   position: absolute; z-index: 1; left: 0; top: 0;
@@ -66,50 +68,34 @@
   aspect-ratio: var(--cartel-formato);
   object-fit: cover;
 }
-.modo-cartel .con-cartel.visible .celda__fondo { filter: brightness(var(--cartel-oscuro)); }
-
-/* Cartel al irse: se desvanece, se desenfoca un poco y se aleja */
+/* sin zoom de entrada ni de hover en este modo */
+.modo-cartel .celda-proyecto img,
+.modo-cartel .celda-proyecto.visible img { transform: none; }
+.modo-cartel .celda__fondo,
 .modo-cartel .celda__cartel {
   transition:
-    opacity   var(--t-cartel) var(--curva),
-    filter    var(--t-cartel) var(--curva),
-    transform var(--t-cartel) var(--curva);
+    opacity 1.2s var(--curva),
+    filter  var(--t-cartel) cubic-bezier(.4, 0, .2, 1);
 }
-.modo-cartel .celda__fondo {
-  transition:
-    opacity   1.2s var(--curva),
-    transform calc(var(--t-brillo) * 1.4) var(--curva),
-    filter    var(--t-cartel) var(--curva);
-}
-
-/* La portada «se enciende»: brilla un instante y vuelve a su tono */
-@keyframes cartel-brillo {
-  0%   { filter: brightness(var(--cartel-oscuro)); }
-  32%  { filter: brightness(var(--cartel-brillo)); }
-  100% { filter: brightness(1); }
-}
+.modo-cartel .con-cartel.visible .celda__fondo { filter: brightness(var(--cartel-oscuro)); }
 @media (hover: hover) {
   .modo-cartel .con-cartel.visible:is(:hover, :focus-visible) .celda__cartel {
-    opacity: 0; filter: blur(var(--cartel-desenfoque)); transform: scale(.985);
+    opacity: 0;
+    transition: opacity var(--t-cartel) cubic-bezier(.4, 0, .2, 1);
   }
-  .modo-cartel .con-cartel.visible:is(:hover, :focus-visible) .celda__fondo {
-    filter: brightness(1);
-    transform: scale(1.02);
-    animation: cartel-brillo var(--t-brillo) cubic-bezier(.3, 0, .2, 1) both;
-  }
-  /* sin cartel: solo un acercamiento muy suave */
-  .modo-cartel .celda-proyecto.visible:not(.con-cartel):is(:hover, :focus-visible) .celda__fondo { transform: scale(1.02); }
+  .modo-cartel .con-cartel.visible:is(:hover, :focus-visible) .celda__fondo { filter: brightness(1); }
 }
 
 /* Texto: Título / directed by … / produced by …   y el año abajo.
-   Siempre visible (también con ratón). Blanco o negro según la foto. */
+   Siempre visible, pegado al cartel y al borde de abajo. */
 .modo-cartel .celda__texto {
   display: flex; flex-direction: column; justify-content: flex-end;
   gap: var(--cartel-texto-hueco);
-  left: var(--cartel-texto-izq); right: 1rem; bottom: var(--cartel-texto-abajo);
+  left: var(--cartel-texto-izq); right: .7rem; bottom: var(--cartel-texto-abajo);
   font-family: var(--cartel-texto-fuente);
   font-size: var(--cartel-texto-tam);
-  line-height: 1.25;
+  line-height: var(--cartel-texto-linea);
+  letter-spacing: .01em;
 }
 .modo-cartel .celda__ficha span, .modo-cartel .celda__ano { display: block; }
 @media (hover: hover) and (pointer: fine) {
@@ -117,7 +103,7 @@
 }
 @media (max-width: 700px) {
   .modo-cartel .celda__texto {
-    left: var(--cartel-texto-izq-movil); right: .8rem; bottom: .7rem;
+    right: .55rem; bottom: .55rem;
     font-size: var(--cartel-texto-tam-movil);
     gap: 1em;
   }

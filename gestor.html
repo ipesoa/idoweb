@@ -161,11 +161,16 @@ button { cursor: pointer; background: none; border: 0; }
 .control-nombre output { font-variant-numeric: tabular-nums; font-size: 12px; color: var(--suave); }
 .control-nombre .fila-rango { display: flex; align-items: center; gap: 12px; }
 .control-nombre .fila-rango input { flex: 1; }
-.control-nombre .opcion { display: flex; align-items: center; gap: 9px; min-height: 40px; }
-.control-nombre .opcion input { width: 18px; height: 18px; accent-color: var(--tinta); }
+.control-nombre.opcion { display: flex; align-items: center; gap: 9px; min-height: 40px; }
+.control-nombre.opcion input { width: 18px; height: 18px; accent-color: var(--tinta); }
 .preview-nombre { position: sticky; top: 82px; border: 1px solid var(--linea); border-radius: 12px; overflow: hidden; background: #111; }
 .preview-nombre iframe { display: block; width: 100%; height: min(52vw, 520px); min-height: 360px; border: 0; pointer-events: none; }
 .preview-nombre p { padding: 9px 12px; color: var(--suave); background: #fff; font-size: 12px; }
+
+/* ---- firma (detalle flotante, abajo a la derecha) ---- */
+.firma { position: fixed; right: 14px; bottom: 46px; z-index: 950; pointer-events: none; user-select: none;
+  font: italic 700 10px/1 Arial, "Helvetica Neue", Helvetica, sans-serif; letter-spacing: .02em;
+  color: #8a8a8a; opacity: .55; }
 
 /* ---- aviso ---- */
 .aviso { position: fixed; left: 50%; bottom: 60px; transform: translateX(-50%); z-index: 80; background: var(--tinta); color: #fff; padding: 12px 18px; border-radius: 999px; max-width: 90vw; }
@@ -221,6 +226,8 @@ button { cursor: pointer; background: none; border: 0; }
       <button class="enlace" id="salir">Olvidar token</button>
     </footer>
   </main>
+
+  <div class="firma" aria-hidden="true">gildafitnes x ido</div>
 
   <!-- Editor de un proyecto -->
   <div class="capa" id="editor" hidden></div>
@@ -595,7 +602,7 @@ button { cursor: pointer; background: none; border: 0; }
           <label class="control-nombre opcion"><input type="checkbox" data-nombre="nombre_mayusculas"${(c.nombre_mayusculas || "si") === "si" ? " checked" : ""}> Convertir a mayúsculas</label>
           <p class="nota">Garet Book y Heavy ya están instaladas. Si subes otra fuente, se guardará con la web al publicar.</p>
         </div>
-        <div class="preview-nombre"><iframe id="vistaNombre" src="index.html?vista=gestor" title="Vista previa de la cabecera"></iframe>
+        <div class="preview-nombre"><iframe id="vistaNombre" src="index.html?vista=gestor&t=${Date.now()}" title="Vista previa de la cabecera"></iframe>
           <p>Vista previa del inicio. Los controles de arriba cambian el nombre sin tocar todavía la web pública.</p></div>
       </div>`;
   }
@@ -632,9 +639,17 @@ button { cursor: pointer; background: none; border: 0; }
     root.style.setProperty("--nombre-transform", (c.nombre_mayusculas || "si") === "si" ? "uppercase" : "none");
   }
 
+  // La vista previa se aplica al cargar y, mientras la pestaña está abierta,
+  // se vuelve a aplicar cada poco: así siempre muestra lo que dicen los
+  // controles aunque la página de dentro tarde en cargar o se recargue.
+  let relojVista = null;
   function activarVistaNombre() {
     const iframe = $("#vistaNombre");
-    if (iframe) iframe.addEventListener("load", aplicarVistaNombre);
+    if (iframe) {
+      iframe.addEventListener("load", () => { aplicarVistaNombre(); setTimeout(aplicarVistaNombre, 300); });
+      clearInterval(relojVista);
+      relojVista = setInterval(() => { if (pestana !== "nombre" || !$("#vistaNombre")) { clearInterval(relojVista); return; } aplicarVistaNombre(); }, 500);
+    }
     const subir = $("#subirFuenteNombre");
     if (subir) subir.addEventListener("change", (e) => {
       const file = e.target.files[0];
