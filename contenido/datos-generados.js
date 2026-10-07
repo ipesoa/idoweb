@@ -497,7 +497,7 @@ imdb:
 showreel: 
 nombre_tamano: 30
 nombre_tamano_movil: 17
-nombre_espaciado: 0.01
+nombre_espaciado: -0.01
 nombre_peso: 900
 ---
 HELLO!
@@ -528,4 +528,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610072139 */
+/* gestor: 202610072207 */
