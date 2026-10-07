@@ -1,8 +1,13 @@
-2027 | El acercamiento de la mujer cactus y el hombre globo |  | Kike Maíllo | films
-2025 | Asisa - Reemplazo |  | Miguel Angulo | comercials
-2021 | Santander - Otro camino |  | Diego Núñez Irigoyen | comercials
-2019 | Samsung - Copiloto |  | Martin Jalfen | comercials
-2019 | Vidal - Dipper |  | Eduardo Casanova | comercials
-2018 | Just Eat |  | María Sosa | comercials
-2017 | Aquarius - Photoshooting |  | Javier Tles | comercials
-2017 | Volkswagen - Día del padre |  | Miguel Angulo | comercials
+# =====================================================================
+#  FILMOGRAFÍA EXTRA  ·  trabajos que salen en la lista del about
+#  con ficha propia (sin fotos). Una URL opcional enlaza directamente fuera.
+#  Una línea por trabajo: año | título | labor | director o cliente | sección | URL
+# =====================================================================
+2027 | El acercamiento de la mujer cactus y el hombre globo |  | Kike Maíllo | films | 
+2025 | Asisa - Reemplazo |  | Miguel Angulo | comercials | 
+2021 | Santander - Otro camino |  | Diego Núñez Irigoyen | comercials | 
+2019 | Samsung - Copiloto |  | Martin Jalfen | comercials | 
+2019 | Vidal - Dipper |  | Eduardo Casanova | comercials | 
+2018 | Just Eat |  | María Sosa | comercials | 
+2017 | Aquarius - Photoshooting |  | Javier Tles | comercials | 
+2017 | Volkswagen - Día del padre |  | Miguel Angulo | comercials | 

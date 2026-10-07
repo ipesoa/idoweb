@@ -1,7 +1,18 @@
+# =====================================================================
+#  ABOUT  ·  cada dato relleno es una línea en la web (editado con el gestor)
+# =====================================================================
 nombre: Idoia Esteban Galván
+subtitulo: 
+ubicacion: 
 email: ido.idoia@gmail.com
 telefono: (+34) 653 719 740
-instagram:
+instagram: 
+imdb: 
+showreel: 
+nombre_tamano: 22
+nombre_tamano_movil: 17
+nombre_espaciado: 0.01
+nombre_peso: 900
 ---
 HELLO!
 
