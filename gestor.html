@@ -61,7 +61,7 @@ button { cursor: pointer; background: none; border: 0; }
 .nota { color: var(--suave); font-size: 12px; }
 
 /* ---- pestañas ---- */
-.pestanas { display: flex; gap: 4px; padding: 16px 24px 0; }
+.pestanas { display: flex; gap: 4px; padding: 16px 24px 0; overflow-x: auto; }
 .pestanas button { padding: 10px 18px; border-radius: 999px; color: var(--suave); }
 .pestanas button.activa { background: var(--tinta); color: #fff; }
 #vista { padding: 20px 24px 80px; }
@@ -100,7 +100,7 @@ button { cursor: pointer; background: none; border: 0; }
 /* ---- editor ---- */
 .capa { position: fixed; inset: 0; z-index: 50; background: #0006; display: flex; justify-content: flex-end; }
 .panel { width: min(1100px, 100%); height: 100%; overflow: auto; background: var(--fondo); padding: 24px 28px 100px; }
-.panel__cabecera { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.panel__cabecera { position: sticky; top: -24px; z-index: 5; display: flex; align-items: center; gap: 10px; margin-bottom: 18px; padding: 10px 0; background: var(--fondo); }
 .panel__cabecera h2 { font-size: 20px; margin-right: auto; }
 .campos { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px 16px; margin-bottom: 26px; }
 .campo { display: grid; gap: 5px; }
@@ -121,9 +121,13 @@ button { cursor: pointer; background: none; border: 0; }
 .foto .portada { position: absolute; left: 6px; top: 6px; font-size: 10px; letter-spacing: .08em; background: var(--verde); color: #fff; padding: 3px 7px; border-radius: 999px; }
 .foto .marca { position: absolute; right: 6px; top: 6px; width: 22px; height: 22px; border-radius: 6px; background: #fffd; border: 1px solid #0003; display: grid; place-items: center; font-size: 13px; }
 .foto.elegida .marca { background: var(--azul); color: #fff; }
-.foto .mover { position: absolute; right: 6px; bottom: 6px; display: flex; gap: 4px; opacity: 0; transition: opacity .15s; }
-.foto:hover .mover { opacity: 1; }
-.foto .mover button { width: 24px; height: 24px; border-radius: 6px; background: #fffe; }
+.foto .asa { position: absolute; z-index: 2; left: 6px; top: 6px; width: 28px; height: 28px; border-radius: 6px; background: #fffe; border: 1px solid #0003; touch-action: none; cursor: grab; }
+.foto .asa.con-portada { top: 32px; }
+.foto__acciones { display: flex; gap: 4px; padding: 6px; }
+.foto__acciones button { min-height: 32px; padding: 4px 6px; flex: 1; border: 1px solid var(--linea); border-radius: 6px; background: #faf9f7; font-size: 11px; }
+.foto__acciones button:hover { border-color: var(--tinta); }
+.foto__acciones button:disabled { opacity: .3; cursor: default; }
+.foto__acciones .quitar { color: var(--rojo); }
 .soltar { border: 2px dashed var(--linea); border-radius: 10px; padding: 18px; text-align: center; color: var(--suave); margin-top: 12px; }
 .soltar.activo { border-color: var(--azul); color: var(--azul); background: #eef4ff; }
 /* soltar un .zip de actualización encima de la ventana */
@@ -142,13 +146,34 @@ button { cursor: pointer; background: none; border: 0; }
 .tabla input, .tabla select { width: 100%; padding: 7px 8px; border: 1px solid var(--linea); border-radius: 6px; }
 .tabla td:first-child { width: 80px; } .tabla td:last-child { width: 40px; }
 
+/* ---- cabecera: ajustes con vista previa ---- */
+.editor-nombre { display: grid; grid-template-columns: minmax(260px, 390px) minmax(0, 1fr); gap: 20px; align-items: start; }
+.controles-nombre { display: grid; gap: 16px; }
+.control-nombre { display: grid; gap: 6px; }
+.control-nombre > span { font-size: 12px; color: var(--suave); }
+.control-nombre input[type="text"], .control-nombre select { width: 100%; padding: 10px; border: 1px solid var(--linea); border-radius: 8px; background: #fff; }
+.control-nombre input[type="range"] { width: 100%; accent-color: var(--tinta); }
+.control-nombre output { font-variant-numeric: tabular-nums; font-size: 12px; color: var(--suave); }
+.control-nombre .fila-rango { display: flex; align-items: center; gap: 12px; }
+.control-nombre .fila-rango input { flex: 1; }
+.control-nombre .opcion { display: flex; align-items: center; gap: 9px; min-height: 40px; }
+.control-nombre .opcion input { width: 18px; height: 18px; accent-color: var(--tinta); }
+.preview-nombre { position: sticky; top: 82px; border: 1px solid var(--linea); border-radius: 12px; overflow: hidden; background: #111; }
+.preview-nombre iframe { display: block; width: 100%; height: min(52vw, 520px); min-height: 360px; border: 0; pointer-events: none; }
+.preview-nombre p { padding: 9px 12px; color: var(--suave); background: #fff; font-size: 12px; }
+
 /* ---- aviso ---- */
 .aviso { position: fixed; left: 50%; bottom: 60px; transform: translateX(-50%); z-index: 80; background: var(--tinta); color: #fff; padding: 12px 18px; border-radius: 999px; max-width: 90vw; }
 .aviso.mal { background: var(--rojo); }
 
 @media (max-width: 700px) {
   .barra { flex-wrap: wrap; padding: 10px 14px; } .barra__acciones { width: 100%; }
+  .pestanas { padding: 12px 14px 0; }
   #vista { padding: 16px 14px 80px; } .panel { padding: 18px 14px 100px; }
+  .panel__cabecera { top: -18px; flex-wrap: wrap; }
+  .editor-nombre { grid-template-columns: 1fr; }
+  .preview-nombre { position: static; }
+  .preview-nombre iframe { height: 410px; min-height: 0; }
 }
   </style>
 </head>
@@ -339,9 +364,10 @@ button { cursor: pointer; background: none; border: 0; }
         const dato = (contenido[tipo] || []).find((d) => d.carpeta === carpeta);
         const infoTexto = dato ? dato.info : await leerBlobTexto(arbol.get(base + "info.txt"));
         const medidas = new Map((dato ? dato.archivos : []).map((a) => [a.f, a]));
+        const ordenFotos = new Map((dato ? dato.archivos : []).map((a, i) => [a.f, i]));
         const medios = [...arbol.keys()].filter((r) => r.startsWith(base) && !r.slice(base.length).includes("/") && MEDIO.test(r))
           .map((r) => { const f = r.slice(base.length), a = medidas.get(f) || {}; return { f, ruta: r, sha: arbol.get(r), w: a.w, h: a.h, video: VIDEO.test(f) }; })
-          .sort((a, b) => a.f.localeCompare(b.f));
+          .sort((a, b) => (ordenFotos.get(a.f) ?? Infinity) - (ordenFotos.get(b.f) ?? Infinity) || a.f.localeCompare(b.f));
         const info = leerInfo(infoTexto);
         const esPortada = (m) => (info.campos.portada ? m.f.toLowerCase() === info.campos.portada.toLowerCase() : /^portada\./i.test(m.f));
         const esMovil = (m) => (info.campos.portada_movil ? m.f.toLowerCase() === info.campos.portada_movil.toLowerCase() : /^portada[-_]movil\./i.test(m.f));
@@ -364,6 +390,8 @@ button { cursor: pointer; background: none; border: 0; }
       home: (contenido.home || []).map((h) => ({ ...h })), homeSucio: false,
       about: { info: leerInfo(aboutDato.info), infoOriginal: aboutDato.info, extra: leerExtra(aboutDato.filmografia), extraOriginal: aboutDato.filmografia, archivos: aboutDato.archivos || [] },
       aboutSucio: false,
+      fuenteCustom: [...arbol.keys()].find((r) => /^assets\/fonts\/idoia-custom\.(woff2?|otf|ttf)$/.test(r)) || null,
+      fuentePendiente: null,
     };
     seleccion.clear();
     pintar();
@@ -437,7 +465,7 @@ button { cursor: pointer; background: none; border: 0; }
   function pintarPestanas() {
     $("#pestanas").innerHTML = [`<button data-p="inicio">Inicio</button>`]
       .concat(TIPOS.map((t) => `<button data-p="${t.id}">${t.titulo}</button>`))
-      .concat([`<button data-p="about">Contact</button>`]).join("");
+      .concat([`<button data-p="about">Contact</button>`, `<button data-p="nombre">Cabecera</button>`]).join("");
   }
   function pintar() {
     if (!$("#pestanas button")) pintarPestanas();
@@ -445,6 +473,7 @@ button { cursor: pointer; background: none; border: 0; }
     const v = $("#vista");
     if (pestana === "inicio") v.innerHTML = vistaInicio();
     else if (pestana === "about") v.innerHTML = vistaAbout();
+    else if (pestana === "nombre") { v.innerHTML = vistaNombre(); activarVistaNombre(); }
     else v.innerHTML = vistaLista(pestana);
     actualizarEstado();
   }
@@ -483,7 +512,7 @@ button { cursor: pointer; background: none; border: 0; }
           <button class="boton" data-accion="sel-inicio-no">Quitar del inicio</button>
           <button class="boton boton--peligro" data-accion="sel-borrar">Eliminar</button>
           <button class="enlace" data-accion="sel-nada">Deseleccionar</button></div>` : ""}
-        <button class="boton boton--principal" data-accion="nuevo" data-tipo="${tipo}">＋ ${/a$/.test(nombre) ? "Nueva" : "Nuevo"} ${nombre}</button>
+        <button class="boton boton--principal" data-accion="nuevo" data-tipo="${tipo}">＋ ${/a$/.test(nombre) || nombre === "serie" ? "Nueva" : "Nuevo"} ${nombre}</button>
         <p>Pincha para editar. Marca la casilla (arriba a la izquierda) para seleccionar varias y borrarlas o ponerlas en el inicio a la vez.</p></div>
       <div class="rejilla">${lista.map((p) => {
         const k = p.tipo + "/" + p.carpeta;
@@ -502,9 +531,8 @@ button { cursor: pointer; background: none; border: 0; }
         <p>Es lo único que se lee en esa página (una línea en blanco = párrafo nuevo).</p>
         <label class="campo campo--ancho"><textarea data-about-texto rows="7">${esc(E.about.info.texto || "")}</textarea></label></div>
       <div class="bloque"><h3>Datos de contacto</h3>
-        <p>Los rellenos salen como enlaces debajo del texto. El nombre es el que se ve arriba en toda la web.</p>
+        <p>Los rellenos salen como enlaces debajo del texto. El nombre de arriba se edita en «Cabecera».</p>
         <div class="campos">
-          ${campo("nombre", "Nombre (menú)", "Idoia Esteban Galván")}
           ${campo("email", "Email", "nombre@correo.com")}
           ${campo("telefono", "Teléfono", "+34 600 000 000")}
           ${campo("instagram", "Instagram", "@usuario")}
@@ -523,15 +551,108 @@ button { cursor: pointer; background: none; border: 0; }
         <button class="boton" data-accion="extra-anadir" style="margin-top:10px">＋ Añadir trabajo</button></div>`;
   }
 
+  function vistaNombre() {
+    const c = E.about.info.campos;
+    const archivo = c.nombre_fuente_archivo || (E.fuenteCustom || "").split("/").pop();
+    const fuente = c.nombre_fuente || "garet";
+    const tam = c.nombre_tamano || "18";
+    const movil = c.nombre_tamano_movil || "16";
+    const espacio = c.nombre_espaciado || "0.12";
+    const peso = c.nombre_peso || "900";
+    const rango = (clave, etiqueta, valor, min, max, step, unidad) => `<label class="control-nombre"><span>${etiqueta}</span>
+      <span class="fila-rango"><input type="range" data-nombre="${clave}" min="${min}" max="${max}" step="${step}" value="${esc(valor)}">
+      <output data-valor-nombre="${clave}">${esc(valor)} ${unidad}</output></span></label>`;
+    return `<div class="cabecera"><h2>Nombre y tipografía de la cabecera</h2>
+        <p>Los cambios se ven aquí al instante. Para hacerlos públicos, pulsa «Publicar cambios» arriba.</p></div>
+      <div class="editor-nombre">
+        <div class="bloque controles-nombre">
+          <label class="control-nombre"><span>Texto que aparece arriba en toda la web</span>
+            <input type="text" data-nombre="nombre" value="${esc(c.nombre || "Idoia Esteban Galván")}" autocomplete="off"></label>
+          <label class="control-nombre"><span>Tipografía</span><select data-nombre="nombre_fuente">
+            <option value="garet"${fuente === "garet" ? " selected" : ""}>Garet · Book / Heavy</option>
+            <option value="arial"${fuente === "arial" ? " selected" : ""}>Arial</option>
+            <option value="instrument"${fuente === "instrument" ? " selected" : ""}>Instrument Serif</option>
+            <option value="personalizada"${fuente === "personalizada" ? " selected" : ""}${archivo ? "" : " disabled"}>Fuente subida${archivo ? ` · ${esc(archivo)}` : ""}</option>
+          </select></label>
+          <label class="control-nombre"><span>Instalar otra fuente (OTF, TTF, WOFF o WOFF2; máximo 8 MB)</span>
+            <input type="file" id="subirFuenteNombre" accept=".otf,.ttf,.woff,.woff2"></label>
+          ${rango("nombre_tamano", "Tamaño en ordenador", tam, 12, 48, 1, "px")}
+          ${rango("nombre_tamano_movil", "Tamaño en móvil", movil, 12, 36, 1, "px")}
+          ${rango("nombre_espaciado", "Espacio entre letras", espacio, -0.05, 0.4, 0.01, "em")}
+          <label class="control-nombre"><span>Grosor</span><select data-nombre="nombre_peso">
+            <option value="400"${peso === "400" ? " selected" : ""}>Normal</option>
+            <option value="700"${peso === "700" ? " selected" : ""}>Negrita</option>
+            <option value="900"${peso === "900" ? " selected" : ""}>Muy negrita</option>
+          </select></label>
+          <label class="control-nombre opcion"><input type="checkbox" data-nombre="nombre_cursiva"${(c.nombre_cursiva || "si") === "si" ? " checked" : ""}> Cursiva</label>
+          <label class="control-nombre opcion"><input type="checkbox" data-nombre="nombre_mayusculas"${(c.nombre_mayusculas || "si") === "si" ? " checked" : ""}> Convertir a mayúsculas</label>
+          <p class="nota">Garet Book y Heavy ya están instaladas. Si subes otra fuente, se guardará con la web al publicar.</p>
+        </div>
+        <div class="preview-nombre"><iframe id="vistaNombre" src="index.html?vista=gestor" title="Vista previa de la cabecera"></iframe>
+          <p>Vista previa del inicio. Los controles de arriba cambian el nombre sin tocar todavía la web pública.</p></div>
+      </div>`;
+  }
+
+  function aplicarVistaNombre() {
+    if (pestana !== "nombre") return;
+    const iframe = $("#vistaNombre");
+    const doc = iframe && iframe.contentDocument;
+    const nombre = doc && doc.querySelector(".menu__nombre");
+    if (!nombre) return;
+    const c = E.about.info.campos;
+    const root = doc.documentElement;
+    const familias = {
+      garet: '"Garet", Arial, sans-serif',
+      arial: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+      instrument: '"Instrument Serif", "Times New Roman", serif',
+      personalizada: '"Idoia personalizada", "Garet", Arial, sans-serif',
+    };
+    const archivo = c.nombre_fuente_archivo || (E.fuenteCustom || "").split("/").pop();
+    if (/^idoia-custom\.(woff2?|otf|ttf)$/.test(archivo || "")) {
+      const url = E.fuentePendiente ? E.fuentePendiente.url : `assets/fonts/${archivo}`;
+      const formato = archivo.endsWith("woff2") ? "woff2" : archivo.endsWith("woff") ? "woff" : archivo.endsWith("otf") ? "opentype" : "truetype";
+      let style = doc.querySelector("#fuenteVistaNombre");
+      if (!style) { style = doc.createElement("style"); style.id = "fuenteVistaNombre"; doc.head.append(style); }
+      style.textContent = `@font-face{font-family:"Idoia personalizada";src:url("${url}") format("${formato}");font-style:normal;font-weight:400;font-display:swap}`;
+    }
+    nombre.textContent = c.nombre || "Idoia Esteban Galván";
+    root.style.setProperty("--nombre-fuente", familias[c.nombre_fuente || "garet"]);
+    root.style.setProperty("--nombre-tam", (c.nombre_tamano || "18") + "px");
+    root.style.setProperty("--nombre-tam-movil", (c.nombre_tamano_movil || "16") + "px");
+    root.style.setProperty("--nombre-espaciado", (c.nombre_espaciado || "0.12") + "em");
+    root.style.setProperty("--nombre-negrita", c.nombre_peso || "900");
+    root.style.setProperty("--nombre-cursiva", (c.nombre_cursiva || "si") === "si" ? "italic" : "normal");
+    root.style.setProperty("--nombre-transform", (c.nombre_mayusculas || "si") === "si" ? "uppercase" : "none");
+  }
+
+  function activarVistaNombre() {
+    const iframe = $("#vistaNombre");
+    if (iframe) iframe.addEventListener("load", aplicarVistaNombre);
+    const subir = $("#subirFuenteNombre");
+    if (subir) subir.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const ext = (file.name.match(/\.(woff2?|otf|ttf)$/i) || [])[1];
+      if (!ext || file.size > 8 * 1024 * 1024) { aviso("Usa OTF, TTF, WOFF o WOFF2 de menos de 8 MB", true); return; }
+      if (E.fuentePendiente) URL.revokeObjectURL(E.fuentePendiente.url);
+      E.fuentePendiente = { blob: file, ruta: `assets/fonts/idoia-custom.${ext.toLowerCase()}`, url: URL.createObjectURL(file) };
+      E.about.info.campos.nombre_fuente_archivo = `idoia-custom.${ext.toLowerCase()}`;
+      E.about.info.campos.nombre_fuente = "personalizada";
+      E.aboutSucio = true;
+      pintar();
+    });
+  }
+
   /* ================= editor de proyecto ================= */
   let ed = null;   // { p, copia }
   function abrirEditor(p) {
-    ed = { p, fotos: p.fotos.slice(), movil: p.movil, campos: { ...p.info.campos }, texto: p.info.texto, sel: new Set() };
+    ed = { p, fotos: p.fotos.slice(), movil: p.movil, campos: { ...p.info.campos }, texto: p.info.texto, sel: new Set(), ultimaQuitada: [] };
     pintarEditor();
     $("#editor").hidden = false;
   }
   function pintarEditor() {
     const { p, campos } = ed;
+    const scroll = $("#editor .panel")?.scrollTop || 0;
     const T = deTipo(p.tipo);
     const campo = (k, etiqueta, ph = "", ancho = false) => `<label class="campo ${ancho ? "campo--ancho" : ""}"><span>${etiqueta}</span><input data-campo="${k}" value="${esc(campos[k] || "")}" placeholder="${esc(ph)}"></label>`;
     const encuadres = [["", "Centro"], ["top", "Arriba"], ["bottom", "Abajo"], ["left", "Izquierda"], ["right", "Derecha"]];
@@ -557,14 +678,20 @@ button { cursor: pointer; background: none; border: 0; }
       </div>
       <div class="fotos-barra"><h3>Fotos (${ed.fotos.length}) · arrastra para ordenar · la primera es la portada</h3>
         ${ed.sel.size ? `<button class="boton" data-ed="portada">Poner de portada</button><button class="boton boton--peligro" data-ed="borrar-fotos">Eliminar ${ed.sel.size} foto${ed.sel.size > 1 ? "s" : ""}</button><button class="enlace" data-ed="sel-nada">Deseleccionar</button>` : ""}
+        ${ed.ultimaQuitada.length ? `<button class="boton" data-ed="deshacer-fotos">Deshacer quitar</button>` : ""}
         <button class="boton" data-ed="todas">Seleccionar todas</button>
         <label class="boton boton--principal">＋ Añadir fotos<input type="file" id="subirFotos" accept="image/*,video/mp4,video/webm,video/quicktime" multiple hidden></label></div>
+      <p class="nota" style="margin-bottom:10px">Arrastra la tarjeta (en móvil, usa ↕), o utiliza las flechas. «Quitar» se puede deshacer. Pulsa «Guardar» y después «Publicar cambios» para llevarlo a la web.</p>
       <div class="fotos" id="fotos">${ed.fotos.map((f, i) => `
         <div class="foto ${ed.sel.has(f) ? "elegida" : ""}" draggable="true" data-i="${i}">
           ${f.video ? `<video src="${esc(urlDe(f))}" muted></video>` : `<img src="${esc(urlDe(f))}" alt="">`}
           ${i === 0 ? `<span class="portada">PORTADA</span>` : ""}<span class="num">${i + 1}</span>
-          <button class="marca" data-sel="${i}">${ed.sel.has(f) ? "✓" : ""}</button>
-          <div class="mover"><button data-mover="${i}" data-d="-1" title="Antes">◀</button><button data-mover="${i}" data-d="1" title="Después">▶</button></div>
+          <button class="asa ${i === 0 ? "con-portada" : ""}" data-drag="${i}" aria-label="Arrastrar foto ${i + 1}" title="Arrastrar para ordenar">↕</button>
+          <button class="marca" data-sel="${i}" aria-label="Seleccionar foto ${i + 1}">${ed.sel.has(f) ? "✓" : ""}</button>
+          <div class="foto__acciones"><button data-mover="${i}" data-d="-1" title="Mover antes"${i === 0 ? " disabled" : ""}>←</button>
+            <button data-mover="${i}" data-d="1" title="Mover después"${i === ed.fotos.length - 1 ? " disabled" : ""}>→</button>
+            <button data-foto-portada="${i}"${i === 0 || f.video ? " disabled" : ""}>Portada</button>
+            <button class="quitar" data-foto-eliminar="${i}">Quitar</button></div>
         </div>`).join("")}</div>
       <div class="soltar" id="soltar">Arrastra aquí fotos desde tu ordenador (JPG, PNG… se reducen solas a ${MAX_LADO}px)</div>
       <div class="movil-slot">${ed.movil ? `<img src="${esc(urlDe(ed.movil))}" alt="">` : ""}
@@ -573,6 +700,7 @@ button { cursor: pointer; background: none; border: 0; }
           ${ed.movil ? `<button class="enlace" data-ed="quitar-movil">Quitar</button>` : ""}</div></div>
     </div>`;
     activarArrastre();
+    $("#editor .panel").scrollTop = scroll;
   }
 
   function leerCamposEditor() {
@@ -587,7 +715,7 @@ button { cursor: pointer; background: none; border: 0; }
     let desde = null;
     $$(".foto", $("#editor")).forEach((el) => {
       el.addEventListener("dragstart", (e) => { desde = +el.dataset.i; el.classList.add("arrastrando"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", "foto"); });
-      el.addEventListener("dragend", () => el.classList.remove("arrastrando"));
+      el.addEventListener("dragend", () => { desde = null; el.classList.remove("arrastrando"); $$(".foto.encima", $("#editor")).forEach((x) => x.classList.remove("encima")); });
       el.addEventListener("dragover", (e) => { if (desde === null) return; e.preventDefault(); el.classList.add("encima"); });
       el.addEventListener("dragleave", () => el.classList.remove("encima"));
       el.addEventListener("drop", (e) => {
@@ -598,6 +726,44 @@ button { cursor: pointer; background: none; border: 0; }
         const [f] = ed.fotos.splice(desde, 1); ed.fotos.splice(hasta, 0, f);
         desde = null; pintarEditor();
       });
+      // En móvil, el asa ↕ permite arrastrar sin bloquear el scroll normal.
+      const asa = $(".asa", el);
+      let puntero = null, destino = null;
+      const limpiar = () => {
+        if (puntero !== null && asa.hasPointerCapture(puntero)) asa.releasePointerCapture(puntero);
+        puntero = null; destino = null;
+        el.classList.remove("arrastrando");
+        $$(".foto.encima", $("#editor")).forEach((x) => x.classList.remove("encima"));
+      };
+      asa.addEventListener("pointerdown", (e) => {
+        if (e.pointerType === "mouse") return;
+        e.preventDefault(); puntero = e.pointerId;
+        asa.setPointerCapture(puntero);
+        el.classList.add("arrastrando");
+      });
+      asa.addEventListener("pointermove", (e) => {
+        if (puntero !== e.pointerId) return;
+        e.preventDefault();
+        const panel = $("#editor .panel"), rect = panel.getBoundingClientRect();
+        if (e.clientY < rect.top + 55) panel.scrollTop -= 24;
+        if (e.clientY > rect.bottom - 55) panel.scrollTop += 24;
+        const siguiente = document.elementFromPoint(e.clientX, e.clientY)?.closest(".foto");
+        if (destino !== siguiente) {
+          if (destino) destino.classList.remove("encima");
+          destino = siguiente && $("#fotos").contains(siguiente) ? siguiente : null;
+          if (destino && destino !== el) destino.classList.add("encima");
+        }
+      });
+      asa.addEventListener("pointerup", (e) => {
+        if (puntero !== e.pointerId) return;
+        const hasta = destino && +destino.dataset.i, desdeToque = +el.dataset.i;
+        limpiar();
+        if (hasta === null || hasta === desdeToque) return;
+        leerCamposEditor();
+        const [f] = ed.fotos.splice(desdeToque, 1); ed.fotos.splice(hasta, 0, f);
+        pintarEditor();
+      });
+      asa.addEventListener("pointercancel", limpiar);
     });
     const zona = $("#soltar");
     ["dragover", "dragenter"].forEach((ev) => zona.addEventListener(ev, (e) => { if (e.dataTransfer.types.includes("Files")) { e.preventDefault(); zona.classList.add("activo"); } }));
@@ -740,6 +906,11 @@ button { cursor: pointer; background: none; border: 0; }
       for (const p of E.borrados) {
         const base = `contenido/${p.tipo}/${p.carpeta}/`;
         for (const r of E.arbol.keys()) if (r.startsWith(base)) poner(r, null);
+      }
+      if (E.fuentePendiente) {
+        led("subiendo", "Subiendo la tipografía…");
+        poner(E.fuentePendiente.ruta, await blobArchivo(E.fuentePendiente.blob));
+        if (E.fuenteCustom && E.fuenteCustom !== E.fuentePendiente.ruta) poner(E.fuenteCustom, null);
       }
       let aboutInfo = E.about.infoOriginal, aboutExtra = E.about.extraOriginal;
       if (E.aboutSucio) {
@@ -965,8 +1136,11 @@ button { cursor: pointer; background: none; border: 0; }
     if (t.dataset.sel !== undefined) { leerCamposEditor(); const f = ed.fotos[+t.dataset.sel]; ed.sel.has(f) ? ed.sel.delete(f) : ed.sel.add(f); pintarEditor(); return; }
     if (d === "todas") { leerCamposEditor(); ed.sel = new Set(ed.fotos); pintarEditor(); return; }
     if (d === "sel-nada") { leerCamposEditor(); ed.sel.clear(); pintarEditor(); return; }
-    if (d === "borrar-fotos") { leerCamposEditor(); ed.fotos = ed.fotos.filter((f) => !ed.sel.has(f)); ed.sel.clear(); pintarEditor(); return; }
+    if (d === "borrar-fotos") { leerCamposEditor(); ed.ultimaQuitada = ed.fotos.map((f, i) => ({ f, i })).filter(({ f }) => ed.sel.has(f)); ed.fotos = ed.fotos.filter((f) => !ed.sel.has(f)); ed.sel.clear(); pintarEditor(); return; }
+    if (d === "deshacer-fotos") { leerCamposEditor(); for (const { f, i } of ed.ultimaQuitada) ed.fotos.splice(Math.min(i, ed.fotos.length), 0, f); ed.ultimaQuitada = []; pintarEditor(); return; }
     if (d === "portada") { leerCamposEditor(); const elegidas = ed.fotos.filter((f) => ed.sel.has(f) && !f.video); if (elegidas.length) { ed.fotos = [elegidas[0]].concat(ed.fotos.filter((f) => f !== elegidas[0])); } ed.sel.clear(); pintarEditor(); return; }
+    if (t.dataset.fotoPortada !== undefined) { leerCamposEditor(); const i = +t.dataset.fotoPortada; const [f] = ed.fotos.splice(i, 1); ed.fotos.unshift(f); pintarEditor(); return; }
+    if (t.dataset.fotoEliminar !== undefined) { leerCamposEditor(); const i = +t.dataset.fotoEliminar; const [f] = ed.fotos.splice(i, 1); ed.ultimaQuitada = [{ f, i }]; ed.sel.delete(f); pintarEditor(); return; }
     if (d === "quitar-movil") { leerCamposEditor(); ed.movil = null; pintarEditor(); return; }
     if (t.dataset.mover !== undefined) {
       leerCamposEditor();
@@ -976,14 +1150,27 @@ button { cursor: pointer; background: none; border: 0; }
   });
 
   // campos del about (se guardan al escribir)
+  function cambiarNombreControl(el) {
+    const clave = el.dataset.nombre;
+    if (clave === undefined || !E) return;
+    const valor = el.type === "checkbox" ? (el.checked ? "si" : "no") : el.value;
+    E.about.info.campos[clave] = valor;
+    E.aboutSucio = true;
+    const salida = $(`[data-valor-nombre="${clave}"]`);
+    if (salida) salida.textContent = valor + (clave === "nombre_espaciado" ? " em" : " px");
+    aplicarVistaNombre();
+    actualizarEstado();
+  }
   document.addEventListener("input", (e) => {
     const el = e.target;
+    if (el.dataset.nombre !== undefined) cambiarNombreControl(el);
     if (el.dataset.about) { E.about.info.campos[el.dataset.about] = el.value; E.aboutSucio = true; actualizarEstado(); }
     if (el.dataset.aboutTexto !== undefined) { E.about.info.texto = el.value; E.aboutSucio = true; actualizarEstado(); }
     if (el.dataset.extra !== undefined) { E.about.extra[+el.dataset.extra][el.dataset.k] = el.value; E.aboutSucio = true; actualizarEstado(); }
   });
   document.addEventListener("change", (e) => {
     const el = e.target;
+    if (el.dataset.nombre !== undefined) cambiarNombreControl(el);
     if (el.dataset.extra !== undefined) { E.about.extra[+el.dataset.extra][el.dataset.k] = el.value; E.aboutSucio = true; actualizarEstado(); }
   });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && ed) { cerrarEditor(); pintar(); } });

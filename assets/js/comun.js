@@ -14,6 +14,7 @@
 (function () {
   const A = window.AJUSTES;
   const pagina = document.body.dataset.pagina; // inicio | work | films | series | comercials | videoclips | proyecto | contact
+  const htmlSeguro = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
   /* ---------- MENÚ ----------
      INICIO      arriba en el centro: NOMBRE · production designer · work
@@ -36,7 +37,7 @@
     if (pagina === "inicio") {
       dentro = `
       <div class="menu__centro">
-        <a class="menu__nombre" href="index.html">${nombre}</a>
+        <a class="menu__nombre" href="index.html">${htmlSeguro(nombre)}</a>
         ${A.textos.labor ? `<span class="menu__labor">${A.textos.labor}</span>` : ""}
         <a class="menu__work" href="work.html">${A.textos.work}</a>
       </div>
@@ -48,13 +49,13 @@
     } else if (pagina === "contact") {
       dentro = `
       <div class="menu__centro">
-        <a class="menu__nombre" href="index.html">${nombre}</a>
+        <a class="menu__nombre" href="index.html">${htmlSeguro(nombre)}</a>
         <a class="menu__work" href="work.html">${A.textos.work}</a>
       </div>`;
     } else {
       dentro = `
       <div class="menu__centro">
-        <a class="menu__nombre" href="index.html">${nombre}</a>
+        <a class="menu__nombre" href="index.html">${htmlSeguro(nombre)}</a>
         ${donde ? `<span class="menu__donde">${donde}</span>` : ""}
       </div>`;
     }
@@ -244,6 +245,44 @@
     ].filter(Boolean);
   }
 
+  /* La cabecera se ajusta desde la pestaña Cabecera del gestor. Los valores
+     se guardan en contenido/about/info.txt junto al nombre visible. */
+  function aplicarNombre() {
+    const info = Web.leerInfo((window.CONTENIDO && window.CONTENIDO.about && window.CONTENIDO.about.info) || "");
+    const root = document.documentElement;
+    const familias = {
+      garet: '"Garet", Arial, sans-serif',
+      arial: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+      instrument: '"Instrument Serif", "Times New Roman", serif',
+      personalizada: '"Idoia personalizada", "Garet", Arial, sans-serif',
+    };
+    const archivo = info.nombre_fuente_archivo || "";
+    if (/^idoia-custom\.(woff2?|otf|ttf)$/.test(archivo)) {
+      const formato = archivo.endsWith("woff2") ? "woff2" : archivo.endsWith("woff") ? "woff" : archivo.endsWith("otf") ? "opentype" : "truetype";
+      const style = document.createElement("style");
+      style.textContent = `@font-face{font-family:"Idoia personalizada";src:url("assets/fonts/${archivo}") format("${formato}");font-style:normal;font-weight:400;font-display:swap}`;
+      document.head.append(style);
+    }
+    const familia = familias[info.nombre_fuente];
+    if (familia && (info.nombre_fuente !== "personalizada" || archivo)) root.style.setProperty("--nombre-fuente", familia);
+    for (const [clave, variable, minimo, maximo] of [
+      ["nombre_tamano", "--nombre-tam", 12, 48],
+      ["nombre_tamano_movil", "--nombre-tam-movil", 12, 36],
+    ]) {
+      const n = Number(info[clave]);
+      if (Number.isFinite(n) && n >= minimo && n <= maximo) root.style.setProperty(variable, n + "px");
+    }
+    const espaciado = Number(info.nombre_espaciado);
+    if (Number.isFinite(espaciado) && espaciado >= -0.05 && espaciado <= 0.4)
+      root.style.setProperty("--nombre-espaciado", espaciado + "em");
+    if (["400", "700", "900"].includes(info.nombre_peso)) root.style.setProperty("--nombre-negrita", info.nombre_peso);
+    if (/^(si|no)$/.test(info.nombre_cursiva || ""))
+      root.style.setProperty("--nombre-cursiva", info.nombre_cursiva === "si" ? "italic" : "normal");
+    if (/^(si|no)$/.test(info.nombre_mayusculas || ""))
+      root.style.setProperty("--nombre-transform", info.nombre_mayusculas === "si" ? "uppercase" : "none");
+  }
+
+  aplicarNombre();
   pintarMenu();
   montarCortina();
 
