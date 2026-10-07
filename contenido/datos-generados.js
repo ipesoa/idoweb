@@ -495,7 +495,7 @@ telefono: (+34) 653 719 740
 instagram: 
 imdb: 
 showreel: 
-nombre_tamano: 22
+nombre_tamano: 28
 nombre_tamano_movil: 17
 nombre_espaciado: 0.01
 nombre_peso: 900
@@ -528,4 +528,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610071919 */
+/* gestor: 202610071922 */
