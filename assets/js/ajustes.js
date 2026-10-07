@@ -11,12 +11,13 @@ window.AJUSTES = {
        id      = carpeta dentro de /contenido  (no cambiar: ahí van las fotos)
        titulo  = lo que se lee en la web       (esto sí se puede cambiar)
        pagina  = archivo .html de esa sección
-       lado    = dónde va en el inicio: "izquierda" o "derecha"          */
+       lado    = dónde va en el inicio: "izquierda" o "derecha"
+       enContact: false = no sale como filtro en la página Contact        */
   secciones: [
     { id: "films",      titulo: "Films",       pagina: "films.html",      lado: "izquierda" },
     { id: "series",     titulo: "Series",      pagina: "series.html",     lado: "izquierda" },
     { id: "comercials", titulo: "Commercials", pagina: "comercials.html", lado: "derecha" },
-    { id: "videoclips", titulo: "Videoclips",  pagina: "videoclips.html", lado: "derecha" },
+    { id: "videoclips", titulo: "Videoclips",  pagina: "videoclips.html", lado: "derecha", enContact: false },
   ],
 
   /* ---- Textos de la web (por si quieres cambiarlos o traducirlos) --- */
@@ -56,6 +57,32 @@ window.AJUSTES = {
     incluirComercials: true,     // (antiguo, ya manda "secciones")
   },
 
+  /* ---- ANIMACIONES (GSAP) -------------------------------------------
+     nombre  → al entrar en la web, las letras del nombre suben de abajo
+               arriba una detrás de otra (solo la primera página de cada
+               visita; siempre: true para que sea en todas).
+     menu    → WORK en el inicio: al abrir, cada opción se descubre con
+               una máscara de arriba abajo; al cerrar, se desvanecen.
+     Tiempos en milisegundos. Curvas: "power2.out" (suave), "power3.out",
+     "power4.out" (arranca rápido y frena mucho), "expo.out"…           */
+  animaciones: {
+    nombre: {
+      activo: true,
+      siempre: false,
+      retraso: 250,              // espera antes de empezar
+      duracion: 1200,            // lo que tarda cada letra en subir
+      escalon: 35,               // desfase entre letras
+      curva: "power4.out",
+    },
+    menu: {
+      abrir: 1100,               // lo que tarda cada opción en descubrirse
+      escalon: 90,               // desfase entre opciones
+      recorrido: "-0.6em",       // cuánto bajan mientras se descubren
+      curvaAbrir: "power3.out",
+      cerrar: 550,               // fundido al cerrar
+    },
+  },
+
   /* ---- CARTELES EN LAS REJILLAS ---------------------------------------
      Si un proyecto tiene cartel (gestor → editor → «Cartel»), en su
      rectángulo sale el cartel a la izquierda, encima de la portada.
@@ -77,25 +104,27 @@ window.AJUSTES = {
   },
 
   /* ---- CONTRASTE DE LAS LETRAS EN FOTOS ------------------------------
-     Las letras son BLANCAS. Solo la parte que cae sobre una zona muy
-     clara (donde el blanco no se leería) se vuelve NEGRA. Si en blanco
-     se lee, no cambia nada.
-     Luz del fondo: 0 = negro · 1 = blanco (luz real, no "a ojo").
-       negroDesde  la luz a partir de la cual el blanco empieza a no
-                   leerse: ahí empieza a oscurecerse la letra.
-                   Más alto = cambia MENOS veces (solo en blancos muy claros).
-       negroTotal  a partir de esta luz la letra ya es negra del todo.
-                   Entre los dos hay un paso suave (gris).
-       suavizado   px: ignora el grano y los detalles diminutos de la foto
-                   (0 = punto a punto · 3 = normal · 8 = solo zonas grandes).
-       fundido     ms que tarda cada zona en pasar de blanco a negro o al revés. */
+     Como el modo «Diferencia» de Photoshop, pero solo donde hace falta:
+     las letras son BLANCAS y únicamente los píxeles que caen sobre una
+     zona tan clara que el blanco no se leería se vuelven NEGROS. Corte
+     limpio, píxel a píxel, fiel a la foto. Sin grises ni difuminados.
+       umbral  luz del fondo (0 = negro · 1 = blanco) a partir de la cual
+               el blanco ya no se lee y esa parte pasa a negro.
+               Más alto = cambia MENOS (solo sobre blancos muy claros).
+               Más bajo = cambia antes.
+       margen  pequeño margen alrededor del umbral para que los píxeles
+               no parpadeen cuando la foto se mueve (0 = sin margen).
+       grano   px: no hace caso a texturas más finas que esto (papel
+               pintado, grano de película), para que no salgan motas
+               sueltas dentro de las letras. 0 = píxel a píxel exacto.
+       textos  qué letras de la web usan el efecto: todas las que pueden
+               quedar encima de una foto.                                */
   diferencia: {
     activo: true,
-    negroDesde: 0.45,
-    negroTotal: 0.62,
-    suavizado: 3,
-    fundido: 450,
-    textos: ".menu a, .menu button, .menu__labor, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]",
+    umbral: 0.32,
+    margen: 0.04,
+    grano: 1.5,
+    textos: ".menu a, .menu button, .menu span, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, .boton-auto, [data-dif]",
   },
 
   /* ---- Scroll automático -------------------------------------------- */

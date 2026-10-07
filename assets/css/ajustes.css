@@ -144,12 +144,11 @@
   --t-cartel:         900ms;         /* lo que tarda el cartel en irse / volver */
 
   /* Texto encima de la portada: título / directed by … y el año abajo.
-     Va pegado al cartel y al borde de abajo, en bloque (estilo editorial). */
+     Va en bloque abajo a la derecha, al ras del borde (estilo editorial). */
   --cartel-texto-tam:    .7rem;
   --cartel-texto-fuente: var(--fuente-etiqueta);   /* p. ej. "Instrument Serif", serif */
   --cartel-texto-linea:  1.3;                      /* interlineado */
-  --cartel-texto-margen: .45rem;                   /* distancia al cartel y al borde de abajo */
-  --cartel-texto-izq:    calc(37.84% + var(--cartel-texto-margen));   /* 37.84% = ancho del cartel (0.7 / 1.85) */
+  --cartel-texto-margen: .45rem;                   /* distancia al borde derecho y al de abajo */
   --cartel-texto-abajo:  var(--cartel-texto-margen);
   --cartel-texto-hueco:  1.3em;                    /* hueco entre el bloque y el año */
   --cartel-texto-tam-movil: .64rem;
@@ -181,10 +180,7 @@
   --t-cortina: 650ms;          /* fundido al cambiar de página      */
   --t-hover:   600ms;          /* zoom/oscurecer al pasar el ratón  */
   --t-color:   900ms;          /* reservado para cambios de color */
-  --t-menu:         1300ms;    /* despliegue de films / series / … al pulsar WORK */
-  --t-menu-escalon: 90ms;      /* retraso entre una opción y la siguiente */
-  --t-menu-cierre:  550ms;     /* al plegarse (más rápido) */
-  --menu-recorrido: .9em;      /* cuánto bajan las opciones al aparecer */
+  /* (el menú WORK y la entrada del nombre: ajustes.js → animaciones) */
   --curva:     cubic-bezier(.65, 0, .35, 1);
   --margen: clamp(16px, 2.6vw, 40px);
 

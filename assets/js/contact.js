@@ -8,7 +8,7 @@
    La lista junta TODOS los trabajos (films, series, commercials,
    videoclips + contenido/about/filmografia-extra.txt) del más nuevo al
    más antiguo, con filtros: All (al entrar) · Films · Series ·
-   Commercials · Videoclips.  Sin efectos: el texto sale tal cual.
+   Commercials (Videoclips quitado: enContact: false).  Sin efectos: el texto sale tal cual.
    Tamaños y ancho de la columna: ajustes.css sección 6
    ===================================================================== */
 (function () {
@@ -22,7 +22,8 @@
   else texto.remove();
 
   // 2. filtros: All + una por sección (en el orden de ajustes.js)
-  const FILTROS = [["todo", T.todo]].concat(AJUSTES.secciones.map((s) => [s.id, s.titulo]));
+  //    (las secciones con enContact: false en ajustes.js no salen, p. ej. Videoclips)
+  const FILTROS = [["todo", T.todo]].concat(AJUSTES.secciones.filter((s) => s.enContact !== false).map((s) => [s.id, s.titulo]));
   const filtros = document.getElementById("filtros");
   filtros.innerHTML = FILTROS.map(([k, v]) => `<button data-f="${k}">${v}</button>`).join("");
 

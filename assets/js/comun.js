@@ -71,22 +71,38 @@
       const boton = nav.querySelector(".menu__work");
       const opciones = nav.querySelector(".menu__opciones");
       const contacto = nav.querySelector(".menu__pie");
-      // Cada opción lleva su número (--i) para salir una detrás de otra.
-      // Al abrir caen desde WORK en cascada; al cerrar se recogen al revés.
-      // Tiempos: ajustes.css sección 8 (--t-menu, --t-menu-escalon…)
+      // WORK (GSAP, tiempos en ajustes.js → animaciones.menu):
+      //   abrir  → cada opción se descubre con una máscara de arriba abajo,
+      //            una detrás de otra
+      //   cerrar → se desvanecen, de la última a la primera
       const items = [...opciones.children, ...contacto.children];
-      items.forEach((el, i) => { el.style.setProperty("--i", i); el.style.setProperty("--j", items.length - 1 - i); });
+      const AM = (A.animaciones && A.animaciones.menu) || {};
+      const sinMovimiento = matchMedia("(prefers-reduced-motion: reduce)").matches;
       const mostrar = (abierto) => {
         boton.setAttribute("aria-expanded", String(abierto));
-        nav.classList.toggle("menu--abierto", abierto);
-        nav.classList.remove("menu--listo");
         opciones.inert = !abierto;
         contacto.inert = !abierto;
+        if (!window.gsap || sinMovimiento) { nav.classList.toggle("menu--abierto", abierto); return; }
+        gsap.killTweensOf(items);
+        nav.classList.add("menu--animando");          // sin transiciones CSS mientras manda GSAP
+        if (abierto) {
+          nav.classList.add("menu--abierto");
+          gsap.fromTo(items,
+            { autoAlpha: 1, clipPath: "inset(0% 0% 100% 0%)", y: AM.recorrido || "-0.6em" },
+            { clipPath: "inset(0% 0% 0% 0%)", y: 0,
+              duration: (AM.abrir || 1100) / 1000, ease: AM.curvaAbrir || "power3.out",
+              stagger: (AM.escalon || 90) / 1000,
+              onComplete: () => { gsap.set(items, { clearProps: "all" }); nav.classList.remove("menu--animando"); } });
+        } else {
+          gsap.set(items, { autoAlpha: 1 });
+          nav.classList.remove("menu--abierto");
+          gsap.to(items, {
+            autoAlpha: 0, y: AM.recorridoCerrar || "-0.3em",
+            duration: (AM.cerrar || 550) / 1000, ease: "power2.inOut",
+            stagger: { each: (AM.escalon || 90) / 2000, from: "end" },
+            onComplete: () => { gsap.set(items, { clearProps: "all" }); nav.classList.remove("menu--animando"); } });
+        }
       };
-      // ya desplegado del todo: el hover vuelve a ser rápido (sin la cascada)
-      items[items.length - 1].addEventListener("transitionend", (e) => {
-        if (e.propertyName === "opacity" && nav.classList.contains("menu--abierto")) nav.classList.add("menu--listo");
-      });
       boton.addEventListener("click", () => mostrar(boton.getAttribute("aria-expanded") !== "true"));
       nav.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && boton.getAttribute("aria-expanded") === "true") {
@@ -95,7 +111,37 @@
         }
       });
     }
+    entradaNombre(nav.querySelector(".menu__nombre"));
     if (!document.title) document.title = nombre;
+  }
+
+  /* ---------- ENTRADA DEL NOMBRE (GSAP) ----------
+     Al entrar en la web (la primera página de la visita), las letras del
+     nombre suben de abajo arriba dentro de una máscara, una detrás de otra.
+     Luego el nombre vuelve a ser texto normal. Tiempos: ajustes.js →
+     animaciones.nombre (activo: false para quitarla). */
+  function entradaNombre(el) {
+    const AN = (A.animaciones && A.animaciones.nombre) || {};
+    if (!el || AN.activo === false || !window.gsap) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let yaVisto = false;
+    try { yaVisto = AN.siempre !== true && sessionStorage.getItem("nombre-visto") === "1"; sessionStorage.setItem("nombre-visto", "1"); } catch (e) { /* sin memoria: se anima */ }
+    if (yaVisto) return;
+    const texto = el.textContent;
+    el.innerHTML = `<span class="nombre__mascara">${[...texto].map((ch) =>
+      ch === " " ? " " : `<span class="nombre__letra">${htmlSeguro(ch)}</span>`).join("")}</span>`;
+    el.setAttribute("aria-label", texto);
+    el.dataset.difVivo = "1";                       // las letras se mueven: el contraste las sigue
+    const letras = el.querySelectorAll(".nombre__letra");
+    gsap.set(letras, { yPercent: 115 });
+    gsap.to(letras, {
+      yPercent: 0,
+      duration: (AN.duracion || 1200) / 1000,
+      ease: AN.curva || "power4.out",
+      stagger: (AN.escalon || 35) / 1000,
+      delay: (AN.retraso || 250) / 1000,
+      onComplete: () => { el.textContent = texto; el.removeAttribute("aria-label"); delete el.dataset.difVivo; },
+    });
   }
 
   /* ---------- CORTINA (transición entre páginas) ---------- */

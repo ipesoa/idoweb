@@ -105,29 +105,21 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   transform: translateX(-50%);
 }
 
-/* Despliegue de WORK (inicio): cerradas, las opciones están un poco más
-   arriba y transparentes; al abrir bajan en cascada hasta su sitio con
-   una curva muy suave (solo opacidad y posición: lo más fluido posible).
-   Al cerrar se recogen al revés y más deprisa. Tiempos: ajustes.css 8. */
-.menu .menu__plegable > * {
-  opacity: 0;
-  transform: translate3d(0, calc(var(--menu-recorrido) * -1), 0);
-  pointer-events: none;
-  will-change: opacity, transform;
-  transition:
-    opacity   var(--t-menu-cierre) var(--curva) calc(var(--j, 0) * var(--t-menu-escalon) * .5),
-    transform var(--t-menu-cierre) var(--curva) calc(var(--j, 0) * var(--t-menu-escalon) * .5);
+/* Opciones de WORK (inicio): ocultas hasta pulsar WORK. La animación
+   (máscara de arriba abajo al abrir, fundido al cerrar) la hace GSAP en
+   comun.js; tiempos en ajustes.js → animaciones.menu.                 */
+.menu .menu__plegable > * { opacity: 0; visibility: hidden; pointer-events: none; }
+.menu.menu--abierto .menu__plegable > * { opacity: 1; visibility: visible; pointer-events: auto; }
+.menu.menu--animando .menu__plegable > * { transition: none !important; }
+
+/* Entrada del nombre: cada letra sube dentro de esta máscara.
+   El relleno deja sitio a los acentos y a la cursiva; el margen negativo
+   lo compensa para que nada se mueva de sitio. */
+.nombre__mascara {
+  display: inline-block; overflow: hidden; vertical-align: top;
+  padding: .3em .4em .08em; margin: -.3em -.4em -.08em;
 }
-.menu.menu--abierto .menu__plegable > * {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-  pointer-events: auto;
-  transition:
-    opacity   var(--t-menu) cubic-bezier(.25, .1, .25, 1) calc(var(--i, 0) * var(--t-menu-escalon)),
-    transform var(--t-menu) cubic-bezier(.19, 1, .22, 1)  calc(var(--i, 0) * var(--t-menu-escalon));
-}
-/* ya desplegado: el «hover» (opacidad .6) va rápido, como en el resto */
-.menu.menu--listo .menu__plegable > * { transition: opacity .3s, transform .3s; }
+.nombre__letra { display: inline-block; white-space: pre; }
 .menu.menu--abierto .menu__plegable > a:hover { opacity: .6; }
 
 .menu__nombre {
@@ -161,7 +153,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   grid-template-columns: repeat(var(--cols, 2), 1fr);
   gap: 0;
 }
+.rejilla-cine { overflow-x: clip; }
+/* Cada foto pisa 1 px a la de al lado y a la de abajo: como las celdas
+   miden medios píxeles (p. ej. 210,8), así nunca asoma una línea del fondo
+   entre ellas (sobre todo en el móvil). Todo queda al ras. */
 .rejilla-cine > * {
+  margin: 0 -1px -1px 0;
   position: relative; display: block; overflow: hidden;
   aspect-ratio: var(--formato, 1.85 / 1);
   background: var(--color-fondo);

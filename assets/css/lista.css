@@ -95,11 +95,13 @@
 }
 
 /* Texto: Título / directed by … / produced by …   y el año abajo.
-   Siempre visible, pegado al cartel y al borde de abajo. */
+   Siempre visible, en bloque abajo a la DERECHA, al ras del borde
+   (las líneas alineadas a la izquierda dentro del bloque). */
 .modo-cartel .celda__texto {
   display: flex; flex-direction: column; justify-content: flex-end;
   gap: var(--cartel-texto-hueco);
-  left: var(--cartel-texto-izq); right: var(--cartel-texto-margen); bottom: var(--cartel-texto-abajo);
+  left: auto; right: var(--cartel-texto-margen); bottom: var(--cartel-texto-abajo);
+  width: max-content; max-width: calc(62% - 2 * var(--cartel-texto-margen));
   font-family: var(--cartel-texto-fuente);
   font-size: var(--cartel-texto-tam);
   line-height: var(--cartel-texto-linea);
