@@ -3,4 +3,5 @@ año: 2024
 labor: 
 director: Nacho Vigalondo
 mostrar_en_inicio: si
+portada: 03.jpg
 ---
