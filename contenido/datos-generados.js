@@ -506,7 +506,7 @@ HELLO!
 
 I'm a production designer based in Madrid.
 I was born in Bilbao (Basque country) in 1980, and I've a degree in Fine Arts.
-I work as production designer since 2002, mostly on feature films, commercials and music videos.
+I work as production designer since 2002, mostly on films, commercials and music videos.
 
 In this site you can see a selection of my work.
 Please, feel free to contact.
@@ -530,4 +530,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610080751 */
+/* gestor: 202610080922 */
