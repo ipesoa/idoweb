@@ -1,13 +1,14 @@
 /* =====================================================================
    LETRAS LEGIBLES SOBRE FOTOS
    ---------------------------------------------------------------------
-   La idea: las letras son BLANCAS; si lo que tienen debajo es un color
-   claro (donde el blanco no se leería), esa letra pasa a NEGRO.
-   Se decide LETRA a letra (o palabra / texto entero, según ajustes):
-   cada letra es entera blanca o entera negra, nunca a trozos ni gris.
-   Una letra solo pasa a negro si la mayor parte de lo que tiene debajo
-   es más claro que la «tolerancia»; y para volver a blanco tiene que
-   oscurecerse un poco más (así no parpadea cuando la foto se mueve).
+   La idea: las letras son BLANCAS; donde lo que tienen debajo es un
+   color claro (donde el blanco no se leería), pasan a NEGRO.
+   Modo «pixel» (por defecto): como «Diferencia» de Photoshop pero solo
+   donde hace falta: el corte sigue a la imagen, píxel a píxel, y solo
+   reacciona a los colores más claros que la «tolerancia». Siempre
+   blanco o negro puros. Se ignora la textura más fina («grano») para
+   que no salgan motas, y hay un pequeño margen para que no parpadee.
+   Otros modos: «palabra», «letra» o «texto» (cada uno entero de un color).
 
    Cómo mira el fondo: reconstruye en un lienzo invisible las fotos y
    vídeos que hay detrás de cada texto (con su encuadre, opacidad y
@@ -29,9 +30,11 @@
   // Se leen en cada fotograma: el gestor puede cambiarlos en directo.
   const cfg = () => (window.AJUSTES && window.AJUSTES.diferencia) || AJ;
   const umbral = () => num(cfg().umbral, 0.45);           // tolerancia: luz (0-1) a partir de la cual pasa a negro
-  const decidir = () => cfg().decidir || "palabra";        // "palabra" | "letra" | "texto"
+  const decidir = () => cfg().decidir || "pixel";          // "pixel" | "palabra" | "letra" | "texto"
   const PROPORCION = 0.5;    // parte de la letra que tiene que estar sobre claro para pasar a negro
   const VUELTA = 0.35;       // y por debajo de esta parte vuelve a blanco (margen anti-parpadeo)
+  const BANDA = 0.02;        // (modo píxel) margen anti-parpadeo alrededor de la tolerancia
+  const grano = () => Math.max(0, num(cfg().grano, 1.5));  // (modo píxel) px de textura fina que se ignora
   function num(v, d) { return Number.isFinite(Number(v)) ? Number(v) : d; }
 
   // luminancia lineal (la que usa la norma de contraste WCAG)
@@ -75,6 +78,8 @@
   const lienzo = () => { const c = document.createElement("canvas"); return [c, c.getContext("2d", { willReadFrequently: true })]; };
   const [cFondo, xFondo] = lienzo();     // fondo reconstruido
   const [cTemp, xTemp] = lienzo();       // desenfoques a baja resolución
+  const [cMascara, xMascara] = lienzo(); // (modo píxel) forma de las letras
+  const [cComp, xComp] = lienzo();       // (modo píxel) letras ya coloreadas
   const tam = (c, w, h) => { if (c.width !== w || c.height !== h) { c.width = w; c.height = h; } };
   const colorFondoPagina = () => getComputedStyle(document.body).backgroundColor;
 
@@ -260,6 +265,35 @@
     ctx.restore();
   }
 
+  /* ---------- (modo píxel) luz de cada píxel, sin la textura más fina ---------- */
+  let bufA = new Float32Array(0), bufB = new Float32Array(0);
+  function luces(d, w, h, r) {
+    const n = w * h;
+    if (bufA.length < n) { bufA = new Float32Array(n); bufB = new Float32Array(n); }
+    for (let i = 0, q = 0; i < n; i++, q += 4) bufA[i] = luz(d[q], d[q + 1], d[q + 2]);
+    if (r < 1) return bufA;
+    for (let pasada = 0; pasada < 2; pasada++) {
+      for (let y = 0; y < h; y++) {
+        const f = y * w; let acc = 0, cnt = 0;
+        for (let x = -r; x < w; x++) {
+          if (x + r < w) { acc += bufA[f + x + r]; cnt++; }
+          if (x - r - 1 >= 0) { acc -= bufA[f + x - r - 1]; cnt--; }
+          if (x >= 0) bufB[f + x] = acc / cnt;
+        }
+      }
+      for (let x = 0; x < w; x++) {
+        let acc = 0, cnt = 0;
+        for (let y = -r; y < h; y++) {
+          if (y + r < h) { acc += bufB[(y + r) * w + x]; cnt++; }
+          if (y - r - 1 >= 0) { acc -= bufB[(y - r - 1) * w + x]; cnt--; }
+          if (y >= 0) bufA[y * w + x] = acc / cnt;
+        }
+      }
+    }
+    return bufA;
+  }
+  const mapas = new WeakMap();   // (modo píxel) el → { W, H, negro: Uint8Array, cv }
+
   /* ---------- pintar un texto ---------- */
   const estados = new WeakMap();   // el → { negro: Uint8Array } (color de cada letra el fotograma anterior)
   let sucioCapa = [];
@@ -298,11 +332,93 @@
     try { datos = xFondo.getImageData(0, 0, w, h); }
     catch (e) { fallo = true; return true; }
     const d = datos.data, U = umbral();
+    const modo = decidir();
+
+    // destino (capa fija o lienzo de la celda)
+    const destino = () => {
+      if (local) {
+        const cv = local.c, cajaL = local.caja.getBoundingClientRect();
+        tam(cv, W, H);
+        Object.assign(cv.style, { left: (R.x0 - cajaL.left - local.caja.clientLeft) + "px", top: (R.y0 - cajaL.top - local.caja.clientTop) + "px", width: w + "px", height: h + "px" });
+        local.x.setTransform(1, 0, 0, 1, 0, 0);
+        local.x.clearRect(0, 0, W, H);
+        return local.x;
+      }
+      sucioCapa.push([R.x0 * dpr, R.y0 * dpr, W, H]);
+      return cc;
+    };
+    const directo = (negro) => {   // todo el texto de un solo color
+      const x = destino();
+      x.setTransform(dpr, 0, 0, dpr, (local ? -R.x0 : 0) * dpr, (local ? -R.y0 : 0) * dpr);
+      letras(x, vivas, vivas.map(() => negro), dpr);
+      x.setTransform(1, 0, 0, 1, 0, 0);
+      return true;
+    };
+
+    if (modo === "pixel") {
+      // MODO PÍXEL (como «Diferencia» de Photoshop, solo donde hace falta):
+      // blanco salvo los píxeles de letra que caen sobre un color claro.
+      let mp = mapas.get(el);
+      // vistazo rápido: si nada bajo las letras llega a la tolerancia → todo blanco
+      let maxLuz = 0;
+      for (const v of vivas) {
+        const gx0 = Math.max(0, Math.floor(v.x - R.x0)), gy0 = Math.max(0, Math.floor(v.y - R.y0));
+        const gx1 = Math.min(w, Math.ceil(v.x + v.g.w - R.x0)), gy1 = Math.min(h, Math.ceil(v.y + v.g.h - R.y0));
+        for (let y = gy0; y < gy1; y++) for (let x = gx0, q = (y * w + gx0) * 4; x < gx1; x++, q += 4) {
+          const l = luz(d[q], d[q + 1], d[q + 2]); if (l > maxLuz) maxLuz = l;
+        }
+      }
+      if (maxLuz < U - BANDA) { if (mp) mp.negro = null; return directo(0); }
+
+      // a resolución de pantalla, píxel a píxel
+      tam(cFondo, W, H);
+      dibujarFondo(R, dpr);
+      let dd;
+      try { dd = xFondo.getImageData(0, 0, W, H).data; }
+      catch (e) { fallo = true; return true; }
+      const n = W * H;
+      if (!mp) { mp = { cv: document.createElement("canvas") }; mapas.set(el, mp); }
+      const mismo = mp.negro && mp.W === W && mp.H === H;
+      const negro = mismo ? mp.negro : new Uint8Array(n);
+      const lz = luces(dd, W, H, Math.round(grano() * dpr));
+      tam(mp.cv, W, H);
+      const xc = mp.cv.getContext("2d");
+      const campo = xc.createImageData(W, H), c = campo.data;
+      let hayN = false, hayB = false;
+      for (let i = 0, q = 0; i < n; i++, q += 4) {
+        const l = lz[i];
+        const b = l >= U + BANDA ? 1 : l < U - BANDA ? 0 : (mismo ? negro[i] : (l >= U ? 1 : 0));
+        negro[i] = b;
+        const t = b ? 0 : 255;
+        c[q] = c[q + 1] = c[q + 2] = t; c[q + 3] = 255;
+        if (b) hayN = true; else hayB = true;
+      }
+      mp.negro = negro; mp.W = W; mp.H = H;
+      if (!hayN) return directo(0);
+      if (!hayB) return directo(1);
+      xc.putImageData(campo, 0, 0);
+      // recortar el mapa blanco/negro con la forma exacta de las letras (corte limpio)
+      tam(cMascara, W, H); tam(cComp, W, H);
+      xMascara.setTransform(1, 0, 0, 1, 0, 0);
+      xMascara.clearRect(0, 0, W, H);
+      xMascara.setTransform(dpr, 0, 0, dpr, -R.x0 * dpr, -R.y0 * dpr);
+      letras(xMascara, vivas, vivas.map(() => 0), dpr);
+      xComp.setTransform(1, 0, 0, 1, 0, 0);
+      xComp.globalCompositeOperation = "copy";
+      xComp.imageSmoothingEnabled = false;
+      xComp.drawImage(mp.cv, 0, 0);
+      xComp.globalCompositeOperation = "destination-in";
+      xComp.drawImage(cMascara, 0, 0);
+      xComp.globalCompositeOperation = "source-over";
+      const x = destino();
+      x.setTransform(1, 0, 0, 1, 0, 0);
+      x.drawImage(cComp, local ? 0 : R.x0 * dpr, local ? 0 : R.y0 * dpr);
+      return true;
+    }
 
     // b. qué parte de cada letra cae sobre un color claro
     //    (se mira el centro de la letra: los bordes son aire alrededor)
     const grupos = new Map();   // letra / palabra / texto → [claros, total]
-    const modo = decidir();
     const clave = (v) => (modo === "texto" ? 0 : modo === "palabra" ? v.g.palabra : v.i);
     for (const v of vivas) {
       const mx = v.g.w * 0.15, my = v.g.h * 0.2;
@@ -330,20 +446,8 @@
     });
 
     // d. dibujar
-    let x, ox = 0, oy = 0;
-    if (local) {
-      const cv = local.c, cajaL = local.caja.getBoundingClientRect();
-      tam(cv, W, H);
-      Object.assign(cv.style, { left: (R.x0 - cajaL.left - local.caja.clientLeft) + "px", top: (R.y0 - cajaL.top - local.caja.clientTop) + "px", width: w + "px", height: h + "px" });
-      x = local.x;
-      x.setTransform(1, 0, 0, 1, 0, 0);
-      x.clearRect(0, 0, W, H);
-      ox = R.x0; oy = R.y0;
-    } else {
-      x = cc;
-      sucioCapa.push([R.x0 * dpr, R.y0 * dpr, W, H]);
-    }
-    x.setTransform(dpr, 0, 0, dpr, -ox * dpr, -oy * dpr);
+    const x = destino();
+    x.setTransform(dpr, 0, 0, dpr, (local ? -R.x0 : 0) * dpr, (local ? -R.y0 : 0) * dpr);
     letras(x, vivas, colores, dpr);
     x.setTransform(1, 0, 0, 1, 0, 0);
     return true;

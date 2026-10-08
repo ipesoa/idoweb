@@ -112,14 +112,22 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .menu.menu--abierto .menu__plegable > * { opacity: 1; visibility: visible; pointer-events: auto; }
 .menu.menu--animando .menu__plegable > * { transition: none !important; }
 
-/* Entrada del nombre: cada letra sube dentro de esta máscara.
-   El relleno deja sitio a los acentos y a la cursiva; el margen negativo
-   lo compensa para que nada se mueva de sitio. */
-.nombre__mascara {
+/* MASK REVEAL del nombre: .title-mask (overflow: hidden) es la máscara y
+   .title sube por dentro (GSAP, yPercent). El relleno deja sitio a los
+   acentos y a la cursiva; el margen negativo lo compensa, así el
+   encabezado no cambia ni de tamaño ni de sitio. */
+.title-mask {
   display: inline-block; overflow: hidden; vertical-align: top;
-  padding: .3em .4em .08em; margin: -.3em -.4em -.08em;
+  padding: .3em .4em .1em; margin: -.3em -.4em -.1em;
 }
-.nombre__letra { display: inline-block; white-space: pre; }
+.title { display: inline-block; white-space: nowrap; }
+
+/* Opciones de WORK: cada texto tiene su propia máscara (mask reveal). */
+.opcion-mascara {
+  display: inline-block; overflow: hidden; vertical-align: top;
+  padding: .25em .3em .15em; margin: -.25em -.3em -.15em;
+}
+.opcion-texto { display: inline-block; }
 .menu.menu--abierto .menu__plegable > a:hover { opacity: .6; }
 
 .menu__nombre {

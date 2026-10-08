@@ -30,6 +30,8 @@
     const nombre = (Web.about && Web.about.nombre) || "Idoia Esteban Galván";
     const seccion = A.secciones.find((s) => s.id === pagina);
     const donde = pagina === "work" ? A.textos.work : seccion ? seccion.titulo : "";
+    // máscara de cada opción de WORK: el texto entra por dentro (overflow: hidden)
+    const mascara = (t) => `<span class="opcion-mascara"><span class="opcion-texto">${htmlSeguro(t)}</span></span>`;
     const enlaceSeccion = (s, clase = "menu__seccion") =>
       `<a class="${clase} menu__${s.id}" href="${s.pagina}">${htmlSeguro(s.titulo)}</a>`;
 
@@ -42,11 +44,12 @@
         <button class="menu__work" type="button" aria-expanded="false" aria-controls="menu-inicio-opciones">${htmlSeguro(A.textos.work)}</button>
       </div>
       <div class="menu__opciones menu__plegable" id="menu-inicio-opciones" inert>
-        ${A.secciones.filter((s) => ["films", "series", "comercials"].includes(s.id)).map((s) => enlaceSeccion(s)).join("")}
-        <a class="menu__archivo" href="work.html">Archive</a>
+        ${A.secciones.filter((s) => ["films", "series", "comercials"].includes(s.id)).map((s) =>
+          `<a class="menu__seccion menu__${s.id}" href="${s.pagina}">${mascara(s.titulo)}</a>`).join("")}
+        <a class="menu__archivo" href="work.html">${mascara("Archive")}</a>
       </div>
       <div class="menu__pie menu__plegable" inert>
-        <a class="menu__contacto" href="contact.html">${htmlSeguro(A.textos.contacto)}</a>
+        <a class="menu__contacto" href="contact.html">${mascara(A.textos.contacto)}</a>
       </div>`;
     } else if (pagina === "contact") {
       dentro = `
@@ -75,37 +78,34 @@
       // (o el gestor, pestaña Cabecera, que manda sobre ajustes.js)
       const items = [...opciones.children, ...contacto.children];
       const sinMovimiento = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const acabar = () => { gsap.set(items, { clearProps: "all" }); nav.classList.remove("menu--animando"); };
+      const textos = items.map((a) => a.querySelector(".opcion-texto")).filter(Boolean);
+      const acabar = () => { gsap.set(items.concat(textos), { clearProps: "all" }); nav.classList.remove("menu--animando"); delete nav.dataset.difVivo; };
       const mostrar = (abierto) => {
         const AM = (A.animaciones && A.animaciones.menu) || {};
         boton.setAttribute("aria-expanded", String(abierto));
         opciones.inert = !abierto;
         contacto.inert = !abierto;
         if (!window.gsap || sinMovimiento) { nav.classList.toggle("menu--abierto", abierto); return; }
-        gsap.killTweensOf(items);
+        gsap.killTweensOf(items.concat(textos));
         nav.classList.add("menu--animando");          // sin transiciones CSS mientras manda GSAP
-        const dur = (abierto ? AM.duracion || 1100 : AM.duracionCerrar || 550) / 1000;
-        const esc = (AM.escalon ?? 90) / 1000;
+        nav.dataset.difVivo = "1";                    // las letras se mueven: el contraste las sigue
+        const esc = (AM.escalon ?? 100) / 1000;
         if (abierto) {
+          // MASK REVEAL: cada texto entra por dentro de su máscara (overflow: hidden),
+          // de arriba abajo (yPercent -115 → 0), una opción detrás de otra
           nav.classList.add("menu--abierto");
-          const desde = {
-            "mascara-abajo":  { autoAlpha: 1, clipPath: "inset(0% 0% 100% 0%)", y: "-0.6em" },
-            "mascara-arriba": { autoAlpha: 1, clipPath: "inset(100% 0% 0% 0%)", y: "0.6em" },
-            "fundido":        { autoAlpha: 0 },
-            "subir":          { autoAlpha: 0, y: "1.2em" },
-          }[AM.abrir] || { autoAlpha: 1, clipPath: "inset(0% 0% 100% 0%)", y: "-0.6em" };
-          const hasta = { autoAlpha: 1, y: 0, duration: dur, stagger: esc,
-            ease: AM.abrir === "fundido" ? "power2.out" : "power3.out", onComplete: acabar };
-          if (desde.clipPath) hasta.clipPath = "inset(0% 0% 0% 0%)";
-          gsap.fromTo(items, desde, hasta);
+          gsap.set(items, { autoAlpha: 1, filter: "none" });
+          const desde = AM.abrir === "mascara-arriba" ? { yPercent: 115 }
+            : AM.abrir === "fundido" ? { autoAlpha: 0 } : { yPercent: -115 };
+          gsap.fromTo(textos, desde, { yPercent: 0, autoAlpha: 1,
+            duration: (AM.duracion || 1000) / 1000, ease: AM.abrir === "fundido" ? "power2.out" : "power4.out",
+            stagger: esc, onComplete: acabar });
         } else {
+          // al cerrar: se difuminan (fundido + desenfoque suave), de la última a la primera
           gsap.set(items, { autoAlpha: 1 });
           nav.classList.remove("menu--abierto");
-          const fin = AM.cerrar === "mascara-arriba"
-            ? { clipPath: "inset(0% 0% 100% 0%)", y: "-0.3em" }
-            : { autoAlpha: 0, y: "-0.3em" };
-          if (fin.clipPath) gsap.set(items, { clipPath: "inset(0% 0% 0% 0%)" });
-          gsap.to(items, { ...fin, duration: dur, ease: "power2.inOut",
+          const fin = AM.cerrar === "fundido" ? { autoAlpha: 0 } : { autoAlpha: 0, filter: "blur(6px)" };
+          gsap.to(items, { ...fin, duration: (AM.duracionCerrar || 600) / 1000, ease: "power2.inOut",
             stagger: { each: esc / 2, from: "end" }, onComplete: acabar });
         }
       };
@@ -141,22 +141,25 @@
         if (visto) return;
       }
     }
-    const texto = el.dataset.texto || el.textContent;
-    el.dataset.texto = texto;
-    gsap.killTweensOf(el.querySelectorAll(".nombre__letra"));
-    el.innerHTML = `<span class="nombre__mascara">${[...texto].map((ch) =>
-      ch === " " ? " " : `<span class="nombre__letra">${htmlSeguro(ch)}</span>`).join("")}</span>`;
-    el.setAttribute("aria-label", texto);
-    el.dataset.difVivo = "1";                       // las letras se mueven: el contraste las sigue
-    const letras = el.querySelectorAll(".nombre__letra");
-    const desde = { subir: { yPercent: 115 }, bajar: { yPercent: -115 }, fundido: { autoAlpha: 0 } }[efecto] || { yPercent: 115 };
-    gsap.fromTo(letras, desde, {
+    // MASK REVEAL vertical: <span class="title-mask"> (overflow: hidden) es la
+    // máscara; dentro, <span class="title"> sube de yPercent 115 a 0.
+    // Solo se anima transform (yPercent); no cambia el tamaño ni el sitio
+    // del encabezado, y al acabar se borra el transform (posición exacta).
+    let titulo = el.querySelector(".title");
+    if (!titulo) {
+      const texto = el.textContent;
+      el.innerHTML = `<span class="title-mask"><span class="title">${htmlSeguro(texto)}</span></span>`;
+      titulo = el.querySelector(".title");
+    }
+    gsap.killTweensOf(titulo);
+    el.dataset.difVivo = "1";                       // el texto se mueve: el contraste lo sigue
+    const desde = efecto === "bajar" ? { yPercent: -115 } : efecto === "fundido" ? { autoAlpha: 0 } : { yPercent: 115 };
+    gsap.fromTo(titulo, desde, {
       yPercent: 0, autoAlpha: 1,
-      duration: (AN.duracion || 1200) / 1000,
+      duration: (AN.duracion || 1000) / 1000,
       ease: efecto === "fundido" ? "power2.out" : "power4.out",
-      stagger: (AN.escalon ?? 35) / 1000,
       delay: forzar ? 0.1 : (AN.retraso ?? 500) / 1000,
-      onComplete: () => { el.textContent = texto; delete el.dataset.texto; el.removeAttribute("aria-label"); delete el.dataset.difVivo; },
+      onComplete: () => { gsap.set(titulo, { clearProps: "transform,opacity,visibility" }); delete el.dataset.difVivo; },
     });
   }
 
@@ -174,14 +177,15 @@
     fijar(AN, "escalon", n(c.anim_nombre_escalon, 0, 500));
     fijar(AN, "retraso", n(c.anim_nombre_retraso, 0, 5000));
     const AM = (A.animaciones.menu = A.animaciones.menu || {});
-    fijar(AM, "abrir", ["mascara-abajo", "mascara-arriba", "fundido", "subir"].includes(c.anim_menu_abrir) ? c.anim_menu_abrir : undefined);
-    fijar(AM, "cerrar", ["fundido", "mascara-arriba"].includes(c.anim_menu_cerrar) ? c.anim_menu_cerrar : undefined);
+    fijar(AM, "abrir", ["mascara-abajo", "mascara-arriba", "fundido"].includes(c.anim_menu_abrir) ? c.anim_menu_abrir : undefined);
+    fijar(AM, "cerrar", ["difuminar", "fundido"].includes(c.anim_menu_cerrar) ? c.anim_menu_cerrar : undefined);
     fijar(AM, "duracion", n(c.anim_menu_duracion, 100, 5000));
     fijar(AM, "escalon", n(c.anim_menu_escalon, 0, 1000));
     fijar(AM, "duracionCerrar", n(c.anim_menu_cerrar_duracion, 100, 5000));
     A.diferencia = A.diferencia || {};
     fijar(A.diferencia, "umbral", n(c.contraste_umbral, 0.05, 0.95));
-    fijar(A.diferencia, "decidir", ["letra", "palabra", "texto"].includes(c.contraste_por) ? c.contraste_por : undefined);
+    fijar(A.diferencia, "decidir", ["pixel", "letra", "palabra", "texto"].includes(c.contraste_por) ? c.contraste_por : undefined);
+    fijar(A.diferencia, "grano", n(c.contraste_grano, 0, 6));
   }
 
   /* ---------- CORTINA (transición entre páginas) ---------- */

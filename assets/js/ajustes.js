@@ -60,30 +60,30 @@ window.AJUSTES = {
   /* ---- ANIMACIONES (GSAP) -------------------------------------------
      ¡Ojo! Si se cambian en el gestor (pestaña Cabecera), mandan las del
      gestor. Estos son los valores por defecto.
-     nombre → entrada de IDOIA ESTEBAN GALVÁN
+     nombre → MASK REVEAL vertical de IDOIA ESTEBAN GALVÁN: el texto sube
+              desde debajo de su máscara hasta su sitio.
         efecto: "subir" (de abajo arriba) · "bajar" · "fundido" · "ninguno"
         cuando: "inicio" (cada vez que se entra al inicio)
                 "visita" (solo la primera página de cada visita)
                 "siempre" (en todas las páginas)
      menu → opciones de WORK en el inicio
-        abrir:  "mascara-abajo" (se descubren de arriba abajo)
-                "mascara-arriba" (de abajo arriba) · "fundido" · "subir"
-        cerrar: "fundido" · "mascara-arriba" (se recogen hacia arriba)
+        abrir:  "mascara-abajo" (mask reveal de arriba abajo)
+                "mascara-arriba" (de abajo arriba) · "fundido"
+        cerrar: "difuminar" (fundido con un desenfoque suave) · "fundido"
      Tiempos en milisegundos.                                           */
   animaciones: {
     nombre: {
       efecto: "subir",
       cuando: "inicio",
       retraso: 500,              // espera antes de empezar (deja pasar el fundido de entrada)
-      duracion: 1200,            // lo que tarda cada letra
-      escalon: 35,               // desfase entre letras
+      duracion: 1000,            // lo que tarda en subir
     },
     menu: {
       abrir: "mascara-abajo",
-      duracion: 1100,            // lo que tarda cada opción en aparecer
-      escalon: 90,               // desfase entre opciones
-      cerrar: "fundido",
-      duracionCerrar: 550,
+      duracion: 1000,            // lo que tarda cada opción en entrar
+      escalon: 100,              // desfase entre opciones (0.08–0.12 s queda bien)
+      cerrar: "difuminar",
+      duracionCerrar: 600,
     },
   },
 
@@ -108,20 +108,23 @@ window.AJUSTES = {
   },
 
   /* ---- COLOR DE LAS LETRAS SOBRE FOTOS -------------------------------
-     Las letras son BLANCAS; la letra que cae sobre un color claro (donde
-     el blanco no se leería) pasa a NEGRO. Cada palabra entera de un color.
+     Las letras son BLANCAS; donde caen sobre un color claro (donde el
+     blanco no se leería) pasan a NEGRO. Siempre blanco o negro puros.
      Si se cambia en el gestor (Cabecera → Color de las letras), manda el gestor.
        umbral   TOLERANCIA: lo claro que tiene que ser el fondo para que
-                la letra pase a negro (0 = negro · 1 = blanco).
-                0.45 = solo sobre colores claros de verdad.
-                Más alto = cambia MENOS · más bajo = cambia antes.
-       decidir  "palabra" cada palabra entera de un color (la que está sobre claro)
-                "letra"   cada letra su color
-                "texto"   todo el texto (p. ej. el nombre) del mismo color */
+                pase a negro (0 = negro · 1 = blanco). 0.5 = solo sobre
+                colores claros de verdad. Más alto = cambia MENOS.
+       decidir  "pixel"   según la imagen, como «Diferencia» de Photoshop
+                          pero solo en las zonas claras (el corte sigue
+                          a la foto)
+                "palabra" / "letra" / "texto": cada uno entero de un color
+       grano    (pixel) px de textura fina que se ignora, para que no
+                salgan motas sueltas (0 = exacto, píxel a píxel)        */
   diferencia: {
     activo: true,
-    umbral: 0.45,
-    decidir: "palabra",
+    umbral: 0.5,
+    decidir: "pixel",
+    grano: 1.5,
     textos: ".menu a, .menu button, .menu span, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, .boton-auto, [data-dif]",
   },
 
