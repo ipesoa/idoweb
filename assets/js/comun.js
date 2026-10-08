@@ -71,38 +71,45 @@
       const boton = nav.querySelector(".menu__work");
       const opciones = nav.querySelector(".menu__opciones");
       const contacto = nav.querySelector(".menu__pie");
-      // WORK (GSAP, tiempos en ajustes.js → animaciones.menu):
-      //   abrir  → cada opción se descubre con una máscara de arriba abajo,
-      //            una detrás de otra
-      //   cerrar → se desvanecen, de la última a la primera
+      // WORK (GSAP). Efectos y tiempos: ajustes.js → animaciones.menu
+      // (o el gestor, pestaña Cabecera, que manda sobre ajustes.js)
       const items = [...opciones.children, ...contacto.children];
-      const AM = (A.animaciones && A.animaciones.menu) || {};
       const sinMovimiento = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const acabar = () => { gsap.set(items, { clearProps: "all" }); nav.classList.remove("menu--animando"); };
       const mostrar = (abierto) => {
+        const AM = (A.animaciones && A.animaciones.menu) || {};
         boton.setAttribute("aria-expanded", String(abierto));
         opciones.inert = !abierto;
         contacto.inert = !abierto;
         if (!window.gsap || sinMovimiento) { nav.classList.toggle("menu--abierto", abierto); return; }
         gsap.killTweensOf(items);
         nav.classList.add("menu--animando");          // sin transiciones CSS mientras manda GSAP
+        const dur = (abierto ? AM.duracion || 1100 : AM.duracionCerrar || 550) / 1000;
+        const esc = (AM.escalon ?? 90) / 1000;
         if (abierto) {
           nav.classList.add("menu--abierto");
-          gsap.fromTo(items,
-            { autoAlpha: 1, clipPath: "inset(0% 0% 100% 0%)", y: AM.recorrido || "-0.6em" },
-            { clipPath: "inset(0% 0% 0% 0%)", y: 0,
-              duration: (AM.abrir || 1100) / 1000, ease: AM.curvaAbrir || "power3.out",
-              stagger: (AM.escalon || 90) / 1000,
-              onComplete: () => { gsap.set(items, { clearProps: "all" }); nav.classList.remove("menu--animando"); } });
+          const desde = {
+            "mascara-abajo":  { autoAlpha: 1, clipPath: "inset(0% 0% 100% 0%)", y: "-0.6em" },
+            "mascara-arriba": { autoAlpha: 1, clipPath: "inset(100% 0% 0% 0%)", y: "0.6em" },
+            "fundido":        { autoAlpha: 0 },
+            "subir":          { autoAlpha: 0, y: "1.2em" },
+          }[AM.abrir] || { autoAlpha: 1, clipPath: "inset(0% 0% 100% 0%)", y: "-0.6em" };
+          const hasta = { autoAlpha: 1, y: 0, duration: dur, stagger: esc,
+            ease: AM.abrir === "fundido" ? "power2.out" : "power3.out", onComplete: acabar };
+          if (desde.clipPath) hasta.clipPath = "inset(0% 0% 0% 0%)";
+          gsap.fromTo(items, desde, hasta);
         } else {
           gsap.set(items, { autoAlpha: 1 });
           nav.classList.remove("menu--abierto");
-          gsap.to(items, {
-            autoAlpha: 0, y: AM.recorridoCerrar || "-0.3em",
-            duration: (AM.cerrar || 550) / 1000, ease: "power2.inOut",
-            stagger: { each: (AM.escalon || 90) / 2000, from: "end" },
-            onComplete: () => { gsap.set(items, { clearProps: "all" }); nav.classList.remove("menu--animando"); } });
+          const fin = AM.cerrar === "mascara-arriba"
+            ? { clipPath: "inset(0% 0% 100% 0%)", y: "-0.3em" }
+            : { autoAlpha: 0, y: "-0.3em" };
+          if (fin.clipPath) gsap.set(items, { clipPath: "inset(0% 0% 0% 0%)" });
+          gsap.to(items, { ...fin, duration: dur, ease: "power2.inOut",
+            stagger: { each: esc / 2, from: "end" }, onComplete: acabar });
         }
       };
+      Comun_menu = mostrar;
       boton.addEventListener("click", () => mostrar(boton.getAttribute("aria-expanded") !== "true"));
       nav.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && boton.getAttribute("aria-expanded") === "true") {
@@ -116,32 +123,65 @@
   }
 
   /* ---------- ENTRADA DEL NOMBRE (GSAP) ----------
-     Al entrar en la web (la primera página de la visita), las letras del
-     nombre suben de abajo arriba dentro de una máscara, una detrás de otra.
-     Luego el nombre vuelve a ser texto normal. Tiempos: ajustes.js →
-     animaciones.nombre (activo: false para quitarla). */
-  function entradaNombre(el) {
+     Las letras del nombre entran una detrás de otra dentro de una máscara.
+     Efecto, cuándo y tiempos: ajustes.js → animaciones.nombre (o el gestor,
+     pestaña Cabecera). Al acabar, el nombre vuelve a ser texto normal. */
+  let Comun_menu = null;
+  function entradaNombre(el, forzar = false) {
     const AN = (A.animaciones && A.animaciones.nombre) || {};
-    if (!el || AN.activo === false || !window.gsap) return;
+    const efecto = AN.efecto || "subir";
+    if (!el || efecto === "ninguno" || !window.gsap) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let yaVisto = false;
-    try { yaVisto = AN.siempre !== true && sessionStorage.getItem("nombre-visto") === "1"; sessionStorage.setItem("nombre-visto", "1"); } catch (e) { /* sin memoria: se anima */ }
-    if (yaVisto) return;
-    const texto = el.textContent;
+    if (!forzar) {
+      const cuando = AN.cuando || "inicio";
+      if (cuando === "inicio" && pagina !== "inicio") return;
+      if (cuando === "visita") {
+        let visto = false;
+        try { visto = sessionStorage.getItem("nombre-visto") === "1"; sessionStorage.setItem("nombre-visto", "1"); } catch (e) { /* sin memoria: se anima */ }
+        if (visto) return;
+      }
+    }
+    const texto = el.dataset.texto || el.textContent;
+    el.dataset.texto = texto;
+    gsap.killTweensOf(el.querySelectorAll(".nombre__letra"));
     el.innerHTML = `<span class="nombre__mascara">${[...texto].map((ch) =>
       ch === " " ? " " : `<span class="nombre__letra">${htmlSeguro(ch)}</span>`).join("")}</span>`;
     el.setAttribute("aria-label", texto);
     el.dataset.difVivo = "1";                       // las letras se mueven: el contraste las sigue
     const letras = el.querySelectorAll(".nombre__letra");
-    gsap.set(letras, { yPercent: 115 });
-    gsap.to(letras, {
-      yPercent: 0,
+    const desde = { subir: { yPercent: 115 }, bajar: { yPercent: -115 }, fundido: { autoAlpha: 0 } }[efecto] || { yPercent: 115 };
+    gsap.fromTo(letras, desde, {
+      yPercent: 0, autoAlpha: 1,
       duration: (AN.duracion || 1200) / 1000,
-      ease: AN.curva || "power4.out",
-      stagger: (AN.escalon || 35) / 1000,
-      delay: (AN.retraso || 250) / 1000,
-      onComplete: () => { el.textContent = texto; el.removeAttribute("aria-label"); delete el.dataset.difVivo; },
+      ease: efecto === "fundido" ? "power2.out" : "power4.out",
+      stagger: (AN.escalon ?? 35) / 1000,
+      delay: forzar ? 0.1 : (AN.retraso ?? 500) / 1000,
+      onComplete: () => { el.textContent = texto; delete el.dataset.texto; el.removeAttribute("aria-label"); delete el.dataset.difVivo; },
     });
+  }
+
+  /* ---------- EFECTOS GUARDADOS EN EL GESTOR ----------
+     El gestor (pestaña Cabecera) guarda en contenido/about/info.txt las
+     animaciones y el color de las letras; aquí mandan sobre ajustes.js. */
+  function aplicarEfectos(c) {
+    const n = (v, min, max) => { const x = Number(v); return Number.isFinite(x) && x >= min && x <= max ? x : undefined; };
+    const fijar = (obj, clave, v) => { if (v !== undefined && v !== "") obj[clave] = v; };
+    A.animaciones = A.animaciones || {};
+    const AN = (A.animaciones.nombre = A.animaciones.nombre || {});
+    fijar(AN, "efecto", ["subir", "bajar", "fundido", "ninguno"].includes(c.anim_nombre) ? c.anim_nombre : undefined);
+    fijar(AN, "cuando", ["inicio", "visita", "siempre"].includes(c.anim_nombre_cuando) ? c.anim_nombre_cuando : undefined);
+    fijar(AN, "duracion", n(c.anim_nombre_duracion, 100, 5000));
+    fijar(AN, "escalon", n(c.anim_nombre_escalon, 0, 500));
+    fijar(AN, "retraso", n(c.anim_nombre_retraso, 0, 5000));
+    const AM = (A.animaciones.menu = A.animaciones.menu || {});
+    fijar(AM, "abrir", ["mascara-abajo", "mascara-arriba", "fundido", "subir"].includes(c.anim_menu_abrir) ? c.anim_menu_abrir : undefined);
+    fijar(AM, "cerrar", ["fundido", "mascara-arriba"].includes(c.anim_menu_cerrar) ? c.anim_menu_cerrar : undefined);
+    fijar(AM, "duracion", n(c.anim_menu_duracion, 100, 5000));
+    fijar(AM, "escalon", n(c.anim_menu_escalon, 0, 1000));
+    fijar(AM, "duracionCerrar", n(c.anim_menu_cerrar_duracion, 100, 5000));
+    A.diferencia = A.diferencia || {};
+    fijar(A.diferencia, "umbral", n(c.contraste_umbral, 0.05, 0.95));
+    fijar(A.diferencia, "decidir", ["letra", "palabra", "texto"].includes(c.contraste_por) ? c.contraste_por : undefined);
   }
 
   /* ---------- CORTINA (transición entre páginas) ---------- */
@@ -325,6 +365,7 @@
      se guardan en contenido/about/info.txt junto al nombre visible. */
   function aplicarNombre() {
     const info = Web.leerInfo((window.CONTENIDO && window.CONTENIDO.about && window.CONTENIDO.about.info) || "");
+    aplicarEfectos(info);
     const root = document.documentElement;
     const familias = {
       garet: '"Garet", Arial, sans-serif',
@@ -363,5 +404,8 @@
   montarCortina();
 
 
-  window.Comun = { autoScroll, visor, aparecer, letras, azar, irA, embed, reproductor, ficha };
+  window.Comun = { autoScroll, visor, aparecer, letras, azar, irA, embed, reproductor, ficha,
+    aplicarEfectos,                                   // (gestor) aplicar efectos en directo
+    animarNombre: () => entradaNombre(document.querySelector(".menu__nombre"), true),
+    menu: (abierto) => Comun_menu && Comun_menu(abierto) };
 })();

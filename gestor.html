@@ -111,7 +111,7 @@ button { cursor: pointer; background: none; border: 0; }
 
 .fotos-barra { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
 .fotos-barra h3 { font-size: 15px; margin-right: auto; }
-.fotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.fotos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .foto { position: relative; background: var(--papel); border: 2px solid transparent; border-radius: 8px; overflow: hidden; cursor: grab; user-select: none; }
 .foto img, .foto video { width: 100%; aspect-ratio: 1.85 / 1; object-fit: cover; display: block; background: #ddd; pointer-events: none; }
 .foto.elegida { border-color: var(--azul); }
@@ -163,6 +163,7 @@ button { cursor: pointer; background: none; border: 0; }
 .control-nombre .fila-rango input { flex: 1; }
 .control-nombre.opcion { display: flex; align-items: center; gap: 9px; min-height: 40px; }
 .control-nombre.opcion input { width: 18px; height: 18px; accent-color: var(--tinta); }
+.bloque-titulo { font-size: 15px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--linea); }
 .preview-nombre { position: sticky; top: 82px; border: 1px solid var(--linea); border-radius: 12px; overflow: hidden; background: #111; }
 .preview-nombre iframe { display: block; width: 100%; height: min(52vw, 520px); min-height: 360px; border: 0; pointer-events: none; }
 .preview-nombre p { padding: 9px 12px; color: var(--suave); background: #fff; font-size: 12px; }
@@ -575,7 +576,9 @@ button { cursor: pointer; background: none; border: 0; }
     const peso = c.nombre_peso || "900";
     const rango = (clave, etiqueta, valor, min, max, step, unidad) => `<label class="control-nombre"><span>${etiqueta}</span>
       <span class="fila-rango"><input type="range" data-nombre="${clave}" min="${min}" max="${max}" step="${step}" value="${esc(valor)}">
-      <output data-valor-nombre="${clave}">${esc(valor)} ${unidad}</output></span></label>`;
+      <output data-valor-nombre="${clave}" data-unidad="${unidad}">${esc(valor)} ${unidad}</output></span></label>`;
+    const elegir = (clave, etiqueta, valor, opciones) => `<label class="control-nombre"><span>${etiqueta}</span><select data-nombre="${clave}">
+      ${opciones.map(([v, t]) => `<option value="${v}"${valor === v ? " selected" : ""}>${t}</option>`).join("")}</select></label>`;
     return `<div class="cabecera"><h2>Nombre y tipografía de la cabecera</h2>
         <p>Los cambios se ven aquí al instante. Para hacerlos públicos, pulsa «Publicar cambios» arriba.</p></div>
       <div class="editor-nombre">
@@ -601,6 +604,27 @@ button { cursor: pointer; background: none; border: 0; }
           <label class="control-nombre opcion"><input type="checkbox" data-nombre="nombre_cursiva"${(c.nombre_cursiva || "si") === "si" ? " checked" : ""}> Cursiva</label>
           <label class="control-nombre opcion"><input type="checkbox" data-nombre="nombre_mayusculas"${(c.nombre_mayusculas || "si") === "si" ? " checked" : ""}> Convertir a mayúsculas</label>
           <p class="nota">Garet Book y Heavy ya están instaladas. Si subes otra fuente, se guardará con la web al publicar.</p>
+
+          <h3 class="bloque-titulo">Animación del nombre</h3>
+          ${elegir("anim_nombre", "Efecto", c.anim_nombre || "subir", [["subir", "Las letras suben (de abajo arriba)"], ["bajar", "Las letras bajan (de arriba abajo)"], ["fundido", "Aparecen con un fundido"], ["ninguno", "Sin animación"]])}
+          ${elegir("anim_nombre_cuando", "Cuándo", c.anim_nombre_cuando || "inicio", [["inicio", "Cada vez que se entra al inicio"], ["visita", "Solo la primera vez de cada visita"], ["siempre", "En todas las páginas"]])}
+          ${rango("anim_nombre_duracion", "Duración de cada letra", c.anim_nombre_duracion || "1200", 200, 3000, 50, "ms")}
+          ${rango("anim_nombre_escalon", "Desfase entre letras", c.anim_nombre_escalon || "35", 0, 200, 5, "ms")}
+          ${rango("anim_nombre_retraso", "Espera antes de empezar", c.anim_nombre_retraso || "500", 0, 2000, 50, "ms")}
+          <button type="button" class="boton" data-vista="nombre">▶ Ver la animación del nombre</button>
+
+          <h3 class="bloque-titulo">Menú WORK (inicio)</h3>
+          ${elegir("anim_menu_abrir", "Al abrir", c.anim_menu_abrir || "mascara-abajo", [["mascara-abajo", "Máscara de arriba abajo"], ["mascara-arriba", "Máscara de abajo arriba"], ["fundido", "Fundido"], ["subir", "Suben y aparecen"]])}
+          ${rango("anim_menu_duracion", "Duración al abrir", c.anim_menu_duracion || "1100", 200, 3000, 50, "ms")}
+          ${rango("anim_menu_escalon", "Desfase entre opciones", c.anim_menu_escalon || "90", 0, 400, 10, "ms")}
+          ${elegir("anim_menu_cerrar", "Al cerrar", c.anim_menu_cerrar || "fundido", [["fundido", "Fundido"], ["mascara-arriba", "Máscara hacia arriba"]])}
+          ${rango("anim_menu_cerrar_duracion", "Duración al cerrar", c.anim_menu_cerrar_duracion || "550", 200, 2000, 50, "ms")}
+          <button type="button" class="boton" data-vista="menu">▶ Abrir / cerrar el menú en la vista previa</button>
+
+          <h3 class="bloque-titulo">Color de las letras sobre las fotos</h3>
+          <p class="nota">Las letras son blancas; la letra que cae sobre un color claro pasa a negra. La tolerancia dice lo claro que tiene que ser el fondo para que cambie.</p>
+          ${rango("contraste_umbral", "Tolerancia · ← cambia antes · cambia menos →", c.contraste_umbral || "0.45", 0.2, 0.8, 0.01, "")}
+          ${elegir("contraste_por", "Cómo decide", c.contraste_por || "palabra", [["palabra", "Palabra a palabra (cada palabra entera de un color)"], ["letra", "Letra a letra"], ["texto", "Texto entero (todo el nombre del mismo color)"]])}
         </div>
         <div class="preview-nombre"><iframe id="vistaNombre" src="index.html?vista=gestor&t=${Date.now()}" title="Vista previa de la cabecera"></iframe>
           <p>Vista previa del inicio. Los controles de arriba cambian el nombre sin tocar todavía la web pública.</p></div>
@@ -629,7 +653,11 @@ button { cursor: pointer; background: none; border: 0; }
       if (!style) { style = doc.createElement("style"); style.id = "fuenteVistaNombre"; doc.head.append(style); }
       style.textContent = `@font-face{font-family:"Idoia personalizada";src:url("${url}") format("${formato}");font-style:normal;font-weight:400;font-display:swap}`;
     }
-    nombre.textContent = c.nombre || "Idoia Esteban Galván";
+    const texto = c.nombre || "Idoia Esteban Galván";
+    if (nombre.dataset.difVivo) nombre.dataset.texto = texto;          // animándose: se cambia al acabar
+    else if (nombre.textContent !== texto) nombre.textContent = texto;
+    const win = iframe.contentWindow;
+    if (win && win.Comun && win.Comun.aplicarEfectos) win.Comun.aplicarEfectos(c);
     root.style.setProperty("--nombre-fuente", familias[c.nombre_fuente || "garet"]);
     root.style.setProperty("--nombre-tam", (c.nombre_tamano || "18") + "px");
     root.style.setProperty("--nombre-tam-movil", (c.nombre_tamano_movil || "16") + "px");
@@ -1178,6 +1206,14 @@ button { cursor: pointer; background: none; border: 0; }
       seleccion.has(t.dataset.marcar) ? seleccion.delete(t.dataset.marcar) : seleccion.add(t.dataset.marcar);
       pintar(); return;
     }
+    if (t.dataset.vista) {
+      const win = $("#vistaNombre") && $("#vistaNombre").contentWindow;
+      if (!win || !win.Comun) return;
+      aplicarVistaNombre();
+      if (t.dataset.vista === "nombre") win.Comun.animarNombre();
+      else { const abierto = win.document.querySelector(".menu__work")?.getAttribute("aria-expanded") === "true"; win.Comun.menu(!abierto); }
+      return;
+    }
     if (t.dataset.editar) { abrirEditor(E.proyectos.find((x) => x.tipo + "/" + x.carpeta === t.dataset.editar)); return; }
 
     // editor
@@ -1215,7 +1251,7 @@ button { cursor: pointer; background: none; border: 0; }
     E.about.info.campos[clave] = valor;
     E.aboutSucio = true;
     const salida = $(`[data-valor-nombre="${clave}"]`);
-    if (salida) salida.textContent = valor + (clave === "nombre_espaciado" ? " em" : " px");
+    if (salida) salida.textContent = valor + (salida.dataset.unidad !== undefined ? (salida.dataset.unidad ? " " + salida.dataset.unidad : "") : clave === "nombre_espaciado" ? " em" : " px");
     aplicarVistaNombre();
     actualizarEstado();
   }

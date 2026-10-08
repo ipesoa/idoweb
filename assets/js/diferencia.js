@@ -1,25 +1,23 @@
 /* =====================================================================
-   LETRAS LEGIBLES SOBRE FOTOS  (como «Diferencia» de Photoshop, pero
-   solo donde hace falta)
+   LETRAS LEGIBLES SOBRE FOTOS
    ---------------------------------------------------------------------
-   Las letras son BLANCAS. Solo los píxeles de letra que caen sobre una
-   zona tan clara que el blanco no se leería se vuelven NEGROS. Nada más:
-   ni grises, ni difuminados, ni fundidos. El corte sigue exactamente a
-   la foto que hay debajo, píxel a píxel y a la resolución real de la
-   pantalla (también en retina).
-
-   Para que no «baile» cuando la foto se mueve, cada píxel tiene un
-   pequeño margen: pasa a negro un poco por encima del umbral y vuelve a
-   blanco un poco por debajo.
+   La idea: las letras son BLANCAS; si lo que tienen debajo es un color
+   claro (donde el blanco no se leería), esa letra pasa a NEGRO.
+   Se decide LETRA a letra (o palabra / texto entero, según ajustes):
+   cada letra es entera blanca o entera negra, nunca a trozos ni gris.
+   Una letra solo pasa a negro si la mayor parte de lo que tiene debajo
+   es más claro que la «tolerancia»; y para volver a blanco tiene que
+   oscurecerse un poco más (así no parpadea cuando la foto se mueve).
 
    Cómo mira el fondo: reconstruye en un lienzo invisible las fotos y
    vídeos que hay detrás de cada texto (con su encuadre, opacidad y
-   filtros) y mide la luz de cada píxel. Los textos de verdad siguen en
-   la página (enlaces, accesibilidad), transparentes; lo que se ve es lo
-   que pinta esta capa. Respeta las máscaras (overflow y clip-path) de
-   las animaciones.
+   filtros) y mide la luz bajo cada letra. Los textos de verdad siguen
+   en la página (enlaces, accesibilidad), transparentes; lo que se ve es
+   lo que pinta esta capa. Respeta las máscaras (overflow y clip-path)
+   de las animaciones.
 
-   Ajustes: assets/js/ajustes.js → diferencia
+   Ajustes: assets/js/ajustes.js → diferencia (y el gestor, pestaña
+   Cabecera → «Color de las letras», que manda sobre ajustes.js).
    Para añadir un texto: su selector a AJUSTES.diferencia.textos (o data-dif).
    Si una animación mueve letras por dentro de un texto, poner
    data-dif-vivo en el texto mientras dura (así se remiden cada fotograma).
@@ -28,9 +26,12 @@
   const AJ = (window.AJUSTES && window.AJUSTES.diferencia) || {};
   const ACTIVO = AJ.activo !== false;
   const TEXTOS = AJ.textos || ".menu a, .menu button, .menu span, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, [data-dif]";
-  let UMBRAL = num(AJ.umbral, 0.32);          // luz (0-1) desde la que el blanco ya no se lee → negro
-  const MARGEN = Math.max(0, num(AJ.margen, 0.04));   // margen anti-parpadeo alrededor del umbral
-  const GRANO = Math.max(0, num(AJ.grano, 1.5));      // px: ignora el grano/textura más fino que esto
+  // Se leen en cada fotograma: el gestor puede cambiarlos en directo.
+  const cfg = () => (window.AJUSTES && window.AJUSTES.diferencia) || AJ;
+  const umbral = () => num(cfg().umbral, 0.45);           // tolerancia: luz (0-1) a partir de la cual pasa a negro
+  const decidir = () => cfg().decidir || "palabra";        // "palabra" | "letra" | "texto"
+  const PROPORCION = 0.5;    // parte de la letra que tiene que estar sobre claro para pasar a negro
+  const VUELTA = 0.35;       // y por debajo de esta parte vuelve a blanco (margen anti-parpadeo)
   function num(v, d) { return Number.isFinite(Number(v)) ? Number(v) : d; }
 
   // luminancia lineal (la que usa la norma de contraste WCAG)
@@ -43,13 +44,15 @@
   function colorPara(hex) {
     const s = hex.replace("#", "");
     const c = s.length === 3 ? [...s].map((x) => parseInt(x + x, 16)) : [0, 2, 4].map((i) => parseInt(s.slice(i, i + 2), 16));
-    return { letra: luz(...c) >= UMBRAL ? "#000000" : "#FFFFFF" };
+    return { letra: luz(...c) >= umbral() ? "#000000" : "#FFFFFF" };
   }
   window.Diferencia = {
     colorPara,
     umbral: (valor) => {   // (laboratorio)
-      if (valor !== undefined && Number.isFinite(Number(valor))) UMBRAL = Math.max(0, Math.min(1, Number(valor)));
-      return UMBRAL;
+      if (valor !== undefined && Number.isFinite(Number(valor)) && window.AJUSTES) {
+        window.AJUSTES.diferencia = Object.assign({}, window.AJUSTES.diferencia, { umbral: Math.max(0, Math.min(1, Number(valor))) });
+      }
+      return umbral();
     },
     tiempos: () => ({}),
   };
@@ -72,8 +75,6 @@
   const lienzo = () => { const c = document.createElement("canvas"); return [c, c.getContext("2d", { willReadFrequently: true })]; };
   const [cFondo, xFondo] = lienzo();     // fondo reconstruido
   const [cTemp, xTemp] = lienzo();       // desenfoques a baja resolución
-  const [cMascara, xMascara] = lienzo(); // forma de las letras
-  const [cComp, xComp] = lienzo();       // letras ya coloreadas
   const tam = (c, w, h) => { if (c.width !== w || c.height !== h) { c.width = w; c.height = h; } };
   const colorFondoPagina = () => getComputedStyle(document.body).backgroundColor;
 
@@ -207,22 +208,24 @@
     if (!vivo && prev && prev.firma === firma) return prev.lista;
     const lista = [];
     const recorrer = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    let palabra = 0, enPalabra = false;
     for (let n = recorrer.nextNode(); n; n = recorrer.nextNode()) {
       const txt = n.textContent, p = n.parentElement;
-      if (!txt.trim()) continue;
+      if (!txt.trim()) { if (enPalabra) { palabra++; enPalabra = false; } continue; }
       const cs = getComputedStyle(p);
       const fuente = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
       const subrayado = /underline/.test(getComputedStyle(p.closest("a") || p).textDecorationLine);
       for (let k = 0; k < txt.length; k++) {
         let ch = txt[k];
-        if (!ch.trim()) continue;
+        if (!ch.trim()) { if (enPalabra) { palabra++; enPalabra = false; } continue; }
+        enPalabra = true;
         rango.setStart(n, k); rango.setEnd(n, k + 1);
         const r = rango.getBoundingClientRect();
         if (!r.width) continue;
         if (cs.textTransform === "uppercase") ch = ch.toUpperCase();
         else if (cs.textTransform === "lowercase") ch = ch.toLowerCase();
         lista.push({ ch, dx: r.left - caja.left, dy: r.top - caja.top, w: r.width, h: r.height,
-          p, fuente, tam: parseFloat(cs.fontSize), subrayado });
+          p, fuente, tam: parseFloat(cs.fontSize), subrayado, palabra });
       }
     }
     disposiciones.set(el, { firma, lista });
@@ -231,18 +234,19 @@
   window.addEventListener("resize", () => versionLetras++);
   if (document.fonts) document.fonts.addEventListener("loadingdone", () => { versionLetras++; metricas.clear(); });
 
-  /* ---------- pintar las letras (con sus máscaras) ---------- */
-  function letras(ctx, vivas, color, dpr) {
-    ctx.fillStyle = color;
-    let fuente = "", alfaAct = -1, filtroAct = "none", clipAct = null;
+  /* ---------- pintar las letras, cada una con su color y su máscara ---------- */
+  function letras(ctx, vivas, colores, dpr) {
+    let fuente = "", alfaAct = -1, filtroAct = "none", clipAct = null, colorAct = "";
     ctx.save(); ctx.filter = "none";
-    for (const { g, x: gx, y: gy, alfa, blur, clip } of vivas) {
+    vivas.forEach(({ g, x: gx, y: gy, alfa, blur, clip }, i) => {
       if (clip !== clipAct) {          // cambia la máscara: se restaura y se aplica la nueva
         ctx.restore(); ctx.save();
-        fuente = ""; alfaAct = -1; filtroAct = "none"; ctx.fillStyle = color;
+        fuente = ""; alfaAct = -1; filtroAct = "none"; colorAct = "";
         if (clip) { ctx.beginPath(); ctx.rect(clip[0], clip[1], clip[2] - clip[0], clip[3] - clip[1]); ctx.clip(); }
         clipAct = clip;
       }
+      const color = colores[i] ? "#000" : "#fff";
+      if (color !== colorAct) ctx.fillStyle = colorAct = color;
       const m = medidas(g.fuente);
       const base = gy + (g.h - (m.asc + m.desc)) / 2 + m.asc;
       const a = Math.min(1, alfa);
@@ -252,59 +256,29 @@
       if (g.fuente !== fuente) ctx.font = fuente = g.fuente;
       ctx.fillText(g.ch, gx, base);
       if (g.subrayado) ctx.fillRect(gx, base + g.tam * 0.25, g.w, 1);
-    }
+    });
     ctx.restore();
   }
 
-  /* ---------- luz de cada píxel, sin el grano fino de la foto ----------
-     (desenfoque de caja en dos pasadas: rápido; no cambia la forma de las
-     zonas, solo quita las motas sueltas de las texturas) */
-  let bufA = new Float32Array(0), bufB = new Float32Array(0);
-  function luces(d, w, h, r) {
-    const n = w * h;
-    if (bufA.length < n) { bufA = new Float32Array(n); bufB = new Float32Array(n); }
-    for (let i = 0, q = 0; i < n; i++, q += 4) bufA[i] = luz(d[q], d[q + 1], d[q + 2]);
-    if (r < 1) return bufA;
-    for (let pasada = 0; pasada < 2; pasada++) {
-      for (let y = 0; y < h; y++) {
-        const f = y * w; let acc = 0, cnt = 0;
-        for (let x = -r; x < w; x++) {
-          if (x + r < w) { acc += bufA[f + x + r]; cnt++; }
-          if (x - r - 1 >= 0) { acc -= bufA[f + x - r - 1]; cnt--; }
-          if (x >= 0) bufB[f + x] = acc / cnt;
-        }
-      }
-      for (let x = 0; x < w; x++) {
-        let acc = 0, cnt = 0;
-        for (let y = -r; y < h; y++) {
-          if (y + r < h) { acc += bufB[(y + r) * w + x]; cnt++; }
-          if (y - r - 1 >= 0) { acc -= bufB[(y - r - 1) * w + x]; cnt--; }
-          if (y >= 0) bufA[y * w + x] = acc / cnt;
-        }
-      }
-    }
-    return bufA;
-  }
-
   /* ---------- pintar un texto ---------- */
-  const previos = new WeakMap();   // el → { w, h, negro: Uint8Array, modo, cv } del fotograma anterior
-  let cuadro = 0, sucioCapa = [];
+  const estados = new WeakMap();   // el → { negro: Uint8Array } (color de cada letra el fotograma anterior)
+  let sucioCapa = [];
   let fallo = false;
   // local = null → capa fija (menú, inicio)  ·  local = {c, x, caja} → lienzo pegado al texto (rejillas)
-  // Devuelve true si ya está quieto (no hace falta repetir el siguiente fotograma)
   function pintarTexto(el, dpr, local = null) {
     const caja = el.getBoundingClientRect();
     const L = letrasDe(el, caja);
     if (!L.length) return true;
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity, margen = 0;
     const vivas = [];
-    for (const g of L) {
+    for (let i = 0; i < L.length; i++) {
+      const g = L[i];
       const acu = estiloAcumulado(g.p);
       if (acu.alfa <= 0.003) continue;
       const x = caja.left + g.dx, y = caja.top + g.dy, blur = radioBlur(acu.filtro);
       const clip = recorte(g.p);
       if (clip && (x + g.w <= clip[0] || x >= clip[2] || y + g.h <= clip[1] || y >= clip[3])) continue;   // tapada por su máscara
-      vivas.push({ g, x, y, alfa: acu.alfa, blur, clip });
+      vivas.push({ g, i, x, y, alfa: acu.alfa, blur, clip });
       x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x + g.w); y1 = Math.max(y1, y + g.h);
       margen = Math.max(margen, blur * 2 + g.tam * 0.6);   // sitio para cursivas y acentos
     }
@@ -317,75 +291,50 @@
     if (w <= 0 || h <= 0) return true;
     const W = Math.ceil(w * dpr), H = Math.ceil(h * dpr);
 
-    // El fondo se mide un fotograma de cada dos; en el otro se reutiliza el resultado.
-    let prev = previos.get(el);
-    if (prev && prev.W === W && prev.H === H && cuadro - prev.medido === 1) {
-      dibujar(prev, vivas, R, W, H, dpr, local);
-      return prev.quieto;
-    }
-    if (!prev) { prev = { cv: document.createElement("canvas") }; previos.set(el, prev); }
-
-    // a. vistazo rápido (1 px CSS): ¿hay algo lo bastante claro debajo de las letras?
+    // a. el fondo real detrás del texto (1 px CSS basta para medir la luz)
     tam(cFondo, w, h);
     dibujarFondo(R, 1);
     let datos;
     try { datos = xFondo.getImageData(0, 0, w, h); }
     catch (e) { fallo = true; return true; }
-    const bajo = UMBRAL - MARGEN / 2, alto = UMBRAL + MARGEN / 2;
-    let maxLuz = 0;
-    const d0 = datos.data;
+    const d = datos.data, U = umbral();
+
+    // b. qué parte de cada letra cae sobre un color claro
+    //    (se mira el centro de la letra: los bordes son aire alrededor)
+    const grupos = new Map();   // letra / palabra / texto → [claros, total]
+    const modo = decidir();
+    const clave = (v) => (modo === "texto" ? 0 : modo === "palabra" ? v.g.palabra : v.i);
     for (const v of vivas) {
-      const gx0 = Math.max(0, Math.floor(v.x - R.x0) - 1), gy0 = Math.max(0, Math.floor(v.y - R.y0) - 1);
-      const gx1 = Math.min(w, Math.ceil(v.x + v.g.w - R.x0) + 1), gy1 = Math.min(h, Math.ceil(v.y + v.g.h - R.y0) + 1);
+      const mx = v.g.w * 0.15, my = v.g.h * 0.2;
+      const gx0 = Math.max(0, Math.floor(v.x + mx - R.x0)), gy0 = Math.max(0, Math.floor(v.y + my - R.y0));
+      const gx1 = Math.min(w, Math.ceil(v.x + v.g.w - mx - R.x0)), gy1 = Math.min(h, Math.ceil(v.y + v.g.h - my - R.y0));
+      let claros = 0, total = 0;
       for (let y = gy0; y < gy1; y++) for (let x = gx0, q = (y * w + gx0) * 4; x < gx1; x++, q += 4) {
-        const l = luz(d0[q], d0[q + 1], d0[q + 2]); if (l > maxLuz) maxLuz = l;
+        total++; if (luz(d[q], d[q + 1], d[q + 2]) >= U) claros++;
       }
+      const k = clave(v), gr = grupos.get(k) || [0, 0];
+      gr[0] += claros; gr[1] += total; grupos.set(k, gr);
     }
-    prev.medido = cuadro; prev.quieto = true;
-    if (maxLuz < bajo - 0.03 && prev.modo !== "mezcla" || maxLuz < bajo - 0.08) {
-      // Todo se lee en blanco (lo normal): blanco y listo
-      prev.modo = "blanco"; prev.W = W; prev.H = H; prev.negro = null;
-      dibujar(prev, vivas, R, W, H, dpr, local);
-      return true;
-    }
+    // c. decisión con memoria: pasa a negro si más de la mitad es claro;
+    //    vuelve a blanco solo cuando baja bastante
+    let est = estados.get(el);
+    if (!est || est.length !== L.length) { est = new Uint8Array(L.length); estados.set(el, est); }
+    const colores = vivas.map((v) => {
+      const [claros, total] = grupos.get(clave(v));
+      const parte = total ? claros / total : 0;
+      let negro = est[v.i];
+      if (!negro && parte >= PROPORCION) negro = 1;
+      else if (negro && parte < VUELTA) negro = 0;
+      est[v.i] = negro;
+      return negro;
+    });
 
-    // b. hay zonas claras: decisión píxel a píxel a la resolución de la pantalla
-    tam(cFondo, W, H);
-    dibujarFondo(R, dpr);
-    try { datos = xFondo.getImageData(0, 0, W, H); }
-    catch (e) { fallo = true; return true; }
-    const d = datos.data, n = W * H;
-    const mismo = prev.negro && prev.W === W && prev.H === H;
-    const negro = mismo ? prev.negro : new Uint8Array(n);
-    tam(prev.cv, W, H);
-    const xc = prev.cv.getContext("2d");
-    const campo = xc.createImageData(W, H), c = campo.data;
-    let hayNegro = false, hayBlanco = false;
-    const lz = luces(d, W, H, Math.round(GRANO * dpr));
-    for (let i = 0, q = 0; i < n; i++, q += 4) {
-      const l = lz[i];
-      let b;
-      if (l >= alto) b = 1;
-      else if (l < bajo) b = 0;
-      else b = mismo ? negro[i] : (l >= UMBRAL ? 1 : 0);   // en el margen: se queda como estaba
-      negro[i] = b;
-      const t = b ? 0 : 255;
-      c[q] = c[q + 1] = c[q + 2] = t; c[q + 3] = 255;
-      if (b) hayNegro = true; else hayBlanco = true;
-    }
-    prev.negro = negro; prev.W = W; prev.H = H;
-    prev.modo = hayNegro && hayBlanco ? "mezcla" : hayNegro ? "negro" : "blanco";
-    if (prev.modo === "mezcla") xc.putImageData(campo, 0, 0);
-    dibujar(prev, vivas, R, W, H, dpr, local);
-    return true;
-  }
-
-  function dibujar(prev, vivas, R, W, H, dpr, local) {
+    // d. dibujar
     let x, ox = 0, oy = 0;
     if (local) {
       const cv = local.c, cajaL = local.caja.getBoundingClientRect();
       tam(cv, W, H);
-      Object.assign(cv.style, { left: (R.x0 - cajaL.left - local.caja.clientLeft) + "px", top: (R.y0 - cajaL.top - local.caja.clientTop) + "px", width: W / dpr + "px", height: H / dpr + "px" });
+      Object.assign(cv.style, { left: (R.x0 - cajaL.left - local.caja.clientLeft) + "px", top: (R.y0 - cajaL.top - local.caja.clientTop) + "px", width: w + "px", height: h + "px" });
       x = local.x;
       x.setTransform(1, 0, 0, 1, 0, 0);
       x.clearRect(0, 0, W, H);
@@ -394,27 +343,10 @@
       x = cc;
       sucioCapa.push([R.x0 * dpr, R.y0 * dpr, W, H]);
     }
-    if (prev.modo !== "mezcla") {     // un solo color: directo
-      x.setTransform(dpr, 0, 0, dpr, -ox * dpr, -oy * dpr);
-      letras(x, vivas, prev.modo === "negro" ? "#000" : "#fff", dpr);
-      x.setTransform(1, 0, 0, 1, 0, 0);
-      return;
-    }
-    // mezcla: el mapa blanco/negro recortado con la forma de las letras (sin suavizar: corte limpio)
-    tam(cMascara, W, H); tam(cComp, W, H);
-    xMascara.setTransform(1, 0, 0, 1, 0, 0);
-    xMascara.clearRect(0, 0, W, H);
-    xMascara.setTransform(dpr, 0, 0, dpr, -R.x0 * dpr, -R.y0 * dpr);
-    letras(xMascara, vivas, "#fff", dpr);
-    xComp.setTransform(1, 0, 0, 1, 0, 0);
-    xComp.globalCompositeOperation = "copy";
-    xComp.imageSmoothingEnabled = false;
-    xComp.drawImage(prev.cv, 0, 0);
-    xComp.globalCompositeOperation = "destination-in";
-    xComp.drawImage(cMascara, 0, 0);
-    xComp.globalCompositeOperation = "source-over";
+    x.setTransform(dpr, 0, 0, dpr, -ox * dpr, -oy * dpr);
+    letras(x, vivas, colores, dpr);
     x.setTransform(1, 0, 0, 1, 0, 0);
-    x.drawImage(cComp, local ? 0 : R.x0 * dpr, local ? 0 : R.y0 * dpr);
+    return true;
   }
 
   /* ---------- textos que se mueven con la página (rejillas) ---------- */
@@ -466,7 +398,6 @@
     if (!document.hidden) {
       const t0 = performance.now();
       memo = new Map(); memoRecorte = new Map(); medios = null;
-      cuadro++;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const cw = Math.ceil(innerWidth * dpr), ch = Math.ceil(innerHeight * dpr);
       if (capa.width !== cw || capa.height !== ch) { tam(capa, cw, ch); sucioCapa = []; }
