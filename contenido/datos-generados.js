@@ -499,6 +499,8 @@ nombre_tamano: 30
 nombre_tamano_movil: 17
 nombre_espaciado: -0.01
 nombre_peso: 900
+contraste_umbral: 0.79
+contraste_grano: 0.5
 ---
 HELLO!
 
@@ -528,4 +530,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610072207 */
+/* gestor: 202610080749 */
