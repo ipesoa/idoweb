@@ -260,7 +260,7 @@ año: 2027
 labor: 
 director: Norma Vila
 productora: Pris&Batty / Bondi
-mostrar_en_inicio: si
+mostrar_en_inicio: no
 ---
 `,
       "archivos": [
@@ -499,4 +499,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610081009 */
+/* gestor: 202610081041 */
