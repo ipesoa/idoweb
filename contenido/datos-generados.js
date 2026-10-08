@@ -472,8 +472,9 @@ nombre_peso: 900
 contraste_umbral: 0.85
 contraste_grano: 0
 parrilla_hilo: 5
-parrilla_texto_tamano: 15
+parrilla_texto_tamano: 13
 parrilla_nombre_caja: si
+parrilla_texto_fuente: garet
 ---
 HELLO!
 
@@ -503,4 +504,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610081122 */
+/* gestor: 202610081138 */
