@@ -2,6 +2,6 @@ titulo: Daniela Forever
 año: 2024
 labor: 
 director: Nacho Vigalondo
-mostrar_en_inicio: si
-portada: 03.jpg
+mostrar_en_inicio: no
+portada: 01.jpg
 ---

@@ -53,8 +53,8 @@ mostrar_en_inicio: si
 año: 2024
 labor: 
 director: Nacho Vigalondo
-mostrar_en_inicio: si
-portada: 03.jpg
+mostrar_en_inicio: no
+portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -514,4 +514,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610081142 */
+/* gestor: 202610081145 */
