@@ -470,7 +470,9 @@ nombre_espaciado: -0.01
 nombre_peso: 900
 contraste_umbral: 0.85
 contraste_grano: 0
-parrilla_hilo: 1
+parrilla_hilo: 5
+parrilla_texto_tamano: 15
+parrilla_nombre_caja: si
 ---
 HELLO!
 
@@ -500,4 +502,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610081118 */
+/* gestor: 202610081120 */
