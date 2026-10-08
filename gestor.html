@@ -389,10 +389,14 @@ button { cursor: pointer; background: none; border: 0; }
         const portada = medios.find((m) => esPortada(m) && m !== cartel) || medios.find((m) => !m.video && !esMovil(m) && m !== cartel);
         const movil = medios.find(esMovil) || null;
         const resto = medios.filter((m) => m !== portada && m !== movil && m !== cartel);
+        // Si la portada viene de la clave "portada:" (forma nueva) va en su sitio
+        // dentro de las fotos; si es un archivo portada.* (forma antigua), la primera.
+        const porClave = !!info.campos.portada && portada && !/^portada\./i.test(portada.f);
+        const fotosOrden = porClave ? medios.filter((m) => m !== movil && m !== cartel) : (portada ? [portada] : []).concat(resto);
         delete info.campos.portada; delete info.campos.portada_movil; delete info.campos.cartel;
         proyectos.push({
           tipo, carpeta, info, infoOriginal: infoTexto,
-          fotos: (portada ? [portada] : []).concat(resto), movil, cartel,
+          fotos: fotosOrden, portada: portada || null, movil, cartel,
           rutasOriginales: medios.map((m) => m.ruta),
           archivosOriginales: (dato ? dato.archivos : medios.map((m) => ({ f: m.f }))),
           sucio: false, nuevo: false,
@@ -470,7 +474,7 @@ button { cursor: pointer; background: none; border: 0; }
   /* ================= vistas ================= */
   const urlDe = (f) => f.local || `https://raw.githubusercontent.com/${REPO}/${E.head}/${f.ruta.split("/").map(encodeURIComponent).join("/")}`;
   const miniatura = (p) => {
-    const f = p.fotos.find((x) => !x.video);
+    const f = (p.portada && p.fotos.includes(p.portada) ? p.portada : null) || p.fotos.find((x) => !x.video);
     return f ? `<img src="${esc(urlDe(f))}" alt="" loading="lazy">` : `<div class="sin-foto">sin fotos</div>`;
   };
   const enInicio = (p) => /^(si|sí|yes|true|1|x)$/i.test((p.info.campos.mostrar_en_inicio || "").trim());
@@ -480,7 +484,7 @@ button { cursor: pointer; background: none; border: 0; }
   function pintarPestanas() {
     $("#pestanas").innerHTML = [`<button data-p="inicio">Inicio</button>`]
       .concat(TIPOS.map((t) => `<button data-p="${t.id}">${t.titulo}</button>`))
-      .concat([`<button data-p="about">Contact</button>`, `<button data-p="nombre">Cabecera</button>`]).join("");
+      .concat([`<button data-p="about">Contact</button>`, `<button data-p="nombre">Cabecera</button>`, `<button data-p="parrillas">Parrillas</button>`]).join("");
   }
   function pintar() {
     if (!$("#pestanas button")) pintarPestanas();
@@ -489,6 +493,7 @@ button { cursor: pointer; background: none; border: 0; }
     if (pestana === "inicio") v.innerHTML = vistaInicio();
     else if (pestana === "about") v.innerHTML = vistaAbout();
     else if (pestana === "nombre") { v.innerHTML = vistaNombre(); activarVistaNombre(); }
+    else if (pestana === "parrillas") { v.innerHTML = vistaParrillas(); activarVistaParrillas(); }
     else v.innerHTML = vistaLista(pestana);
     actualizarEstado();
   }
@@ -626,46 +631,75 @@ button { cursor: pointer; background: none; border: 0; }
           ${elegir("contraste_por", "Cómo decide", c.contraste_por || "pixel", [["pixel", "Según la imagen (como Photoshop, solo en las zonas claras)"], ["palabra", "Palabra entera"], ["letra", "Letra a letra"], ["texto", "Texto entero de un color"]])}
           ${rango("contraste_grano", "Ignorar textura fina (según la imagen)", c.contraste_grano || "1.5", 0, 4, 0.5, "px")}
         </div>
-        <div class="preview-nombre"><iframe id="vistaNombre" src="index.html?vista=gestor&t=${Date.now()}" title="Vista previa de la cabecera"></iframe>
+        <div class="preview-nombre"><iframe id="vistaNombre" src="${urlVista("index.html")}" title="Vista previa de la cabecera"></iframe>
           <p>Vista previa del inicio. Los controles de arriba cambian el nombre sin tocar todavía la web pública.</p></div>
       </div>`;
   }
 
+  /* ---------- pestaña PARRILLAS: línea entre fotos y texto de cada recuadro ----------
+     Se guarda en contenido/about/info.txt (claves parrilla_*), como la cabecera. */
+  function vistaParrillas() {
+    const c = E.about.info.campos;
+    const rango = (clave, etiqueta, valor, min, max, step, unidad) => `<label class="control-nombre"><span>${etiqueta}</span>
+      <span class="fila-rango"><input type="range" data-nombre="${clave}" min="${min}" max="${max}" step="${step}" value="${esc(valor)}">
+      <output data-valor-nombre="${clave}" data-unidad="${unidad}">${esc(valor)} ${unidad}</output></span></label>`;
+    const fuente = c.parrilla_texto_fuente || "arial";
+    const opciones = [["arial", "Arial"], ["garet", "Garet Book"], ["garet-heavy", "Garet Heavy"], ["instrument-sans", "Instrument Sans"], ["instrument", "Instrument Serif"]]
+      .concat(c.nombre_fuente_archivo ? [["personalizada", "Fuente subida (la de la cabecera)"]] : []);
+    return `<div class="cabecera"><h2>Parrillas (Work, Films, Series…)</h2>
+        <p>Los cambios se ven aquí al instante. Para hacerlos públicos, pulsa «Publicar cambios» arriba.</p></div>
+      <div class="editor-nombre">
+        <div class="bloque controles-nombre">
+          <h3 class="bloque-titulo" style="border:0;margin-top:0;padding-top:0">Línea entre las fotos</h3>
+          ${rango("parrilla_hilo", "Grosor (0 = fotos pegadas)", c.parrilla_hilo || "0", 0, 20, 1, "px")}
+          <label class="control-nombre"><span>Color</span>
+            <span class="fila-rango"><input type="color" data-nombre="parrilla_hilo_color" value="${esc(c.parrilla_hilo_color || "#000000")}" style="width:56px;height:36px;padding:0;border:1px solid var(--linea);border-radius:6px;background:#fff">
+            <output data-valor-nombre="parrilla_hilo_color" data-unidad="">${esc(c.parrilla_hilo_color || "#000000")}</output></span></label>
+
+          <h3 class="bloque-titulo">Nombre de arriba (IDOIA ESTEBAN GALVÁN)</h3>
+          <label class="control-nombre"><span>Rectángulo detrás del nombre</span><select data-nombre="parrilla_nombre_caja">
+            <option value="no"${(c.parrilla_nombre_caja || "no") === "no" ? " selected" : ""}>Sin rectángulo</option>
+            <option value="si"${c.parrilla_nombre_caja === "si" ? " selected" : ""}>Con rectángulo al ras (letras blancas)</option></select></label>
+          <label class="control-nombre"><span>Color del rectángulo</span>
+            <span class="fila-rango"><input type="color" data-nombre="parrilla_nombre_caja_color" value="${esc(c.parrilla_nombre_caja_color || "#000000")}" style="width:56px;height:36px;padding:0;border:1px solid var(--linea);border-radius:6px;background:#fff">
+            <output data-valor-nombre="parrilla_nombre_caja_color" data-unidad="">${esc(c.parrilla_nombre_caja_color || "#000000")}</output></span></label>
+
+          <h3 class="bloque-titulo">Texto de cada recuadro (título · director · año)</h3>
+          <label class="control-nombre"><span>Tipografía</span><select data-nombre="parrilla_texto_fuente">
+            ${opciones.map(([v, t]) => `<option value="${v}"${fuente === v ? " selected" : ""}>${t}</option>`).join("")}</select></label>
+          ${rango("parrilla_texto_tamano", "Tamaño (en el móvil sale un poco más pequeño)", c.parrilla_texto_tamano || "13", 9, 24, 1, "px")}
+        </div>
+        <div class="preview-nombre"><iframe id="vistaParrillas" src="${urlVista("work.html")}" title="Vista previa de las parrillas" style="pointer-events:auto"></iframe>
+          <p>Vista previa de Work. Puedes hacer scroll dentro.</p></div>
+      </div>`;
+  }
+  function aplicarVistaParrillas() {
+    if (pestana !== "parrillas") return;
+    mandarAVista("#vistaParrillas");
+  }
+  function activarVistaParrillas() {
+    const iframe = $("#vistaParrillas");
+    if (!iframe) return;
+    iframe.addEventListener("load", () => { aplicarVistaParrillas(); setTimeout(aplicarVistaParrillas, 300); });
+    clearInterval(relojVista);
+    relojVista = setInterval(() => { if (pestana !== "parrillas" || !$("#vistaParrillas")) { clearInterval(relojVista); return; } aplicarVistaParrillas(); }, 500);
+  }
+
+  // Las vistas previas reciben los ajustes por mensaje: así funcionan tanto
+  // con el gestor publicado como abierto desde el ordenador (doble clic).
+  const urlVista = (pagina) => (location.hostname.endsWith("github.io") ? "" : webBase()) + `${pagina}?vista=gestor&t=${Date.now()}`;
+  function mandarAVista(id, extra = {}) {
+    const iframe = $(id);
+    if (!iframe || !iframe.contentWindow) return;
+    const c = E.about.info.campos;
+    const fuenteUrl = E.fuentePendiente && location.hostname.endsWith("github.io") ? E.fuentePendiente.url : undefined;
+    iframe.contentWindow.postMessage({ tipo: "gestor", campos: { ...c }, fuenteUrl, ...extra }, "*");
+  }
   function aplicarVistaNombre() {
     if (pestana !== "nombre") return;
-    const iframe = $("#vistaNombre");
-    const doc = iframe && iframe.contentDocument;
-    const nombre = doc && doc.querySelector(".menu__nombre");
-    if (!nombre) return;
-    const c = E.about.info.campos;
-    const root = doc.documentElement;
-    const familias = {
-      garet: '"Garet", Arial, sans-serif',
-      arial: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
-      instrument: '"Instrument Serif", "Times New Roman", serif',
-      personalizada: '"Idoia personalizada", "Garet", Arial, sans-serif',
-    };
-    const archivo = c.nombre_fuente_archivo || (E.fuenteCustom || "").split("/").pop();
-    if (/^idoia-custom\.(woff2?|otf|ttf)$/.test(archivo || "")) {
-      const url = E.fuentePendiente ? E.fuentePendiente.url : `assets/fonts/${archivo}`;
-      const formato = archivo.endsWith("woff2") ? "woff2" : archivo.endsWith("woff") ? "woff" : archivo.endsWith("otf") ? "opentype" : "truetype";
-      let style = doc.querySelector("#fuenteVistaNombre");
-      if (!style) { style = doc.createElement("style"); style.id = "fuenteVistaNombre"; doc.head.append(style); }
-      style.textContent = `@font-face{font-family:"Idoia personalizada";src:url("${url}") format("${formato}");font-style:normal;font-weight:400;font-display:swap}`;
-    }
-    const texto = c.nombre || "Idoia Esteban Galván";
-    if (nombre.dataset.difVivo) nombre.dataset.texto = texto;          // animándose: se cambia al acabar
-    else if (nombre.textContent !== texto) nombre.textContent = texto;
-    const win = iframe.contentWindow;
-    if (win && win.Comun && win.Comun.aplicarEfectos) win.Comun.aplicarEfectos(c);
-    root.style.setProperty("--nombre-fuente", familias[c.nombre_fuente || "garet"]);
-    root.style.setProperty("--nombre-tam", (c.nombre_tamano || "18") + "px");
-    root.style.setProperty("--nombre-tam-movil", (c.nombre_tamano_movil || "16") + "px");
-    root.style.setProperty("--nombre-espaciado", (c.nombre_espaciado || "0.12") + "em");
-    root.style.setProperty("--nombre-negrita", c.nombre_peso || "900");
-    root.style.setProperty("--nombre-cursiva", (c.nombre_cursiva || "si") === "si" ? "italic" : "normal");
-    root.style.setProperty("--nombre-transform", (c.nombre_mayusculas || "si") === "si" ? "uppercase" : "none");
+    mandarAVista("#vistaNombre");
   }
+
 
   // La vista previa se aplica al cargar y, mientras la pestaña está abierta,
   // se vuelve a aplicar cada poco: así siempre muestra lo que dicen los
@@ -696,10 +730,13 @@ button { cursor: pointer; background: none; border: 0; }
   /* ================= editor de proyecto ================= */
   let ed = null;   // { p, copia }
   function abrirEditor(p) {
-    ed = { p, fotos: p.fotos.slice(), movil: p.movil, cartel: p.cartel || null, campos: { ...p.info.campos }, texto: p.info.texto, sel: new Set(), ultimaQuitada: [] };
+    ed = { p, fotos: p.fotos.slice(), portada: p.portada || null, movil: p.movil, cartel: p.cartel || null, campos: { ...p.info.campos }, texto: p.info.texto, sel: new Set(), ultimaQuitada: [] };
     pintarEditor();
     $("#editor").hidden = false;
   }
+  // La portada (foto de la parrilla) es una marca: no mueve la foto de sitio.
+  // Si no hay ninguna marcada (o se quitó), es la primera foto que no sea vídeo.
+  const portadaDe = (x) => (x.portada && x.fotos.includes(x.portada) && !x.portada.video ? x.portada : x.fotos.find((f) => !f.video) || null);
   function pintarEditor() {
     const { p, campos } = ed;
     const scroll = $("#editor .panel")?.scrollTop || 0;
@@ -732,7 +769,7 @@ button { cursor: pointer; background: none; border: 0; }
           <span class="nota">Súbelo aquí, arrástralo encima de este recuadro, o pulsa «Cartel» en una de las fotos de abajo.</span><br>
           <label class="boton" style="margin-top:8px">${ed.cartel ? "Cambiar cartel" : "＋ Subir cartel"}<input type="file" id="subirCartel" accept="image/*" hidden></label>
           ${ed.cartel ? `<button class="boton" data-ed="cartel-a-fotos" style="margin-top:8px">Pasarlo a las fotos</button><button class="enlace" data-ed="quitar-cartel">Quitar</button>` : ""}</div></div>
-      <div class="fotos-barra"><h3>Fotos (${ed.fotos.length}) · arrastra para ordenar · la primera es la portada</h3>
+      <div class="fotos-barra"><h3>Fotos (${ed.fotos.length}) · arrastra para ordenar (así salen en la página) · «Portada» elige la foto de la parrilla</h3>
         ${ed.sel.size === 1 && ![...ed.sel][0].video ? `<button class="boton" data-ed="sel-cartel">Usar de cartel</button>` : ""}
         ${ed.sel.size ? `<button class="boton" data-ed="portada">Poner de portada</button><button class="boton boton--peligro" data-ed="borrar-fotos">Eliminar ${ed.sel.size} foto${ed.sel.size > 1 ? "s" : ""}</button><button class="enlace" data-ed="sel-nada">Deseleccionar</button>` : ""}
         ${ed.ultimaQuitada.length ? `<button class="boton" data-ed="deshacer-fotos">Deshacer quitar</button>` : ""}
@@ -742,12 +779,12 @@ button { cursor: pointer; background: none; border: 0; }
       <div class="fotos" id="fotos">${ed.fotos.map((f, i) => `
         <div class="foto ${ed.sel.has(f) ? "elegida" : ""}" draggable="true" data-i="${i}">
           ${f.video ? `<video src="${esc(urlDe(f))}" muted></video>` : `<img src="${esc(urlDe(f))}" alt="">`}
-          ${i === 0 ? `<span class="portada">PORTADA</span>` : ""}<span class="num">${i + 1}</span>
-          <button class="asa ${i === 0 ? "con-portada" : ""}" data-drag="${i}" aria-label="Arrastrar foto ${i + 1}" title="Arrastrar para ordenar">↕</button>
+          ${f === portadaDe(ed) ? `<span class="portada">PORTADA</span>` : ""}<span class="num">${i + 1}</span>
+          <button class="asa ${f === portadaDe(ed) ? "con-portada" : ""}" data-drag="${i}" aria-label="Arrastrar foto ${i + 1}" title="Arrastrar para ordenar">↕</button>
           <button class="marca" data-sel="${i}" aria-label="Seleccionar foto ${i + 1}">${ed.sel.has(f) ? "✓" : ""}</button>
           <div class="foto__acciones"><button data-mover="${i}" data-d="-1" title="Mover antes"${i === 0 ? " disabled" : ""}>←</button>
             <button data-mover="${i}" data-d="1" title="Mover después"${i === ed.fotos.length - 1 ? " disabled" : ""}>→</button>
-            <button data-foto-portada="${i}"${i === 0 || f.video ? " disabled" : ""}>Portada</button>
+            <button data-foto-portada="${i}"${f === portadaDe(ed) || f.video ? " disabled" : ""} title="Usar como portada de la parrilla (no cambia el orden)">Portada</button>
             <button data-foto-cartel="${i}"${f.video ? " disabled" : ""} title="Usar como cartel (sale en las rejillas, no en la galería)">Cartel</button>
             <button class="quitar" data-foto-eliminar="${i}">Quitar</button></div>
         </div>`).join("")}</div>
@@ -890,11 +927,11 @@ button { cursor: pointer; background: none; border: 0; }
     leerCamposEditor();
     const { p } = ed;
     if (!ed.campos.titulo) { aviso("Falta el título", true); return; }
-    if (ed.fotos.length && ed.fotos[0].video) { aviso("La primera (portada) tiene que ser una foto, no un vídeo", true); return; }
+    if (ed.fotos.length && !portadaDe(ed)) { aviso("Hace falta al menos una foto (no vídeo) para la portada", true); return; }
     p.info.campos = { ...ed.campos };
     if (!p.info.campos.encuadre) delete p.info.campos.encuadre;
     p.info.texto = ed.texto;
-    p.fotos = ed.fotos; p.movil = ed.movil; p.cartel = ed.cartel;
+    p.fotos = ed.fotos; p.portada = portadaDe(ed); p.movil = ed.movil; p.cartel = ed.cartel;
     if (!p.nuevo) p.sucio = true;
     cerrarEditor();
     pintar();
@@ -918,7 +955,7 @@ button { cursor: pointer; background: none; border: 0; }
     let carpeta = `${ano}-${slug(titulo)}`.replace(/^-/, ""), n = 2;
     while (E.proyectos.some((p) => p.tipo === tipo && p.carpeta === carpeta) || E.borrados.some((p) => p.tipo === tipo && p.carpeta === carpeta)) carpeta = `${ano}-${slug(titulo)}-${n++}`;
     const p = {
-      tipo, carpeta, nuevo: true, sucio: false, fotos: [], movil: null, cartel: null, rutasOriginales: [], archivosOriginales: [],
+      tipo, carpeta, nuevo: true, sucio: false, fotos: [], portada: null, movil: null, cartel: null, rutasOriginales: [], archivosOriginales: [],
       info: { campos: { titulo, ano, labor: "Product Designer", director: "", mostrar_en_inicio: "no" }, orden: [], texto: "" },
     };
     E.proyectos.push(p);
@@ -968,9 +1005,14 @@ button { cursor: pointer; background: none; border: 0; }
       for (const p of E.proyectos) {
         const base = `contenido/${p.tipo}/${p.carpeta}/`;
         if (!p.sucio && !p.nuevo) { datos[p.tipo].push({ carpeta: p.carpeta, info: p.infoOriginal, archivos: p.archivosOriginales }); continue; }
+        // Fotos: 01, 02… en el orden del editor (el de la página de la peli).
+        // La portada de la parrilla se guarda aparte con la clave "portada:".
+        const finales = p.fotos.map((f, i) => ({ f, nombre: String(i + 1).padStart(2, "0") + "." + (f.ext || (f.f.match(/\.(\w+)$/) || [, "jpg"])[1].toLowerCase()) }));
+        const laPortada = finales.find(({ f }) => f === portadaDe(p));
+        if (laPortada) p.info.campos.portada = laPortada.nombre; else delete p.info.campos.portada;
         const infoTxt = infoATexto(p);
+        delete p.info.campos.portada;
         poner(base + "info.txt", await blobTexto(infoTxt));
-        const finales = p.fotos.map((f, i) => ({ f, nombre: (i === 0 && !f.video ? "portada" : String(i).padStart(2, "0")) + "." + (f.ext || (f.f.match(/\.(\w+)$/) || [, "jpg"])[1].toLowerCase()) }));
         if (p.movil) finales.push({ f: p.movil, nombre: "portada-movil." + (p.movil.ext || (p.movil.f.match(/\.(\w+)$/) || [, "jpg"])[1].toLowerCase()) });
         if (p.cartel) finales.push({ f: p.cartel, nombre: "cartel." + (p.cartel.ext || (p.cartel.f.match(/\.(\w+)$/) || [, "jpg"])[1].toLowerCase()) });
         const rutasFinales = new Set();
@@ -1206,14 +1248,7 @@ button { cursor: pointer; background: none; border: 0; }
       seleccion.has(t.dataset.marcar) ? seleccion.delete(t.dataset.marcar) : seleccion.add(t.dataset.marcar);
       pintar(); return;
     }
-    if (t.dataset.vista) {
-      const win = $("#vistaNombre") && $("#vistaNombre").contentWindow;
-      if (!win || !win.Comun) return;
-      aplicarVistaNombre();
-      if (t.dataset.vista === "nombre") win.Comun.animarNombre();
-      else { const abierto = win.document.querySelector(".menu__work")?.getAttribute("aria-expanded") === "true"; win.Comun.menu(!abierto); }
-      return;
-    }
+    if (t.dataset.vista) { mandarAVista("#vistaNombre", { accion: t.dataset.vista }); return; }
     if (t.dataset.editar) { abrirEditor(E.proyectos.find((x) => x.tipo + "/" + x.carpeta === t.dataset.editar)); return; }
 
     // editor
@@ -1228,8 +1263,8 @@ button { cursor: pointer; background: none; border: 0; }
     if (d === "sel-nada") { leerCamposEditor(); ed.sel.clear(); pintarEditor(); return; }
     if (d === "borrar-fotos") { leerCamposEditor(); ed.ultimaQuitada = ed.fotos.map((f, i) => ({ f, i })).filter(({ f }) => ed.sel.has(f)); ed.fotos = ed.fotos.filter((f) => !ed.sel.has(f)); ed.sel.clear(); pintarEditor(); return; }
     if (d === "deshacer-fotos") { leerCamposEditor(); for (const { f, i } of ed.ultimaQuitada) ed.fotos.splice(Math.min(i, ed.fotos.length), 0, f); ed.ultimaQuitada = []; pintarEditor(); return; }
-    if (d === "portada") { leerCamposEditor(); const elegidas = ed.fotos.filter((f) => ed.sel.has(f) && !f.video); if (elegidas.length) { ed.fotos = [elegidas[0]].concat(ed.fotos.filter((f) => f !== elegidas[0])); } ed.sel.clear(); pintarEditor(); return; }
-    if (t.dataset.fotoPortada !== undefined) { leerCamposEditor(); const i = +t.dataset.fotoPortada; const [f] = ed.fotos.splice(i, 1); ed.fotos.unshift(f); pintarEditor(); return; }
+    if (d === "portada") { leerCamposEditor(); const elegida = ed.fotos.find((f) => ed.sel.has(f) && !f.video); if (elegida) ed.portada = elegida; ed.sel.clear(); pintarEditor(); return; }
+    if (t.dataset.fotoPortada !== undefined) { leerCamposEditor(); const f = ed.fotos[+t.dataset.fotoPortada]; if (f && !f.video) ed.portada = f; pintarEditor(); return; }
     if (t.dataset.fotoEliminar !== undefined) { leerCamposEditor(); const i = +t.dataset.fotoEliminar; const [f] = ed.fotos.splice(i, 1); ed.ultimaQuitada = [{ f, i }]; ed.sel.delete(f); pintarEditor(); return; }
     if (d === "quitar-movil") { leerCamposEditor(); ed.movil = null; pintarEditor(); return; }
     if (t.dataset.fotoCartel !== undefined) { ponerCartel(ed.fotos[+t.dataset.fotoCartel], true); return; }
@@ -1253,6 +1288,7 @@ button { cursor: pointer; background: none; border: 0; }
     const salida = $(`[data-valor-nombre="${clave}"]`);
     if (salida) salida.textContent = valor + (salida.dataset.unidad !== undefined ? (salida.dataset.unidad ? " " + salida.dataset.unidad : "") : clave === "nombre_espaciado" ? " em" : " px");
     aplicarVistaNombre();
+    aplicarVistaParrillas();
     actualizarEstado();
   }
   document.addEventListener("input", (e) => {

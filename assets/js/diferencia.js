@@ -59,12 +59,14 @@
     },
     tiempos: () => ({}),
   };
-  if (!ACTIVO) return;
+  // En las páginas sin fotos (Contact) no hace falta: el texto se queda tal cual, fijo.
+  const SIN = AJ.paginasSin || ["contact"];
+  if (!ACTIVO || SIN.includes(document.body.dataset.pagina)) return;
 
   /* ---------- estilos y capa ---------- */
   const estilo = document.createElement("style");
   estilo.textContent = `
-    .dif-activo :is(${TEXTOS}), .dif-activo :is(${TEXTOS}) * {
+    .dif-activo :is(${TEXTOS}):not([data-dif-no], [data-dif-no] *), .dif-activo :is(${TEXTOS}):not([data-dif-no], [data-dif-no] *) * {
       color: transparent !important; -webkit-text-stroke-color: transparent !important; text-decoration-color: transparent !important;
     }`;
   document.head.appendChild(estilo);
@@ -516,6 +518,7 @@
       const maxLocales = animando.size ? 12 : 4;
       for (const el of document.querySelectorAll(TEXTOS)) {
         if (anidado(el)) continue;
+        if (el.closest("[data-dif-no]")) continue;   // p. ej. el nombre con rectángulo negro: texto normal
         const r = el.getBoundingClientRect();
         if (esFijo(el)) {
           if (!r.width || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) continue;

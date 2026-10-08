@@ -10,7 +10,8 @@
      2. FICHA      título · directed by · produced by · año
      3. CREW       una línea "crew:" por persona → sale a dos columnas
      4. TEXTO      lo que hay después del --- en el info.txt
-     5. FOTOS      rejilla regular formato cine (ajustes.css sección 4)
+     5. FOTOS      rejilla regular formato cine, en el orden del gestor
+                   (la portada de la parrilla no tiene por qué ir la primera)
      6. BOTÓN      "Start a conversation" → contact.html
    ===================================================================== */
 (function () {
@@ -58,7 +59,8 @@
   else texto.remove();
 
   /* ---- 5. fotos ---- */
-  const medios = (p.portada ? [p.portada] : []).concat(p.galeria);
+  // en el orden del gestor (la portada de la parrilla puede ir en cualquier sitio)
+  const medios = p.fotosPagina || (p.portada ? [p.portada] : []).concat(p.galeria || []);
   if (!medios.length) {
     rejilla.remove();
     document.body.classList.add("sin-fotos");
@@ -72,7 +74,7 @@
       celda.innerHTML = `<video src="${m.url}" muted loop playsinline autoplay preload="metadata"></video>`;
     } else {
       celda.innerHTML = `<img src="${m.url}" alt="${esc(p.titulo)} — ${i + 1}" loading="${i < 4 ? "eager" : "lazy"}" decoding="async"
-                          style="object-position:${i === 0 ? p.encuadre : "center"}">`;
+                          style="object-position:center">`;
       const n = fotos.indexOf(m.url);
       celda.addEventListener("click", () => Comun.visor(fotos, n));
     }

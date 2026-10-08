@@ -76,6 +76,7 @@ window.AJUSTES = {
       efecto: "subir",
       cuando: "inicio",
       retraso: 500,              // espera antes de empezar (deja pasar el fundido de entrada)
+      nunca: ["contact"],        // páginas donde el nombre es siempre fijo, sin animación
       duracion: 1000,            // lo que tarda en subir
     },
     menu: {
@@ -124,6 +125,7 @@ window.AJUSTES = {
     activo: true,
     umbral: 0.5,
     decidir: "pixel",
+    paginasSin: ["contact"],   // páginas sin fotos: texto normal, sin esta capa
     grano: 1.5,
     textos: ".menu a, .menu button, .menu span, .pase__titulo, .pase__datos, .etiqueta-cursor, .celda-proyecto__txt, .boton-auto, [data-dif]",
   },

@@ -132,6 +132,7 @@
     const efecto = AN.efecto || "subir";
     if (!el || efecto === "ninguno" || !window.gsap) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if ((AN.nunca || ["contact"]).includes(pagina)) return;   // en Contact el nombre es texto fijo, sin animación
     if (!forzar) {
       const cuando = AN.cuando || "inicio";
       if (cuando === "inicio" && pagina !== "inicio") return;
@@ -163,9 +164,33 @@
     });
   }
 
+  /* ---------- RECTÁNGULO DETRÁS DEL NOMBRE (parrillas) ----------
+     En Work, Films, Series… el nombre puede ir sobre un rectángulo negro
+     al ras de las letras. Se pone y se quita en el gestor (Parrillas).
+     Con el rectángulo, el nombre es siempre blanco (no usa el contraste). */
+  const PAGINAS_PARRILLA = ["work", "films", "series", "comercials", "videoclips"];
+  function cajaNombre() {
+    const el = document.querySelector(".menu__nombre");
+    if (!el || !PAGINAS_PARRILLA.includes(pagina)) return;
+    const activa = !!A.nombreCaja;
+    let caja = el.querySelector(".nombre__caja");
+    if (activa && !caja) { el.innerHTML = `<span class="nombre__caja">${htmlSeguro(el.textContent)}</span>`; }
+    else if (!activa && caja) { el.textContent = caja.textContent; }
+    if (activa) el.dataset.difNo = "1"; else delete el.dataset.difNo;
+  }
+
   /* ---------- EFECTOS GUARDADOS EN EL GESTOR ----------
      El gestor (pestaña Cabecera) guarda en contenido/about/info.txt las
      animaciones y el color de las letras; aquí mandan sobre ajustes.js. */
+  // Tipografías que se pueden elegir en el gestor (nombre y texto de las parrillas)
+  const FAMILIAS = {
+    garet: '"Garet", Arial, sans-serif',
+    "garet-heavy": '"Garet Heavy", "Garet", Arial, sans-serif',
+    arial: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+    instrument: '"Instrument Serif", "Times New Roman", serif',
+    "instrument-sans": '"Instrument Sans", Arial, sans-serif',
+    personalizada: '"Idoia personalizada", "Garet", Arial, sans-serif',
+  };
   function aplicarEfectos(c) {
     const n = (v, min, max) => { const x = Number(v); return Number.isFinite(x) && x >= min && x <= max ? x : undefined; };
     const fijar = (obj, clave, v) => { if (v !== undefined && v !== "") obj[clave] = v; };
@@ -182,6 +207,18 @@
     fijar(AM, "duracion", n(c.anim_menu_duracion, 100, 5000));
     fijar(AM, "escalon", n(c.anim_menu_escalon, 0, 1000));
     fijar(AM, "duracionCerrar", n(c.anim_menu_cerrar_duracion, 100, 5000));
+    // PARRILLAS: línea entre fotos y texto de cada recuadro (variables CSS)
+    const root = document.documentElement;
+    const hilo = n(c.parrilla_hilo, 0, 40);
+    if (hilo !== undefined) root.style.setProperty("--hilo", hilo + "px");
+    if (/^#[0-9a-f]{3,8}$/i.test(c.parrilla_hilo_color || "")) root.style.setProperty("--hilo-color", c.parrilla_hilo_color);
+    const tamTexto = n(c.parrilla_texto_tamano, 8, 32);
+    if (tamTexto !== undefined) root.style.setProperty("--cartel-texto-tam", tamTexto + "px");
+    if (FAMILIAS[c.parrilla_texto_fuente]) root.style.setProperty("--cartel-texto-fuente", FAMILIAS[c.parrilla_texto_fuente]);
+    // Rectángulo detrás del nombre en las parrillas (Work, Films, Series…)
+    if (/^(si|no)$/.test(c.parrilla_nombre_caja || "")) A.nombreCaja = c.parrilla_nombre_caja === "si";
+    if (/^#[0-9a-f]{3,8}$/i.test(c.parrilla_nombre_caja_color || "")) root.style.setProperty("--nombre-caja-color", c.parrilla_nombre_caja_color);
+    cajaNombre();
     A.diferencia = A.diferencia || {};
     fijar(A.diferencia, "umbral", n(c.contraste_umbral, 0.05, 0.95));
     fijar(A.diferencia, "decidir", ["pixel", "letra", "palabra", "texto"].includes(c.contraste_por) ? c.contraste_por : undefined);
@@ -367,24 +404,19 @@
 
   /* La cabecera se ajusta desde la pestaña Cabecera del gestor. Los valores
      se guardan en contenido/about/info.txt junto al nombre visible. */
-  function aplicarNombre() {
-    const info = Web.leerInfo((window.CONTENIDO && window.CONTENIDO.about && window.CONTENIDO.about.info) || "");
-    aplicarEfectos(info);
+  /* ---------- CABECERA: nombre (texto, tipografía, tamaños) ----------
+     Valores de contenido/about/info.txt (los guarda el gestor). La misma
+     función la usa la vista previa del gestor, en directo. */
+  function aplicarCabecera(info, fuenteUrl) {
     const root = document.documentElement;
-    const familias = {
-      garet: '"Garet", Arial, sans-serif',
-      arial: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
-      instrument: '"Instrument Serif", "Times New Roman", serif',
-      personalizada: '"Idoia personalizada", "Garet", Arial, sans-serif',
-    };
     const archivo = info.nombre_fuente_archivo || "";
     if (/^idoia-custom\.(woff2?|otf|ttf)$/.test(archivo)) {
       const formato = archivo.endsWith("woff2") ? "woff2" : archivo.endsWith("woff") ? "woff" : archivo.endsWith("otf") ? "opentype" : "truetype";
-      const style = document.createElement("style");
-      style.textContent = `@font-face{font-family:"Idoia personalizada";src:url("assets/fonts/${archivo}") format("${formato}");font-style:normal;font-weight:400;font-display:swap}`;
-      document.head.append(style);
+      let style = document.getElementById("fuente-personalizada");
+      if (!style) { style = document.createElement("style"); style.id = "fuente-personalizada"; document.head.append(style); }
+      style.textContent = `@font-face{font-family:"Idoia personalizada";src:url("${fuenteUrl || "assets/fonts/" + archivo}") format("${formato}");font-style:normal;font-weight:400;font-display:swap}`;
     }
-    const familia = familias[info.nombre_fuente];
+    const familia = FAMILIAS[info.nombre_fuente];
     if (familia && (info.nombre_fuente !== "personalizada" || archivo)) root.style.setProperty("--nombre-fuente", familia);
     for (const [clave, variable, minimo, maximo] of [
       ["nombre_tamano", "--nombre-tam", 12, 48],
@@ -394,17 +426,43 @@
       if (Number.isFinite(n) && n >= minimo && n <= maximo) root.style.setProperty(variable, n + "px");
     }
     const espaciado = Number(info.nombre_espaciado);
-    if (Number.isFinite(espaciado) && espaciado >= -0.05 && espaciado <= 0.4)
+    if (info.nombre_espaciado !== undefined && Number.isFinite(espaciado) && espaciado >= -0.05 && espaciado <= 0.4)
       root.style.setProperty("--nombre-espaciado", espaciado + "em");
     if (["400", "700", "900"].includes(info.nombre_peso)) root.style.setProperty("--nombre-negrita", info.nombre_peso);
     if (/^(si|no)$/.test(info.nombre_cursiva || ""))
       root.style.setProperty("--nombre-cursiva", info.nombre_cursiva === "si" ? "italic" : "normal");
     if (/^(si|no)$/.test(info.nombre_mayusculas || ""))
       root.style.setProperty("--nombre-transform", info.nombre_mayusculas === "si" ? "uppercase" : "none");
+    // texto del nombre (si ya está pintado y no se está animando)
+    const el = document.querySelector(".menu__nombre");
+    const t = el && el.querySelector(".nombre__caja, .title") || el;
+    if (t && info.nombre && !(el && el.dataset.difVivo) && t.textContent !== info.nombre) t.textContent = info.nombre;
+  }
+  function aplicarNombre() {
+    const info = Web.leerInfo((window.CONTENIDO && window.CONTENIDO.about && window.CONTENIDO.about.info) || "");
+    aplicarEfectos(info);
+    aplicarCabecera(info);
+  }
+
+  /* ---------- VISTA PREVIA DEL GESTOR ----------
+     El gestor manda los ajustes por mensaje (funciona aunque el gestor
+     esté abierto desde el ordenador y la vista previa sea la web publicada). */
+  if (/[?&]vista=gestor/.test(location.search)) {
+    window.addEventListener("message", (e) => {
+      const d = e.data || {};
+      if (d.tipo !== "gestor") return;
+      if (d.campos) { aplicarEfectos(d.campos); aplicarCabecera(d.campos, d.fuenteUrl); }
+      if (d.accion === "nombre") entradaNombre(document.querySelector(".menu__nombre"), true);
+      if (d.accion === "menu" && Comun_menu) {
+        const b = document.querySelector(".menu__work");
+        Comun_menu(!(b && b.getAttribute("aria-expanded") === "true"));
+      }
+    });
   }
 
   aplicarNombre();
   pintarMenu();
+  cajaNombre();
   montarCortina();
 
 

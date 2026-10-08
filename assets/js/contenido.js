@@ -65,13 +65,21 @@
     // Solo sale en las rejillas (work, films…), nunca en la galería del proyecto.
     const cartel = buscar(info.cartel)
       || archivos.find((a) => /^cartel\./i.test(a.f) && !esVideo(a.f));
-    const portada = buscar(info.portada)
+    // PORTADA (la foto de la parrilla y del inicio):
+    //   · clave "portada: 05.jpg" (la pone el gestor) → esa foto es la portada
+    //     Y SIGUE en la galería en su sitio: el orden de la página de la peli
+    //     no depende de cuál sea la portada.
+    //   · archivo "portada.*" (forma antigua) → sale la primera en la página.
+    const portadaPorClave = buscar(info.portada);
+    const portada = portadaPorClave
       || archivos.find((a) => /^portada\./i.test(a.f))
       || archivos.find((a) => !esVideo(a.f) && a !== cartel);
     const portadaMovil = buscar(info.portada_movil)
       || archivos.find((a) => /^portada[-_]movil\./i.test(a.f));
 
-    const galeria = archivos.filter((a) => a !== portada && a !== portadaMovil && a !== cartel);
+    const galeria = archivos.filter((a) => a !== portadaMovil && a !== cartel && (portadaPorClave || a !== portada));
+    // fotos de la página del proyecto, en orden
+    const fotosPagina = portadaPorClave ? galeria : (portada ? [portada] : []).concat(galeria);
 
     const p = {
       tipo,
@@ -95,6 +103,7 @@
       portadaMovil: portadaMovil ? { ...portadaMovil, url: ruta(tipo, bruto.carpeta, portadaMovil.f) } : null,
       cartel: cartel ? { ...cartel, url: ruta(tipo, bruto.carpeta, cartel.f) } : null,
       galeria: galeria.map((a) => ({ ...a, url: ruta(tipo, bruto.carpeta, a.f), video: esVideo(a.f) })),
+      fotosPagina: fotosPagina.map((a) => ({ ...a, url: ruta(tipo, bruto.carpeta, a.f), video: esVideo(a.f) })),
     };
     p.enlace = `proyecto.html?tipo=${tipo}&id=${encodeURIComponent(p.id)}`;
     return p;
