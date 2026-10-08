@@ -15,6 +15,7 @@ nombre_espaciado: -0.01
 nombre_peso: 900
 contraste_umbral: 0.85
 contraste_grano: 0
+parrilla_hilo: 1
 ---
 HELLO!
 
