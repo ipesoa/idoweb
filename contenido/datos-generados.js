@@ -48,7 +48,6 @@ mostrar_en_inicio: si
       {"f":"15.jpg","w":2000,"h":966},
       {"f":"16.jpg","w":827,"h":1200},
       {"f":"17.jpg","w":840,"h":1200},
-      {"f":"cartel.jpg","w":839,"h":1200},
       {"f":"portada.jpg","w":1600,"h":1067}]
     },
     {
@@ -89,7 +88,6 @@ mostrar_en_inicio: si
       {"f":"09.jpg","w":2000,"h":837},
       {"f":"10.jpg","w":2000,"h":882},
       {"f":"11.jpg","w":2000,"h":802},
-      {"f":"cartel.jpg","w":600,"h":857},
       {"f":"portada.jpg","w":2000,"h":1087}]
     },
     {
@@ -127,7 +125,6 @@ mostrar_en_inicio: no
       {"f":"22.jpg","w":2000,"h":853},
       {"f":"23.jpg","w":2000,"h":850},
       {"f":"24.jpg","w":2000,"h":1000},
-      {"f":"cartel.jpg","w":842,"h":1191},
       {"f":"portada.jpg","w":2000,"h":850}]
     },
     {
@@ -139,8 +136,7 @@ director:
 mostrar_en_inicio: no
 ---
 `,
-      "archivos": [
-      {"f":"cartel.jpg","w":851,"h":1200}]
+      "archivos": []
     },
     {
       "carpeta": "los-miercoles-no-existen",
@@ -161,7 +157,6 @@ mostrar_en_inicio: si
       {"f":"06.jpg","w":2000,"h":838},
       {"f":"07.jpg","w":1800,"h":1200},
       {"f":"08.jpg","w":1800,"h":1200},
-      {"f":"cartel.jpg","w":840,"h":1200},
       {"f":"portada.jpg","w":1920,"h":1080}]
     },
     {
@@ -174,11 +169,9 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg","w":2000,"h":838},
-      {"f":"02.jpg","w":2000,"h":839},
-      {"f":"03.jpg","w":1867,"h":1400},
-      {"f":"cartel.jpg","w":724,"h":1034},
-      {"f":"portada.jpg","w":832,"h":1200}]
+      {"f":"01.jpg","w":2000,"h":839},
+      {"f":"02.jpg","w":1867,"h":1400},
+      {"f":"portada.jpg","w":2000,"h":838}]
     },
     {
       "carpeta": "pieles",
@@ -198,7 +191,6 @@ mostrar_en_inicio: si
       {"f":"05.jpg","w":800,"h":450},
       {"f":"06.jpg","w":1200,"h":675},
       {"f":"07.jpg","w":1920,"h":960},
-      {"f":"cartel.jpg","w":839,"h":1200},
       {"f":"portada.jpg","w":960,"h":640}]
     },
     {
@@ -210,8 +202,7 @@ director: Curro Velázquez
 mostrar_en_inicio: no
 ---
 `,
-      "archivos": [
-      {"f":"cartel.jpg","w":849,"h":1200}]
+      "archivos": []
     },
     {
       "carpeta": "rainbow",
@@ -279,7 +270,6 @@ mostrar_en_inicio: si
       {"f":"54.jpg","w":1867,"h":1400},
       {"f":"55.jpg","w":1867,"h":1400},
       {"f":"56.jpg","w":1867,"h":1400},
-      {"f":"cartel.jpg","w":834,"h":1200},
       {"f":"portada.jpg","w":1280,"h":720}]
     },
     {
@@ -367,8 +357,7 @@ director: Álvaro Fernández Armero
 mostrar_en_inicio: no
 ---
 `,
-      "archivos": [
-      {"f":"cartel.jpg","w":840,"h":1200}]
+      "archivos": []
     },
   ],
   "series": [
@@ -529,4 +518,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610080948 */
+/* gestor: 202610080951 */
