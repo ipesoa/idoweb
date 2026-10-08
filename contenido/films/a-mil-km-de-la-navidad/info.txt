@@ -3,5 +3,6 @@ año: 2021
 labor: 
 director: Álvaro Fernández Armero
 productora: Nadie es perfecto
-mostrar_en_inicio: si
+mostrar_en_inicio: no
+portada: 01.jpg
 ---

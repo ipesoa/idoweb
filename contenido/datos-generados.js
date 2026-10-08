@@ -9,17 +9,18 @@ año: 2021
 labor: 
 director: Álvaro Fernández Armero
 productora: Nadie es perfecto
-mostrar_en_inicio: si
+mostrar_en_inicio: no
+portada: 01.jpg
 ---
 `,
       "archivos": [
-      {"f":"01.jpg","w":1600,"h":884},
-      {"f":"02.jpg","w":2000,"h":843},
-      {"f":"03.jpg","w":2000,"h":831},
+      {"f":"01.jpg","w":2000,"h":836},
+      {"f":"02.jpg","w":1600,"h":884},
+      {"f":"03.jpg","w":2000,"h":843},
       {"f":"04.jpg","w":2000,"h":831},
-      {"f":"05.jpg","w":2000,"h":838},
-      {"f":"06.jpg","w":2000,"h":835},
-      {"f":"portada.jpg","w":2000,"h":836}]
+      {"f":"05.jpg","w":2000,"h":831},
+      {"f":"06.jpg","w":2000,"h":838},
+      {"f":"07.jpg","w":2000,"h":835}]
     },
     {
       "carpeta": "aida-y-vuelta",
@@ -27,11 +28,12 @@ mostrar_en_inicio: si
 año: 2026
 labor: 
 director: Paco León
-mostrar_en_inicio: si
+mostrar_en_inicio: no
+portada: 01.jpg
 ---
 `,
       "archivos": [
-      {"f":"01.jpg","w":1920,"h":1080},
+      {"f":"01.jpg","w":2000,"h":1334},
       {"f":"02.jpg","w":1920,"h":1080},
       {"f":"03.jpg","w":1920,"h":1080},
       {"f":"04.jpg","w":1920,"h":1080},
@@ -42,10 +44,10 @@ mostrar_en_inicio: si
       {"f":"09.jpg","w":1920,"h":1080},
       {"f":"10.jpg","w":1920,"h":1080},
       {"f":"11.jpg","w":1920,"h":1080},
-      {"f":"12.jpg","w":1400,"h":934},
-      {"f":"13.jpg","w":2000,"h":1334},
-      {"f":"14.jpg","w":2000,"h":966},
-      {"f":"portada.jpg","w":2000,"h":1334}]
+      {"f":"12.jpg","w":1920,"h":1080},
+      {"f":"13.jpg","w":1400,"h":934},
+      {"f":"14.jpg","w":2000,"h":1334},
+      {"f":"15.jpg","w":2000,"h":966}]
     },
     {
       "carpeta": "daniela-forever",
@@ -53,7 +55,7 @@ mostrar_en_inicio: si
 año: 2024
 labor: 
 director: Nacho Vigalondo
-mostrar_en_inicio: no
+mostrar_en_inicio: si
 portada: 01.jpg
 ---
 `,
@@ -80,20 +82,21 @@ labor:
 director: Zoe Berriatúa
 productora: Pokeepsie Films
 mostrar_en_inicio: si
+portada: 01.jpg
 ---
 `,
       "archivos": [
-      {"f":"01.jpg","w":2000,"h":1087},
-      {"f":"02.jpg","w":2000,"h":811},
-      {"f":"03.jpg","w":2000,"h":834},
-      {"f":"04.jpg","w":2000,"h":822},
-      {"f":"05.jpg","w":2000,"h":819},
-      {"f":"06.jpg","w":2000,"h":838},
-      {"f":"07.jpg","w":2000,"h":837},
-      {"f":"08.jpg","w":2000,"h":838},
-      {"f":"09.jpg","w":2000,"h":882},
-      {"f":"10.jpg","w":2000,"h":802},
-      {"f":"portada.jpg","w":2000,"h":818}]
+      {"f":"01.jpg","w":2000,"h":818},
+      {"f":"02.jpg","w":2000,"h":1087},
+      {"f":"03.jpg","w":2000,"h":811},
+      {"f":"04.jpg","w":2000,"h":834},
+      {"f":"05.jpg","w":2000,"h":822},
+      {"f":"06.jpg","w":2000,"h":819},
+      {"f":"07.jpg","w":2000,"h":838},
+      {"f":"08.jpg","w":2000,"h":837},
+      {"f":"09.jpg","w":2000,"h":838},
+      {"f":"10.jpg","w":2000,"h":882},
+      {"f":"11.jpg","w":2000,"h":802}]
     },
     {
       "carpeta": "extraterrestre",
@@ -102,21 +105,22 @@ año: 2011
 labor: 
 director: Nacho Vigalondo
 productora: Sayaka
-mostrar_en_inicio: no
+mostrar_en_inicio: si
+portada: 01.jpg
 ---
 `,
       "archivos": [
-      {"f":"01.jpg","w":2000,"h":852},
-      {"f":"02.jpg","w":2000,"h":850},
-      {"f":"03.jpg","w":2000,"h":853},
-      {"f":"04.jpg","w":2000,"h":850},
-      {"f":"05.jpg","w":2000,"h":852},
+      {"f":"01.jpg","w":2000,"h":850},
+      {"f":"02.jpg","w":2000,"h":852},
+      {"f":"03.jpg","w":2000,"h":850},
+      {"f":"04.jpg","w":2000,"h":853},
+      {"f":"05.jpg","w":2000,"h":850},
       {"f":"06.jpg","w":2000,"h":852},
-      {"f":"07.jpg","w":2000,"h":850},
+      {"f":"07.jpg","w":2000,"h":852},
       {"f":"08.jpg","w":2000,"h":850},
-      {"f":"09.jpg","w":2000,"h":853},
-      {"f":"10.jpg","w":2000,"h":852},
-      {"f":"portada.jpg","w":2000,"h":850}]
+      {"f":"09.jpg","w":2000,"h":850},
+      {"f":"10.jpg","w":2000,"h":853},
+      {"f":"11.jpg","w":2000,"h":852}]
     },
     {
       "carpeta": "la-piedad",
@@ -136,19 +140,20 @@ año: 2015
 labor: 
 director: Peris Romano
 productora: José Frade PC
-mostrar_en_inicio: si
+mostrar_en_inicio: no
+portada: 01.jpg
 ---
 `,
       "archivos": [
       {"f":"01.jpg","w":1920,"h":1080},
       {"f":"02.jpg","w":1920,"h":1080},
-      {"f":"03.jpg","w":800,"h":1120},
-      {"f":"04.jpg","w":1000,"h":1400},
+      {"f":"03.jpg","w":1920,"h":1080},
+      {"f":"04.jpg","w":800,"h":1120},
       {"f":"05.jpg","w":1000,"h":1400},
-      {"f":"06.jpg","w":2000,"h":838},
-      {"f":"07.jpg","w":1800,"h":1200},
+      {"f":"06.jpg","w":1000,"h":1400},
+      {"f":"07.jpg","w":2000,"h":838},
       {"f":"08.jpg","w":1800,"h":1200},
-      {"f":"portada.jpg","w":1920,"h":1080}]
+      {"f":"09.jpg","w":1800,"h":1200}]
     },
     {
       "carpeta": "maridos",
@@ -270,7 +275,7 @@ año: 2027
 labor: 
 director: Norma Vila
 productora: Pris&Batty / Bondi
-mostrar_en_inicio: no
+mostrar_en_inicio: si
 portada: 04.jpg
 ---
 `,
@@ -374,16 +379,17 @@ mostrar_en_inicio: no
       "carpeta": "superestar",
       "info": `titulo: Superestar
 año: 2025
+labor: 
 director: Nacho Vigalondo / Claudia Costafreda
 mostrar_en_inicio: si
+portada: 05.jpg
 ---
 `,
       "archivos": [
-      {"f":"26.jpg","w":1867,"h":1400},
-      {"f":"01.jpg","w":2000,"h":1125},
-      {"f":"02.jpg","w":1024,"h":454},
-      {"f":"03.jpg","w":2000,"h":947},
-      {"f":"04.jpg","w":1867,"h":1400},
+      {"f":"01.jpg","w":1867,"h":1400},
+      {"f":"02.jpg","w":2000,"h":1125},
+      {"f":"03.jpg","w":1024,"h":454},
+      {"f":"04.jpg","w":2000,"h":947},
       {"f":"05.jpg","w":1867,"h":1400},
       {"f":"06.jpg","w":1867,"h":1400},
       {"f":"07.jpg","w":1867,"h":1400},
@@ -405,6 +411,7 @@ mostrar_en_inicio: si
       {"f":"23.jpg","w":1867,"h":1400},
       {"f":"24.jpg","w":1867,"h":1400},
       {"f":"25.jpg","w":1867,"h":1400},
+      {"f":"26.jpg","w":1867,"h":1400},
       {"f":"27.jpg","w":1867,"h":1400},
       {"f":"28.jpg","w":1050,"h":1400},
       {"f":"29.jpg","w":1867,"h":1400},
@@ -514,4 +521,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610081145 */
+/* gestor: 202610081148 */
