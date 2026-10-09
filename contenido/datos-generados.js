@@ -3,6 +3,18 @@
 window.CONTENIDO = {
   "films": [
     {
+      "carpeta": "2026-el-acercamiento-de-la-mujer-cactus-y-el-hombre-globo",
+      "info": `titulo: El acercamiento de la mujer cactus y el hombre globo
+año: 2027
+labor: Product Designer
+director: Kike Maíllo
+productora: Sabado Time/Netflix
+mostrar_en_inicio: no
+---
+`,
+      "archivos": []
+    },
+    {
       "carpeta": "a-mil-km-de-la-navidad",
       "info": `titulo: A mil km de la Navidad
 año: 2021
@@ -396,11 +408,11 @@ mostrar_en_inicio: no
 ---
 `,
       "archivos": [
-      {"f":"01.jpg","w":1867,"h":1400},
-      {"f":"02.jpg","w":2000,"h":1125},
-      {"f":"03.jpg","w":1024,"h":454},
-      {"f":"04.jpg","w":2000,"h":947},
-      {"f":"05.jpg","w":1867,"h":1400},
+      {"f":"01.jpg","w":2600,"h":1298},
+      {"f":"02.jpg","w":2000,"h":947},
+      {"f":"03.jpg","w":1867,"h":1400},
+      {"f":"04.jpg","w":2000,"h":1125},
+      {"f":"05.jpg","w":1024,"h":454},
       {"f":"06.jpg","w":1867,"h":1400},
       {"f":"07.jpg","w":1867,"h":1400},
       {"f":"08.jpg","w":1867,"h":1400},
@@ -426,23 +438,15 @@ mostrar_en_inicio: no
       {"f":"28.jpg","w":1867,"h":1400},
       {"f":"29.jpg","w":1867,"h":1400},
       {"f":"30.jpg","w":1867,"h":1400},
-      {"f":"31.jpg","w":1050,"h":1400},
-      {"f":"32.jpg","w":1050,"h":1400},
+      {"f":"31.jpg","w":1867,"h":1400},
+      {"f":"32.jpg","w":1867,"h":1400},
       {"f":"33.jpg","w":1867,"h":1400},
       {"f":"34.jpg","w":1867,"h":1400},
       {"f":"35.jpg","w":1867,"h":1400},
       {"f":"36.jpg","w":1867,"h":1400},
       {"f":"37.jpg","w":1867,"h":1400},
-      {"f":"38.jpg","w":1867,"h":1400},
-      {"f":"39.jpg","w":1867,"h":1400},
-      {"f":"40.jpg","w":1867,"h":1400},
-      {"f":"41.jpg","w":1867,"h":1400},
-      {"f":"42.jpg","w":1867,"h":1400},
-      {"f":"43.jpg","w":1867,"h":1400},
-      {"f":"44.jpg","w":1867,"h":1400},
-      {"f":"45.jpg","w":1867,"h":1400},
-      {"f":"46.jpg","w":1867,"h":1400},
-      {"f":"portada.jpg","w":1867,"h":1400}]
+      {"f":"38.jpg","w":2600,"h":1298},
+      {"f":"portada.jpg","w":2600,"h":1298}]
     },
   ],
   "comercials": [
@@ -531,4 +535,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610091143 */
+/* gestor: 202610091159 */
