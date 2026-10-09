@@ -94,7 +94,8 @@
 }
 .boton-contacto:hover { background: var(--color-tinta); color: var(--color-fondo); }
 
-.pie-contacto--franja { display: block; padding: clamp(60px, 12vh, 140px) 0 0; }
+/* con franja: pegada justo debajo de la última foto, sin hueco */
+.pie-contacto--franja { display: block; padding: 0; }
 .no-encontrado { min-height: 100vh; display: grid; place-items: center; text-align: center; padding: 2rem; color: var(--color-suave); }
 
 @media (max-width: 700px) {
