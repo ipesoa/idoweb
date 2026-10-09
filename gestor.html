@@ -163,6 +163,18 @@ button { cursor: pointer; background: none; border: 0; }
 .control-nombre .fila-rango input { flex: 1; }
 .control-nombre.opcion { display: flex; align-items: center; gap: 9px; min-height: 40px; }
 .control-nombre.opcion input { width: 18px; height: 18px; accent-color: var(--tinta); }
+.color-control { width: 56px; height: 36px; padding: 0; border: 1px solid var(--linea); border-radius: 6px; background: #fff; }
+.fila-fuente-nueva { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.fila-fuente-nueva input[type=text] { flex: 1; min-width: 220px; padding: 10px; border: 1px solid var(--linea); border-radius: 8px; }
+.lista-fuentes { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+.fuente-muestra { background: var(--papel); border: 1px solid var(--linea); border-radius: 10px; overflow: hidden; }
+.fuente-muestra__texto { padding: 22px 18px; font-size: 26px; line-height: 1.15; background: #111; color: #fff; }
+.fuente-muestra__texto small { font-size: 14px; }
+.fuente-muestra__pie { display: flex; gap: 10px; align-items: center; padding: 10px 14px; }
+.fuente-muestra__pie .boton { margin-left: auto; }
+.foto .inicio-marca { position: absolute; right: 36px; top: 6px; font-size: 10px; letter-spacing: .08em; background: var(--azul); color: #fff; padding: 3px 7px; border-radius: 999px; }
+.foto__acciones button.activo { background: var(--azul); color: #fff; border-color: var(--azul); }
+.tarjeta .quitar-home { position: absolute; right: 8px; top: 8px; z-index: 3; background: #fff; border-radius: 999px; padding: 4px 9px; font-size: 12px; color: var(--rojo); border: 1px solid var(--linea); }
 .bloque-titulo { font-size: 15px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--linea); }
 .preview-nombre { position: sticky; top: 82px; border: 1px solid var(--linea); border-radius: 12px; overflow: hidden; background: #111; }
 .preview-nombre iframe { display: block; width: 100%; height: min(52vw, 520px); min-height: 360px; border: 0; pointer-events: none; }
@@ -263,6 +275,10 @@ button { cursor: pointer; background: none; border: 0; }
   const MEDIO = /\.(jpe?g|png|webp|gif|avif|mp4|webm|mov|m4v)$/i;
   const VIDEO = /\.(mp4|webm|mov|m4v)$/i;
   const MAX_LADO = 2600, CALIDAD = 0.82;
+  // Versión de este gestor. Si en GitHub hay un gestor más nuevo (por ejemplo,
+  // una pestaña abierta desde antes de instalar una actualización), no deja
+  // publicar: guardaría las cosas a la manera antigua.
+  const VERSION_GESTOR = "2026-10-09-a";
 
   /* Las secciones de la web. Si algún día se añade otra, se pone aquí y en
      assets/js/ajustes.js (AJUSTES.secciones) y en los generadores de datos. */
@@ -406,11 +422,12 @@ button { cursor: pointer; background: none; border: 0; }
     const aboutDato = contenido.about || { info: "", filmografia: "", archivos: [] };
     E = {
       head, arbol, datosTexto, contenido, proyectos, borrados: [],
-      home: (contenido.home || []).map((h) => ({ ...h })), homeSucio: false,
+      home: (contenido.home || []).map((h) => ({ ...h, sha: arbol.get("contenido/home/" + h.f) })), homeSucio: false,
       about: { info: leerInfo(aboutDato.info), infoOriginal: aboutDato.info, extra: leerExtra(aboutDato.filmografia), extraOriginal: aboutDato.filmografia, archivos: aboutDato.archivos || [] },
       aboutSucio: false,
       fuenteCustom: [...arbol.keys()].find((r) => /^assets\/fonts\/idoia-custom\.(woff2?|otf|ttf)$/.test(r)) || null,
       fuentePendiente: null,
+      fuentesNuevas: [], fuentesBorrar: [], homeBorrados: [],
     };
     seleccion.clear();
     pintar();
@@ -484,7 +501,7 @@ button { cursor: pointer; background: none; border: 0; }
   function pintarPestanas() {
     $("#pestanas").innerHTML = [`<button data-p="inicio">Inicio</button>`]
       .concat(TIPOS.map((t) => `<button data-p="${t.id}">${t.titulo}</button>`))
-      .concat([`<button data-p="about">Contact</button>`, `<button data-p="nombre">Cabecera</button>`, `<button data-p="parrillas">Parrillas</button>`]).join("");
+      .concat([`<button data-p="about">Contact</button>`, `<button data-p="nombre">Cabecera</button>`, `<button data-p="parrillas">Parrillas</button>`, `<button data-p="tipografias">Tipografías</button>`]).join("");
   }
   function pintar() {
     if (!$("#pestanas button")) pintarPestanas();
@@ -494,6 +511,7 @@ button { cursor: pointer; background: none; border: 0; }
     else if (pestana === "about") v.innerHTML = vistaAbout();
     else if (pestana === "nombre") { v.innerHTML = vistaNombre(); activarVistaNombre(); }
     else if (pestana === "parrillas") { v.innerHTML = vistaParrillas(); activarVistaParrillas(); }
+    else if (pestana === "tipografias") { v.innerHTML = vistaTipografias(); activarTipografias(); }
     else v.innerHTML = vistaLista(pestana);
     actualizarEstado();
   }
@@ -513,9 +531,10 @@ button { cursor: pointer; background: none; border: 0; }
     return `<div class="cabecera"><h2>Pase de imágenes del inicio</h2>
         <button class="boton" data-accion="inicio-todos">Todos</button><button class="boton" data-accion="inicio-ninguno">Ninguno</button>
         <p>Pincha una imagen para que salga (verde) o no salga en el inicio. Ahora salen <b>${n}</b>. El orden en la web es aleatorio.</p></div>
-      ${E.home.length ? `<h3 style="margin:22px 0 10px">Fotos especiales del inicio</h3><div class="rejilla">${E.home.map((h, i) => `
-        <div class="tarjeta ${h.enInicio !== false ? "en-inicio" : ""}" data-home="${i}">
-          <img src="https://raw.githubusercontent.com/${REPO}/${E.head}/contenido/home/${encodeURIComponent(h.f)}" alt="" loading="lazy">
+      ${E.home.length ? `<h3 style="margin:22px 0 10px">Fotos añadidas al inicio <small style="color:var(--suave);font-weight:400">(se añaden con el botón «Inicio» de cada foto, dentro de cada película)</small></h3><div class="rejilla">${E.home.map((h, i) => `
+        <div class="tarjeta ${h.enInicio !== false ? "en-inicio" : ""}" data-home="${i}" style="position:relative">
+          <button class="quitar-home" data-home-quitar="${i}" title="Quitar esta foto del inicio del todo">✕ Quitar</button>
+          <img src="${h.origen ? esc(urlDe(h.origen)) : `https://raw.githubusercontent.com/${REPO}/${E.head}/contenido/home/${encodeURIComponent(h.f)}`}" alt="" loading="lazy">
           <div class="tarjeta__txt"><b>${esc(h.titulo || h.f)}</b><small>${esc(h.ano || "")}</small>
             <div class="interruptor"><span>${h.enInicio !== false ? "Sale en el inicio" : "No sale"}</span><i></i></div></div>
         </div>`).join("")}</div>` : ""}
@@ -571,6 +590,81 @@ button { cursor: pointer; background: none; border: 0; }
         <button class="boton" data-accion="extra-anadir" style="margin-top:10px">＋ Añadir trabajo</button></div>`;
   }
 
+  /* ---------- controles compartidos (Cabecera, Parrillas) ---------- */
+  const cRango = (clave, etiqueta, valor, min, max, step, unidad) => `<label class="control-nombre"><span>${etiqueta}</span>
+      <span class="fila-rango"><input type="range" data-nombre="${clave}" min="${min}" max="${max}" step="${step}" value="${esc(valor)}">
+      <output data-valor-nombre="${clave}" data-unidad="${unidad}">${esc(valor)} ${unidad}</output></span></label>`;
+  const cElegir = (clave, etiqueta, valor, opciones) => `<label class="control-nombre"><span>${etiqueta}</span><select data-nombre="${clave}">
+      ${opciones.map(([v, t]) => `<option value="${v}"${valor === v ? " selected" : ""}>${t}</option>`).join("")}</select></label>`;
+  const cColor = (clave, etiqueta, valor) => `<label class="control-nombre"><span>${etiqueta}</span>
+      <span class="fila-rango"><input type="color" data-nombre="${clave}" value="${esc(valor)}" class="color-control">
+      <output data-valor-nombre="${clave}" data-unidad="">${esc(valor)}</output></span></label>`;
+  const SI_NO = (si, no) => [["si", si], ["no", no]];
+  const GROSORES = [["400", "Normal"], ["500", "Medio"], ["700", "Negrita"], ["900", "Muy negrita"]];
+
+  /* ---------- TIPOGRAFÍAS (pestaña Tipografías) ----------
+     Se suben a assets/fonts/ y se apuntan en contenido/about/info.txt,
+     una línea por tipografía:  fuente: Nombre | archivo.woff2           */
+  const slugFuente = (t) => "fuente-" + t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const FUENTES_BASE = [["garet", "Garet Book"], ["garet-heavy", "Garet Heavy"], ["arial", "Arial"], ["instrument-sans", "Instrument Sans"], ["instrument", "Instrument Serif"]];
+  function fuentesSubidas() {
+    return String(E.about.info.campos.fuente || "").split("\n").map((l) => l.split("|").map((x) => x.trim()))
+      .filter((l) => l[0] && l[1]).map(([nombre, archivo]) => ({ nombre, archivo }));
+  }
+  function guardarFuentes(lista) {
+    E.about.info.campos.fuente = lista.map((f) => `${f.nombre} | ${f.archivo}`).join("\n");
+    if (!lista.length) delete E.about.info.campos.fuente;
+    E.aboutSucio = true;
+  }
+  const urlFuente = (f) => {
+    const nueva = E.fuentesNuevas.find((n) => n.archivo === f.archivo);
+    return nueva ? nueva.url : (location.hostname.endsWith("github.io") ? "" : webBase()) + "assets/fonts/" + encodeURIComponent(f.archivo);
+  };
+  function cargarFuentesEnGestor() {   // para ver las muestras en el propio gestor
+    let st = $("#fuentesGestor");
+    if (!st) { st = document.createElement("style"); st.id = "fuentesGestor"; document.head.append(st); }
+    st.textContent = fuentesSubidas().map((f) => `@font-face{font-family:"${f.nombre.replace(/"/g, "")}";src:url("${urlFuente(f)}");font-display:swap}`).join("\n");
+  }
+  function opcionesFuente(valor, conPersonalizada = true) {
+    const c = E.about.info.campos;
+    return FUENTES_BASE.concat(fuentesSubidas().map((f) => [slugFuente(f.nombre), f.nombre + " (subida)"]))
+      .concat(conPersonalizada && c.nombre_fuente_archivo ? [["personalizada", "Fuente de la cabecera (antigua)"]] : [])
+      .map(([v, t]) => `<option value="${v}"${valor === v ? " selected" : ""}>${esc(t)}</option>`).join("");
+  }
+  function vistaTipografias() {
+    cargarFuentesEnGestor();
+    const lista = fuentesSubidas();
+    return `<div class="cabecera"><h2>Tipografías</h2>
+        <p>Sube aquí tus tipografías (OTF, TTF, WOFF o WOFF2, máximo 8 MB). Después las puedes elegir en Cabecera (nombre y menú) y en Parrillas (texto de los recuadros y franja). Se suben a la web al pulsar «Publicar cambios».</p></div>
+      <div class="bloque" style="margin-bottom:18px">
+        <div class="fila-fuente-nueva"><input type="text" id="fuenteNombre" placeholder="Nombre de la tipografía (p. ej. Neue Haas Bold)">
+          <label class="boton boton--principal">＋ Elegir archivo y añadir<input type="file" id="fuenteArchivo" accept=".otf,.ttf,.woff,.woff2" hidden></label></div>
+      </div>
+      ${lista.length ? `<div class="lista-fuentes">${lista.map((f, i) => `
+        <div class="fuente-muestra"><div class="fuente-muestra__texto" style="font-family:'${esc(f.nombre).replace(/'/g, "")}', sans-serif">IDOIA ESTEBAN GALVÁN<br><small>Films · Series · Commercials · 2027</small></div>
+          <div class="fuente-muestra__pie"><b>${esc(f.nombre)}</b> <span class="nota">${esc(f.archivo)}${E.fuentesNuevas.some((n) => n.archivo === f.archivo) ? " · sin publicar" : ""}</span>
+          <button class="boton boton--peligro" data-fuente-borrar="${i}">Eliminar</button></div></div>`).join("")}</div>`
+        : `<p class="nota">Todavía no has subido ninguna tipografía.</p>`}`;
+  }
+  function activarTipografias() {
+    const archivo = $("#fuenteArchivo");
+    if (archivo) archivo.addEventListener("change", (e) => {
+      const file = e.target.files[0]; e.target.value = "";
+      if (!file) return;
+      const nombre = ($("#fuenteNombre").value || "").trim() || file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ");
+      const ext = (file.name.match(/\.(woff2?|otf|ttf)$/i) || [])[1];
+      if (!ext || file.size > 8 * 1024 * 1024) { aviso("Usa OTF, TTF, WOFF o WOFF2 de menos de 8 MB", true); return; }
+      const lista = fuentesSubidas();
+      if (lista.some((f) => f.nombre.toLowerCase() === nombre.toLowerCase())) { aviso("Ya hay una tipografía con ese nombre", true); return; }
+      const nombreArchivo = slugFuente(nombre).replace(/^fuente-/, "") + "." + ext.toLowerCase();
+      E.fuentesNuevas.push({ nombre, archivo: nombreArchivo, blob: file, url: URL.createObjectURL(file) });
+      lista.push({ nombre, archivo: nombreArchivo });
+      guardarFuentes(lista);
+      aviso(`«${nombre}» añadida. Publica para subirla a la web.`);
+      pintar();
+    });
+  }
+
   function vistaNombre() {
     const c = E.about.info.campos;
     const archivo = c.nombre_fuente_archivo || (E.fuenteCustom || "").split("/").pop();
@@ -590,12 +684,7 @@ button { cursor: pointer; background: none; border: 0; }
         <div class="bloque controles-nombre">
           <label class="control-nombre"><span>Texto que aparece arriba en toda la web</span>
             <input type="text" data-nombre="nombre" value="${esc(c.nombre || "Idoia Esteban Galván")}" autocomplete="off"></label>
-          <label class="control-nombre"><span>Tipografía</span><select data-nombre="nombre_fuente">
-            <option value="garet"${fuente === "garet" ? " selected" : ""}>Garet · Book / Heavy</option>
-            <option value="arial"${fuente === "arial" ? " selected" : ""}>Arial</option>
-            <option value="instrument"${fuente === "instrument" ? " selected" : ""}>Instrument Serif</option>
-            <option value="personalizada"${fuente === "personalizada" ? " selected" : ""}${archivo ? "" : " disabled"}>Fuente subida${archivo ? ` · ${esc(archivo)}` : ""}</option>
-          </select></label>
+          <label class="control-nombre"><span>Tipografía (las tuyas se suben en la pestaña Tipografías)</span><select data-nombre="nombre_fuente">${opcionesFuente(fuente)}</select></label>
           <label class="control-nombre"><span>Instalar otra fuente (OTF, TTF, WOFF o WOFF2; máximo 8 MB)</span>
             <input type="file" id="subirFuenteNombre" accept=".otf,.ttf,.woff,.woff2"></label>
           ${rango("nombre_tamano", "Tamaño en ordenador", tam, 12, 48, 1, "px")}
@@ -609,6 +698,13 @@ button { cursor: pointer; background: none; border: 0; }
           <label class="control-nombre opcion"><input type="checkbox" data-nombre="nombre_cursiva"${(c.nombre_cursiva || "si") === "si" ? " checked" : ""}> Cursiva</label>
           <label class="control-nombre opcion"><input type="checkbox" data-nombre="nombre_mayusculas"${(c.nombre_mayusculas || "si") === "si" ? " checked" : ""}> Convertir a mayúsculas</label>
           <p class="nota">Garet Book y Heavy ya están instaladas. Si subes otra fuente, se guardará con la web al publicar.</p>
+
+          <h3 class="bloque-titulo">Menú (production designer · work · films · contact…)</h3>
+          <label class="control-nombre"><span>Tipografía</span><select data-nombre="menu_fuente">${opcionesFuente(c.menu_fuente || "arial")}</select></label>
+          ${cRango("menu_tamano", "Tamaño", c.menu_tamano || "13", 8, 24, 1, "px")}
+          ${cElegir("menu_peso", "Grosor", c.menu_peso || "400", GROSORES)}
+          ${cElegir("menu_cursiva", "Cursiva", c.menu_cursiva || "no", SI_NO("Cursiva", "Recta"))}
+          ${cElegir("menu_mayusculas", "Mayúsculas", c.menu_mayusculas || "si", SI_NO("TODO EN MAYÚSCULAS", "Como está escrito"))}
 
           <h3 class="bloque-titulo">Animación del nombre (mask reveal)</h3>
           ${elegir("anim_nombre", "Efecto", c.anim_nombre || "subir", [["subir", "Sube desde debajo de su máscara"], ["bajar", "Baja desde encima de su máscara"], ["fundido", "Aparece con un fundido"], ["ninguno", "Sin animación"]])}
@@ -627,6 +723,8 @@ button { cursor: pointer; background: none; border: 0; }
 
           <h3 class="bloque-titulo">Color de las letras sobre las fotos</h3>
           <p class="nota">Las letras son blancas; donde caen sobre un color claro pasan a negro. La tolerancia dice lo claro que tiene que ser el fondo para que cambie.</p>
+          ${cColor("color_letra_claro", "Color de las letras (el normal)", c.color_letra_claro || "#ffffff")}
+          ${cColor("color_letra_oscuro", "Color cuando el fondo es claro", c.color_letra_oscuro || "#000000")}
           ${rango("contraste_umbral", "Tolerancia · ← cambia antes · cambia menos →", c.contraste_umbral || "0.5", 0.2, 0.85, 0.01, "")}
           ${elegir("contraste_por", "Cómo decide", c.contraste_por || "pixel", [["pixel", "Según la imagen (como Photoshop, solo en las zonas claras)"], ["palabra", "Palabra entera"], ["letra", "Letra a letra"], ["texto", "Texto entero de un color"]])}
           ${rango("contraste_grano", "Ignorar textura fina (según la imagen)", c.contraste_grano || "1.5", 0, 4, 0.5, "px")}
@@ -640,37 +738,39 @@ button { cursor: pointer; background: none; border: 0; }
      Se guarda en contenido/about/info.txt (claves parrilla_*), como la cabecera. */
   function vistaParrillas() {
     const c = E.about.info.campos;
-    const rango = (clave, etiqueta, valor, min, max, step, unidad) => `<label class="control-nombre"><span>${etiqueta}</span>
-      <span class="fila-rango"><input type="range" data-nombre="${clave}" min="${min}" max="${max}" step="${step}" value="${esc(valor)}">
-      <output data-valor-nombre="${clave}" data-unidad="${unidad}">${esc(valor)} ${unidad}</output></span></label>`;
-    const fuente = c.parrilla_texto_fuente || "arial";
-    const opciones = [["arial", "Arial"], ["garet", "Garet Book"], ["garet-heavy", "Garet Heavy"], ["instrument-sans", "Instrument Sans"], ["instrument", "Instrument Serif"]]
-      .concat(c.nombre_fuente_archivo ? [["personalizada", "Fuente subida (la de la cabecera)"]] : []);
     return `<div class="cabecera"><h2>Parrillas (Work, Films, Series…)</h2>
         <p>Los cambios se ven aquí al instante. Para hacerlos públicos, pulsa «Publicar cambios» arriba.</p></div>
       <div class="editor-nombre">
         <div class="bloque controles-nombre">
           <h3 class="bloque-titulo" style="border:0;margin-top:0;padding-top:0">Línea entre las fotos</h3>
-          ${rango("parrilla_hilo", "Grosor (0 = fotos pegadas)", c.parrilla_hilo || "0", 0, 20, 1, "px")}
-          <label class="control-nombre"><span>Color</span>
-            <span class="fila-rango"><input type="color" data-nombre="parrilla_hilo_color" value="${esc(c.parrilla_hilo_color || "#000000")}" style="width:56px;height:36px;padding:0;border:1px solid var(--linea);border-radius:6px;background:#fff">
-            <output data-valor-nombre="parrilla_hilo_color" data-unidad="">${esc(c.parrilla_hilo_color || "#000000")}</output></span></label>
+          ${cRango("parrilla_hilo", "Grosor (0 = fotos pegadas)", c.parrilla_hilo || "0", 0, 20, 1, "px")}
+          ${cColor("parrilla_hilo_color", "Color", c.parrilla_hilo_color || "#000000")}
 
           <h3 class="bloque-titulo">Nombre de arriba (IDOIA ESTEBAN GALVÁN)</h3>
-          <label class="control-nombre"><span>Rectángulo detrás del nombre</span><select data-nombre="parrilla_nombre_caja">
-            <option value="no"${(c.parrilla_nombre_caja || "no") === "no" ? " selected" : ""}>Sin rectángulo</option>
-            <option value="si"${c.parrilla_nombre_caja === "si" ? " selected" : ""}>Con rectángulo al ras (letras blancas)</option></select></label>
-          <label class="control-nombre"><span>Color del rectángulo</span>
-            <span class="fila-rango"><input type="color" data-nombre="parrilla_nombre_caja_color" value="${esc(c.parrilla_nombre_caja_color || "#000000")}" style="width:56px;height:36px;padding:0;border:1px solid var(--linea);border-radius:6px;background:#fff">
-            <output data-valor-nombre="parrilla_nombre_caja_color" data-unidad="">${esc(c.parrilla_nombre_caja_color || "#000000")}</output></span></label>
+          ${cElegir("parrilla_nombre_caja", "Rectángulo detrás del nombre (parrillas y páginas de cada peli)", c.parrilla_nombre_caja || "no", [["no", "Sin rectángulo"], ["si", "Con rectángulo al ras"]])}
+          ${cColor("parrilla_nombre_caja_color", "Color del rectángulo", c.parrilla_nombre_caja_color || "#000000")}
+          ${cColor("parrilla_nombre_caja_letra", "Color de las letras dentro", c.parrilla_nombre_caja_letra || "#ffffff")}
+          ${cRango("parrilla_nombre_caja_margen", "Margen alrededor de las letras", c.parrilla_nombre_caja_margen || "3", 0, 20, 1, "px")}
+          ${cRango("parrilla_nombre_caja_inclinacion", "Inclinación (paralela a la cursiva; 0 = recto)", c.parrilla_nombre_caja_inclinacion || "12", -30, 30, 1, "°")}
 
           <h3 class="bloque-titulo">Texto de cada recuadro (título · director · año)</h3>
-          <label class="control-nombre"><span>Tipografía</span><select data-nombre="parrilla_texto_fuente">
-            ${opciones.map(([v, t]) => `<option value="${v}"${fuente === v ? " selected" : ""}>${t}</option>`).join("")}</select></label>
-          ${rango("parrilla_texto_tamano", "Tamaño (en el móvil sale un poco más pequeño)", c.parrilla_texto_tamano || "13", 9, 24, 1, "px")}
+          <label class="control-nombre"><span>Tipografía</span><select data-nombre="parrilla_texto_fuente">${opcionesFuente(c.parrilla_texto_fuente || "arial")}</select></label>
+          ${cRango("parrilla_texto_tamano", "Tamaño (en el móvil sale un poco más pequeño)", c.parrilla_texto_tamano || "13", 9, 24, 1, "px")}
+          ${cElegir("parrilla_texto_peso", "Grosor", c.parrilla_texto_peso || "400", GROSORES)}
+          ${cElegir("parrilla_texto_cursiva", "Cursiva", c.parrilla_texto_cursiva || "no", SI_NO("Cursiva", "Recta"))}
+          ${cElegir("parrilla_texto_mayusculas", "Mayúsculas", c.parrilla_texto_mayusculas || "no", SI_NO("TODO EN MAYÚSCULAS", "Como está escrito"))}
+          <p class="nota">El color de estas letras es el de Cabecera → Color de las letras.</p>
+
+          <h3 class="bloque-titulo">Franja de enlaces (al final de las parrillas y de cada peli)</h3>
+          ${cElegir("franja", "Franja", c.franja || "si", [["si", "Con franja (sustituye al botón «Start a conversation»)"], ["no", "Sin franja"]])}
+          <label class="control-nombre"><span>Tipografía</span><select data-nombre="franja_fuente">${opcionesFuente(c.franja_fuente || "arial")}</select></label>
+          ${cRango("franja_tamano", "Tamaño de la letra (la franja mide lo mismo)", c.franja_tamano || "13", 8, 48, 1, "px")}
+          ${cRango("franja_velocidad", "Velocidad", c.franja_velocidad || "60", 10, 300, 5, "px/s")}
+          ${cColor("franja_fondo", "Color de fondo", c.franja_fondo || "#000000")}
+          ${cColor("franja_color", "Color de las letras", c.franja_color || "#ffffff")}
         </div>
         <div class="preview-nombre"><iframe id="vistaParrillas" src="${urlVista("work.html")}" title="Vista previa de las parrillas" style="pointer-events:auto"></iframe>
-          <p>Vista previa de Work. Puedes hacer scroll dentro.</p></div>
+          <p>Vista previa de Work. Haz scroll dentro para ver la franja del final.</p></div>
       </div>`;
   }
   function aplicarVistaParrillas() {
@@ -693,7 +793,8 @@ button { cursor: pointer; background: none; border: 0; }
     if (!iframe || !iframe.contentWindow) return;
     const c = E.about.info.campos;
     const fuenteUrl = E.fuentePendiente && location.hostname.endsWith("github.io") ? E.fuentePendiente.url : undefined;
-    iframe.contentWindow.postMessage({ tipo: "gestor", campos: { ...c }, fuenteUrl, ...extra }, "*");
+    const fuentesNuevas = location.hostname.endsWith("github.io") ? E.fuentesNuevas.map(({ nombre, archivo, url }) => ({ nombre, archivo, url })) : [];
+    iframe.contentWindow.postMessage({ tipo: "gestor", campos: { ...c }, fuenteUrl, fuentesNuevas, ...extra }, "*");
   }
   function aplicarVistaNombre() {
     if (pestana !== "nombre") return;
@@ -736,6 +837,14 @@ button { cursor: pointer; background: none; border: 0; }
   }
   // La portada (foto de la parrilla) es una marca: no mueve la foto de sitio.
   // Si no hay ninguna marcada (o se quitó), es la primera foto que no sea vídeo.
+  // ¿Esta foto del proyecto está también en el pase del inicio?
+  // (por el propio objeto si se añadió ahora, o por su contenido —sha— si ya estaba)
+  const homeDe = (p, f) => E.home.find((h) => h.origen === f || (!h.origen && f.sha && h.sha === f.sha && h.tipo === p.tipo && h.carpeta === p.carpeta));
+  function quitarHome(h) {
+    E.home = E.home.filter((x) => x !== h);
+    if (!h.nuevo) E.homeBorrados.push(h.f);
+    E.homeSucio = true;
+  }
   const portadaDe = (x) => (x.portada && x.fotos.includes(x.portada) && !x.portada.video ? x.portada : x.fotos.find((f) => !f.video) || null);
   function pintarEditor() {
     const { p, campos } = ed;
@@ -779,13 +888,14 @@ button { cursor: pointer; background: none; border: 0; }
       <div class="fotos" id="fotos">${ed.fotos.map((f, i) => `
         <div class="foto ${ed.sel.has(f) ? "elegida" : ""}" draggable="true" data-i="${i}">
           ${f.video ? `<video src="${esc(urlDe(f))}" muted></video>` : `<img src="${esc(urlDe(f))}" alt="">`}
-          ${f === portadaDe(ed) ? `<span class="portada">PORTADA</span>` : ""}<span class="num">${i + 1}</span>
+          ${f === portadaDe(ed) ? `<span class="portada">PORTADA</span>` : ""}${homeDe(ed.p, f) ? `<span class="inicio-marca">INICIO</span>` : ""}<span class="num">${i + 1}</span>
           <button class="asa ${f === portadaDe(ed) ? "con-portada" : ""}" data-drag="${i}" aria-label="Arrastrar foto ${i + 1}" title="Arrastrar para ordenar">↕</button>
           <button class="marca" data-sel="${i}" aria-label="Seleccionar foto ${i + 1}">${ed.sel.has(f) ? "✓" : ""}</button>
           <div class="foto__acciones"><button data-mover="${i}" data-d="-1" title="Mover antes"${i === 0 ? " disabled" : ""}>←</button>
             <button data-mover="${i}" data-d="1" title="Mover después"${i === ed.fotos.length - 1 ? " disabled" : ""}>→</button>
             <button data-foto-portada="${i}"${f === portadaDe(ed) || f.video ? " disabled" : ""} title="Usar como portada de la parrilla (no cambia el orden)">Portada</button>
             <button data-foto-cartel="${i}"${f.video ? " disabled" : ""} title="Usar como cartel (sale en las rejillas, no en la galería)">Cartel</button>
+            <button data-foto-inicio="${i}"${f.video ? " disabled" : ""} class="${homeDe(ed.p, f) ? "activo" : ""}" title="Añadir esta foto al pase del inicio (o quitarla)">Inicio</button>
             <button class="quitar" data-foto-eliminar="${i}">Quitar</button></div>
         </div>`).join("")}</div>
       <div class="soltar" id="soltar">Arrastra aquí fotos desde tu ordenador (JPG, PNG… se reducen solas a ${MAX_LADO}px)</div>
@@ -994,6 +1104,11 @@ button { cursor: pointer; background: none; border: 0; }
       const ref = await gh("GET", `/repos/${REPO}/git/ref/heads/${RAMA}`);
       if (ref.object.sha !== E.head) throw new Error("La web ha cambiado desde otro sitio mientras editabas. Pulsa \"Descartar cambios\" para recargar y vuelve a hacerlo.");
       const commit = await gh("GET", `/repos/${REPO}/git/commits/${E.head}`);
+      if (E.arbol.has("gestor.html")) {
+        const publicado = await leerBlobTexto(E.arbol.get("gestor.html"));
+        const v = (publicado.match(/const VERSION_GESTOR = "([^"]+)"/) || [])[1];
+        if (v && v !== VERSION_GESTOR) throw new Error("Hay una versión más nueva del gestor. Recarga esta página (Ctrl+Shift+R en Windows · Cmd+Shift+R en Mac) y vuelve a hacer los cambios.");
+      }
       const entradas = [];
       const blobTexto = async (texto) => (await gh("POST", `/repos/${REPO}/git/blobs`, { content: textoAB64(texto), encoding: "base64" })).sha;
       const blobArchivo = async (blob) => (await gh("POST", `/repos/${REPO}/git/blobs`, { content: await blobAB64(blob), encoding: "base64" })).sha;
@@ -1021,7 +1136,8 @@ button { cursor: pointer; background: none; border: 0; }
           rutasFinales.add(ruta);
           if (f.blob) {
             led("subiendo", `Subiendo fotos… ${++subidas}/${totalSubidas}`);
-            poner(ruta, await blobArchivo(f.blob));
+            f.shaSubido = await blobArchivo(f.blob);
+            poner(ruta, f.shaSubido);
           } else if (E.arbol.get(ruta) !== f.sha) poner(ruta, f.sha);   // renombrada / movida
         }
         for (const r of p.rutasOriginales) if (!rutasFinales.has(r)) poner(r, null);   // ya no está
@@ -1031,6 +1147,13 @@ button { cursor: pointer; background: none; border: 0; }
         const base = `contenido/${p.tipo}/${p.carpeta}/`;
         for (const r of E.arbol.keys()) if (r.startsWith(base)) poner(r, null);
       }
+      // tipografías subidas / eliminadas en la pestaña Tipografías
+      for (const f of E.fuentesNuevas) {
+        if (!fuentesSubidas().some((x) => x.archivo === f.archivo)) continue;   // añadida y luego quitada
+        led("subiendo", `Subiendo la tipografía ${f.nombre}…`);
+        poner("assets/fonts/" + f.archivo, await blobArchivo(f.blob));
+      }
+      for (const ruta of E.fuentesBorrar) if (E.arbol.has(ruta)) poner(ruta, null);
       if (E.fuentePendiente) {
         led("subiendo", "Subiendo la tipografía…");
         poner(E.fuentePendiente.ruta, await blobArchivo(E.fuentePendiente.blob));
@@ -1042,15 +1165,24 @@ button { cursor: pointer; background: none; border: 0; }
         const orden = ["nombre", "subtitulo", "ubicacion", "email", "telefono", "instagram", "imdb", "showreel"];
         const claves = orden.concat(Object.keys(c).filter((k) => !orden.includes(k)));
         aboutInfo = "# =====================================================================\n#  ABOUT  ·  cada dato relleno es una línea en la web (editado con el gestor)\n# =====================================================================\n"
-          + claves.map((k) => `${k}: ${(c[k] || "").trim()}`).join("\n") + "\n---\n" + (E.about.info.texto ? E.about.info.texto + "\n" : "");
+          + claves.map((k) => String(c[k] || "").split("\n").map((v) => `${k}: ${v.trim()}`).join("\n")).join("\n") + "\n---\n" + (E.about.info.texto ? E.about.info.texto + "\n" : "");
         aboutExtra = extraATexto(E.about.extra);
         poner("contenido/about/info.txt", await blobTexto(aboutInfo));
         poner("contenido/about/filmografia-extra.txt", await blobTexto(aboutExtra));
       }
 
+      // fotos añadidas / quitadas del pase del inicio (contenido/home/)
+      for (const h of E.home) {
+        if (!h.origen) continue;
+        const sha = h.origen.sha || h.origen.shaSubido || await blobArchivo(h.origen.blob);
+        poner("contenido/home/" + h.f, sha);
+      }
+      for (const f of E.homeBorrados) if (E.arbol.has("contenido/home/" + f)) poner("contenido/home/" + f, null);
+      const homeLimpio = E.home.map(({ origen, nuevo, sha, ...resto }) => resto);
+
       // datos que lee la web + número de versión nuevo en las páginas (para la caché)
       const version = new Date().toISOString().replace(/\D/g, "").slice(0, 12);
-      const datosTexto = generarDatos(datos, { info: aboutInfo, filmografia: aboutExtra, archivos: E.about.archivos }, E.home, version);
+      const datosTexto = generarDatos(datos, { info: aboutInfo, filmografia: aboutExtra, archivos: E.about.archivos }, homeLimpio, version);
       poner("contenido/datos-generados.js", await blobTexto(datosTexto));
       for (const r of E.arbol.keys()) {
         if (!/^[^/]+\.html$/.test(r)) continue;
@@ -1219,6 +1351,12 @@ button { cursor: pointer; background: none; border: 0; }
       const p = E.proyectos.find((x) => x.tipo + "/" + x.carpeta === t.dataset.inicio);
       p.info.campos.mostrar_en_inicio = enInicio(p) ? "no" : "si"; if (!p.nuevo) p.sucio = true; pintar(); return;
     }
+    if (t.dataset.homeQuitar !== undefined) {
+      e.stopPropagation();
+      const h = E.home[+t.dataset.homeQuitar];
+      if (h && confirm("¿Quitar esta foto del pase del inicio? (La foto sigue en su película.)")) { quitarHome(h); pintar(); }
+      return;
+    }
     if (t.dataset.home !== undefined) {
       const h = E.home[+t.dataset.home];
       h.enInicio = h.enInicio === false; E.homeSucio = true; pintar(); return;
@@ -1248,6 +1386,13 @@ button { cursor: pointer; background: none; border: 0; }
       seleccion.has(t.dataset.marcar) ? seleccion.delete(t.dataset.marcar) : seleccion.add(t.dataset.marcar);
       pintar(); return;
     }
+    if (t.dataset.fuenteBorrar !== undefined) {
+      const lista = fuentesSubidas(); const [f] = lista.splice(+t.dataset.fuenteBorrar, 1);
+      if (!f || !confirm(`¿Eliminar la tipografía «${f.nombre}»? Lo que la use pasará a la tipografía por defecto.`)) return;
+      const nueva = E.fuentesNuevas.findIndex((n) => n.archivo === f.archivo);
+      if (nueva >= 0) E.fuentesNuevas.splice(nueva, 1); else E.fuentesBorrar.push("assets/fonts/" + f.archivo);
+      guardarFuentes(lista); pintar(); return;
+    }
     if (t.dataset.vista) { mandarAVista("#vistaNombre", { accion: t.dataset.vista }); return; }
     if (t.dataset.editar) { abrirEditor(E.proyectos.find((x) => x.tipo + "/" + x.carpeta === t.dataset.editar)); return; }
 
@@ -1267,6 +1412,21 @@ button { cursor: pointer; background: none; border: 0; }
     if (t.dataset.fotoPortada !== undefined) { leerCamposEditor(); const f = ed.fotos[+t.dataset.fotoPortada]; if (f && !f.video) ed.portada = f; pintarEditor(); return; }
     if (t.dataset.fotoEliminar !== undefined) { leerCamposEditor(); const i = +t.dataset.fotoEliminar; const [f] = ed.fotos.splice(i, 1); ed.ultimaQuitada = [{ f, i }]; ed.sel.delete(f); pintarEditor(); return; }
     if (d === "quitar-movil") { leerCamposEditor(); ed.movil = null; pintarEditor(); return; }
+    if (t.dataset.fotoInicio !== undefined) {
+      leerCamposEditor();
+      const f = ed.fotos[+t.dataset.fotoInicio], p = ed.p;
+      if (!f || f.video) return;
+      const h = homeDe(p, f);
+      if (h) quitarHome(h);
+      else {
+        let n = 1, nombre;
+        do { nombre = `${p.carpeta}-${String(n++).padStart(2, "0")}.jpg`; } while (E.home.some((x) => x.f === nombre) || E.homeBorrados.includes(nombre));
+        E.home.push({ f: nombre, titulo: ed.campos.titulo || p.carpeta, ano: ed.campos.ano || "", tipo: p.tipo, carpeta: p.carpeta, enInicio: true, w: f.w, h: f.h, origen: f, nuevo: true });
+        E.homeSucio = true;
+        aviso("Añadida al pase del inicio (la verás en la pestaña Inicio)");
+      }
+      pintarEditor(); return;
+    }
     if (t.dataset.fotoCartel !== undefined) { ponerCartel(ed.fotos[+t.dataset.fotoCartel], true); return; }
     if (d === "sel-cartel") { const f = [...ed.sel][0]; if (f && !f.video) ponerCartel(f, true); return; }
     if (d === "quitar-cartel") { leerCamposEditor(); ed.cartel = null; pintarEditor(); return; }

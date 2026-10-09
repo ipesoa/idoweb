@@ -75,5 +75,9 @@
     })();
   } else if (etiqueta) etiqueta.remove();
 
+  // franja con las otras secciones + Contact, al final de la parrilla
+  const f = Comun.franja && Comun.franja(tipo === "work" ? null : tipo);
+  if (f) lista.after(f);
+
   Comun.autoScroll();
 })();

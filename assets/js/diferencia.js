@@ -30,6 +30,11 @@
   // Se leen en cada fotograma: el gestor puede cambiarlos en directo.
   const cfg = () => (window.AJUSTES && window.AJUSTES.diferencia) || AJ;
   const umbral = () => num(cfg().umbral, 0.45);           // tolerancia: luz (0-1) a partir de la cual pasa a negro
+  // Colores de las letras: claro (el normal) y oscuro (sobre fondos claros).
+  // Se eligen en el gestor (Cabecera → Color de las letras).
+  const hex = (h, d) => (/^#[0-9a-f]{6}$/i.test(h || "") ? h : d);
+  const claro = () => hex(cfg().claro, "#ffffff"), oscuro = () => hex(cfg().oscuro, "#000000");
+  const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
   const decidir = () => cfg().decidir || "pixel";          // "pixel" | "palabra" | "letra" | "texto"
   const PROPORCION = 0.5;    // parte de la letra que tiene que estar sobre claro para pasar a negro
   const VUELTA = 0.35;       // y por debajo de esta parte vuelve a blanco (margen anti-parpadeo)
@@ -252,7 +257,7 @@
         if (clip) { ctx.beginPath(); ctx.rect(clip[0], clip[1], clip[2] - clip[0], clip[3] - clip[1]); ctx.clip(); }
         clipAct = clip;
       }
-      const color = colores[i] ? "#000" : "#fff";
+      const color = colores[i] ? oscuro() : claro();
       if (color !== colorAct) ctx.fillStyle = colorAct = color;
       const m = medidas(g.fuente);
       const base = gy + (g.h - (m.asc + m.desc)) / 2 + m.asc;
@@ -387,12 +392,13 @@
       const xc = mp.cv.getContext("2d");
       const campo = xc.createImageData(W, H), c = campo.data;
       let hayN = false, hayB = false;
+      const [cr, cg, cb] = rgb(claro()), [or, og, ob] = rgb(oscuro());
       for (let i = 0, q = 0; i < n; i++, q += 4) {
         const l = lz[i];
         const b = l >= U + BANDA ? 1 : l < U - BANDA ? 0 : (mismo ? negro[i] : (l >= U ? 1 : 0));
         negro[i] = b;
-        const t = b ? 0 : 255;
-        c[q] = c[q + 1] = c[q + 2] = t; c[q + 3] = 255;
+        if (b) { c[q] = or; c[q + 1] = og; c[q + 2] = ob; } else { c[q] = cr; c[q + 1] = cg; c[q + 2] = cb; }
+        c[q + 3] = 255;
         if (b) hayN = true; else hayB = true;
       }
       mp.negro = negro; mp.W = W; mp.H = H;

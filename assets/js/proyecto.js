@@ -83,8 +83,11 @@
   });
 
   /* ---- 6. botón final: Start a conversation → contact ---- */
-  document.getElementById("contacto").innerHTML =
-    `<a class="boton-contacto" href="contact.html">${T.conversacion}</a>`;
+  // con la franja activada (gestor → Parrillas), la franja sustituye al botón
+  const franja = Comun.franja && Comun.franja(tipo);
+  const pie = document.getElementById("contacto");
+  if (franja) { pie.classList.add("pie-contacto--franja"); pie.append(franja); }
+  else pie.innerHTML = `<a class="boton-contacto" href="contact.html">${T.conversacion}</a>`;
 
   Comun.autoScroll();
 })();

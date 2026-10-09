@@ -48,8 +48,8 @@
           `<a class="menu__seccion menu__${s.id}" href="${s.pagina}">${mascara(s.titulo)}</a>`).join("")}
         <a class="menu__archivo" href="work.html">${mascara("Archive")}</a>
       </div>
-      <div class="menu__pie menu__plegable" inert>
-        <a class="menu__contacto" href="contact.html">${mascara(A.textos.contacto)}</a>
+      <div class="menu__pie">
+        <a class="menu__contacto" href="contact.html">${htmlSeguro(A.textos.contacto)}</a>
       </div>`;
     } else if (pagina === "contact") {
       dentro = `
@@ -73,10 +73,9 @@
     if (pagina === "inicio") {
       const boton = nav.querySelector(".menu__work");
       const opciones = nav.querySelector(".menu__opciones");
-      const contacto = nav.querySelector(".menu__pie");
       // WORK (GSAP). Efectos y tiempos: ajustes.js → animaciones.menu
       // (o el gestor, pestaña Cabecera, que manda sobre ajustes.js)
-      const items = [...opciones.children, ...contacto.children];
+      const items = [...opciones.children];   // (Contact va aparte: siempre fijo y visible)
       const sinMovimiento = matchMedia("(prefers-reduced-motion: reduce)").matches;
       const textos = items.map((a) => a.querySelector(".opcion-texto")).filter(Boolean);
       const acabar = () => { gsap.set(items.concat(textos), { clearProps: "all" }); nav.classList.remove("menu--animando"); delete nav.dataset.difVivo; };
@@ -84,7 +83,6 @@
         const AM = (A.animaciones && A.animaciones.menu) || {};
         boton.setAttribute("aria-expanded", String(abierto));
         opciones.inert = !abierto;
-        contacto.inert = !abierto;
         if (!window.gsap || sinMovimiento) { nav.classList.toggle("menu--abierto", abierto); return; }
         gsap.killTweensOf(items.concat(textos));
         nav.classList.add("menu--animando");          // sin transiciones CSS mientras manda GSAP
@@ -164,11 +162,50 @@
     });
   }
 
+  /* ---------- FRANJA CON ENLACES EN MOVIMIENTO ----------
+     Al final de las parrillas y de cada proyecto: una franja del alto de
+     la letra con las otras secciones + Contact, que pasa sola de derecha
+     a izquierda (se para al poner el ratón encima). En Series salen
+     Films · Commercials · Contact; en Films, Series · Commercials · Contact…
+     Se pone y se quita, y se cambian colores, tamaño y velocidad, en el
+     gestor (pestaña Parrillas). */
+  function franja(actual) {
+    const F = A.franja || {};
+    if (F.activo === false) return null;
+    const enlaces = A.secciones.filter((s) => ["films", "series", "comercials"].includes(s.id) && s.id !== actual)
+      .map((s) => [s.titulo, s.pagina]).concat([[A.textos.contacto, "contact.html"]]);
+    const sep = `<span class="franja__sep" aria-hidden="true">${htmlSeguro(F.separador || "·")}</span>`;
+    const grupo = enlaces.map(([t, h]) => `<a href="${h}">${htmlSeguro(t)}</a>`).join(sep) + sep;
+    const el = document.createElement("nav");
+    el.className = "franja";
+    el.setAttribute("aria-label", "Otras secciones");
+    el.innerHTML = `<div class="franja__pista"><div class="franja__mitad">${grupo}</div></div>`;
+    // se repite el grupo hasta llenar la pantalla y se duplica la mitad: así
+    // el movimiento es continuo, sin saltos
+    const ajustar = () => {
+      const pista = el.querySelector(".franja__pista");
+      const mitad = pista.querySelector(".franja__mitad");
+      mitad.innerHTML = grupo;
+      let n = 1;
+      while (mitad.scrollWidth < innerWidth * 1.2 && n < 30) { mitad.insertAdjacentHTML("beforeend", grupo); n++; }
+      pista.querySelectorAll(".franja__mitad[aria-hidden]").forEach((m) => m.remove());
+      const copia = mitad.cloneNode(true); copia.setAttribute("aria-hidden", "true");
+      copia.querySelectorAll("a").forEach((a) => a.tabIndex = -1);
+      pista.append(copia);
+      const vel = Number((A.franja || {}).velocidad) || 60;     // píxeles por segundo
+      pista.style.setProperty("--franja-duracion", (mitad.scrollWidth / vel).toFixed(2) + "s");
+    };
+    requestAnimationFrame(ajustar);
+    window.addEventListener("resize", ajustar);
+    el.ajustar = ajustar;
+    return el;
+  }
+
   /* ---------- RECTÁNGULO DETRÁS DEL NOMBRE (parrillas) ----------
      En Work, Films, Series… el nombre puede ir sobre un rectángulo negro
      al ras de las letras. Se pone y se quita en el gestor (Parrillas).
      Con el rectángulo, el nombre es siempre blanco (no usa el contraste). */
-  const PAGINAS_PARRILLA = ["work", "films", "series", "comercials", "videoclips"];
+  const PAGINAS_PARRILLA = ["work", "films", "series", "comercials", "videoclips", "proyecto"];
   function cajaNombre() {
     const el = document.querySelector(".menu__nombre");
     if (!el || !PAGINAS_PARRILLA.includes(pagina)) return;
@@ -177,7 +214,33 @@
     if (activa && !caja) { el.innerHTML = `<span class="nombre__caja">${htmlSeguro(el.textContent)}</span>`; }
     else if (!activa && caja) { el.textContent = caja.textContent; }
     if (activa) el.dataset.difNo = "1"; else delete el.dataset.difNo;
+    if (activa) medirCaja();
   }
+  // Mide dónde están de verdad las letras (con la tipografía cargada) para
+  // que el rectángulo vaya al ras: altura de las mayúsculas + el margen.
+  const lienzoMedir = document.createElement("canvas").getContext("2d");
+  function medirCaja() {
+    const caja = document.querySelector(".nombre__caja");
+    if (!caja || !caja.firstChild) return;
+    const cs = getComputedStyle(caja);
+    const margen = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nombre-caja-margen")) || 3;
+    lienzoMedir.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+    let texto = caja.textContent.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    if (cs.textTransform === "uppercase") texto = texto.toUpperCase();
+    const m = lienzoMedir.measureText(texto);
+    const r = document.createRange(); r.selectNodeContents(caja);
+    const lineas = r.getBoundingClientRect(), b = caja.getBoundingClientRect();
+    const asc = m.fontBoundingBoxAscent ?? parseFloat(cs.fontSize) * 0.9;
+    const base = lineas.top - b.top + asc;                      // línea de base dentro de la caja
+    const arriba = base - m.actualBoundingBoxAscent - margen;   // parte de arriba de las mayúsculas
+    const abajo = base + Math.max(0, m.actualBoundingBoxDescent) + margen;
+    caja.style.setProperty("--caja-t", arriba.toFixed(1) + "px");
+    caja.style.setProperty("--caja-b", (b.height - abajo).toFixed(1) + "px");
+    caja.style.setProperty("--caja-l", (lineas.left - b.left - margen).toFixed(1) + "px");
+    caja.style.setProperty("--caja-r", (b.right - lineas.right - margen).toFixed(1) + "px");
+  }
+  window.addEventListener("resize", () => medirCaja());
+  if (document.fonts) { document.fonts.ready.then(() => medirCaja()); document.fonts.addEventListener("loadingdone", () => medirCaja()); }
 
   /* ---------- EFECTOS GUARDADOS EN EL GESTOR ----------
      El gestor (pestaña Cabecera) guarda en contenido/about/info.txt las
@@ -191,6 +254,27 @@
     "instrument-sans": '"Instrument Sans", Arial, sans-serif',
     personalizada: '"Idoia personalizada", "Garet", Arial, sans-serif',
   };
+  /* ---------- TIPOGRAFÍAS SUBIDAS AL REPO ----------
+     El gestor (pestaña Tipografías) las sube a assets/fonts/ y las apunta
+     en contenido/about/info.txt, una línea por tipografía:
+         fuente: Nombre que se ve | archivo.woff2
+     Aquí se cargan y se añaden a la lista de tipografías elegibles. */
+  const slugFuente = (t) => "fuente-" + t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  function registrarFuentes(c, pendientes = []) {
+    const lineas = String(c.fuente || "").split("\n").map((l) => l.split("|").map((x) => x.trim())).filter((l) => l[0] && l[1]);
+    const todas = lineas.map(([nombre, archivo]) => ({ nombre, url: "assets/fonts/" + encodeURIComponent(archivo), archivo }))
+      .concat(pendientes);
+    let style = document.getElementById("fuentes-subidas");
+    if (!style) { style = document.createElement("style"); style.id = "fuentes-subidas"; document.head.append(style); }
+    style.textContent = todas.map((f) => {
+      const ext = (f.archivo || "").split(".").pop().toLowerCase();
+      const formato = { woff2: "woff2", woff: "woff", otf: "opentype", ttf: "truetype" }[ext] || "woff2";
+      FAMILIAS[slugFuente(f.nombre)] = `"${f.nombre.replace(/"/g, "")}", Arial, sans-serif`;
+      return `@font-face{font-family:"${f.nombre.replace(/"/g, "")}";src:url("${f.url}") format("${formato}");font-display:swap}`;
+    }).join("\n");
+  }
+  const estilo = (v) => (v === "si" ? "italic" : v === "no" ? "normal" : undefined);
+  const mayus = (v) => (v === "si" ? "uppercase" : v === "no" ? "none" : undefined);
   function aplicarEfectos(c) {
     const n = (v, min, max) => { const x = Number(v); return Number.isFinite(x) && x >= min && x <= max ? x : undefined; };
     const fijar = (obj, clave, v) => { if (v !== undefined && v !== "") obj[clave] = v; };
@@ -215,14 +299,45 @@
     const tamTexto = n(c.parrilla_texto_tamano, 8, 32);
     if (tamTexto !== undefined) root.style.setProperty("--cartel-texto-tam", tamTexto + "px");
     if (FAMILIAS[c.parrilla_texto_fuente]) root.style.setProperty("--cartel-texto-fuente", FAMILIAS[c.parrilla_texto_fuente]);
+    // Franja de enlaces al final de parrillas y proyectos
+    A.franja = A.franja || {};
+    if (/^(si|no)$/.test(c.franja || "")) A.franja.activo = c.franja === "si";
+    const velF = n(c.franja_velocidad, 10, 400);
+    if (velF !== undefined) A.franja.velocidad = velF;
+    if (/^#[0-9a-f]{3,8}$/i.test(c.franja_fondo || "")) root.style.setProperty("--franja-fondo", c.franja_fondo);
+    if (/^#[0-9a-f]{3,8}$/i.test(c.franja_color || "")) root.style.setProperty("--franja-color", c.franja_color);
+    const tamF = n(c.franja_tamano, 8, 60);
+    if (tamF !== undefined) root.style.setProperty("--franja-tam", tamF + "px");
+    if (FAMILIAS[c.franja_fuente]) root.style.setProperty("--franja-fuente", FAMILIAS[c.franja_fuente]);
+    document.querySelectorAll(".franja").forEach((f) => { f.hidden = A.franja.activo === false; f.ajustar && f.ajustar(); });
+    // Texto de los recuadros: grosor, cursiva, mayúsculas
+    const fijarVar = (v, val) => { if (val !== undefined && val !== "") root.style.setProperty(v, val); };
+    fijarVar("--cartel-texto-peso", ["400", "500", "700", "900"].includes(c.parrilla_texto_peso) ? c.parrilla_texto_peso : undefined);
+    fijarVar("--cartel-texto-estilo", estilo(c.parrilla_texto_cursiva));
+    fijarVar("--cartel-texto-transform", mayus(c.parrilla_texto_mayusculas));
+    // Menú (production designer, work, films…): tipografía, tamaño, grosor, cursiva, mayúsculas
+    if (FAMILIAS[c.menu_fuente]) root.style.setProperty("--fuente-menu", FAMILIAS[c.menu_fuente]);
+    const tamMenu = n(c.menu_tamano, 8, 30);
+    if (tamMenu !== undefined) root.style.setProperty("--menu-tam", tamMenu + "px");
+    fijarVar("--menu-peso", ["400", "500", "700", "900"].includes(c.menu_peso) ? c.menu_peso : undefined);
+    fijarVar("--menu-estilo", estilo(c.menu_cursiva));
+    fijarVar("--menu-transform", mayus(c.menu_mayusculas));
     // Rectángulo detrás del nombre en las parrillas (Work, Films, Series…)
     if (/^(si|no)$/.test(c.parrilla_nombre_caja || "")) A.nombreCaja = c.parrilla_nombre_caja === "si";
     if (/^#[0-9a-f]{3,8}$/i.test(c.parrilla_nombre_caja_color || "")) root.style.setProperty("--nombre-caja-color", c.parrilla_nombre_caja_color);
+    if (/^#[0-9a-f]{3,8}$/i.test(c.parrilla_nombre_caja_letra || "")) root.style.setProperty("--nombre-caja-letra", c.parrilla_nombre_caja_letra);
+    const margenCaja = n(c.parrilla_nombre_caja_margen, 0, 30);
+    if (margenCaja !== undefined) root.style.setProperty("--nombre-caja-margen", margenCaja + "px");
+    const incl = n(c.parrilla_nombre_caja_inclinacion, -30, 30);
+    if (incl !== undefined) root.style.setProperty("--nombre-caja-inclinacion", incl + "deg");
     cajaNombre();
     A.diferencia = A.diferencia || {};
     fijar(A.diferencia, "umbral", n(c.contraste_umbral, 0.05, 0.95));
     fijar(A.diferencia, "decidir", ["pixel", "letra", "palabra", "texto"].includes(c.contraste_por) ? c.contraste_por : undefined);
     fijar(A.diferencia, "grano", n(c.contraste_grano, 0, 6));
+    fijar(A.diferencia, "claro", /^#[0-9a-f]{6}$/i.test(c.color_letra_claro || "") ? c.color_letra_claro : undefined);
+    fijar(A.diferencia, "oscuro", /^#[0-9a-f]{6}$/i.test(c.color_letra_oscuro || "") ? c.color_letra_oscuro : undefined);
+    if (A.diferencia.claro) root.style.setProperty("--dif-letra", A.diferencia.claro);   // (y el texto sin efecto)
   }
 
   /* ---------- CORTINA (transición entre páginas) ---------- */
@@ -440,6 +555,7 @@
   }
   function aplicarNombre() {
     const info = Web.leerInfo((window.CONTENIDO && window.CONTENIDO.about && window.CONTENIDO.about.info) || "");
+    registrarFuentes(info);
     aplicarEfectos(info);
     aplicarCabecera(info);
   }
@@ -451,7 +567,7 @@
     window.addEventListener("message", (e) => {
       const d = e.data || {};
       if (d.tipo !== "gestor") return;
-      if (d.campos) { aplicarEfectos(d.campos); aplicarCabecera(d.campos, d.fuenteUrl); }
+      if (d.campos) { registrarFuentes(d.campos, d.fuentesNuevas || []); aplicarEfectos(d.campos); aplicarCabecera(d.campos, d.fuenteUrl); medirCaja(); }
       if (d.accion === "nombre") entradaNombre(document.querySelector(".menu__nombre"), true);
       if (d.accion === "menu" && Comun_menu) {
         const b = document.querySelector(".menu__work");
@@ -468,6 +584,7 @@
 
   window.Comun = { autoScroll, visor, aparecer, letras, azar, irA, embed, reproductor, ficha,
     aplicarEfectos,                                   // (gestor) aplicar efectos en directo
+    franja,
     animarNombre: () => entradaNombre(document.querySelector(".menu__nombre"), true),
     menu: (abierto) => Comun_menu && Comun_menu(abierto) };
 })();

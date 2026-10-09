@@ -66,7 +66,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   color: var(--menu-color);
   mix-blend-mode: var(--menu-mezcla);
   font-family: var(--fuente-menu);
-  text-transform: uppercase;
+  font-weight: var(--menu-peso, 400);
+  font-style: var(--menu-estilo, normal);
+  text-transform: var(--menu-transform, uppercase);
   line-height: 1;
 }
 .menu a, .menu button, .menu span { -webkit-text-stroke: 0; }
@@ -145,15 +147,22 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   letter-spacing: var(--inicio-espaciado-menu);
   white-space: nowrap;
 }
-.menu__work { text-transform: uppercase; }
+.menu__work { text-transform: var(--menu-transform, uppercase); }
 /* Rectángulo detrás del nombre en las parrillas (gestor → Parrillas).
    Al ras de las letras: solo un pequeño respiro a los lados. */
 .nombre__caja {
-  display: inline-block;
+  position: relative; display: inline-block; isolation: isolate;
+  color: var(--nombre-caja-letra, #fff);
+}
+/* El rectángulo: ceñido a las letras (de la parte de arriba de las mayúsculas
+   a la línea de base) + el margen elegido, e inclinado como la cursiva.
+   Las medidas (--caja-*) las calcula comun.js con la tipografía real. */
+.nombre__caja::before {
+  content: ""; position: absolute; z-index: -1;
+  left: var(--caja-l, -.25em); right: var(--caja-r, -.25em);
+  top: var(--caja-t, 0); bottom: var(--caja-b, 0);
   background: var(--nombre-caja-color, #000);
-  color: #fff;
-  padding: .08em .28em .04em;
-  line-height: 1;
+  transform: skewX(calc(var(--nombre-caja-inclinacion, 12deg) * -1));
 }
 
 @media (max-width: 700px) {
@@ -196,6 +205,26 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   transition: opacity 1.2s var(--curva), transform var(--t-hover) var(--curva), filter var(--t-hover) var(--curva);
 }
 .rejilla-cine .visible img, .rejilla-cine .visible video { opacity: 1; transform: scale(1); }
+
+/* ---------- FRANJA DE ENLACES EN MOVIMIENTO --------------------------
+   Del alto de la letra; colores, tamaño y velocidad: gestor → Parrillas
+   (o ajustes.css sección 4c). Se para al poner el ratón encima.        */
+.franja {
+  overflow: hidden; width: 100%;
+  background: var(--franja-fondo); color: var(--franja-color);
+  font-family: var(--franja-fuente); font-size: var(--franja-tam);
+  line-height: 1; text-transform: uppercase; letter-spacing: .14em;
+  padding: .32em 0 .28em;
+  white-space: nowrap;
+}
+.franja__pista { display: flex; width: max-content; animation: franja-pasa var(--franja-duracion, 30s) linear infinite; }
+.franja:hover .franja__pista { animation-play-state: paused; }
+.franja__mitad { display: flex; align-items: baseline; }
+.franja a, .franja__sep { padding: 0 .9em; }
+.franja a { transition: opacity .3s; }
+.franja a:hover { opacity: .55; }
+@keyframes franja-pasa { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
+@media (prefers-reduced-motion: reduce) { .franja__pista { animation: none; } }
 
 /* ---------- BOTÓN AUTO-SCROLL -------------------------------------- */
 .boton-auto {

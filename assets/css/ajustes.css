@@ -150,10 +150,23 @@
   --cartel-texto-tam:    .8rem;      /* (gestor → Parrillas) */
   --cartel-texto-fuente: var(--fuente-etiqueta);   /* p. ej. "Instrument Serif", serif */
   --cartel-texto-linea:  1.3;                      /* interlineado */
+  /* Rectángulo detrás del nombre (gestor → Parrillas, que manda sobre esto) */
+  --nombre-caja-color: #000000;
+  --nombre-caja-letra: #ffffff;
+  --nombre-caja-margen: 3px;        /* aire alrededor de las letras */
+  --nombre-caja-inclinacion: 12deg; /* inclinación, en paralelo a la cursiva (0 = recto) */
+  --cartel-texto-izq-movil: 33.33%;                /* en el móvil: dónde empieza el texto (1/3 de la imagen) */
   --cartel-texto-margen: .45rem;                   /* distancia al borde derecho y al de abajo */
   --cartel-texto-abajo:  var(--cartel-texto-margen);
   --cartel-texto-hueco:  1.3em;                    /* hueco entre el bloque y el año */
   --cartel-texto-tam-movil: calc(var(--cartel-texto-tam) * .88);
+
+/* ---------- 4c. FRANJA DE ENLACES (final de parrillas y proyectos) ---
+   (el gestor → pestaña Parrillas manda sobre esto)                     */
+  --franja-fondo:  #000000;
+  --franja-color:  #ffffff;
+  --franja-tam:    13px;
+  --franja-fuente: var(--fuente-menu);
 
 /* ---------- 5. PÁGINA DE PROYECTO (vídeo + ficha + crew + texto) ---- */
   --video-formato:     1.78;          /* formato del vídeo de arriba: 1.78 = 16/9 · 1.85 = cine · 2.39 = scope */

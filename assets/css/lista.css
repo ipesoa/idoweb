@@ -104,6 +104,9 @@
   width: max-content; max-width: calc(62% - 2 * var(--cartel-texto-margen));
   font-family: var(--cartel-texto-fuente);
   font-size: var(--cartel-texto-tam);
+  font-weight: var(--cartel-texto-peso, 400);
+  font-style: var(--cartel-texto-estilo, normal);
+  text-transform: var(--cartel-texto-transform, none);
   line-height: var(--cartel-texto-linea);
   letter-spacing: .01em;
 }
@@ -111,9 +114,14 @@
 @media (hover: hover) and (pointer: fine) {
   .modo-cartel .celda-proyecto__txt { display: flex; }
 }
+/* En el móvil todos los textos empiezan en la misma línea: a 1/3 de la
+   imagen (si hay cartel, justo después del cartel). Así quedan alineados. */
 @media (max-width: 700px) {
   .modo-cartel .celda__texto {
     font-size: var(--cartel-texto-tam-movil);
     gap: 1em;
+    left: var(--cartel-texto-izq-movil); right: var(--cartel-texto-margen);
+    width: auto; max-width: none;
   }
+  .modo-cartel .con-cartel .celda__texto { left: calc(37.84% + var(--cartel-texto-margen)); }
 }
