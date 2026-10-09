@@ -506,7 +506,7 @@ parrilla_hilo: 5
 parrilla_texto_tamano: 13
 parrilla_nombre_caja: si
 parrilla_texto_fuente: garet
-parrilla_nombre_caja_letra: #ff5cfa
+parrilla_nombre_caja_letra: #77ff5c
 ---
 HELLO!
 
@@ -536,4 +536,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610091211 */
+/* gestor: 202610091304 */
