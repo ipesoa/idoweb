@@ -404,7 +404,7 @@ mostrar_en_inicio: no
 año: 2025
 labor: 
 director: Nacho Vigalondo / Claudia Costafreda
-mostrar_en_inicio: no
+mostrar_en_inicio: si
 ---
 `,
       "archivos": [
@@ -535,4 +535,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610091159 */
+/* gestor: 202610091200 */
