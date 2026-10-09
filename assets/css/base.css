@@ -163,7 +163,15 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   top: var(--caja-t, 0); bottom: var(--caja-b, 0);
   background: var(--nombre-caja-color, #000);
   transform: skewX(calc(var(--nombre-caja-inclinacion, 12deg) * -1));
+  clip-path: var(--caja-recorte, none);   /* trocito encima de la tilde (comun.js → medirCaja) */
 }
+
+/* ---------- DELFINES (assets/js/delfines.js) ------------------------
+   En el inicio van por ENCIMA de todo (menos la cortina); en Contact,
+   DEBAJO del texto. No bloquean ningún clic.                          */
+.delfines { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 85; }
+.delfines--debajo { z-index: 0; }
+body[data-pagina="contact"] .contacto { position: relative; z-index: 1; }
 
 @media (max-width: 700px) {
   .menu__nombre { font-size: var(--nombre-tam-movil); }

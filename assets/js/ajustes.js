@@ -88,6 +88,36 @@ window.AJUSTES = {
     },
   },
 
+  /* ---- DELFINES (la broma) --------------------------------------------
+     Salen chorros de delfines de la I y de la N del nombre, caen, se
+     amontonan abajo, se quedan unos segundos y se desvanecen.
+     Lo hace assets/js/delfines.js (física: vendor/matter.min.js).
+     ¡Ojo! Si se cambia en el gestor (pestaña Delfines), manda el gestor.
+       inicio / contact   true = sale en esa página
+       cuandoInicio / cuandoContact
+                "entrar" (al entrar en la página) · "pulsar" (al pulsar
+                el nombre) · "las-dos"
+       En Contact sale solo de la I y queda DEBAJO del texto.
+       imagen   PNG con fondo transparente (unos 160 × 275 px)           */
+  delfines: {
+    inicio: true,
+    contact: true,
+    cuandoInicio: "las-dos",
+    cuandoContact: "entrar",
+    imagen: "assets/img/delfin.png",
+    espera: 1700,                // ms desde que se entra (deja acabar la animación del nombre)
+    duracion: 2.75,              // segundos echando delfines
+    quedarse: 3,                 // segundos amontonados antes de desvanecerse
+    fundido: 0.65,               // segundos que tarda en desvanecerse
+    cantidad: 45,                // delfines por segundo (entre los dos chorros)
+    tamano: 56,                  // px de largo de cada delfín (±25 % al azar)
+    potencia: 200,               // px/s de salida
+    angulo: 26,                  // grados hacia abajo
+    apertura: 26,                // grados de abanico del chorro
+    giro: 600,                   // grados por segundo
+    gravedad: 450,               // px/s²
+  },
+
   /* ---- CARTELES EN LAS REJILLAS ---------------------------------------
      Si un proyecto tiene cartel (gestor → editor → «Cartel»), en su
      rectángulo sale el cartel a la izquierda, encima de la portada.

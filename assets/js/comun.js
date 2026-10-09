@@ -234,10 +234,46 @@
     const base = lineas.top - b.top + asc;                      // línea de base dentro de la caja
     const arriba = base - m.actualBoundingBoxAscent - margen;   // parte de arriba de las mayúsculas
     const abajo = base + Math.max(0, m.actualBoundingBoxDescent) + margen;
-    caja.style.setProperty("--caja-t", arriba.toFixed(1) + "px");
+    const izq = lineas.left - b.left - margen, der = b.right - lineas.right - margen;
+    // TILDES (la Á de GALVÁN): sobresalen por encima de las mayúsculas.
+    //   "trocito" (por defecto): el rectángulo sigue al ras y solo encima de
+    //             cada letra con tilde sube un trocito que la cubre
+    //   "entera":  todo el rectángulo sube hasta la altura de la tilde
+    const modo = A.nombreCajaTilde || "trocito";
+    const conTilde = [];
+    const nodo = caja.firstChild;
+    let real = caja.textContent; if (cs.textTransform === "uppercase") real = real.toUpperCase();
+    [...real].forEach((ch, i) => { if (ch.normalize("NFD") !== ch && /[A-ZÀ-Ý]/i.test(ch.normalize("NFD")[0])) conTilde.push(i); });
+    let tope = arriba;
+    if (conTilde.length) tope = Math.min(arriba, base - lienzoMedir.measureText(real).actualBoundingBoxAscent - margen);
+    const recortar = modo === "trocito" && conTilde.length && tope < arriba - 0.5 && nodo && nodo.nodeType === 3;
+    caja.style.setProperty("--caja-t", (modo === "entera" || recortar ? tope : arriba).toFixed(1) + "px");
     caja.style.setProperty("--caja-b", (b.height - abajo).toFixed(1) + "px");
-    caja.style.setProperty("--caja-l", (lineas.left - b.left - margen).toFixed(1) + "px");
-    caja.style.setProperty("--caja-r", (b.right - lineas.right - margen).toFixed(1) + "px");
+    caja.style.setProperty("--caja-l", izq.toFixed(1) + "px");
+    caja.style.setProperty("--caja-r", der.toFixed(1) + "px");
+    if (!recortar) { caja.style.removeProperty("--caja-recorte"); return; }
+    // Recorte del rectángulo (clip-path): la parte baja entera y, arriba,
+    // solo los trocitos encima de las letras con tilde. Se calcula en el
+    // rectángulo SIN inclinar; al inclinarlo (skewX) los trocitos se
+    // inclinan con él, igual que la cursiva.
+    const ancho = b.width - izq - der, alto = b.height - (b.height - abajo) - tope;
+    const tan = Math.tan((parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nombre-caja-inclinacion")) || 0) * Math.PI / 180);
+    const corte = arriba - tope;                     // donde empieza el rectángulo normal
+    const yBase = base - tope, cy = alto / 2;
+    const puntos = [[0, corte]];
+    const rr = document.createRange();
+    const chars = [...nodo.data];
+    let pos = 0; const offsets = chars.map((c) => { const o = pos; pos += c.length; return o; });
+    conTilde.filter((i) => i < chars.length).forEach((i) => {
+      rr.setStart(nodo, offsets[i]); rr.setEnd(nodo, offsets[i] + chars[i].length);
+      const r = rr.getBoundingClientRect();
+      // x de la letra en la línea de base → x sin inclinar (respecto al centro)
+      const x1 = r.left - b.left - izq + tan * (yBase - cy) - margen;
+      const x2 = r.right - b.left - izq + tan * (yBase - cy) + margen;
+      puntos.push([Math.max(0, x1), corte], [Math.max(0, x1), 0], [Math.min(ancho, x2), 0], [Math.min(ancho, x2), corte]);
+    });
+    puntos.push([ancho, corte], [ancho, alto], [0, alto]);
+    caja.style.setProperty("--caja-recorte", `polygon(${puntos.map(([x, y]) => `${x.toFixed(1)}px ${y.toFixed(1)}px`).join(",")})`);
   }
   window.addEventListener("resize", () => medirCaja());
   if (document.fonts) { document.fonts.ready.then(() => medirCaja()); document.fonts.addEventListener("loadingdone", () => medirCaja()); }
@@ -302,7 +338,7 @@
     // Franja de enlaces al final de parrillas y proyectos
     A.franja = A.franja || {};
     if (/^(si|no)$/.test(c.franja || "")) A.franja.activo = c.franja === "si";
-    const velF = n(c.franja_velocidad, 10, 400);
+    const velF = n(c.franja_velocidad, 1, 400);
     if (velF !== undefined) A.franja.velocidad = velF;
     if (/^#[0-9a-f]{3,8}$/i.test(c.franja_fondo || "")) root.style.setProperty("--franja-fondo", c.franja_fondo);
     if (/^#[0-9a-f]{3,8}$/i.test(c.franja_color || "")) root.style.setProperty("--franja-color", c.franja_color);
@@ -330,6 +366,8 @@
     if (margenCaja !== undefined) root.style.setProperty("--nombre-caja-margen", margenCaja + "px");
     const incl = n(c.parrilla_nombre_caja_inclinacion, -30, 30);
     if (incl !== undefined) root.style.setProperty("--nombre-caja-inclinacion", incl + "deg");
+    // Tilde de GALVÁN: con su trocito de rectángulo, o el rectángulo entero más alto
+    if (["trocito", "entera"].includes(c.parrilla_nombre_caja_tilde)) A.nombreCajaTilde = c.parrilla_nombre_caja_tilde;
     cajaNombre();
     A.diferencia = A.diferencia || {};
     fijar(A.diferencia, "umbral", n(c.contraste_umbral, 0.05, 0.95));
@@ -338,6 +376,24 @@
     fijar(A.diferencia, "claro", /^#[0-9a-f]{6}$/i.test(c.color_letra_claro || "") ? c.color_letra_claro : undefined);
     fijar(A.diferencia, "oscuro", /^#[0-9a-f]{6}$/i.test(c.color_letra_oscuro || "") ? c.color_letra_oscuro : undefined);
     if (A.diferencia.claro) root.style.setProperty("--dif-letra", A.diferencia.claro);   // (y el texto sin efecto)
+    // DELFINES (gestor → pestaña Delfines). Lo usa assets/js/delfines.js
+    const D = (A.delfines = A.delfines || {});
+    if (/^(si|no)$/.test(c.delfines_inicio || "")) D.inicio = c.delfines_inicio === "si";
+    if (/^(si|no)$/.test(c.delfines_contact || "")) D.contact = c.delfines_contact === "si";
+    const CUANDO = ["entrar", "pulsar", "las-dos"];
+    fijar(D, "cuandoInicio", CUANDO.includes(c.delfines_cuando_inicio) ? c.delfines_cuando_inicio : undefined);
+    fijar(D, "cuandoContact", CUANDO.includes(c.delfines_cuando_contact) ? c.delfines_cuando_contact : undefined);
+    if (c.delfines_imagen !== undefined) D.imagen = /^[\w.-]+\.(png|webp|gif)$/i.test(c.delfines_imagen) ? "assets/img/broma/" + c.delfines_imagen : "assets/img/delfin.png";
+    fijar(D, "espera", n(c.delfines_espera, 0, 10000));
+    fijar(D, "duracion", n(c.delfines_duracion, 0.25, 15));
+    fijar(D, "quedarse", n(c.delfines_quedarse, 0, 60));
+    fijar(D, "cantidad", n(c.delfines_cantidad, 5, 300));
+    fijar(D, "tamano", n(c.delfines_tamano, 15, 300));
+    fijar(D, "potencia", n(c.delfines_potencia, 0, 2000));
+    fijar(D, "angulo", n(c.delfines_angulo, -90, 90));
+    fijar(D, "apertura", n(c.delfines_apertura, 0, 90));
+    fijar(D, "giro", n(c.delfines_giro, 0, 1500));
+    fijar(D, "gravedad", n(c.delfines_gravedad, 50, 2000));
   }
 
   /* ---------- CORTINA (transición entre páginas) ---------- */
@@ -568,7 +624,9 @@
       const d = e.data || {};
       if (d.tipo !== "gestor") return;
       if (d.campos) { registrarFuentes(d.campos, d.fuentesNuevas || []); aplicarEfectos(d.campos); aplicarCabecera(d.campos, d.fuenteUrl); medirCaja(); }
+      if (d.imagenDelfin && A.delfines) A.delfines.imagen = d.imagenDelfin;   // PNG aún sin publicar
       if (d.accion === "nombre") entradaNombre(document.querySelector(".menu__nombre"), true);
+      if (d.accion === "delfines" && window.Delfines) window.Delfines.lanzar(true);
       if (d.accion === "menu" && Comun_menu) {
         const b = document.querySelector(".menu__work");
         Comun_menu(!(b && b.getAttribute("aria-expanded") === "true"));
