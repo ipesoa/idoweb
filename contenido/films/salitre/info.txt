@@ -4,4 +4,5 @@ labor:
 director: Norma Vila
 productora: Pris&Batty / Bondi
 mostrar_en_inicio: si
+portada: 04.jpg
 ---
