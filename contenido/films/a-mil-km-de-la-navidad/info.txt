@@ -2,7 +2,7 @@ titulo: A mil km de la Navidad
 año: 2021
 labor: 
 director: Álvaro Fernández Armero
-productora: Nadie es perfecto
+productora: Nadie es perfecto / Netflix
 mostrar_en_inicio: no
-portada: 01.jpg
+portada: 03.jpg
 ---
