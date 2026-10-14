@@ -589,6 +589,9 @@ parrilla_texto_tamano: 13
 parrilla_nombre_caja: si
 parrilla_texto_fuente: garet
 parrilla_nombre_caja_letra: #ffffff
+delfines_duracion: 1.75
+delfines_quedarse: 0.5
+delfines_inicio: no
 ---
 HELLO!
 
@@ -618,4 +621,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610140954 */
+/* gestor: 202610141009 */
