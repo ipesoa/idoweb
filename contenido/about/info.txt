@@ -21,13 +21,16 @@ parrilla_nombre_caja: si
 parrilla_texto_fuente: garet
 parrilla_nombre_caja_letra: #ffffff
 delfines_duracion: 0.75
-delfines_quedarse: 0
+delfines_quedarse: 0.5
 delfines_inicio: no
 delfines_espera: 300
-delfines_apertura: 21
-delfines_giro: 300
-delfines_gravedad: 950
-delfines_cantidad: 20
+delfines_apertura: 59
+delfines_giro: 640
+delfines_gravedad: 675
+delfines_cantidad: 65
+delfines_tamano: 62
+delfines_potencia: 550
+delfines_angulo: 47
 ---
 HELLO!
 
