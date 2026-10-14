@@ -3,4 +3,5 @@ año: 2023
 labor: 
 director: Lucía Alemany
 mostrar_en_inicio: no
+portada: 02.jpg
 ---
