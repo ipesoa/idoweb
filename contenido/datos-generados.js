@@ -221,7 +221,7 @@ portada: 01.jpg
       "carpeta": "la-piedad",
       "info": `titulo: La piedad
 año: 2022
-labor: 
+labor: Diseño y conceptualización decorados
 director: 
 mostrar_en_inicio: no
 portada: 05.jpg
@@ -232,7 +232,18 @@ portada: 05.jpg
       {"f":"02.jpg","w":2600,"h":1457},
       {"f":"03.jpg","w":2600,"h":1454},
       {"f":"04.jpg","w":2600,"h":1459},
-      {"f":"05.jpg","w":2600,"h":1450}]
+      {"f":"05.jpg","w":2600,"h":1450},
+      {"f":"06.jpg","w":2600,"h":1231},
+      {"f":"07.jpg","w":2600,"h":1231},
+      {"f":"08.jpg","w":1200,"h":675},
+      {"f":"09.jpg","w":1200,"h":675},
+      {"f":"10.jpg","w":1500,"h":844},
+      {"f":"11.jpg","w":1500,"h":844},
+      {"f":"12.jpg","w":1500,"h":844},
+      {"f":"13.jpg","w":800,"h":450},
+      {"f":"14.jpg","w":1500,"h":844},
+      {"f":"15.jpg","w":1500,"h":844},
+      {"f":"16.jpg","w":1500,"h":844}]
     },
     {
       "carpeta": "los-miercoles-no-existen",
@@ -727,4 +738,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610151156 */
+/* gestor: 202610151214 */

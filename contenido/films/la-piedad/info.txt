@@ -1,6 +1,6 @@
 titulo: La piedad
 año: 2022
-labor: 
+labor: Diseño y conceptualización decorados
 director: 
 mostrar_en_inicio: no
 portada: 05.jpg
