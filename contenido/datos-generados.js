@@ -680,8 +680,10 @@ delfines_potencia: 550
 delfines_angulo: 47
 parrilla_texto_peso: 500
 franja: no
-titulo_fuente: garet-heavy
+titulo_fuente: fuente-altehaasgroteskbold
 titulo_peso: 700
+fuente: AlteHaasGroteskRegular | altehaasgroteskregular.ttf
+fuente: AlteHaasGroteskBold | altehaasgroteskbold.ttf
 ---
 HELLO!
 
@@ -711,4 +713,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610151109 */
+/* gestor: 202610151114 */
