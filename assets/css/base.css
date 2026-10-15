@@ -217,8 +217,8 @@ body[data-pagina="contact"] .contacto { position: relative; z-index: 1; }
 /* ---------- FRANJA FIJA DE ENLACES ------------------------------------
    Centrada, con aire a los lados y cuatro veces la altura anterior.     */
 .franja {
-  display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
-  gap: .9em clamp(20px, 4vw, 80px);
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center; column-gap: clamp(40px, 8vw, 160px);
   width: 100%; min-height: calc(var(--franja-tam) * 6.4);
   background: var(--franja-fondo); color: var(--franja-color);
   font-family: var(--franja-fuente); font-size: var(--franja-tam);
@@ -229,6 +229,16 @@ body[data-pagina="contact"] .contacto { position: relative; z-index: 1; }
 .franja a { white-space: nowrap; }
 .franja a { transition: opacity .3s; }
 .franja a:hover { opacity: .55; }
+.franja__lado { display: flex; flex-wrap: wrap; align-items: center; gap: .8em 1.5em; min-width: 0; }
+.franja__lado--izquierdo { justify-content: flex-end; }
+.franja__lado--derecho { justify-content: flex-start; }
+.franja__contacto { justify-self: center; }
+@media (max-width: 700px) {
+  .franja { column-gap: clamp(20px, 10vw, 40px); padding-inline: 12px; }
+}
+@media (max-width: 380px) {
+  .franja { column-gap: 20px; padding-inline: 8px; font-size: min(var(--franja-tam), 12px); letter-spacing: .08em; }
+}
 
 /* ---------- BOTÓN AUTO-SCROLL -------------------------------------- */
 .boton-auto {

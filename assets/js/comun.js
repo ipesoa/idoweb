@@ -168,12 +168,16 @@
   function franja(actual) {
     const F = A.franja || {};
     if (F.activo === false) return null;
-    const enlaces = A.secciones.filter((s) => ["films", "series", "comercials"].includes(s.id) && s.id !== actual)
-      .map((s) => [s.titulo, s.pagina]).concat([[A.textos.contacto, "contact.html"]]);
+    const enlaces = A.secciones.filter((s) => ["films", "series", "comercials"].includes(s.id) && s.id !== actual);
+    const izquierda = enlaces.length > 2 ? enlaces.slice(0, 2) : enlaces.slice(0, 1);
+    const derecha = enlaces.length > 2 ? enlaces.slice(2) : enlaces.slice(1);
+    const pintar = (lista) => lista.map((s) => `<a href="${s.pagina}">${htmlSeguro(s.titulo)}</a>`).join("");
     const el = document.createElement("nav");
     el.className = "franja";
     el.setAttribute("aria-label", "Otras secciones");
-    el.innerHTML = enlaces.map(([t, h]) => `<a href="${h}">${htmlSeguro(t)}</a>`).join("");
+    el.innerHTML = `<span class="franja__lado franja__lado--izquierdo">${pintar(izquierda)}</span>`
+      + `<a class="franja__contacto" href="contact.html">${htmlSeguro(A.textos.contacto)}</a>`
+      + `<span class="franja__lado franja__lado--derecho">${pintar(derecha)}</span>`;
     return el;
   }
 

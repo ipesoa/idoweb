@@ -288,7 +288,7 @@ button { cursor: pointer; background: none; border: 0; }
   // Versión de este gestor. Si en GitHub hay un gestor más nuevo (por ejemplo,
   // una pestaña abierta desde antes de instalar una actualización), no deja
   // publicar: guardaría las cosas a la manera antigua.
-  const VERSION_GESTOR = "2026-10-15-a";
+  const VERSION_GESTOR = "2026-10-15-b";
 
   /* Las secciones de la web. Si algún día se añade otra, se pone aquí y en
      assets/js/ajustes.js (AJUSTES.secciones) y en los generadores de datos. */
@@ -774,7 +774,7 @@ button { cursor: pointer; background: none; border: 0; }
           <p class="nota">El color de estas letras es el de Cabecera → Color de las letras.</p>
 
           <h3 class="bloque-titulo">Títulos de todos los trabajos</h3>
-          <p class="nota">Siempre en mayúsculas. Estos ajustes afectan al inicio, las parrillas, cada ficha y la lista de Contact. El tamaño mantiene la proporción propia de cada lugar.</p>
+          <p class="nota">Siempre en mayúsculas. Estos ajustes afectan al inicio, las parrillas y cada ficha. La filmografía de Contact conserva sus títulos tal como están escritos. El tamaño mantiene la proporción propia de cada lugar.</p>
           <label class="control-nombre"><span>Tipografía</span><select data-nombre="titulo_fuente">${opcionesFuente(c.titulo_fuente || "garet")}</select></label>
           ${cRango("titulo_tamano", "Tamaño base", c.titulo_tamano || "20", 12, 48, 1, "px")}
           ${cElegir("titulo_peso", "Grosor", c.titulo_peso || "400", GROSORES)}
