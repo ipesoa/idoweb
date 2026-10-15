@@ -654,6 +654,7 @@ delfines_tamano: 62
 delfines_potencia: 550
 delfines_angulo: 47
 parrilla_texto_peso: 500
+franja: no
 ---
 HELLO!
 
@@ -683,4 +684,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610141245 */
+/* gestor: 202610151006 */
