@@ -680,6 +680,8 @@ delfines_potencia: 550
 delfines_angulo: 47
 parrilla_texto_peso: 500
 franja: no
+titulo_fuente: arial
+titulo_peso: 700
 ---
 HELLO!
 
@@ -709,4 +711,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610151034 */
+/* gestor: 202610151108 */
