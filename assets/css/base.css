@@ -148,23 +148,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   white-space: nowrap;
 }
 .menu__work { text-transform: var(--menu-transform, uppercase); }
-/* Rectángulo detrás del nombre en las parrillas (gestor → Parrillas).
-   Al ras de las letras: solo un pequeño respiro a los lados. */
-.nombre__caja {
-  position: relative; display: inline-block; isolation: isolate;
-  color: var(--nombre-caja-letra, #fff);
-}
-/* El rectángulo: ceñido a las letras (de la parte de arriba de las mayúsculas
-   a la línea de base) + el margen elegido, e inclinado como la cursiva.
-   Las medidas (--caja-*) las calcula comun.js con la tipografía real. */
-.nombre__caja::before {
-  content: ""; position: absolute; z-index: -1;
-  left: var(--caja-l, -.25em); right: var(--caja-r, -.25em);
-  top: var(--caja-t, 0); bottom: var(--caja-b, 0);
-  background: var(--nombre-caja-color, #000);
-  transform: skewX(calc(var(--nombre-caja-inclinacion, 12deg) * -1));
-  clip-path: var(--caja-recorte, none);   /* trocito encima de la tilde (comun.js → medirCaja) */
-}
+/* Logo fijo en las parrillas y fichas. El recorte elimina únicamente la
+   franja transparente inferior del PNG, manteniendo su proporción. */
+.menu__nombre.menu__nombre--logo { font-size: 30px; }
+.menu__logo { display: block; width: 375px; height: 31px; object-fit: cover; object-position: left top; }
 
 /* ---------- DELFINES (assets/js/delfines.js) ------------------------
    En el inicio van por ENCIMA de todo (menos la cortina); en Contact,
@@ -175,6 +162,8 @@ body[data-pagina="contact"] .contacto { position: relative; z-index: 1; }
 
 @media (max-width: 700px) {
   .menu__nombre { font-size: var(--nombre-tam-movil); }
+  .menu__nombre.menu__nombre--logo { font-size: 17px; }
+  .menu__logo { width: 212.5px; height: 18px; }
   .menu__opciones { top: 34%; gap: clamp(16px, 4.5vh, 38px); }
   .menu__opciones .menu__archivo { margin-top: clamp(20px, 6vh, 48px); }
   .menu__pie { bottom: calc(var(--margen) + env(safe-area-inset-bottom)); }

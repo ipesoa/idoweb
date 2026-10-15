@@ -15,6 +15,7 @@
   const A = window.AJUSTES;
   const pagina = document.body.dataset.pagina; // inicio | work | films | series | comercials | videoclips | proyecto | contact
   const htmlSeguro = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const PAGINAS_CON_LOGO = ["work", "films", "series", "comercials", "videoclips", "proyecto"];
 
   /* ---------- MENÚ ----------
      INICIO      arriba en el centro: NOMBRE · production designer · work
@@ -60,7 +61,9 @@
     } else {
       dentro = `
       <div class="menu__centro">
-        <a class="menu__nombre" href="index.html">${htmlSeguro(nombre)}</a>
+        ${PAGINAS_CON_LOGO.includes(pagina)
+          ? `<a class="menu__nombre menu__nombre--logo" href="index.html" data-dif-no="1"><img class="menu__logo" src="assets/img/idoia-logo.png" alt="${htmlSeguro(nombre)}" width="2499" height="256" fetchpriority="high"></a>`
+          : `<a class="menu__nombre" href="index.html">${htmlSeguro(nombre)}</a>`}
         ${donde ? `<span class="menu__donde">${donde}</span>` : ""}
       </div>`;
     }
@@ -128,7 +131,7 @@
   function entradaNombre(el, forzar = false) {
     const AN = (A.animaciones && A.animaciones.nombre) || {};
     const efecto = AN.efecto || "subir";
-    if (!el || efecto === "ninguno" || !window.gsap) return;
+    if (!el || el.classList.contains("menu__nombre--logo") || efecto === "ninguno" || !window.gsap) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if ((AN.nunca || ["contact"]).includes(pagina)) return;   // en Contact el nombre es texto fijo, sin animación
     if (!forzar) {
@@ -181,83 +184,6 @@
       + `<span class="franja__lado franja__lado--derecho">${pintar(derecha)}</span>`;
     return el;
   }
-
-  /* ---------- RECTÁNGULO DETRÁS DEL NOMBRE (parrillas) ----------
-     En Work, Films, Series… el nombre puede ir sobre un rectángulo negro
-     al ras de las letras. Se pone y se quita en el gestor (Parrillas).
-     Con el rectángulo, el nombre es siempre blanco (no usa el contraste). */
-  const PAGINAS_PARRILLA = ["work", "films", "series", "comercials", "videoclips", "proyecto"];
-  function cajaNombre() {
-    const el = document.querySelector(".menu__nombre");
-    if (!el || !PAGINAS_PARRILLA.includes(pagina)) return;
-    const activa = !!A.nombreCaja;
-    let caja = el.querySelector(".nombre__caja");
-    if (activa && !caja) { el.innerHTML = `<span class="nombre__caja">${htmlSeguro(el.textContent)}</span>`; }
-    else if (!activa && caja) { el.textContent = caja.textContent; }
-    if (activa) el.dataset.difNo = "1"; else delete el.dataset.difNo;
-    if (activa) medirCaja();
-  }
-  // Mide dónde están de verdad las letras (con la tipografía cargada) para
-  // que el rectángulo vaya al ras: altura de las mayúsculas + el margen.
-  const lienzoMedir = document.createElement("canvas").getContext("2d");
-  function medirCaja() {
-    const caja = document.querySelector(".nombre__caja");
-    if (!caja || !caja.firstChild) return;
-    const cs = getComputedStyle(caja);
-    const margen = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nombre-caja-margen")) || 3;
-    lienzoMedir.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
-    let texto = caja.textContent.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    if (cs.textTransform === "uppercase") texto = texto.toUpperCase();
-    const m = lienzoMedir.measureText(texto);
-    const r = document.createRange(); r.selectNodeContents(caja);
-    const lineas = r.getBoundingClientRect(), b = caja.getBoundingClientRect();
-    const asc = m.fontBoundingBoxAscent ?? parseFloat(cs.fontSize) * 0.9;
-    const base = lineas.top - b.top + asc;                      // línea de base dentro de la caja
-    const arriba = base - m.actualBoundingBoxAscent - margen;   // parte de arriba de las mayúsculas
-    const abajo = base + Math.max(0, m.actualBoundingBoxDescent) + margen;
-    const izq = lineas.left - b.left - margen, der = b.right - lineas.right - margen;
-    // TILDES (la Á de GALVÁN): sobresalen por encima de las mayúsculas.
-    //   "trocito" (por defecto): el rectángulo sigue al ras y solo encima de
-    //             cada letra con tilde sube un trocito que la cubre
-    //   "entera":  todo el rectángulo sube hasta la altura de la tilde
-    const modo = A.nombreCajaTilde || "trocito";
-    const conTilde = [];
-    const nodo = caja.firstChild;
-    let real = caja.textContent; if (cs.textTransform === "uppercase") real = real.toUpperCase();
-    [...real].forEach((ch, i) => { if (ch.normalize("NFD") !== ch && /[A-ZÀ-Ý]/i.test(ch.normalize("NFD")[0])) conTilde.push(i); });
-    let tope = arriba;
-    if (conTilde.length) tope = Math.min(arriba, base - lienzoMedir.measureText(real).actualBoundingBoxAscent - margen);
-    const recortar = modo === "trocito" && conTilde.length && tope < arriba - 0.5 && nodo && nodo.nodeType === 3;
-    caja.style.setProperty("--caja-t", (modo === "entera" || recortar ? tope : arriba).toFixed(1) + "px");
-    caja.style.setProperty("--caja-b", (b.height - abajo).toFixed(1) + "px");
-    caja.style.setProperty("--caja-l", izq.toFixed(1) + "px");
-    caja.style.setProperty("--caja-r", der.toFixed(1) + "px");
-    if (!recortar) { caja.style.removeProperty("--caja-recorte"); return; }
-    // Recorte del rectángulo (clip-path): la parte baja entera y, arriba,
-    // solo los trocitos encima de las letras con tilde. Se calcula en el
-    // rectángulo SIN inclinar; al inclinarlo (skewX) los trocitos se
-    // inclinan con él, igual que la cursiva.
-    const ancho = b.width - izq - der, alto = b.height - (b.height - abajo) - tope;
-    const tan = Math.tan((parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nombre-caja-inclinacion")) || 0) * Math.PI / 180);
-    const corte = arriba - tope;                     // donde empieza el rectángulo normal
-    const yBase = base - tope, cy = alto / 2;
-    const puntos = [[0, corte]];
-    const rr = document.createRange();
-    const chars = [...nodo.data];
-    let pos = 0; const offsets = chars.map((c) => { const o = pos; pos += c.length; return o; });
-    conTilde.filter((i) => i < chars.length).forEach((i) => {
-      rr.setStart(nodo, offsets[i]); rr.setEnd(nodo, offsets[i] + chars[i].length);
-      const r = rr.getBoundingClientRect();
-      // x de la letra en la línea de base → x sin inclinar (respecto al centro)
-      const x1 = r.left - b.left - izq + tan * (yBase - cy) - margen;
-      const x2 = r.right - b.left - izq + tan * (yBase - cy) + margen;
-      puntos.push([Math.max(0, x1), corte], [Math.max(0, x1), 0], [Math.min(ancho, x2), 0], [Math.min(ancho, x2), corte]);
-    });
-    puntos.push([ancho, corte], [ancho, alto], [0, alto]);
-    caja.style.setProperty("--caja-recorte", `polygon(${puntos.map(([x, y]) => `${x.toFixed(1)}px ${y.toFixed(1)}px`).join(",")})`);
-  }
-  window.addEventListener("resize", () => medirCaja());
-  if (document.fonts) { document.fonts.ready.then(() => medirCaja()); document.fonts.addEventListener("loadingdone", () => medirCaja()); }
 
   /* ---------- EFECTOS GUARDADOS EN EL GESTOR ----------
      El gestor (pestaña Cabecera) guarda en contenido/about/info.txt las
@@ -347,17 +273,6 @@
     fijarVar("--menu-peso", ["400", "500", "700", "900"].includes(c.menu_peso) ? c.menu_peso : undefined);
     fijarVar("--menu-estilo", estilo(c.menu_cursiva));
     fijarVar("--menu-transform", mayus(c.menu_mayusculas));
-    // Rectángulo detrás del nombre en las parrillas (Work, Films, Series…)
-    if (/^(si|no)$/.test(c.parrilla_nombre_caja || "")) A.nombreCaja = c.parrilla_nombre_caja === "si";
-    if (/^#[0-9a-f]{3,8}$/i.test(c.parrilla_nombre_caja_color || "")) root.style.setProperty("--nombre-caja-color", c.parrilla_nombre_caja_color);
-    if (/^#[0-9a-f]{3,8}$/i.test(c.parrilla_nombre_caja_letra || "")) root.style.setProperty("--nombre-caja-letra", c.parrilla_nombre_caja_letra);
-    const margenCaja = n(c.parrilla_nombre_caja_margen, 0, 30);
-    if (margenCaja !== undefined) root.style.setProperty("--nombre-caja-margen", margenCaja + "px");
-    const incl = n(c.parrilla_nombre_caja_inclinacion, -30, 30);
-    if (incl !== undefined) root.style.setProperty("--nombre-caja-inclinacion", incl + "deg");
-    // Tilde de GALVÁN: con su trocito de rectángulo, o el rectángulo entero más alto
-    if (["trocito", "entera"].includes(c.parrilla_nombre_caja_tilde)) A.nombreCajaTilde = c.parrilla_nombre_caja_tilde;
-    cajaNombre();
     A.diferencia = A.diferencia || {};
     fijar(A.diferencia, "umbral", n(c.contraste_umbral, 0.05, 0.95));
     fijar(A.diferencia, "decidir", ["pixel", "letra", "palabra", "texto"].includes(c.contraste_por) ? c.contraste_por : undefined);
@@ -595,7 +510,7 @@
       root.style.setProperty("--nombre-transform", info.nombre_mayusculas === "si" ? "uppercase" : "none");
     // texto del nombre (si ya está pintado y no se está animando)
     const el = document.querySelector(".menu__nombre");
-    const t = el && el.querySelector(".nombre__caja, .title") || el;
+    const t = el && !el.classList.contains("menu__nombre--logo") ? el.querySelector(".title") || el : null;
     if (t && info.nombre && !(el && el.dataset.difVivo) && t.textContent !== info.nombre) t.textContent = info.nombre;
   }
   function aplicarNombre() {
@@ -612,7 +527,7 @@
     window.addEventListener("message", (e) => {
       const d = e.data || {};
       if (d.tipo !== "gestor") return;
-      if (d.campos) { registrarFuentes(d.campos, d.fuentesNuevas || []); aplicarEfectos(d.campos); aplicarCabecera(d.campos, d.fuenteUrl); medirCaja(); }
+      if (d.campos) { registrarFuentes(d.campos, d.fuentesNuevas || []); aplicarEfectos(d.campos); aplicarCabecera(d.campos, d.fuenteUrl); }
       if (d.imagenDelfin && A.delfines) A.delfines.imagen = d.imagenDelfin;   // PNG aún sin publicar
       if (d.accion === "nombre") entradaNombre(document.querySelector(".menu__nombre"), true);
       if (d.accion === "delfines" && window.Delfines) window.Delfines.lanzar(true);
@@ -625,7 +540,6 @@
 
   aplicarNombre();
   pintarMenu();
-  cajaNombre();
   montarCortina();
 
 

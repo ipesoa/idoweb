@@ -288,7 +288,7 @@ button { cursor: pointer; background: none; border: 0; }
   // Versión de este gestor. Si en GitHub hay un gestor más nuevo (por ejemplo,
   // una pestaña abierta desde antes de instalar una actualización), no deja
   // publicar: guardaría las cosas a la manera antigua.
-  const VERSION_GESTOR = "2026-10-15-b";
+  const VERSION_GESTOR = "2026-10-15-c";
 
   /* Las secciones de la web. Si algún día se añade otra, se pone aquí y en
      assets/js/ajustes.js (AJUSTES.secciones) y en los generadores de datos. */
@@ -690,10 +690,10 @@ button { cursor: pointer; background: none; border: 0; }
     const elegir = (clave, etiqueta, valor, opciones) => `<label class="control-nombre"><span>${etiqueta}</span><select data-nombre="${clave}">
       ${opciones.map(([v, t]) => `<option value="${v}"${valor === v ? " selected" : ""}>${t}</option>`).join("")}</select></label>`;
     return `<div class="cabecera"><h2>Nombre y tipografía de la cabecera</h2>
-        <p>Los cambios se ven aquí al instante. Para hacerlos públicos, pulsa «Publicar cambios» arriba.</p></div>
+        <p>Los cambios se ven aquí al instante. El texto del nombre se usa en Inicio y Contact; las parrillas y fichas llevan el logo fijo. Para hacerlos públicos, pulsa «Publicar cambios» arriba.</p></div>
       <div class="editor-nombre">
         <div class="bloque controles-nombre">
-          <label class="control-nombre"><span>Texto que aparece arriba en toda la web</span>
+          <label class="control-nombre"><span>Texto del nombre en Inicio y Contact</span>
             <input type="text" data-nombre="nombre" value="${esc(c.nombre || "Idoia Esteban Galván")}" autocomplete="off"></label>
           <label class="control-nombre"><span>Tipografía (las tuyas se suben en la pestaña Tipografías)</span><select data-nombre="nombre_fuente">${opcionesFuente(fuente)}</select></label>
           <label class="control-nombre"><span>Instalar otra fuente (OTF, TTF, WOFF o WOFF2; máximo 8 MB)</span>
@@ -756,14 +756,6 @@ button { cursor: pointer; background: none; border: 0; }
           <h3 class="bloque-titulo" style="border:0;margin-top:0;padding-top:0">Línea entre las fotos</h3>
           ${cRango("parrilla_hilo", "Grosor (0 = fotos pegadas)", c.parrilla_hilo || "0", 0, 20, 1, "px")}
           ${cColor("parrilla_hilo_color", "Color", c.parrilla_hilo_color || "#000000")}
-
-          <h3 class="bloque-titulo">Nombre de arriba (IDOIA ESTEBAN GALVÁN)</h3>
-          ${cElegir("parrilla_nombre_caja", "Rectángulo detrás del nombre (parrillas y páginas de cada peli)", c.parrilla_nombre_caja || "no", [["no", "Sin rectángulo"], ["si", "Con rectángulo al ras"]])}
-          ${cColor("parrilla_nombre_caja_color", "Color del rectángulo", c.parrilla_nombre_caja_color || "#000000")}
-          ${cColor("parrilla_nombre_caja_letra", "Color de las letras dentro", c.parrilla_nombre_caja_letra || "#ffffff")}
-          ${cRango("parrilla_nombre_caja_margen", "Margen alrededor de las letras", c.parrilla_nombre_caja_margen || "3", 0, 20, 1, "px")}
-          ${cRango("parrilla_nombre_caja_inclinacion", "Inclinación (paralela a la cursiva; 0 = recto)", c.parrilla_nombre_caja_inclinacion || "12", -30, 30, 1, "°")}
-          ${cElegir("parrilla_nombre_caja_tilde", "Tilde (la Á de GALVÁN)", c.parrilla_nombre_caja_tilde || "trocito", [["trocito", "Un trocito de rectángulo solo encima de la tilde"], ["entera", "Todo el rectángulo más alto, hasta la tilde"]])}
 
           <h3 class="bloque-titulo">Texto de cada recuadro (título · director · año)</h3>
           <label class="control-nombre"><span>Tipografía</span><select data-nombre="parrilla_texto_fuente">${opcionesFuente(c.parrilla_texto_fuente || "arial")}</select></label>
