@@ -168,7 +168,8 @@
   function franja(actual) {
     const F = A.franja || {};
     if (F.activo === false) return null;
-    const enlaces = A.secciones.filter((s) => ["films", "series", "comercials"].includes(s.id) && s.id !== actual);
+    const categorias = actual === null ? ["films", "series"] : ["films", "series", "comercials"];
+    const enlaces = A.secciones.filter((s) => categorias.includes(s.id) && s.id !== actual);
     const izquierda = enlaces.length > 2 ? enlaces.slice(0, 2) : enlaces.slice(0, 1);
     const derecha = enlaces.length > 2 ? enlaces.slice(2) : enlaces.slice(1);
     const pintar = (lista) => lista.map((s) => `<a href="${s.pagina}">${htmlSeguro(s.titulo)}</a>`).join("");
