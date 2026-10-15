@@ -178,20 +178,21 @@ labor:
 director: Zoe Berriatúa
 productora: Pokeepsie Films
 mostrar_en_inicio: si
+portada: 01.jpg
 ---
 `,
       "archivos": [
-      {"f":"01.jpg","w":2000,"h":1087},
-      {"f":"02.jpg","w":2000,"h":811},
-      {"f":"03.jpg","w":2000,"h":834},
-      {"f":"04.jpg","w":2000,"h":822},
-      {"f":"05.jpg","w":2000,"h":819},
-      {"f":"06.jpg","w":2000,"h":838},
-      {"f":"07.jpg","w":2000,"h":837},
-      {"f":"08.jpg","w":2000,"h":838},
-      {"f":"09.jpg","w":2000,"h":882},
-      {"f":"10.jpg","w":2000,"h":802},
-      {"f":"portada.jpg","w":2000,"h":818}]
+      {"f":"01.jpg","w":2000,"h":818},
+      {"f":"02.jpg","w":2000,"h":1087},
+      {"f":"03.jpg","w":2000,"h":811},
+      {"f":"04.jpg","w":2000,"h":834},
+      {"f":"05.jpg","w":2000,"h":822},
+      {"f":"06.jpg","w":2000,"h":819},
+      {"f":"07.jpg","w":2000,"h":838},
+      {"f":"08.jpg","w":2000,"h":837},
+      {"f":"09.jpg","w":2000,"h":838},
+      {"f":"10.jpg","w":2000,"h":882},
+      {"f":"11.jpg","w":2000,"h":802}]
     },
     {
       "carpeta": "extraterrestre",
@@ -273,7 +274,7 @@ portada: 01.jpg
 año: 2023
 labor: 
 director: Lucía Alemany
-mostrar_en_inicio: no
+mostrar_en_inicio: si
 portada: 02.jpg
 ---
 `,
@@ -299,7 +300,7 @@ año: 2017
 labor: 
 director: Eduardo Casanova
 productora: Pokeepsie Films
-mostrar_en_inicio: no
+mostrar_en_inicio: si
 portada: 03.jpg
 ---
 `,
@@ -336,20 +337,21 @@ año: 2022
 labor: 
 director: Paco León
 mostrar_en_inicio: si
+portada: 01.jpg
 ---
 `,
       "archivos": [
-      {"f":"01.jpg","w":2600,"h":1466},
-      {"f":"02.jpg","w":2600,"h":1459},
-      {"f":"03.jpg","w":2600,"h":1461},
+      {"f":"01.jpg","w":2600,"h":1463},
+      {"f":"02.jpg","w":2600,"h":1466},
+      {"f":"03.jpg","w":2600,"h":1459},
       {"f":"04.jpg","w":2600,"h":1461},
-      {"f":"05.jpg","w":2600,"h":1466},
-      {"f":"06.jpg","w":2600,"h":1457},
-      {"f":"07.jpg","w":2000,"h":878},
-      {"f":"08.jpg","w":2000,"h":1056},
-      {"f":"09.jpg","w":1600,"h":1200},
+      {"f":"05.jpg","w":2600,"h":1461},
+      {"f":"06.jpg","w":2600,"h":1466},
+      {"f":"07.jpg","w":2600,"h":1457},
+      {"f":"08.jpg","w":2000,"h":878},
+      {"f":"09.jpg","w":2000,"h":1056},
       {"f":"10.jpg","w":1600,"h":1200},
-      {"f":"11.jpg","w":1867,"h":1400},
+      {"f":"11.jpg","w":1600,"h":1200},
       {"f":"12.jpg","w":1867,"h":1400},
       {"f":"13.jpg","w":1867,"h":1400},
       {"f":"14.jpg","w":1867,"h":1400},
@@ -357,59 +359,59 @@ mostrar_en_inicio: si
       {"f":"16.jpg","w":1867,"h":1400},
       {"f":"17.jpg","w":1867,"h":1400},
       {"f":"18.jpg","w":1867,"h":1400},
-      {"f":"19.jpg","w":2600,"h":1459},
-      {"f":"20.jpg","w":2600,"h":1464},
-      {"f":"21.jpg","w":2600,"h":1459},
+      {"f":"19.jpg","w":1867,"h":1400},
+      {"f":"20.jpg","w":2600,"h":1459},
+      {"f":"21.jpg","w":2600,"h":1464},
       {"f":"22.jpg","w":2600,"h":1459},
-      {"f":"23.jpg","w":2600,"h":1463},
+      {"f":"23.jpg","w":2600,"h":1459},
       {"f":"24.jpg","w":2600,"h":1463},
-      {"f":"25.jpg","w":2000,"h":881},
+      {"f":"25.jpg","w":2600,"h":1463},
       {"f":"26.jpg","w":2000,"h":881},
-      {"f":"27.jpg","w":2600,"h":1457},
-      {"f":"28.jpg","w":2600,"h":1456},
-      {"f":"29.jpg","w":2600,"h":1459},
-      {"f":"30.jpg","w":2600,"h":1456},
-      {"f":"31.jpg","w":2000,"h":971},
-      {"f":"32.jpg","w":2000,"h":881},
-      {"f":"33.jpg","w":2000,"h":1038},
-      {"f":"34.jpg","w":1867,"h":1400},
+      {"f":"27.jpg","w":2000,"h":881},
+      {"f":"28.jpg","w":2600,"h":1457},
+      {"f":"29.jpg","w":2600,"h":1456},
+      {"f":"30.jpg","w":2600,"h":1459},
+      {"f":"31.jpg","w":2600,"h":1456},
+      {"f":"32.jpg","w":2000,"h":971},
+      {"f":"33.jpg","w":2000,"h":881},
+      {"f":"34.jpg","w":2000,"h":1038},
       {"f":"35.jpg","w":1867,"h":1400},
       {"f":"36.jpg","w":1867,"h":1400},
       {"f":"37.jpg","w":1867,"h":1400},
       {"f":"38.jpg","w":1867,"h":1400},
-      {"f":"39.jpg","w":2000,"h":942},
-      {"f":"40.jpg","w":2000,"h":946},
-      {"f":"41.jpg","w":2000,"h":941},
-      {"f":"42.jpg","w":2600,"h":1464},
-      {"f":"43.jpg","w":2600,"h":1463},
-      {"f":"44.jpg","w":2600,"h":1464},
-      {"f":"45.jpg","w":1452,"h":1334},
-      {"f":"46.jpg","w":1600,"h":827},
-      {"f":"47.jpg","w":2600,"h":1459},
-      {"f":"48.jpg","w":2600,"h":1461},
+      {"f":"39.jpg","w":1867,"h":1400},
+      {"f":"40.jpg","w":2000,"h":942},
+      {"f":"41.jpg","w":2000,"h":946},
+      {"f":"42.jpg","w":2000,"h":941},
+      {"f":"43.jpg","w":2600,"h":1464},
+      {"f":"44.jpg","w":2600,"h":1463},
+      {"f":"45.jpg","w":2600,"h":1464},
+      {"f":"46.jpg","w":1452,"h":1334},
+      {"f":"47.jpg","w":1600,"h":827},
+      {"f":"48.jpg","w":2600,"h":1459},
       {"f":"49.jpg","w":2600,"h":1461},
       {"f":"50.jpg","w":2600,"h":1461},
-      {"f":"51.jpg","w":1867,"h":1400},
+      {"f":"51.jpg","w":2600,"h":1461},
       {"f":"52.jpg","w":1867,"h":1400},
       {"f":"53.jpg","w":1867,"h":1400},
       {"f":"54.jpg","w":1867,"h":1400},
       {"f":"55.jpg","w":1867,"h":1400},
       {"f":"56.jpg","w":1867,"h":1400},
-      {"f":"57.jpg","w":2600,"h":1459},
-      {"f":"58.jpg","w":2600,"h":1463},
-      {"f":"59.jpg","w":2600,"h":1459},
-      {"f":"60.jpg","w":2600,"h":1456},
-      {"f":"61.jpg","w":2600,"h":1464},
-      {"f":"62.jpg","w":2600,"h":1466},
-      {"f":"63.jpg","w":2600,"h":1459},
-      {"f":"64.jpg","w":2600,"h":1456},
-      {"f":"65.jpg","w":2600,"h":1464},
-      {"f":"66.jpg","w":2600,"h":1461},
-      {"f":"67.jpg","w":2600,"h":1459},
+      {"f":"57.jpg","w":1867,"h":1400},
+      {"f":"58.jpg","w":2600,"h":1459},
+      {"f":"59.jpg","w":2600,"h":1463},
+      {"f":"60.jpg","w":2600,"h":1459},
+      {"f":"61.jpg","w":2600,"h":1456},
+      {"f":"62.jpg","w":2600,"h":1464},
+      {"f":"63.jpg","w":2600,"h":1466},
+      {"f":"64.jpg","w":2600,"h":1459},
+      {"f":"65.jpg","w":2600,"h":1456},
+      {"f":"66.jpg","w":2600,"h":1464},
+      {"f":"67.jpg","w":2600,"h":1461},
       {"f":"68.jpg","w":2600,"h":1459},
-      {"f":"69.jpg","w":2600,"h":1461},
+      {"f":"69.jpg","w":2600,"h":1459},
       {"f":"70.jpg","w":2600,"h":1461},
-      {"f":"portada.jpg","w":2600,"h":1463}]
+      {"f":"71.jpg","w":2600,"h":1461}]
     },
     {
       "carpeta": "salitre",
@@ -668,7 +670,7 @@ mostrar_en_inicio: si
   ],
   "videoclips": [
   ],
-  "home": [{"f":"ext-12.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":853},{"f":"ext-13.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":852}],
+  "home": [{"f":"ext-12.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":853},{"f":"ext-13.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":852},{"f":"salitre-01.jpg","titulo":"Salitre","ano":"2027","tipo":"films","carpeta":"salitre","enInicio":true,"w":2000,"h":1082},{"f":"daniela-forever-01.jpg","titulo":"Daniela Forever","ano":"2024","tipo":"films","carpeta":"daniela-forever","enInicio":true,"w":2600,"h":1080},{"f":"daniela-forever-02.jpg","titulo":"Daniela Forever","ano":"2024","tipo":"films","carpeta":"daniela-forever","enInicio":true,"w":2600,"h":1084},{"f":"rainbow-01.jpg","titulo":"Rainbow","ano":"2022","tipo":"films","carpeta":"rainbow","enInicio":true,"w":2600,"h":1466},{"f":"rainbow-02.jpg","titulo":"Rainbow","ano":"2022","tipo":"films","carpeta":"rainbow","enInicio":true,"w":2600,"h":1459},{"f":"en-las-estrellas-01.jpg","titulo":"En las estrellas","ano":"2018","tipo":"films","carpeta":"en-las-estrellas","enInicio":true,"w":2000,"h":811},{"f":"en-las-estrellas-02.jpg","titulo":"En las estrellas","ano":"2018","tipo":"films","carpeta":"en-las-estrellas","enInicio":true,"w":2000,"h":834}],
   "about": {
     "info": `# =====================================================================
 #  ABOUT  ·  cada dato relleno es una línea en la web (editado con el gestor)
@@ -738,4 +740,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610151215 */
+/* gestor: 202610151224 */

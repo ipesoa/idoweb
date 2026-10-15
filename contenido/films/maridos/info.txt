@@ -2,6 +2,6 @@ titulo: Maridos
 año: 2023
 labor: 
 director: Lucía Alemany
-mostrar_en_inicio: no
+mostrar_en_inicio: si
 portada: 02.jpg
 ---
