@@ -151,7 +151,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* Logo fijo en las parrillas y fichas. El recorte elimina únicamente la
    franja transparente inferior del PNG, manteniendo su proporción. */
 .menu__nombre.menu__nombre--logo { font-size: 30px; }
-.menu__logo { display: block; width: 375px; height: 31px; object-fit: cover; object-position: left top; }
+.menu__logo { display: block; width: 375px; max-width: none; height: 31px; object-fit: cover; object-position: left top; }
 
 /* ---------- DELFINES (assets/js/delfines.js) ------------------------
    En el inicio van por ENCIMA de todo (menos la cortina); en Contact,
