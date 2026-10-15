@@ -42,7 +42,7 @@
     a.className = "celda-proyecto";
     a.href = p.enlace;
     a.dataset.tipo = p.tipo;
-    const ficha = Comun.ficha(p).map((t) => `<span>${esc(t)}</span>`).join("");
+    const ficha = Comun.ficha(p).map((t, i) => `<span${i === 0 ? ' class="celda__titulo"' : ""}>${esc(t)}</span>`).join("");
     const portada = `<img class="celda__fondo" src="${esc((p.portada || {}).url)}" alt="${esc(p.titulo)}" loading="lazy" decoding="async"
            style="object-position:${esc(p.encuadre)}">`;
 

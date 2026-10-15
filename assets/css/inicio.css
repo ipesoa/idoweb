@@ -44,11 +44,14 @@ html, body { height: 100%; overflow: hidden; }
   pointer-events: none;
 }
 .pase__titulo {
-  font-family: var(--fuente-inicio);
-  font-weight: var(--inicio-negrita-titulo);
-  font-size: var(--inicio-tam-titulo);
+  font-family: var(--titulo-fuente);
+  font-weight: var(--titulo-peso);
+  font-style: var(--titulo-estilo);
+  font-synthesis: weight style;
+  font-size: calc(var(--titulo-tam) * 1.5);
   line-height: 1;
-  letter-spacing: -.01em;
+  letter-spacing: var(--titulo-espaciado);
+  text-transform: uppercase;
 }
 .pase__datos {
   font-family: var(--fuente-inicio);
@@ -92,6 +95,6 @@ html, body { height: 100%; overflow: hidden; }
 }
 
 @media (max-width: 700px) {
-  .pase__titulo { font-size: var(--inicio-tam-titulo-movil); }
+  .pase__titulo { font-size: calc(var(--titulo-tam) * .85); }
   .pase__datos  { letter-spacing: .2em; }
 }

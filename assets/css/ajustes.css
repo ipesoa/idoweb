@@ -168,6 +168,13 @@
   --franja-tam:    13px;
   --franja-fuente: var(--fuente-menu);
 
+/* ---------- 4d. TÍTULOS DE TODOS LOS TRABAJOS ------------------------ */
+  --titulo-fuente: "Garet", Arial, sans-serif;
+  --titulo-tam: 20px;
+  --titulo-peso: 400;
+  --titulo-estilo: normal;
+  --titulo-espaciado: .02em;
+
 /* ---------- 5. PÁGINA DE PROYECTO (vídeo + ficha + crew + texto) ---- */
   --video-formato:     1.78;          /* formato del vídeo de arriba: 1.78 = 16/9 · 1.85 = cine · 2.39 = scope */
   --video-ancho:       100vw;         /* 100vw = de lado a lado · min(100vw, 1400px) = con márgenes */

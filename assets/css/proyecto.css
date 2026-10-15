@@ -28,8 +28,10 @@
 .sin-video .proyecto__ficha { padding-top: clamp(150px, 24vh, 240px); }
 
 .proyecto__titulo {
-  font-size: var(--proyecto-tam-titulo);
-  font-weight: 400; letter-spacing: .06em; text-transform: uppercase;
+  font-family: var(--titulo-fuente); font-size: var(--titulo-tam);
+  font-weight: var(--titulo-peso); font-style: var(--titulo-estilo);
+  font-synthesis: weight style;
+  letter-spacing: var(--titulo-espaciado); text-transform: uppercase;
   line-height: 1.2;
 }
 .proyecto__linea {

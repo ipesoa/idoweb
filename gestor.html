@@ -168,6 +168,12 @@ button { cursor: pointer; background: none; border: 0; }
 .fila-delfin { display: flex; gap: 14px; align-items: flex-start; }
 .muestra-delfin { width: 70px; height: 110px; object-fit: contain; flex: none; border-radius: 8px;
   background: repeating-conic-gradient(#e6e6e6 0 25%, #fff 0 50%) 0 0 / 14px 14px; }
+.galeria-delfines { display: grid; grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)); gap: 10px; }
+.galeria-delfines button { display: grid; gap: 6px; justify-items: center; min-width: 0; padding: 9px;
+  border: 1px solid var(--linea); border-radius: 9px; background: #fff; cursor: pointer; }
+.galeria-delfines button[aria-pressed="true"] { border: 2px solid var(--tinta); padding: 8px; }
+.galeria-delfines img { width: 74px; height: 88px; object-fit: contain; }
+.galeria-delfines span { width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
 .boton.activo { background: var(--tinta, #111); color: #fff; }
 .fila-fuente-nueva input[type=text] { flex: 1; min-width: 220px; padding: 10px; border: 1px solid var(--linea); border-radius: 8px; }
 .lista-fuentes { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
@@ -282,7 +288,7 @@ button { cursor: pointer; background: none; border: 0; }
   // Versión de este gestor. Si en GitHub hay un gestor más nuevo (por ejemplo,
   // una pestaña abierta desde antes de instalar una actualización), no deja
   // publicar: guardaría las cosas a la manera antigua.
-  const VERSION_GESTOR = "2026-10-09-c";
+  const VERSION_GESTOR = "2026-10-15-a";
 
   /* Las secciones de la web. Si algún día se añade otra, se pone aquí y en
      assets/js/ajustes.js (AJUSTES.secciones) y en los generadores de datos. */
@@ -431,7 +437,7 @@ button { cursor: pointer; background: none; border: 0; }
       aboutSucio: false,
       fuenteCustom: [...arbol.keys()].find((r) => /^assets\/fonts\/idoia-custom\.(woff2?|otf|ttf)$/.test(r)) || null,
       fuentePendiente: null,
-      fuentesNuevas: [], fuentesBorrar: [], homeBorrados: [], delfinNuevo: null, delfinBorrar: [],
+      fuentesNuevas: [], fuentesBorrar: [], homeBorrados: [], delfinesNuevos: [],
     };
     seleccion.clear();
     pintar();
@@ -575,7 +581,7 @@ button { cursor: pointer; background: none; border: 0; }
         <p>Es lo único que se lee en esa página (una línea en blanco = párrafo nuevo).</p>
         <label class="campo campo--ancho"><textarea data-about-texto rows="7">${esc(E.about.info.texto || "")}</textarea></label></div>
       <div class="bloque"><h3>Datos de contacto</h3>
-        <p>Los rellenos salen como enlaces debajo del texto. El nombre de arriba se edita en «Cabecera».</p>
+        <p>En ordenador, email y teléfono salen a la izquierda del HELLO, a la misma altura. El nombre de arriba se edita en «Cabecera».</p>
         <div class="campos">
           ${campo("email", "Email", "nombre@correo.com")}
           ${campo("telefono", "Teléfono", "+34 600 000 000")}
@@ -640,7 +646,7 @@ button { cursor: pointer; background: none; border: 0; }
     cargarFuentesEnGestor();
     const lista = fuentesSubidas();
     return `<div class="cabecera"><h2>Tipografías</h2>
-        <p>Sube aquí tus tipografías (OTF, TTF, WOFF o WOFF2, máximo 8 MB). Después las puedes elegir en Cabecera (nombre y menú) y en Parrillas (texto de los recuadros y franja). Se suben a la web al pulsar «Publicar cambios».</p></div>
+        <p>Sube aquí tus tipografías (OTF, TTF, WOFF o WOFF2, máximo 8 MB). Después las puedes elegir en Cabecera y en Parrillas (textos, títulos y franja). Se suben a la web al pulsar «Publicar cambios».</p></div>
       <div class="bloque" style="margin-bottom:18px">
         <div class="fila-fuente-nueva"><input type="text" id="fuenteNombre" placeholder="Nombre de la tipografía (p. ej. Neue Haas Bold)">
           <label class="boton boton--principal">＋ Elegir archivo y añadir<input type="file" id="fuenteArchivo" accept=".otf,.ttf,.woff,.woff2" hidden></label></div>
@@ -767,11 +773,18 @@ button { cursor: pointer; background: none; border: 0; }
           ${cElegir("parrilla_texto_mayusculas", "Mayúsculas", c.parrilla_texto_mayusculas || "no", SI_NO("TODO EN MAYÚSCULAS", "Como está escrito"))}
           <p class="nota">El color de estas letras es el de Cabecera → Color de las letras.</p>
 
+          <h3 class="bloque-titulo">Títulos de todos los trabajos</h3>
+          <p class="nota">Siempre en mayúsculas. Estos ajustes afectan al inicio, las parrillas, cada ficha y la lista de Contact. El tamaño mantiene la proporción propia de cada lugar.</p>
+          <label class="control-nombre"><span>Tipografía</span><select data-nombre="titulo_fuente">${opcionesFuente(c.titulo_fuente || "garet")}</select></label>
+          ${cRango("titulo_tamano", "Tamaño base", c.titulo_tamano || "20", 12, 48, 1, "px")}
+          ${cElegir("titulo_peso", "Grosor", c.titulo_peso || "400", GROSORES)}
+          ${cElegir("titulo_cursiva", "Cursiva", c.titulo_cursiva || "no", SI_NO("Cursiva", "Recta"))}
+          ${cRango("titulo_espaciado", "Espacio entre letras", c.titulo_espaciado || "0.02", -0.05, 0.3, 0.01, "em")}
+
           <h3 class="bloque-titulo">Franja de enlaces (al final de las parrillas y de cada peli)</h3>
-          ${cElegir("franja", "Franja", c.franja || "si", [["si", "Con franja (sustituye al botón «Start a conversation»)"], ["no", "Sin franja"]])}
+          ${cElegir("franja_fija", "Franja", c.franja_fija || "si", [["si", "Con franja (sustituye al botón «Start a conversation»)"], ["no", "Sin franja"]])}
           <label class="control-nombre"><span>Tipografía</span><select data-nombre="franja_fuente">${opcionesFuente(c.franja_fuente || "arial")}</select></label>
-          ${cRango("franja_tamano", "Tamaño de la letra (la franja mide lo mismo)", c.franja_tamano || "13", 8, 48, 1, "px")}
-          ${cRango("franja_velocidad", "Velocidad (← más lenta · más rápida →)", c.franja_velocidad || "60", 2, 300, 1, "px/s")}
+          ${cRango("franja_tamano", "Tamaño de la letra", c.franja_tamano || "13", 8, 48, 1, "px")}
           ${cColor("franja_fondo", "Color de fondo", c.franja_fondo || "#000000")}
           ${cColor("franja_color", "Color de las letras", c.franja_color || "#ffffff")}
         </div>
@@ -783,12 +796,21 @@ button { cursor: pointer; background: none; border: 0; }
      Claves delfines_* en contenido/about/info.txt. La imagen propia se
      sube a assets/img/broma/ (clave delfines_imagen: archivo.png).     */
   let paginaDelfines = "index.html";
-  const urlDelfin = () => E.delfinNuevo && location.hostname.endsWith("github.io") ? E.delfinNuevo.url
-    : E.about.info.campos.delfines_imagen ? "assets/img/broma/" + E.about.info.campos.delfines_imagen : "assets/img/delfin.png";
+  function imagenesDelfines() {
+    const guardadas = [...E.arbol.keys()].filter((r) => /^assets\/img\/broma\/[\w.-]+\.(png|webp|gif)$/i.test(r))
+      .map((ruta) => ({ archivo: ruta.split("/").pop(), url: ruta }));
+    return [{ archivo: "", url: "assets/img/delfin.png", nombre: "Delfín original" }, ...guardadas,
+      ...E.delfinesNuevos.map((f) => ({ ...f, nombre: f.nombre || f.archivo }))];
+  }
+  const urlDelfin = () => {
+    const nombre = E.about.info.campos.delfines_imagen || "";
+    return imagenesDelfines().find((f) => f.archivo === nombre)?.url || "assets/img/delfin.png";
+  };
   function vistaDelfines() {
     const c = E.about.info.campos;
     const CUANDO = [["las-dos", "Al entrar y al pulsar el nombre"], ["entrar", "Solo al entrar en la página"], ["pulsar", "Solo al pulsar el nombre"]];
-    const img = E.delfinNuevo ? E.delfinNuevo.url : (location.hostname.endsWith("github.io") ? "" : webBase()) + urlDelfin();
+    const base = location.hostname.endsWith("github.io") ? "" : webBase();
+    const img = urlDelfin().startsWith("blob:") ? urlDelfin() : base + urlDelfin();
     return `<div class="cabecera"><h2>Delfines 🐬</h2>
         <p>Chorros de delfines que salen de la I y la N del nombre, se amontonan abajo, se quedan unos segundos y desaparecen. En Contact salen solo de la I y quedan debajo del texto. Pulsa ▶ para verlo aquí. Para hacerlo público, «Publicar cambios».</p></div>
       <div class="editor-nombre">
@@ -801,12 +823,15 @@ button { cursor: pointer; background: none; border: 0; }
           <p class="nota">«Al pulsar el nombre»: en esa página el nombre lanza delfines en vez de llevar al inicio.</p>
           ${cRango("delfines_espera", "Espera al entrar (deja acabar la animación del nombre)", c.delfines_espera || "1700", 0, 5000, 100, "ms")}
 
-          <h3 class="bloque-titulo">La imagen</h3>
+          <h3 class="bloque-titulo">Imágenes guardadas</h3>
+          <p class="nota">Elige cuál sale al lanzar los delfines. El original y las imágenes que subas permanecen aquí para volver a usarlas.</p>
+          <div class="galeria-delfines">${imagenesDelfines().map((f) => `<button type="button" data-delfin-elegir="${esc(f.archivo)}" aria-pressed="${f.archivo === (c.delfines_imagen || "")}">
+            <img src="${esc(f.url.startsWith("blob:") ? f.url : base + f.url)}" alt=""><span title="${esc(f.nombre || f.archivo)}">${esc(f.nombre || f.archivo)}</span></button>`).join("")}</div>
+          <h3 class="bloque-titulo">Añadir imágenes</h3>
           <div class="fila-delfin"><img src="${esc(img)}" alt="" class="muestra-delfin">
             <div><p class="nota" style="margin-top:0">PNG con fondo transparente, en vertical o en horizontal. Medida recomendada: <b>unos 160 × 275 px</b> (entre 100 y 400 px de lado largo; menos de 300 KB). Sale del tamaño que digas abajo, girando.</p>
-            <label class="boton boton--principal">Cambiar imagen…<input type="file" id="delfinArchivo" accept="image/png,image/webp,image/gif" hidden></label>
-            ${c.delfines_imagen || E.delfinNuevo ? `<button class="boton" data-accion="delfin-original">Volver al delfín</button>` : ""}
-            ${E.delfinNuevo ? `<span class="nota"> · sin publicar</span>` : ""}</div></div>
+            <label class="boton boton--principal">Añadir imágenes…<input type="file" id="delfinArchivo" accept="image/png,image/webp,image/gif" multiple hidden></label>
+            ${E.delfinesNuevos.length ? `<span class="nota"> · ${E.delfinesNuevos.length} sin publicar</span>` : ""}</div></div>
 
           <h3 class="bloque-titulo">Cómo salen</h3>
           ${cRango("delfines_cantidad", "Cantidad (en el móvil salen menos)", c.delfines_cantidad || "45", 5, 150, 5, "/s")}
@@ -841,21 +866,19 @@ button { cursor: pointer; background: none; border: 0; }
     }
     const archivo = $("#delfinArchivo");
     if (archivo) archivo.addEventListener("change", (e) => {
-      const file = e.target.files[0]; e.target.value = "";
-      if (!file) return;
-      const ext = (file.name.match(/\.(png|webp|gif)$/i) || [])[1];
-      if (!ext || file.size > 2 * 1024 * 1024) { aviso("Usa un PNG (o WEBP/GIF) de menos de 2 MB", true); return; }
-      const nombre = (file.name.replace(/\.[^.]+$/, "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "imagen") + "-" + Date.now().toString(36) + "." + ext.toLowerCase();
-      if (E.delfinNuevo) URL.revokeObjectURL(E.delfinNuevo.url);
-      const anterior = E.about.info.campos.delfines_imagen;
-      if (anterior && !E.delfinNuevo) E.delfinBorrar.push("assets/img/broma/" + anterior);
-      E.delfinNuevo = { blob: file, archivo: nombre, url: URL.createObjectURL(file) };
-      E.about.info.campos.delfines_imagen = nombre;
-      E.aboutSucio = true;
-      const im = new Image();
-      im.onload = () => { const l = Math.max(im.naturalWidth, im.naturalHeight); if (l > 600 || l < 60) aviso(`La imagen mide ${im.naturalWidth} × ${im.naturalHeight} px. Funciona, pero lo ideal es unos 160 × 275 px.`); };
-      im.src = E.delfinNuevo.url;
-      pintar();
+      const archivos = [...e.target.files]; e.target.value = "";
+      let ultimo = null;
+      archivos.forEach((file, i) => {
+        const ext = (file.name.match(/\.(png|webp|gif)$/i) || [])[1];
+        if (!ext || file.size > 2 * 1024 * 1024) { aviso(`«${file.name}»: usa PNG, WEBP o GIF de menos de 2 MB`, true); return; }
+        const nombre = (file.name.replace(/\.[^.]+$/, "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "imagen") + "-" + Date.now().toString(36) + "-" + i + "." + ext.toLowerCase();
+        const nuevo = { blob: file, archivo: nombre, nombre: file.name, url: URL.createObjectURL(file) };
+        E.delfinesNuevos.push(nuevo); ultimo = nuevo;
+        const im = new Image();
+        im.onload = () => { const l = Math.max(im.naturalWidth, im.naturalHeight); if (l > 600 || l < 60) aviso(`«${file.name}» mide ${im.naturalWidth} × ${im.naturalHeight} px. Lo ideal es unos 160 × 275 px.`); };
+        im.src = nuevo.url;
+      });
+      if (ultimo) { E.about.info.campos.delfines_imagen = ultimo.archivo; E.aboutSucio = true; pintar(); }
     });
   }
 
@@ -1240,12 +1263,11 @@ button { cursor: pointer; background: none; border: 0; }
         poner("assets/fonts/" + f.archivo, await blobArchivo(f.blob));
       }
       for (const ruta of E.fuentesBorrar) if (E.arbol.has(ruta)) poner(ruta, null);
-      // imagen de los delfines (pestaña Delfines)
-      if (E.delfinNuevo && E.about.info.campos.delfines_imagen === E.delfinNuevo.archivo) {
-        led("subiendo", "Subiendo la imagen de los delfines…");
-        poner("assets/img/broma/" + E.delfinNuevo.archivo, await blobArchivo(E.delfinNuevo.blob));
+      // Se conservan el delfín original y todas las imágenes nuevas.
+      for (const f of E.delfinesNuevos) {
+        led("subiendo", `Subiendo ${f.nombre}…`);
+        poner("assets/img/broma/" + f.archivo, await blobArchivo(f.blob));
       }
-      for (const ruta of E.delfinBorrar) if (E.arbol.has(ruta)) poner(ruta, null);
       if (E.fuentePendiente) {
         led("subiendo", "Subiendo la tipografía…");
         poner(E.fuentePendiente.ruta, await blobArchivo(E.fuentePendiente.blob));
@@ -1480,11 +1502,10 @@ button { cursor: pointer; background: none; border: 0; }
     }
     if (acc === "delfines-probar") { aplicarVistaDelfines({ accion: "delfines" }); return; }
     if (t.dataset.delfinesPagina) { paginaDelfines = t.dataset.delfinesPagina; pintar(); return; }
-    if (acc === "delfin-original") {
-      const c = E.about.info.campos;
-      if (E.delfinNuevo) { URL.revokeObjectURL(E.delfinNuevo.url); E.delfinNuevo = null; }
-      else if (c.delfines_imagen) E.delfinBorrar.push("assets/img/broma/" + c.delfines_imagen);
-      delete c.delfines_imagen; E.aboutSucio = true; pintar(); return;
+    if (t.dataset.delfinElegir !== undefined) {
+      if (t.dataset.delfinElegir) E.about.info.campos.delfines_imagen = t.dataset.delfinElegir;
+      else delete E.about.info.campos.delfines_imagen;
+      E.aboutSucio = true; pintar(); return;
     }
     if (t.dataset.fuenteBorrar !== undefined) {
       const lista = fuentesSubidas(); const [f] = lista.splice(+t.dataset.fuenteBorrar, 1);

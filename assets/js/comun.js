@@ -162,42 +162,18 @@
     });
   }
 
-  /* ---------- FRANJA CON ENLACES EN MOVIMIENTO ----------
-     Al final de las parrillas y de cada proyecto: una franja del alto de
-     la letra con las otras secciones + Contact, que pasa sola de derecha
-     a izquierda (se para al poner el ratón encima). En Series salen
-     Films · Commercials · Contact; en Films, Series · Commercials · Contact…
-     Se pone y se quita, y se cambian colores, tamaño y velocidad, en el
-     gestor (pestaña Parrillas). */
+  /* ---------- FRANJA FIJA DE ENLACES ----------
+     Al final de las parrillas y proyectos, centrada y sin el enlace a
+     la sección actual. Sus colores y tipografía se editan en el gestor. */
   function franja(actual) {
     const F = A.franja || {};
     if (F.activo === false) return null;
     const enlaces = A.secciones.filter((s) => ["films", "series", "comercials"].includes(s.id) && s.id !== actual)
       .map((s) => [s.titulo, s.pagina]).concat([[A.textos.contacto, "contact.html"]]);
-    const sep = `<span class="franja__sep" aria-hidden="true">${htmlSeguro(F.separador || "·")}</span>`;
-    const grupo = enlaces.map(([t, h]) => `<a href="${h}">${htmlSeguro(t)}</a>`).join(sep) + sep;
     const el = document.createElement("nav");
     el.className = "franja";
     el.setAttribute("aria-label", "Otras secciones");
-    el.innerHTML = `<div class="franja__pista"><div class="franja__mitad">${grupo}</div></div>`;
-    // se repite el grupo hasta llenar la pantalla y se duplica la mitad: así
-    // el movimiento es continuo, sin saltos
-    const ajustar = () => {
-      const pista = el.querySelector(".franja__pista");
-      const mitad = pista.querySelector(".franja__mitad");
-      mitad.innerHTML = grupo;
-      let n = 1;
-      while (mitad.scrollWidth < innerWidth * 1.2 && n < 30) { mitad.insertAdjacentHTML("beforeend", grupo); n++; }
-      pista.querySelectorAll(".franja__mitad[aria-hidden]").forEach((m) => m.remove());
-      const copia = mitad.cloneNode(true); copia.setAttribute("aria-hidden", "true");
-      copia.querySelectorAll("a").forEach((a) => a.tabIndex = -1);
-      pista.append(copia);
-      const vel = Number((A.franja || {}).velocidad) || 60;     // píxeles por segundo
-      pista.style.setProperty("--franja-duracion", (mitad.scrollWidth / vel).toFixed(2) + "s");
-    };
-    requestAnimationFrame(ajustar);
-    window.addEventListener("resize", ajustar);
-    el.ajustar = ajustar;
+    el.innerHTML = enlaces.map(([t, h]) => `<a href="${h}">${htmlSeguro(t)}</a>`).join("");
     return el;
   }
 
@@ -335,17 +311,25 @@
     const tamTexto = n(c.parrilla_texto_tamano, 8, 32);
     if (tamTexto !== undefined) root.style.setProperty("--cartel-texto-tam", tamTexto + "px");
     if (FAMILIAS[c.parrilla_texto_fuente]) root.style.setProperty("--cartel-texto-fuente", FAMILIAS[c.parrilla_texto_fuente]);
+    // Todos los títulos de trabajos: inicio, parrillas, fichas y Contact.
+    const tamTitulo = n(c.titulo_tamano, 12, 48);
+    if (tamTitulo !== undefined) root.style.setProperty("--titulo-tam", tamTitulo + "px");
+    if (FAMILIAS[c.titulo_fuente]) root.style.setProperty("--titulo-fuente", FAMILIAS[c.titulo_fuente]);
+    if (["400", "500", "700", "900"].includes(c.titulo_peso)) root.style.setProperty("--titulo-peso", c.titulo_peso);
+    if (/^(si|no)$/.test(c.titulo_cursiva || "")) root.style.setProperty("--titulo-estilo", c.titulo_cursiva === "si" ? "italic" : "normal");
+    const espTitulo = n(c.titulo_espaciado, -0.05, 0.3);
+    if (espTitulo !== undefined) root.style.setProperty("--titulo-espaciado", espTitulo + "em");
     // Franja de enlaces al final de parrillas y proyectos
     A.franja = A.franja || {};
-    if (/^(si|no)$/.test(c.franja || "")) A.franja.activo = c.franja === "si";
-    const velF = n(c.franja_velocidad, 1, 400);
-    if (velF !== undefined) A.franja.velocidad = velF;
+    // Ajuste nuevo: la franja fija empieza visible aunque la anterior,
+    // animada, estuviera desactivada en una versión antigua.
+    A.franja.activo = c.franja_fija !== "no";
     if (/^#[0-9a-f]{3,8}$/i.test(c.franja_fondo || "")) root.style.setProperty("--franja-fondo", c.franja_fondo);
     if (/^#[0-9a-f]{3,8}$/i.test(c.franja_color || "")) root.style.setProperty("--franja-color", c.franja_color);
     const tamF = n(c.franja_tamano, 8, 60);
     if (tamF !== undefined) root.style.setProperty("--franja-tam", tamF + "px");
     if (FAMILIAS[c.franja_fuente]) root.style.setProperty("--franja-fuente", FAMILIAS[c.franja_fuente]);
-    document.querySelectorAll(".franja").forEach((f) => { f.hidden = A.franja.activo === false; f.ajustar && f.ajustar(); });
+    document.querySelectorAll(".franja").forEach((f) => { f.hidden = A.franja.activo === false; });
     // Texto de los recuadros: grosor, cursiva, mayúsculas
     const fijarVar = (v, val) => { if (val !== undefined && val !== "") root.style.setProperty(v, val); };
     fijarVar("--cartel-texto-peso", ["400", "500", "700", "900"].includes(c.parrilla_texto_peso) ? c.parrilla_texto_peso : undefined);
@@ -383,7 +367,7 @@
     const CUANDO = ["entrar", "pulsar", "las-dos"];
     fijar(D, "cuandoInicio", CUANDO.includes(c.delfines_cuando_inicio) ? c.delfines_cuando_inicio : undefined);
     fijar(D, "cuandoContact", CUANDO.includes(c.delfines_cuando_contact) ? c.delfines_cuando_contact : undefined);
-    if (c.delfines_imagen !== undefined) D.imagen = /^[\w.-]+\.(png|webp|gif)$/i.test(c.delfines_imagen) ? "assets/img/broma/" + c.delfines_imagen : "assets/img/delfin.png";
+    D.imagen = /^[\w.-]+\.(png|webp|gif)$/i.test(c.delfines_imagen || "") ? "assets/img/broma/" + c.delfines_imagen : "assets/img/delfin.png";
     fijar(D, "espera", n(c.delfines_espera, 0, 10000));
     fijar(D, "duracion", n(c.delfines_duracion, 0.25, 15));
     fijar(D, "quedarse", n(c.delfines_quedarse, 0, 60));

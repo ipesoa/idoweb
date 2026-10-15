@@ -34,6 +34,15 @@
   pointer-events: none;
 }
 .celda-proyecto__txt span, .etiqueta-cursor span { display: block; }
+.celda__titulo {
+  font-family: var(--titulo-fuente);
+  font-size: calc(var(--titulo-tam) * .65);
+  font-weight: var(--titulo-peso);
+  font-style: var(--titulo-estilo);
+  font-synthesis: weight style;
+  letter-spacing: var(--titulo-espaciado);
+  text-transform: uppercase;
+}
 
 /* En móvil: fija abajo a la izquierda de cada portada */
 .celda-proyecto__txt { position: absolute; z-index: 2; left: .8rem; bottom: .7rem; right: .8rem; }

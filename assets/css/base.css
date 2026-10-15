@@ -214,25 +214,21 @@ body[data-pagina="contact"] .contacto { position: relative; z-index: 1; }
 }
 .rejilla-cine .visible img, .rejilla-cine .visible video { opacity: 1; transform: scale(1); }
 
-/* ---------- FRANJA DE ENLACES EN MOVIMIENTO --------------------------
-   Del alto de la letra; colores, tamaño y velocidad: gestor → Parrillas
-   (o ajustes.css sección 4c). Se para al poner el ratón encima.        */
+/* ---------- FRANJA FIJA DE ENLACES ------------------------------------
+   Centrada, con aire a los lados y cuatro veces la altura anterior.     */
 .franja {
-  overflow: hidden; width: 100%;
+  display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
+  gap: .9em clamp(20px, 4vw, 80px);
+  width: 100%; min-height: calc(var(--franja-tam) * 6.4);
   background: var(--franja-fondo); color: var(--franja-color);
   font-family: var(--franja-fuente); font-size: var(--franja-tam);
-  line-height: 1; text-transform: uppercase; letter-spacing: .14em;
-  padding: .32em 0 .28em;
-  white-space: nowrap;
+  line-height: 1.25; text-transform: uppercase; letter-spacing: .14em;
+  padding: 1.4em clamp(24px, 5vw, 96px);
+  text-align: center;
 }
-.franja__pista { display: flex; width: max-content; animation: franja-pasa var(--franja-duracion, 30s) linear infinite; }
-.franja:hover .franja__pista { animation-play-state: paused; }
-.franja__mitad { display: flex; align-items: baseline; }
-.franja a, .franja__sep { padding: 0 .9em; }
+.franja a { white-space: nowrap; }
 .franja a { transition: opacity .3s; }
 .franja a:hover { opacity: .55; }
-@keyframes franja-pasa { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
-@media (prefers-reduced-motion: reduce) { .franja__pista { animation: none; } }
 
 /* ---------- BOTÓN AUTO-SCROLL -------------------------------------- */
 .boton-auto {
