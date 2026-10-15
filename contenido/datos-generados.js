@@ -4,7 +4,7 @@ window.CONTENIDO = {
   "films": [
     {
       "carpeta": "2026-el-acercamiento-de-la-mujer-cactus-y-el-hombre-globo",
-      "info": `titulo: El acercamiento de la mujer cactus y el hombre globo
+      "info": `titulo: La mujer cactus y el hombre globo
 año: 2027
 labor: 
 director: Kike Maíllo
@@ -738,4 +738,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610151214 */
+/* gestor: 202610151215 */
