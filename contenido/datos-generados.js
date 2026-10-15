@@ -496,10 +496,19 @@ portada: 03.jpg
 año: 2019
 labor: 
 director: Álvaro Fernández Armero
+productora: Telecinco
 mostrar_en_inicio: no
+portada: 03.jpg
 ---
 `,
-      "archivos": []
+      "archivos": [
+      {"f":"01.jpg","w":2600,"h":1086},
+      {"f":"02.jpg","w":2600,"h":1090},
+      {"f":"03.jpg","w":2600,"h":1090},
+      {"f":"04.jpg","w":2600,"h":1086},
+      {"f":"05.jpg","w":2600,"h":1084},
+      {"f":"06.jpg","w":2600,"h":1091},
+      {"f":"07.jpg","w":2600,"h":1088}]
     },
   ],
   "series": [
@@ -740,4 +749,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610151224 */
+/* gestor: 202610151242 */
