@@ -6,13 +6,15 @@ window.CONTENIDO = {
       "carpeta": "2026-el-acercamiento-de-la-mujer-cactus-y-el-hombre-globo",
       "info": `titulo: El acercamiento de la mujer cactus y el hombre globo
 año: 2027
-labor: Product Designer
+labor: 
 director: Kike Maíllo
 productora: Sabado Time/Netflix
 mostrar_en_inicio: no
+portada: 01.jpg
 ---
 `,
-      "archivos": []
+      "archivos": [
+      {"f":"01.jpg","w":1382,"h":688}]
     },
     {
       "carpeta": "a-mil-km-de-la-navidad",
@@ -222,9 +224,15 @@ año: 2022
 labor: 
 director: 
 mostrar_en_inicio: no
+portada: 05.jpg
 ---
 `,
-      "archivos": []
+      "archivos": [
+      {"f":"01.jpg","w":2600,"h":1459},
+      {"f":"02.jpg","w":2600,"h":1457},
+      {"f":"03.jpg","w":2600,"h":1454},
+      {"f":"04.jpg","w":2600,"h":1459},
+      {"f":"05.jpg","w":2600,"h":1450}]
     },
     {
       "carpeta": "los-miercoles-no-existen",
@@ -719,4 +727,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610151118 */
+/* gestor: 202610151156 */

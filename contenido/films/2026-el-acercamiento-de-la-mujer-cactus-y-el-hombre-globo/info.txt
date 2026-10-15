@@ -1,7 +1,8 @@
 titulo: El acercamiento de la mujer cactus y el hombre globo
 año: 2027
-labor: Product Designer
+labor: 
 director: Kike Maíllo
 productora: Sabado Time/Netflix
 mostrar_en_inicio: no
+portada: 01.jpg
 ---
