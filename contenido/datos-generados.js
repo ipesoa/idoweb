@@ -679,7 +679,7 @@ mostrar_en_inicio: si
   ],
   "videoclips": [
   ],
-  "home": [{"f":"ext-12.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":853},{"f":"ext-13.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":852},{"f":"salitre-01.jpg","titulo":"Salitre","ano":"2027","tipo":"films","carpeta":"salitre","enInicio":true,"w":2000,"h":1082},{"f":"daniela-forever-01.jpg","titulo":"Daniela Forever","ano":"2024","tipo":"films","carpeta":"daniela-forever","enInicio":true,"w":2600,"h":1080},{"f":"daniela-forever-02.jpg","titulo":"Daniela Forever","ano":"2024","tipo":"films","carpeta":"daniela-forever","enInicio":true,"w":2600,"h":1084},{"f":"rainbow-01.jpg","titulo":"Rainbow","ano":"2022","tipo":"films","carpeta":"rainbow","enInicio":true,"w":2600,"h":1466},{"f":"rainbow-02.jpg","titulo":"Rainbow","ano":"2022","tipo":"films","carpeta":"rainbow","enInicio":true,"w":2600,"h":1459},{"f":"en-las-estrellas-01.jpg","titulo":"En las estrellas","ano":"2018","tipo":"films","carpeta":"en-las-estrellas","enInicio":true,"w":2000,"h":811},{"f":"en-las-estrellas-02.jpg","titulo":"En las estrellas","ano":"2018","tipo":"films","carpeta":"en-las-estrellas","enInicio":true,"w":2000,"h":834}],
+  "home": [{"f":"ext-12.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":853},{"f":"ext-13.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":852},{"f":"salitre-01.jpg","titulo":"Salitre","ano":"2027","tipo":"films","carpeta":"salitre","enInicio":false,"w":2000,"h":1082},{"f":"daniela-forever-01.jpg","titulo":"Daniela Forever","ano":"2024","tipo":"films","carpeta":"daniela-forever","enInicio":true,"w":2600,"h":1080},{"f":"daniela-forever-02.jpg","titulo":"Daniela Forever","ano":"2024","tipo":"films","carpeta":"daniela-forever","enInicio":false,"w":2600,"h":1084},{"f":"rainbow-01.jpg","titulo":"Rainbow","ano":"2022","tipo":"films","carpeta":"rainbow","enInicio":true,"w":2600,"h":1466},{"f":"rainbow-02.jpg","titulo":"Rainbow","ano":"2022","tipo":"films","carpeta":"rainbow","enInicio":true,"w":2600,"h":1459},{"f":"en-las-estrellas-01.jpg","titulo":"En las estrellas","ano":"2018","tipo":"films","carpeta":"en-las-estrellas","enInicio":true,"w":2000,"h":811},{"f":"en-las-estrellas-02.jpg","titulo":"En las estrellas","ano":"2018","tipo":"films","carpeta":"en-las-estrellas","enInicio":true,"w":2000,"h":834}],
   "about": {
     "info": `# =====================================================================
 #  ABOUT  ·  cada dato relleno es una línea en la web (editado con el gestor)
@@ -749,4 +749,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610151242 */
+/* gestor: 202610160830 */
