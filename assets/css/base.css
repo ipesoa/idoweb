@@ -247,10 +247,15 @@ body[data-pagina="contact"] .contacto { position: relative; z-index: 1; }
 .franja__lado--derecho { justify-content: flex-start; }
 .franja__contacto { justify-self: center; }
 @media (max-width: 700px) {
-  .franja { column-gap: clamp(20px, 10vw, 40px); padding-inline: 12px; }
-}
-@media (max-width: 380px) {
-  .franja { column-gap: 20px; padding-inline: 8px; font-size: min(var(--franja-tam), 12px); letter-spacing: .08em; }
+  /* Tres columnas iguales: Contact queda en el centro real de la pantalla. */
+  .franja {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 0;
+    padding-inline: clamp(20px, 6vw, 34px);
+    font-size: min(var(--franja-tam), clamp(10px, 3vw, 13px));
+    letter-spacing: .08em;
+  }
+  .franja__lado { justify-content: center; flex-wrap: nowrap; gap: 0; }
 }
 
 /* ---------- BOTÓN AUTO-SCROLL -------------------------------------- */
