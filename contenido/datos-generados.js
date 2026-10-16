@@ -106,7 +106,7 @@ portada: 03.jpg
 año: 2026
 labor: 
 director: Paco León
-mostrar_en_inicio: no
+mostrar_en_inicio: si
 encuadre_movil: 57% 50%
 letras_inicio: blanco
 portada: 34.jpg
@@ -814,9 +814,11 @@ mostrar_en_inicio: no
       "carpeta": "lo-siento-mi-amor",
       "info": `titulo: Lo siento mi amor
 año: 2018
+labor: 
 director: Eduardo Casanova
 productora: The Stoat Fashion Film
-mostrar_en_inicio: si
+mostrar_en_inicio: no
+portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -831,9 +833,11 @@ mostrar_en_inicio: si
       "carpeta": "twyp",
       "info": `titulo: ING Twyp
 año: 2018
+labor: 
 director: Eduardo Casanova
 productora: Blur
-mostrar_en_inicio: si
+mostrar_en_inicio: no
+portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -919,4 +923,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610161244 */
+/* gestor: 202610161246 */

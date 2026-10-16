@@ -1,6 +1,8 @@
 titulo: Lo siento mi amor
 año: 2018
+labor: 
 director: Eduardo Casanova
 productora: The Stoat Fashion Film
-mostrar_en_inicio: si
+mostrar_en_inicio: no
+portada: 01.jpg
 ---
