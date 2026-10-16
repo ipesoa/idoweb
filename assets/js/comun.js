@@ -21,9 +21,9 @@
      INICIO      arriba en el centro: NOMBRE · production designer · work
                  work despliega films, series, commercials y archive en el centro;
                  contact aparece abajo. No hay enlaces laterales.
-     SECCIONES   (work, films, series, commercials, videoclips)
-                 arriba en el centro: NOMBRE (lleva al inicio) y, debajo,
-                 dónde estás. Nada más: ni laterales ni contact.
+     SECCIONES   en Films, Series y Commercials: NOMBRE arriba y, debajo,
+                 la sección actual centrada entre enlaces a las otras dos.
+                 Work y Videoclips conservan solo el nombre de su sección.
      CONTACT     NOMBRE y debajo "work" (para volver a la lista de todo)
      PROYECTO    arriba en el centro: NOMBRE y categoría enlazada a su parrilla
      Textos y secciones: assets/js/ajustes.js (AJUSTES.secciones / .textos) */
@@ -38,6 +38,17 @@
     const mascara = (t) => `<span class="opcion-mascara"><span class="opcion-texto">${htmlSeguro(t)}</span></span>`;
     const enlaceSeccion = (s, clase = "menu__seccion") =>
       `<a class="${clase} menu__${s.id}" href="${s.pagina}">${htmlSeguro(s.titulo)}</a>`;
+    const principales = ["films", "series", "comercials"];
+    const otrasParrillas = principales.includes(pagina)
+      ? A.secciones.filter((s) => principales.includes(s.id) && s.id !== pagina)
+      : [];
+    const categoriasParrilla = otrasParrillas.length === 2
+      ? `<div class="menu__categorias">
+          ${enlaceSeccion(otrasParrillas[0], "menu__categoria-lateral")}
+          <span class="menu__donde" aria-current="page">${htmlSeguro(donde)}</span>
+          ${enlaceSeccion(otrasParrillas[1], "menu__categoria-lateral")}
+        </div>`
+      : "";
 
     let dentro;
     if (pagina === "inicio") {
@@ -69,7 +80,7 @@
           : `<a class="menu__nombre" href="index.html">${htmlSeguro(nombre)}</a>`}
         ${categoriaProyecto
           ? `<a class="menu__donde" href="${htmlSeguro(categoriaProyecto.pagina)}">${htmlSeguro(categoriaProyecto.titulo)}</a>`
-          : donde ? `<span class="menu__donde">${htmlSeguro(donde)}</span>` : ""}
+          : categoriasParrilla || (donde ? `<span class="menu__donde">${htmlSeguro(donde)}</span>` : "")}
       </div>`;
     }
 
@@ -554,4 +565,3 @@
     animarNombre: () => entradaNombre(document.querySelector(".menu__nombre"), true),
     menu: (abierto) => Comun_menu && Comun_menu(abierto) };
 })();
-

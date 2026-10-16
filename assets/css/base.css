@@ -149,9 +149,25 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .menu__work { text-transform: var(--menu-transform, uppercase); }
 /* Logo fijo en las parrillas y fichas. El recorte elimina únicamente la
-   franja transparente inferior del PNG, manteniendo su proporción. */
+   franja transparente inferior del SVG, manteniendo su proporción. */
 .menu__nombre.menu__nombre--logo { font-size: 30px; }
 .menu__logo { display: block; width: 375px; max-width: none; height: 31px; object-fit: cover; object-position: left top; }
+/* En las tres parrillas principales, la sección activa queda exactamente
+   centrada y las otras dos sirven de acceso directo desde la cabecera. */
+.menu__categorias {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: clamp(12px, 3vw, 32px);
+  width: min(520px, calc(100vw - 2 * var(--margen)));
+}
+.menu__categorias > :first-child { justify-self: end; }
+.menu__categorias > :last-child { justify-self: start; }
+.menu__categoria-lateral {
+  font-size: max(10px, calc(var(--menu-tam) - 2px));
+  letter-spacing: var(--inicio-espaciado-menu);
+  white-space: nowrap;
+}
 
 /* ---------- DELFINES (assets/js/delfines.js) ------------------------
    En el inicio van por ENCIMA de todo (menos la cortina); en Contact,
