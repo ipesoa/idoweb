@@ -27,7 +27,7 @@ director: Álvaro Fernández Armero
 productora: Nadie es perfecto / Netflix
 mostrar_en_inicio: no
 encuadre_movil: 17% 50%
-letras_inicio: negro
+letras_inicio: blanco
 portada: 03.jpg
 ---
 `,
@@ -191,7 +191,7 @@ director: Zoe Berriatúa
 productora: Pokeepsie Films
 mostrar_en_inicio: si
 encuadre_movil: 35% 50%
-letras_inicio: negro
+letras_inicio: blanco
 portada: 01.jpg
 ---
 `,
@@ -404,7 +404,7 @@ director: Paco León
 productora: Telecinco / Netflix
 mostrar_en_inicio: si
 encuadre_movil: 90% 50%
-letras_inicio: negro
+letras_inicio: blanco
 portada: 01.jpg
 ---
 `,
