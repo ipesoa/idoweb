@@ -18,7 +18,7 @@ contraste_grano: 0
 parrilla_hilo: 5
 parrilla_texto_tamano: 13
 parrilla_nombre_caja: si
-parrilla_texto_fuente: garet
+parrilla_texto_fuente: arial
 parrilla_nombre_caja_letra: #ffffff
 delfines_duracion: 0.75
 delfines_quedarse: 0.5
@@ -33,7 +33,7 @@ delfines_potencia: 550
 delfines_angulo: 47
 parrilla_texto_peso: 500
 franja: no
-titulo_fuente: garet
+titulo_fuente: arial
 titulo_peso: 700
 fuente: AlteHaasGroteskRegular | altehaasgroteskregular.ttf
 fuente: AlteHaasGroteskBold | altehaasgroteskbold.ttf
