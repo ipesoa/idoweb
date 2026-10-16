@@ -720,8 +720,10 @@ titulo_fuente: arial
 titulo_peso: 700
 fuente: AlteHaasGroteskRegular | altehaasgroteskregular.ttf
 fuente: AlteHaasGroteskBold | altehaasgroteskbold.ttf
-menu_peso: 900
+menu_peso: 400
 delfines_contact: no
+menu_fuente: arial
+menu_mayusculas: si
 ---
 HELLÖ!
 
@@ -751,4 +753,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610160919 */
+/* gestor: 202610160936 */
