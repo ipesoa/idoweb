@@ -3,4 +3,5 @@ año: 2017
 labor: 
 director: Curro Velázquez
 mostrar_en_inicio: no
+portada: 37.jpg
 ---
