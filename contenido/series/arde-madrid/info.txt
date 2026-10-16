@@ -1,5 +1,7 @@
 titulo: Arde Madrid
 año: 2018
+labor: 
 director: Paco León
 mostrar_en_inicio: no
+portada: 08.jpg
 ---
