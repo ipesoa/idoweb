@@ -65,7 +65,7 @@
       dentro = `
       <div class="menu__centro">
         ${PAGINAS_CON_LOGO.includes(pagina)
-          ? `<a class="menu__nombre menu__nombre--logo" href="index.html" data-dif-no="1"><img class="menu__logo" src="assets/img/idoia-logo.png" alt="${htmlSeguro(nombre)}" width="2499" height="256" fetchpriority="high"></a>`
+          ? `<a class="menu__nombre menu__nombre--logo" href="index.html" data-dif-no="1"><img class="menu__logo" src="assets/img/idoia-logo.svg" alt="${htmlSeguro(nombre)}" width="2499" height="256" fetchpriority="high"></a>`
           : `<a class="menu__nombre" href="index.html">${htmlSeguro(nombre)}</a>`}
         ${categoriaProyecto
           ? `<a class="menu__donde" href="${htmlSeguro(categoriaProyecto.pagina)}">${htmlSeguro(categoriaProyecto.titulo)}</a>`
@@ -554,3 +554,4 @@
     animarNombre: () => entradaNombre(document.querySelector(".menu__nombre"), true),
     menu: (abierto) => Comun_menu && Comun_menu(abierto) };
 })();
+
