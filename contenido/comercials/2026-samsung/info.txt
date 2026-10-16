@@ -1,0 +1,6 @@
+titulo: Samsung
+año: 2019
+labor: 
+director: 
+mostrar_en_inicio: no
+---

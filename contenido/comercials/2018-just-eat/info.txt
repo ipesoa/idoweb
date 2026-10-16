@@ -1,6 +1,6 @@
 titulo: Just Eat
 año: 2018
-labor: Product Designer
+labor: 
 director: 
 mostrar_en_inicio: no
 ---

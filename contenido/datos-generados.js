@@ -703,7 +703,7 @@ portada: 01.jpg
       "carpeta": "2017-aquarius",
       "info": `titulo: Aquarius
 año: 2017
-labor: Product Designer
+labor: 
 director: 
 mostrar_en_inicio: no
 ---
@@ -714,7 +714,7 @@ mostrar_en_inicio: no
       "carpeta": "2017-volkswagen",
       "info": `titulo: Volkswagen
 año: 2017
-labor: Product Designer
+labor: 
 director: 
 mostrar_en_inicio: no
 ---
@@ -725,7 +725,7 @@ mostrar_en_inicio: no
       "carpeta": "2018-just-eat",
       "info": `titulo: Just Eat
 año: 2018
-labor: Product Designer
+labor: 
 director: 
 mostrar_en_inicio: no
 ---
@@ -736,7 +736,7 @@ mostrar_en_inicio: no
       "carpeta": "2021-vidal",
       "info": `titulo: Vidal
 año: 2019
-labor: Product Designer
+labor: 
 director: 
 mostrar_en_inicio: no
 ---
@@ -758,7 +758,18 @@ mostrar_en_inicio: no
       "carpeta": "2024-santander",
       "info": `titulo: Santander
 año: 2024
-labor: Product Designer
+labor: 
+director: 
+mostrar_en_inicio: no
+---
+`,
+      "archivos": []
+    },
+    {
+      "carpeta": "2026-samsung",
+      "info": `titulo: Samsung
+año: 2019
+labor: 
 director: 
 mostrar_en_inicio: no
 ---
@@ -874,4 +885,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610161148 */
+/* gestor: 202610161149 */
