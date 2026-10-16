@@ -630,7 +630,7 @@ director: Álvaro Fernández Armero
 productora: Telecinco
 mostrar_en_inicio: no
 encuadre_movil: 23% 50%
-portada: 03.jpg
+portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -985,4 +985,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610161610 */
+/* gestor: 202610161619 */
