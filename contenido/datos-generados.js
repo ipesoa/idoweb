@@ -725,12 +725,12 @@ delfines_contact: no
 ---
 HELLÖ!
 
-I'm a production designer based in Madrid.
-I was born in Bilbao (Basque country) in 1980, and I've a degree in Fine Arts.
-I work as production designer since 2007, mostly on films, commercials and music videos.
+I'm a production designer based in Madrid and Bilbao (Basque Country).
+I was born in Bilbao in 1980, and I' have a degree in Fine Arts.
+I work as production designer since 2007, mostly on films and series.
 
 In this site you can see a selection of my work.
-Please, feel free to contact.
+Please, feel free to contact :)
 
 Enjoy!
 `,
@@ -751,4 +751,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610160912 */
+/* gestor: 202610160915 */
