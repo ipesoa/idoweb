@@ -222,7 +222,7 @@ portada: 01.jpg
       "carpeta": "la-piedad",
       "info": `titulo: La piedad
 año: 2022
-labor: Diseño y conceptualización decorados
+labor: Diseño y conceptualización decorados en preproducción
 director: 
 mostrar_en_inicio: no
 portada: 05.jpg
@@ -751,4 +751,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610160915 */
+/* gestor: 202610160918 */
