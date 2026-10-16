@@ -5,5 +5,5 @@ director: Nacho Vigalondo
 productora: Sayaka
 mostrar_en_inicio: si
 encuadre_movil: 48% 50%
-portada: 01.jpg
+portada: 03.jpg
 ---

@@ -212,7 +212,7 @@ director: Nacho Vigalondo
 productora: Sayaka
 mostrar_en_inicio: si
 encuadre_movil: 48% 50%
-portada: 01.jpg
+portada: 03.jpg
 ---
 `,
       "archivos": [
@@ -220,13 +220,12 @@ portada: 01.jpg
       {"f":"02.jpg","w":2000,"h":852},
       {"f":"03.jpg","w":2000,"h":850},
       {"f":"04.jpg","w":2000,"h":853},
-      {"f":"05.jpg","w":2000,"h":850},
-      {"f":"06.jpg","w":2000,"h":852},
+      {"f":"05.jpg","w":2000,"h":852},
+      {"f":"06.jpg","w":2000,"h":850},
       {"f":"07.jpg","w":2000,"h":852},
       {"f":"08.jpg","w":2000,"h":850},
       {"f":"09.jpg","w":2000,"h":850},
-      {"f":"10.jpg","w":2000,"h":853},
-      {"f":"11.jpg","w":2000,"h":852}]
+      {"f":"10.jpg","w":2000,"h":853}]
     },
     {
       "carpeta": "la-piedad",
@@ -269,19 +268,14 @@ director: Peris Romano
 productora: José Frade PC
 mostrar_en_inicio: no
 encuadre_movil: 38% 50%
-portada: 01.jpg
+portada: 04.jpg
 ---
 `,
       "archivos": [
-      {"f":"01.jpg","w":1920,"h":1080},
-      {"f":"02.jpg","w":1920,"h":1080},
-      {"f":"03.jpg","w":1920,"h":1080},
-      {"f":"04.jpg","w":800,"h":1120},
-      {"f":"05.jpg","w":1000,"h":1400},
-      {"f":"06.jpg","w":1000,"h":1400},
-      {"f":"07.jpg","w":2000,"h":838},
-      {"f":"08.jpg","w":1800,"h":1200},
-      {"f":"09.jpg","w":1800,"h":1200}]
+      {"f":"01.jpg","w":1919,"h":792},
+      {"f":"02.jpg","w":1920,"h":794},
+      {"f":"03.jpg","w":2600,"h":1162},
+      {"f":"04.jpg","w":1920,"h":794}]
     },
     {
       "carpeta": "maridos",
@@ -918,4 +912,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610161258 */
+/* gestor: 202610161311 */
