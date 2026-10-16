@@ -3,7 +3,7 @@ año: 2015
 labor: 
 director: Peris Romano
 productora: José Frade PC
-mostrar_en_inicio: no
+mostrar_en_inicio: si
 encuadre_movil: 38% 50%
 portada: 04.jpg
 ---
