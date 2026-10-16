@@ -734,6 +734,8 @@ I'm a production designer based in Madrid and Bilbao (Basque Country).
 I was born in Bilbao in 1980, and I' have a degree in Fine Arts.
 I work as production designer since 2007, mostly on films and series.
 
+I´m member of the Academy of Cinematographic Arts and Sciences of Spain, and AEDAA (Spanish Association of the Audiovisual Art Department).
+
 In this site you can see a selection of my work.
 Please, feel free to contact :>
 
@@ -756,4 +758,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610160943 */
+/* gestor: 202610160957 */
