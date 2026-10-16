@@ -689,7 +689,7 @@ subtitulo:
 ubicacion: 
 email: ido.idoia@gmail.com
 telefono: (+34) 653 719 740
-instagram: 
+instagram: @idoesteban
 imdb: 
 showreel: 
 nombre_tamano: 30
@@ -751,4 +751,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610160911 */
+/* gestor: 202610160912 */
