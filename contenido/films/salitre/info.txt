@@ -5,5 +5,5 @@ director: Norma Vila
 productora: Pris&Batty / Bondi
 mostrar_en_inicio: si
 encuadre_movil: 40% 50%
-portada: 03.jpg
+portada: 01.jpg
 ---
