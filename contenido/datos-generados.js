@@ -11,11 +11,22 @@ director: Kike Maíllo
 productora: Sabado Time/Netflix
 mostrar_en_inicio: no
 encuadre_movil: 54% 50%
-portada: 01.jpg
+portada: 03.jpg
 ---
 `,
       "archivos": [
-      {"f":"01.jpg","w":1382,"h":688}]
+      {"f":"01.jpg","w":2314,"h":1264},
+      {"f":"02.jpg","w":2398,"h":1058},
+      {"f":"03.jpg","w":1382,"h":688},
+      {"f":"04.jpg","w":2600,"h":1263},
+      {"f":"05.jpg","w":2562,"h":1274},
+      {"f":"06.jpg","w":2486,"h":1408},
+      {"f":"07.jpg","w":2558,"h":1340},
+      {"f":"08.jpg","w":2590,"h":1356},
+      {"f":"09.jpg","w":2378,"h":1242},
+      {"f":"10.jpg","w":2498,"h":1282},
+      {"f":"11.jpg","w":2304,"h":1202},
+      {"f":"12.jpg","w":2600,"h":1358}]
     },
     {
       "carpeta": "a-mil-km-de-la-navidad",
@@ -913,4 +924,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610161401 */
+/* gestor: 202610161434 */
