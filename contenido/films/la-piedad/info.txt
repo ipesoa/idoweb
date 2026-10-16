@@ -3,5 +3,6 @@ año: 2022
 labor: Diseño y conceptualización decorados en preproducción
 director: Eduardo Casanova
 mostrar_en_inicio: no
-portada: 05.jpg
+portada: 13.jpg
 ---
+Nominated for Best Production Design at the 37th Goya Awards, 2023.
