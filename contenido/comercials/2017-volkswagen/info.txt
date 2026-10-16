@@ -1,0 +1,6 @@
+titulo: Volkswagen
+año: 2017
+labor: Product Designer
+director: 
+mostrar_en_inicio: no
+---

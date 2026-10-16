@@ -1,0 +1,6 @@
+titulo: Santander
+año: 2024
+labor: Product Designer
+director: 
+mostrar_en_inicio: no
+---

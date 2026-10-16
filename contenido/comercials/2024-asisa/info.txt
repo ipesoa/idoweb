@@ -1,0 +1,6 @@
+titulo: Asisa
+año: 2024
+labor: 
+director: Miguel Angulo
+mostrar_en_inicio: no
+---

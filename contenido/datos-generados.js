@@ -700,6 +700,72 @@ portada: 01.jpg
   ],
   "comercials": [
     {
+      "carpeta": "2017-aquarius",
+      "info": `titulo: Aquarius
+año: 2017
+labor: Product Designer
+director: 
+mostrar_en_inicio: no
+---
+`,
+      "archivos": []
+    },
+    {
+      "carpeta": "2017-volkswagen",
+      "info": `titulo: Volkswagen
+año: 2017
+labor: Product Designer
+director: 
+mostrar_en_inicio: no
+---
+`,
+      "archivos": []
+    },
+    {
+      "carpeta": "2018-just-eat",
+      "info": `titulo: Just Eat
+año: 2018
+labor: Product Designer
+director: 
+mostrar_en_inicio: no
+---
+`,
+      "archivos": []
+    },
+    {
+      "carpeta": "2021-vidal",
+      "info": `titulo: Vidal
+año: 2019
+labor: Product Designer
+director: 
+mostrar_en_inicio: no
+---
+`,
+      "archivos": []
+    },
+    {
+      "carpeta": "2024-asisa",
+      "info": `titulo: Asisa
+año: 2024
+labor: 
+director: Miguel Angulo
+mostrar_en_inicio: no
+---
+`,
+      "archivos": []
+    },
+    {
+      "carpeta": "2024-santander",
+      "info": `titulo: Santander
+año: 2024
+labor: Product Designer
+director: 
+mostrar_en_inicio: no
+---
+`,
+      "archivos": []
+    },
+    {
       "carpeta": "lo-siento-mi-amor",
       "info": `titulo: Lo siento mi amor
 año: 2018
@@ -808,4 +874,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610161125 */
+/* gestor: 202610161148 */
