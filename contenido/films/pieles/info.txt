@@ -4,5 +4,6 @@ labor:
 director: Eduardo Casanova
 productora: Pokeepsie Films
 mostrar_en_inicio: si
+letras_inicio: blanco
 portada: 03.jpg
 ---

@@ -4,6 +4,7 @@ labor:
 director: Álvaro Fernández Armero
 productora: Nadie es perfecto / Netflix
 mostrar_en_inicio: no
-encuadre_movil: 39% 50%
+encuadre_movil: 17% 50%
+letras_inicio: negro
 portada: 03.jpg
 ---

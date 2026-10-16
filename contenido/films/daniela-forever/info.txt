@@ -4,5 +4,6 @@ labor:
 director: Nacho Vigalondo
 mostrar_en_inicio: si
 encuadre_movil: 38% 50%
+letras_inicio: blanco
 portada: 01.jpg
 ---

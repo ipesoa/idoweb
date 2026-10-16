@@ -11,6 +11,7 @@ director: Kike Maíllo
 productora: Sabado Time/Netflix
 mostrar_en_inicio: no
 encuadre_movil: 54% 50%
+letras_inicio: blanco
 portada: 01.jpg
 ---
 `,
@@ -25,7 +26,8 @@ labor:
 director: Álvaro Fernández Armero
 productora: Nadie es perfecto / Netflix
 mostrar_en_inicio: no
-encuadre_movil: 39% 50%
+encuadre_movil: 17% 50%
+letras_inicio: negro
 portada: 03.jpg
 ---
 `,
@@ -106,6 +108,7 @@ labor:
 director: Paco León
 mostrar_en_inicio: no
 encuadre_movil: 57% 50%
+letras_inicio: blanco
 portada: 34.jpg
 ---
 `,
@@ -158,6 +161,7 @@ labor:
 director: Nacho Vigalondo
 mostrar_en_inicio: si
 encuadre_movil: 38% 50%
+letras_inicio: blanco
 portada: 01.jpg
 ---
 `,
@@ -184,7 +188,8 @@ labor:
 director: Zoe Berriatúa
 productora: Pokeepsie Films
 mostrar_en_inicio: si
-encuadre_movil: 34% 50%
+encuadre_movil: 35% 50%
+letras_inicio: negro
 portada: 01.jpg
 ---
 `,
@@ -235,6 +240,7 @@ director: Eduardo Casanova
 productora: Pokeepsie Films
 mostrar_en_inicio: no
 encuadre_movil: 28% 50%
+letras_inicio: blanco
 portada: 13.jpg
 ---
 `,
@@ -289,6 +295,7 @@ labor:
 director: Lucía Alemany
 mostrar_en_inicio: si
 encuadre_movil: 73% 50%
+letras_inicio: blanco
 portada: 02.jpg
 ---
 `,
@@ -315,6 +322,7 @@ labor:
 director: Eduardo Casanova
 productora: Pokeepsie Films
 mostrar_en_inicio: si
+letras_inicio: blanco
 portada: 03.jpg
 ---
 `,
@@ -391,6 +399,7 @@ labor:
 director: Paco León
 mostrar_en_inicio: si
 encuadre_movil: 90% 50%
+letras_inicio: negro
 portada: 01.jpg
 ---
 `,
@@ -480,6 +489,7 @@ director: Norma Vila
 productora: Pris&Batty / Bondi
 mostrar_en_inicio: si
 encuadre_movil: 40% 50%
+letras_inicio: blanco
 portada: 03.jpg
 ---
 `,
@@ -833,7 +843,7 @@ mostrar_en_inicio: si
   ],
   "videoclips": [
   ],
-  "home": [{"f":"ext-12.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":853,"encuadreMovil":"53% 50%"},{"f":"ext-13.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":852,"encuadreMovil":"53% 50%"},{"f":"salitre-01.jpg","titulo":"Salitre","ano":"2027","tipo":"films","carpeta":"salitre","enInicio":false,"w":2000,"h":1082},{"f":"daniela-forever-01.jpg","titulo":"Daniela Forever","ano":"2024","tipo":"films","carpeta":"daniela-forever","enInicio":true,"w":2600,"h":1080,"encuadreMovil":"67% 50%"},{"f":"daniela-forever-02.jpg","titulo":"Daniela Forever","ano":"2024","tipo":"films","carpeta":"daniela-forever","enInicio":false,"w":2600,"h":1084},{"f":"rainbow-01.jpg","titulo":"Rainbow","ano":"2022","tipo":"films","carpeta":"rainbow","enInicio":false,"w":2600,"h":1466,"encuadreMovil":"28% 50%"},{"f":"rainbow-02.jpg","titulo":"Rainbow","ano":"2022","tipo":"films","carpeta":"rainbow","enInicio":true,"w":2600,"h":1459},{"f":"en-las-estrellas-01.jpg","titulo":"En las estrellas","ano":"2018","tipo":"films","carpeta":"en-las-estrellas","enInicio":true,"w":2000,"h":811,"encuadreMovil":"49% 50%"},{"f":"en-las-estrellas-02.jpg","titulo":"En las estrellas","ano":"2018","tipo":"films","carpeta":"en-las-estrellas","enInicio":true,"w":2000,"h":834,"encuadreMovil":"63% 50%"}],
+  "home": [{"f":"ext-12.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":853,"encuadreMovil":"53% 50%","letrasInicio":"negro"},{"f":"ext-13.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":852,"encuadreMovil":"53% 50%","letrasInicio":"negro"},{"f":"salitre-01.jpg","titulo":"Salitre","ano":"2027","tipo":"films","carpeta":"salitre","enInicio":false,"w":2000,"h":1082,"letrasInicio":"blanco"},{"f":"daniela-forever-01.jpg","titulo":"Daniela Forever","ano":"2024","tipo":"films","carpeta":"daniela-forever","enInicio":true,"w":2600,"h":1080,"encuadreMovil":"67% 50%","letrasInicio":"blanco"},{"f":"daniela-forever-02.jpg","titulo":"Daniela Forever","ano":"2024","tipo":"films","carpeta":"daniela-forever","enInicio":false,"w":2600,"h":1084},{"f":"rainbow-01.jpg","titulo":"Rainbow","ano":"2022","tipo":"films","carpeta":"rainbow","enInicio":false,"w":2600,"h":1466,"encuadreMovil":"28% 50%","letrasInicio":"blanco"},{"f":"rainbow-02.jpg","titulo":"Rainbow","ano":"2022","tipo":"films","carpeta":"rainbow","enInicio":true,"w":2600,"h":1459,"letrasInicio":"blanco"},{"f":"en-las-estrellas-01.jpg","titulo":"En las estrellas","ano":"2018","tipo":"films","carpeta":"en-las-estrellas","enInicio":true,"w":2000,"h":811,"encuadreMovil":"49% 50%","letrasInicio":"blanco"},{"f":"en-las-estrellas-02.jpg","titulo":"En las estrellas","ano":"2018","tipo":"films","carpeta":"en-las-estrellas","enInicio":true,"w":2000,"h":834,"encuadreMovil":"63% 50%","letrasInicio":"blanco"}],
   "about": {
     "info": `# =====================================================================
 #  ABOUT  ·  cada dato relleno es una línea en la web (editado con el gestor)
@@ -909,4 +919,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610161240 */
+/* gestor: 202610161244 */
