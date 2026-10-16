@@ -223,7 +223,7 @@ portada: 01.jpg
       "info": `titulo: La piedad
 año: 2022
 labor: Diseño y conceptualización decorados en preproducción
-director: 
+director: Eduardo Casanova
 mostrar_en_inicio: no
 portada: 05.jpg
 ---
@@ -753,4 +753,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610160936 */
+/* gestor: 202610160940 */
