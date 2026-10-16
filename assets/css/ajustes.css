@@ -55,6 +55,10 @@
   --nombre-cursiva:   italic;
   --nombre-transform: uppercase;
   --nombre-tam-movil: 1rem;           /* en el móvil */
+  --logo-ancho: 375px;
+  --logo-alto: 31px;
+  --logo-ancho-movil: 212.5px;
+  --logo-alto-movil: 18px;
 
   /* Las demás letras del menú (production designer, work, films, series,
      commercials, videoclips, contact) van todas con este tamaño        */

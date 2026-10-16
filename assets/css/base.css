@@ -151,18 +151,25 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* Logo fijo en las parrillas y fichas. El recorte elimina únicamente la
    franja transparente inferior del SVG, manteniendo su proporción. */
 .menu__nombre.menu__nombre--logo { font-size: 30px; }
-.menu__logo { display: block; width: 375px; max-width: none; height: 31px; object-fit: cover; object-position: left top; }
-/* En las tres parrillas principales, la sección activa queda exactamente
-   centrada y las otras dos sirven de acceso directo desde la cabecera. */
+.menu__logo { display: block; width: var(--logo-ancho); max-width: none; height: var(--logo-alto); object-fit: cover; object-position: left top; }
+/* La sección activa queda bajo el centro del logo; los centros de las otras
+   dos palabras coinciden con el principio y el final del nombre. */
 .menu__categorias {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  position: relative;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  column-gap: clamp(12px, 3vw, 32px);
-  width: min(520px, calc(100vw - 2 * var(--margen)));
+  width: var(--logo-ancho);
 }
-.menu__categorias > :first-child { justify-self: end; }
-.menu__categorias > :last-child { justify-self: start; }
+.menu__categorias > :first-child,
+.menu__categorias > :last-child {
+  position: absolute;
+  top: 50%;
+  margin: 0;
+  transform: translate(-50%, -50%);
+}
+.menu__categorias > :first-child { left: 0; }
+.menu__categorias > :last-child { left: 100%; }
 .menu__categoria-lateral {
   font-size: max(10px, calc(var(--menu-tam) - 2px));
   letter-spacing: var(--inicio-espaciado-menu);
@@ -179,7 +186,8 @@ body[data-pagina="contact"] .contacto { position: relative; z-index: 1; }
 @media (max-width: 700px) {
   .menu__nombre { font-size: var(--nombre-tam-movil); }
   .menu__nombre.menu__nombre--logo { font-size: 17px; }
-  .menu__logo { width: 212.5px; height: 18px; }
+  .menu__logo { width: var(--logo-ancho-movil); height: var(--logo-alto-movil); }
+  .menu__categorias { width: var(--logo-ancho-movil); }
   .menu__opciones { top: 34%; gap: clamp(16px, 4.5vh, 38px); }
   .menu__opciones .menu__archivo { margin-top: clamp(20px, 6vh, 48px); }
   .menu__pie { bottom: calc(var(--margen) + env(safe-area-inset-bottom)); }
