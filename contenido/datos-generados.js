@@ -721,6 +721,7 @@ titulo_peso: 700
 fuente: AlteHaasGroteskRegular | altehaasgroteskregular.ttf
 fuente: AlteHaasGroteskBold | altehaasgroteskbold.ttf
 menu_peso: 900
+delfines_contact: no
 ---
 HELLÖ!
 
@@ -750,4 +751,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610160909 */
+/* gestor: 202610160910 */
