@@ -2,6 +2,7 @@ titulo: Maridos
 año: 2023
 labor: 
 director: Lucía Alemany
+productora: Telecinco / Netflix
 mostrar_en_inicio: si
 encuadre_movil: 73% 50%
 letras_inicio: blanco

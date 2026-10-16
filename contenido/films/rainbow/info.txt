@@ -2,6 +2,7 @@ titulo: Rainbow
 año: 2022
 labor: 
 director: Paco León
+productora: Telecinco / Netflix
 mostrar_en_inicio: si
 encuadre_movil: 90% 50%
 letras_inicio: negro

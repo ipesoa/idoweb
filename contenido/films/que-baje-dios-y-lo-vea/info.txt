@@ -2,6 +2,7 @@ titulo: Que baje Dios y lo vea
 año: 2017
 labor: 
 director: Curro Velázquez
+productora: Morena Films
 mostrar_en_inicio: no
 encuadre_movil: 91% 50%
 portada: 37.jpg

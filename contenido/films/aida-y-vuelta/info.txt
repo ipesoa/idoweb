@@ -2,6 +2,7 @@ titulo: Aída y vuelta
 año: 2026
 labor: 
 director: Paco León
+productora: Telecinco
 mostrar_en_inicio: si
 encuadre_movil: 57% 50%
 letras_inicio: blanco

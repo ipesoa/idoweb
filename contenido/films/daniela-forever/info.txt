@@ -2,6 +2,7 @@ titulo: Daniela Forever
 año: 2024
 labor: 
 director: Nacho Vigalondo
+productora: Sayaka / Netflix
 mostrar_en_inicio: si
 encuadre_movil: 38% 50%
 letras_inicio: blanco

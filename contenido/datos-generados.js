@@ -106,6 +106,7 @@ portada: 03.jpg
 año: 2026
 labor: 
 director: Paco León
+productora: Telecinco
 mostrar_en_inicio: si
 encuadre_movil: 57% 50%
 letras_inicio: blanco
@@ -159,6 +160,7 @@ portada: 34.jpg
 año: 2024
 labor: 
 director: Nacho Vigalondo
+productora: Sayaka / Netflix
 mostrar_en_inicio: si
 encuadre_movil: 38% 50%
 letras_inicio: blanco
@@ -293,6 +295,7 @@ portada: 01.jpg
 año: 2023
 labor: 
 director: Lucía Alemany
+productora: Telecinco / Netflix
 mostrar_en_inicio: si
 encuadre_movil: 73% 50%
 letras_inicio: blanco
@@ -347,6 +350,7 @@ portada: 03.jpg
 año: 2017
 labor: 
 director: Curro Velázquez
+productora: Morena Films
 mostrar_en_inicio: no
 encuadre_movil: 91% 50%
 portada: 37.jpg
@@ -397,6 +401,7 @@ portada: 37.jpg
 año: 2022
 labor: 
 director: Paco León
+productora: Telecinco / Netflix
 mostrar_en_inicio: si
 encuadre_movil: 90% 50%
 letras_inicio: negro
@@ -923,4 +928,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610161249 */
+/* gestor: 202610161251 */
