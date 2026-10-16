@@ -6,7 +6,7 @@ window.CONTENIDO = {
       "carpeta": "2026-el-acercamiento-de-la-mujer-cactus-y-el-hombre-globo",
       "info": `titulo: La mujer cactus y el hombre globo
 año: 2027
-labor: Comming soon
+labor: Coming soon
 director: Kike Maíllo
 productora: Sabado Time/Netflix
 mostrar_en_inicio: no
@@ -340,7 +340,7 @@ director: Curro Velázquez
 productora: Morena Films
 mostrar_en_inicio: no
 encuadre_movil: 91% 50%
-portada: 37.jpg
+portada: 30.jpg
 ---
 `,
       "archivos": [
@@ -913,4 +913,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610161350 */
+/* gestor: 202610161401 */
