@@ -720,6 +720,7 @@ titulo_fuente: garet
 titulo_peso: 700
 fuente: AlteHaasGroteskRegular | altehaasgroteskregular.ttf
 fuente: AlteHaasGroteskBold | altehaasgroteskbold.ttf
+menu_peso: 500
 ---
 HELLO!
 
@@ -749,4 +750,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610160830 */
+/* gestor: 202610160841 */
