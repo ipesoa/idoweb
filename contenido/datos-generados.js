@@ -230,7 +230,7 @@ portada: 01.jpg
       "carpeta": "la-piedad",
       "info": `titulo: La piedad
 año: 2022
-labor: Diseño y conceptualización decorados en preproducción. Nominated for Best Production Design at the 37th Goya Awards, 2023.
+labor: Design & Concept art in preproduction. Film nominated for Best Production Design at the 37th Goya Awards, 2023.
 director: Eduardo Casanova
 productora: Pokeepsie Films
 mostrar_en_inicio: no
@@ -909,4 +909,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610161229 */
+/* gestor: 202610161240 */
