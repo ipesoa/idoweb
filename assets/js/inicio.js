@@ -44,6 +44,7 @@
 
   const esVertical = () => window.innerHeight > window.innerWidth;
   const imagenDe = (p) => (esVertical() && p.portadaMovil ? p.portadaMovil.url : p.portada.url);
+  const encuadreDe = (p) => esVertical() ? (p.encuadreMovil || p.encuadre || "center") : (p.encuadre || "center");
 
   // ---- Utilidades ----
   const cargar = (src) => new Promise((ok) => {
@@ -89,7 +90,10 @@
     const img = nueva.querySelector("img");
     img.src = imagenDe(p);
     img.alt = p.titulo;
-    nueva.style.setProperty("--encuadre", p.encuadre);
+    nueva.style.setProperty("--encuadre", encuadreDe(p));
+    // Sin preferencia, diferencia.js sigue eligiendo blanco/negro por píxel.
+    if (p.letrasInicio === "blanco" || p.letrasInicio === "negro") document.documentElement.dataset.letrasInicio = p.letrasInicio;
+    else delete document.documentElement.dataset.letrasInicio;
     zoomLento(img);
     nueva.classList.remove("saliendo");
     vieja.classList.remove("activa");

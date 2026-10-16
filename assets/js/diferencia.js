@@ -247,7 +247,7 @@
   if (document.fonts) document.fonts.addEventListener("loadingdone", () => { versionLetras++; metricas.clear(); });
 
   /* ---------- pintar las letras, cada una con su color y su máscara ---------- */
-  function letras(ctx, vivas, colores, dpr) {
+  function letras(ctx, vivas, colores, dpr, colorForzado = "") {
     let fuente = "", alfaAct = -1, filtroAct = "none", clipAct = null, colorAct = "";
     ctx.save(); ctx.filter = "none";
     vivas.forEach(({ g, x: gx, y: gy, alfa, blur, clip }, i) => {
@@ -257,7 +257,7 @@
         if (clip) { ctx.beginPath(); ctx.rect(clip[0], clip[1], clip[2] - clip[0], clip[3] - clip[1]); ctx.clip(); }
         clipAct = clip;
       }
-      const color = colores[i] ? oscuro() : claro();
+      const color = colorForzado || (colores[i] ? oscuro() : claro());
       if (color !== colorAct) ctx.fillStyle = colorAct = color;
       const m = medidas(g.fuente);
       const base = gy + (g.h - (m.asc + m.desc)) / 2 + m.asc;
@@ -332,15 +332,6 @@
     if (w <= 0 || h <= 0) return true;
     const W = Math.ceil(w * dpr), H = Math.ceil(h * dpr);
 
-    // a. el fondo real detrás del texto (1 px CSS basta para medir la luz)
-    tam(cFondo, w, h);
-    dibujarFondo(R, 1);
-    let datos;
-    try { datos = xFondo.getImageData(0, 0, w, h); }
-    catch (e) { fallo = true; return true; }
-    const d = datos.data, U = umbral();
-    const modo = decidir();
-
     // destino (capa fija o lienzo de la celda)
     const destino = () => {
       if (local) {
@@ -354,13 +345,26 @@
       sucioCapa.push([R.x0 * dpr, R.y0 * dpr, W, H]);
       return cc;
     };
-    const directo = (negro) => {   // todo el texto de un solo color
+    const directo = (negro, colorForzado = "") => {   // todo el texto de un solo color
       const x = destino();
       x.setTransform(dpr, 0, 0, dpr, (local ? -R.x0 : 0) * dpr, (local ? -R.y0 : 0) * dpr);
-      letras(x, vivas, vivas.map(() => negro), dpr);
+      letras(x, vivas, vivas.map(() => negro), dpr, colorForzado);
       x.setTransform(1, 0, 0, 1, 0, 0);
       return true;
     };
+
+    const colorInicio = document.body.dataset.pagina === "inicio" ? document.documentElement.dataset.letrasInicio : "";
+    if (colorInicio === "blanco" || colorInicio === "negro")
+      return directo(colorInicio === "negro" ? 1 : 0, colorInicio === "negro" ? "#000000" : "#ffffff");
+
+    // Sin elección de color, medir el fondo como hasta ahora.
+    tam(cFondo, w, h);
+    dibujarFondo(R, 1);
+    let datos;
+    try { datos = xFondo.getImageData(0, 0, w, h); }
+    catch (e) { fallo = true; return true; }
+    const d = datos.data, U = umbral();
+    const modo = decidir();
 
     if (modo === "pixel") {
       // MODO PÍXEL (como «Diferencia» de Photoshop, solo donde hace falta):

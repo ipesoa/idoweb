@@ -89,6 +89,19 @@ button { cursor: pointer; background: none; border: 0; }
 .tarjeta .etiqueta { position: absolute; top: 8px; right: 8px; font-size: 11px; padding: 3px 8px; border-radius: 999px; background: #0008; color: #fff; }
 .tarjeta .etiqueta.nuevo { background: var(--azul); } .tarjeta .etiqueta.editado { background: var(--amarillo); color: #000; }
 
+/* El marco enseña el fragmento real que ocupará una pantalla móvil vertical. */
+.encuadre-movil { position: relative; width: 100%; aspect-ratio: 1.85 / 1; overflow: hidden; background: #242424; }
+.tarjeta .encuadre-movil img { width: 100%; height: 100%; aspect-ratio: auto; object-fit: contain; }
+.encuadre-movil__marco { position: absolute; z-index: 2; box-sizing: border-box; border: 2px dashed #00d87a;
+  background: #00d87a17; box-shadow: 0 0 0 1px #101010aa; cursor: grab; touch-action: none; }
+.encuadre-movil__marco:active { cursor: grabbing; }
+.encuadre-movil__marco:focus-visible { outline: 3px solid #fff; outline-offset: -7px; }
+.letras-inicio { position: absolute; top: 8px; left: 8px; z-index: 3; display: flex; gap: 4px; }
+.letras-inicio button { width: 30px; height: 30px; border-radius: 6px; border: 1px solid #777; background: #ffffffed;
+  color: #111; font: 700 15px Arial, sans-serif; cursor: pointer; }
+.letras-inicio button[aria-pressed="true"] { outline: 2px solid #00d87a; outline-offset: 1px; }
+.letras-inicio button[data-color="blanco"] { background: #111e; color: #fff; }
+
 /* Inicio: interruptor grande */
 .tarjeta.en-inicio { border-color: var(--verde); }
 .interruptor { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; font-size: 13px; }
@@ -288,7 +301,7 @@ button { cursor: pointer; background: none; border: 0; }
   // Versión de este gestor. Si en GitHub hay un gestor más nuevo (por ejemplo,
   // una pestaña abierta desde antes de instalar una actualización), no deja
   // publicar: guardaría las cosas a la manera antigua.
-  const VERSION_GESTOR = "2026-10-15-c";
+  const VERSION_GESTOR = "2026-10-16-encuadre-movil";
 
   /* Las secciones de la web. Si algún día se añade otra, se pone aquí y en
      assets/js/ajustes.js (AJUSTES.secciones) y en los generadores de datos. */
@@ -359,7 +372,7 @@ button { cursor: pointer; background: none; border: 0; }
     return { campos, orden, texto: lineas.slice(i).join("\n").trim() };
   }
   const NOMBRE_CLAVE = { ano: "año" };
-  const ORDEN_CLAVES = ["titulo", "ano", "labor", "director", "productora", "cliente", "formato", "mostrar_en_inicio", "video", "crew", "encuadre", "orden", "imdb", "color_letra", "color_borde"];
+  const ORDEN_CLAVES = ["titulo", "ano", "labor", "director", "productora", "cliente", "formato", "mostrar_en_inicio", "video", "crew", "encuadre", "encuadre_movil", "letras_inicio", "orden", "imdb", "color_letra", "color_borde"];
   const SIEMPRE = ["titulo", "ano", "labor", "director", "mostrar_en_inicio"];
   function infoATexto(p) {
     const c = p.info.campos, lineas = [];
@@ -517,7 +530,7 @@ button { cursor: pointer; background: none; border: 0; }
     if (!$("#pestanas button")) pintarPestanas();
     $$("#pestanas button").forEach((b) => b.classList.toggle("activa", b.dataset.p === pestana));
     const v = $("#vista");
-    if (pestana === "inicio") v.innerHTML = vistaInicio();
+    if (pestana === "inicio") { v.innerHTML = vistaInicio(); activarEncuadres(); }
     else if (pestana === "about") v.innerHTML = vistaAbout();
     else if (pestana === "nombre") { v.innerHTML = vistaNombre(); activarVistaNombre(); }
     else if (pestana === "parrillas") { v.innerHTML = vistaParrillas(); activarVistaParrillas(); }
@@ -527,6 +540,18 @@ button { cursor: pointer; background: none; border: 0; }
     actualizarEstado();
   }
 
+  // B = blanco fijo, N = negro fijo; sin selección conserva el contraste automático.
+  function botonesLetras(valor, atributo) {
+    return `<div class="letras-inicio" aria-label="Color de las letras en el inicio">
+      ${[["blanco", "B"], ["negro", "N"]].map(([color, letra]) => `<button type="button" ${atributo} data-color="${color}" aria-pressed="${valor === color}" title="${color === "blanco" ? "Letras blancas" : "Letras negras"}; pulsa otra vez para volver al modo automático">${letra}</button>`).join("")}</div>`;
+  }
+  function fotoConEncuadre(src, atributo, color, atributoColor) {
+    return `<div class="encuadre-movil" ${atributo}>
+      <img src="${esc(src)}" alt="" loading="lazy">
+      <div class="encuadre-movil__marco" tabindex="0" role="img" aria-label="Encuadre móvil. Arrastra o usa las flechas para moverlo" title="Arrastra para elegir el encuadre móvil"></div>
+      ${botonesLetras(color, atributoColor)}</div>`;
+  }
+
   function vistaInicio() {
     const todos = E.proyectos.slice().sort(ordenar);
     const n = todos.filter(enInicio).length + E.home.filter((h) => h.enInicio !== false).length;
@@ -534,22 +559,117 @@ button { cursor: pointer; background: none; border: 0; }
       const lista = todos.filter((p) => p.tipo === tipo);
       return `<h3 style="margin:22px 0 10px">${titulo}</h3><div class="rejilla">${lista.map((p) => `
         <div class="tarjeta ${enInicio(p) ? "en-inicio" : ""}" data-inicio="${esc(p.tipo + "/" + p.carpeta)}">
-          ${miniatura(p)}${etiquetaEstado(p)}
+          ${(() => { const f = p.movil || p.portada || p.fotos.find((x) => !x.video);
+            return f ? fotoConEncuadre(urlDe(f), `data-encuadre-proyecto="${esc(p.tipo + "/" + p.carpeta)}"`, p.info.campos.letras_inicio, `data-letras-proyecto="${esc(p.tipo + "/" + p.carpeta)}"`) : miniatura(p); })()}${etiquetaEstado(p)}
           <div class="tarjeta__txt"><b>${esc(p.info.campos.titulo || p.carpeta)}</b><small>${esc(p.info.campos.ano || "")}</small>
             <div class="interruptor"><span>${enInicio(p) ? "Sale en el inicio" : "No sale"}</span><i></i></div></div>
         </div>`).join("")}</div>`;
     };
     return `<div class="cabecera"><h2>Pase de imágenes del inicio</h2>
         <button class="boton" data-accion="inicio-todos">Todos</button><button class="boton" data-accion="inicio-ninguno">Ninguno</button>
-        <p>Pincha una imagen para que salga (verde) o no salga en el inicio. Ahora salen <b>${n}</b>. El orden en la web es aleatorio.</p></div>
+        <p>Pincha una imagen para que salga (verde) o no salga en el inicio. Arrastra el recuadro verde para elegir qué se ve en móvil. B = letras blancas, N = negras; pulsa de nuevo para dejar el contraste automático. Ahora salen <b>${n}</b>. El orden en la web es aleatorio.</p></div>
       ${E.home.length ? `<h3 style="margin:22px 0 10px">Fotos añadidas al inicio <small style="color:var(--suave);font-weight:400">(se añaden con el botón «Inicio» de cada foto, dentro de cada película)</small></h3><div class="rejilla">${E.home.map((h, i) => `
         <div class="tarjeta ${h.enInicio !== false ? "en-inicio" : ""}" data-home="${i}" style="position:relative">
           <button class="quitar-home" data-home-quitar="${i}" title="Quitar esta foto del inicio del todo">✕ Quitar</button>
-          <img src="${h.origen ? esc(urlDe(h.origen)) : `https://raw.githubusercontent.com/${REPO}/${E.head}/contenido/home/${encodeURIComponent(h.f)}`}" alt="" loading="lazy">
+          ${fotoConEncuadre(h.origen ? urlDe(h.origen) : `https://raw.githubusercontent.com/${REPO}/${E.head}/contenido/home/${encodeURIComponent(h.f)}`, `data-encuadre-home="${i}"`, h.letrasInicio, `data-letras-home="${i}"`)}
           <div class="tarjeta__txt"><b>${esc(h.titulo || h.f)}</b><small>${esc(h.ano || "")}</small>
             <div class="interruptor"><span>${h.enInicio !== false ? "Sale en el inicio" : "No sale"}</span><i></i></div></div>
         </div>`).join("")}</div>` : ""}
       ${TIPOS.map((t) => grupo(t.id, t.titulo)).join("")}`;
+  }
+
+  // El rectángulo usa la proporción de una pantalla 390 × 844. Su posición
+  // porcentual es exactamente la que entiende object-position en la web.
+  let observadorEncuadres = null;
+  const limitar01 = (v) => Math.max(0, Math.min(1, v));
+  function porcentajesEncuadre(v) {
+    const palabras = { left: [0, 0.5], right: [1, 0.5], top: [0.5, 0], bottom: [0.5, 1], center: [0.5, 0.5] };
+    if (palabras[v]) return palabras[v];
+    const m = String(v || "").match(/^\s*(\d+(?:\.\d+)?)%\s+(\d+(?:\.\d+)?)%\s*$/);
+    return m ? [limitar01(+m[1] / 100), limitar01(+m[2] / 100)] : [0.5, 0.5];
+  }
+  function objetoEncuadre(escena) {
+    if (escena.dataset.encuadreHome !== undefined) return E.home[+escena.dataset.encuadreHome];
+    return E.proyectos.find((p) => p.tipo + "/" + p.carpeta === escena.dataset.encuadreProyecto);
+  }
+  function valorEncuadre(escena) {
+    const o = objetoEncuadre(escena);
+    return escena.dataset.encuadreHome !== undefined ? (o?.encuadreMovil || o?.encuadre)
+      : (o?.info.campos.encuadre_movil || o?.info.campos.encuadre);
+  }
+  function guardarEncuadre(escena, x, y) {
+    const o = objetoEncuadre(escena), valor = `${Math.round(x * 100)}% ${Math.round(y * 100)}%`;
+    if (!o) return;
+    if (escena.dataset.encuadreHome !== undefined) { o.encuadreMovil = valor; E.homeSucio = true; }
+    else { o.info.campos.encuadre_movil = valor; if (!o.nuevo) o.sucio = true; }
+    actualizarEstado();
+  }
+  function dibujarEncuadre(escena, x, y) {
+    const img = escena.querySelector("img"), marco = escena.querySelector(".encuadre-movil__marco");
+    if (!img.naturalWidth || !img.naturalHeight) return;
+    const sw = escena.clientWidth, sh = escena.clientHeight, proporcion = img.naturalWidth / img.naturalHeight;
+    const iw = Math.min(sw, sh * proporcion), ih = iw / proporcion;
+    const ix = (sw - iw) / 2, iy = (sh - ih) / 2, movil = 390 / 844;
+    const cw = Math.min(iw, ih * movil), ch = Math.min(ih, iw / movil);
+    escena._geometria = { ix, iy, iw, ih, cw, ch };
+    marco.style.left = ix + (iw - cw) * x + "px";
+    marco.style.top = iy + (ih - ch) * y + "px";
+    marco.style.width = cw + "px";
+    marco.style.height = ch + "px";
+    marco.setAttribute("aria-description", `Posición horizontal ${Math.round(x * 100)} %, vertical ${Math.round(y * 100)} %`);
+  }
+  function activarEncuadres() {
+    if (observadorEncuadres) observadorEncuadres.disconnect();
+    observadorEncuadres = new ResizeObserver((entradas) => {
+      for (const { target } of entradas) {
+        const [x, y] = target._posTemporal || porcentajesEncuadre(valorEncuadre(target));
+        dibujarEncuadre(target, x, y);
+      }
+    });
+    for (const escena of $$(".encuadre-movil", $("#vista"))) {
+      const img = escena.querySelector("img"), marco = escena.querySelector(".encuadre-movil__marco");
+      img.addEventListener("load", () => {
+        const [x, y] = escena._posTemporal || porcentajesEncuadre(valorEncuadre(escena));
+        dibujarEncuadre(escena, x, y);
+      });
+      if (img.complete && img.naturalWidth) {
+        const [x, y] = porcentajesEncuadre(valorEncuadre(escena));
+        dibujarEncuadre(escena, x, y);
+      }
+      observadorEncuadres.observe(escena);
+      marco.addEventListener("pointerdown", (e) => {
+        e.stopPropagation(); e.preventDefault();
+        const [x0, y0] = porcentajesEncuadre(valorEncuadre(escena));
+        escena._arrastre = { id: e.pointerId, px: e.clientX, py: e.clientY, x0, y0 };
+        marco.setPointerCapture(e.pointerId);
+      });
+      marco.addEventListener("pointermove", (e) => {
+        const a = escena._arrastre, g = escena._geometria;
+        if (!a || a.id !== e.pointerId || !g) return;
+        const x = g.iw > g.cw ? limitar01(a.x0 + (e.clientX - a.px) / (g.iw - g.cw)) : 0.5;
+        const y = g.ih > g.ch ? limitar01(a.y0 + (e.clientY - a.py) / (g.ih - g.ch)) : 0.5;
+        escena._posTemporal = [x, y]; dibujarEncuadre(escena, x, y);
+      });
+      const terminar = (e) => {
+        if (!escena._arrastre || escena._arrastre.id !== e.pointerId) return;
+        const a = escena._arrastre, [x, y] = escena._posTemporal || [a.x0, a.y0];
+        if (Math.abs(x - a.x0) > 0.002 || Math.abs(y - a.y0) > 0.002) guardarEncuadre(escena, x, y);
+        escena._arrastre = null; escena._posTemporal = null;
+        dibujarEncuadre(escena, x, y);
+      };
+      marco.addEventListener("pointerup", terminar);
+      marco.addEventListener("pointercancel", terminar);
+      marco.addEventListener("keydown", (e) => {
+        const dx = e.key === "ArrowRight" ? 0.02 : e.key === "ArrowLeft" ? -0.02 : 0;
+        const dy = e.key === "ArrowDown" ? 0.02 : e.key === "ArrowUp" ? -0.02 : 0;
+        if (!dx && !dy) return;
+        e.preventDefault(); e.stopPropagation();
+        const [x, y] = porcentajesEncuadre(valorEncuadre(escena));
+        const nx = limitar01(x + dx), ny = limitar01(y + dy);
+        dibujarEncuadre(escena, nx, ny);
+        guardarEncuadre(escena, nx, ny);
+      });
+    }
   }
 
   function vistaLista(tipo) {
@@ -1448,11 +1568,24 @@ button { cursor: pointer; background: none; border: 0; }
 
   /* ================= eventos ================= */
   document.addEventListener("click", (e) => {
+    if (e.target.closest(".encuadre-movil__marco")) return;
     const t = e.target.closest("button, .tarjeta, [data-inicio]");
     if (!t) return;
     // pestañas
     if (t.closest("#pestanas") && t.dataset.p) { pestana = t.dataset.p; seleccion.clear(); pintar(); return; }
     // inicio
+    if (t.dataset.letrasHome !== undefined || t.dataset.letrasProyecto !== undefined) {
+      const esHome = t.dataset.letrasHome !== undefined;
+      const o = esHome ? E.home[+t.dataset.letrasHome]
+        : E.proyectos.find((p) => p.tipo + "/" + p.carpeta === t.dataset.letrasProyecto);
+      if (!o) return;
+      const anterior = esHome ? o.letrasInicio : o.info.campos.letras_inicio;
+      const valor = anterior === t.dataset.color ? "" : t.dataset.color;
+      if (esHome) { if (valor) o.letrasInicio = valor; else delete o.letrasInicio; E.homeSucio = true; }
+      else { if (valor) o.info.campos.letras_inicio = valor; else delete o.info.campos.letras_inicio; if (!o.nuevo) o.sucio = true; }
+      t.parentElement.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.color === valor)));
+      actualizarEstado(); return;
+    }
     if (t.dataset.inicio) {
       const p = E.proyectos.find((x) => x.tipo + "/" + x.carpeta === t.dataset.inicio);
       p.info.campos.mostrar_en_inicio = enInicio(p) ? "no" : "si"; if (!p.nuevo) p.sucio = true; pintar(); return;

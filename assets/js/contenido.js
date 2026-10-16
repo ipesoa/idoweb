@@ -96,6 +96,8 @@
       enInicio: esSi(info.mostrar_en_inicio),
       orden: parseFloat(info.orden) || 0,
       encuadre: info.encuadre || "center",
+      encuadreMovil: info.encuadre_movil || "",
+      letrasInicio: info.letras_inicio || "",
       video: info.video || "",
       texto: info.texto,
       extra: info,
@@ -136,6 +138,8 @@
     labor: "",
     enInicio: h.enInicio !== false,
     encuadre: h.encuadre || "center",
+    encuadreMovil: h.encuadreMovil || "",
+    letrasInicio: h.letrasInicio || "",
     portada: { url: "contenido/home/" + encodeURIComponent(h.f) },
     portadaMovil: null,
     enlace: h.tipo && h.carpeta
