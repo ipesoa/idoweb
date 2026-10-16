@@ -107,7 +107,7 @@ año: 2026
 labor: 
 director: Paco León
 productora: Telecinco
-mostrar_en_inicio: si
+mostrar_en_inicio: no
 encuadre_movil: 57% 50%
 letras_inicio: blanco
 portada: 34.jpg
@@ -928,4 +928,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610161254 */
+/* gestor: 202610161256 */
