@@ -25,12 +25,15 @@
                  arriba en el centro: NOMBRE (lleva al inicio) y, debajo,
                  dónde estás. Nada más: ni laterales ni contact.
      CONTACT     NOMBRE y debajo "work" (para volver a la lista de todo)
-     PROYECTO    arriba en el centro: solo el NOMBRE, siempre visible
+     PROYECTO    arriba en el centro: NOMBRE y categoría enlazada a su parrilla
      Textos y secciones: assets/js/ajustes.js (AJUSTES.secciones / .textos) */
   function pintarMenu() {
     const nombre = (Web.about && Web.about.nombre) || "Idoia Esteban Galván";
     const seccion = A.secciones.find((s) => s.id === pagina);
     const donde = pagina === "work" ? A.textos.work : seccion ? seccion.titulo : "";
+    const categoriaProyecto = pagina === "proyecto"
+      ? A.secciones.find((s) => s.id === new URLSearchParams(location.search).get("tipo")) || A.secciones[0]
+      : null;
     // máscara de cada opción de WORK: el texto entra por dentro (overflow: hidden)
     const mascara = (t) => `<span class="opcion-mascara"><span class="opcion-texto">${htmlSeguro(t)}</span></span>`;
     const enlaceSeccion = (s, clase = "menu__seccion") =>
@@ -64,7 +67,9 @@
         ${PAGINAS_CON_LOGO.includes(pagina)
           ? `<a class="menu__nombre menu__nombre--logo" href="index.html" data-dif-no="1"><img class="menu__logo" src="assets/img/idoia-logo.png" alt="${htmlSeguro(nombre)}" width="2499" height="256" fetchpriority="high"></a>`
           : `<a class="menu__nombre" href="index.html">${htmlSeguro(nombre)}</a>`}
-        ${donde ? `<span class="menu__donde">${donde}</span>` : ""}
+        ${categoriaProyecto
+          ? `<a class="menu__donde" href="${htmlSeguro(categoriaProyecto.pagina)}">${htmlSeguro(categoriaProyecto.titulo)}</a>`
+          : donde ? `<span class="menu__donde">${htmlSeguro(donde)}</span>` : ""}
       </div>`;
     }
 
