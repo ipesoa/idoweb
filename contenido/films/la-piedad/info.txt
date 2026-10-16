@@ -4,5 +4,6 @@ labor: Diseño y conceptualización decorados en preproducción. Nominated for B
 director: Eduardo Casanova
 productora: Pokeepsie Films
 mostrar_en_inicio: no
+encuadre_movil: 28% 50%
 portada: 13.jpg
 ---

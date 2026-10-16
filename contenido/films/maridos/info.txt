@@ -3,5 +3,6 @@ año: 2023
 labor: 
 director: Lucía Alemany
 mostrar_en_inicio: si
+encuadre_movil: 73% 50%
 portada: 02.jpg
 ---

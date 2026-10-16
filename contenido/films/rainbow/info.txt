@@ -3,5 +3,6 @@ año: 2022
 labor: 
 director: Paco León
 mostrar_en_inicio: si
+encuadre_movil: 90% 50%
 portada: 01.jpg
 ---

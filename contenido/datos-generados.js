@@ -10,6 +10,7 @@ labor:
 director: Kike Maíllo
 productora: Sabado Time/Netflix
 mostrar_en_inicio: no
+encuadre_movil: 54% 50%
 portada: 01.jpg
 ---
 `,
@@ -24,6 +25,7 @@ labor:
 director: Álvaro Fernández Armero
 productora: Nadie es perfecto / Netflix
 mostrar_en_inicio: no
+encuadre_movil: 39% 50%
 portada: 03.jpg
 ---
 `,
@@ -103,6 +105,7 @@ año: 2026
 labor: 
 director: Paco León
 mostrar_en_inicio: no
+encuadre_movil: 57% 50%
 portada: 34.jpg
 ---
 `,
@@ -154,6 +157,7 @@ año: 2024
 labor: 
 director: Nacho Vigalondo
 mostrar_en_inicio: si
+encuadre_movil: 38% 50%
 portada: 01.jpg
 ---
 `,
@@ -180,6 +184,7 @@ labor:
 director: Zoe Berriatúa
 productora: Pokeepsie Films
 mostrar_en_inicio: si
+encuadre_movil: 34% 50%
 portada: 01.jpg
 ---
 `,
@@ -204,6 +209,7 @@ labor:
 director: Nacho Vigalondo
 productora: Sayaka
 mostrar_en_inicio: si
+encuadre_movil: 48% 50%
 portada: 01.jpg
 ---
 `,
@@ -228,6 +234,7 @@ labor: Diseño y conceptualización decorados en preproducción. Nominated for B
 director: Eduardo Casanova
 productora: Pokeepsie Films
 mostrar_en_inicio: no
+encuadre_movil: 28% 50%
 portada: 13.jpg
 ---
 `,
@@ -259,6 +266,7 @@ labor:
 director: Peris Romano
 productora: José Frade PC
 mostrar_en_inicio: no
+encuadre_movil: 38% 50%
 portada: 01.jpg
 ---
 `,
@@ -280,6 +288,7 @@ año: 2023
 labor: 
 director: Lucía Alemany
 mostrar_en_inicio: si
+encuadre_movil: 73% 50%
 portada: 02.jpg
 ---
 `,
@@ -331,6 +340,7 @@ año: 2017
 labor: 
 director: Curro Velázquez
 mostrar_en_inicio: no
+encuadre_movil: 91% 50%
 portada: 37.jpg
 ---
 `,
@@ -380,6 +390,7 @@ año: 2022
 labor: 
 director: Paco León
 mostrar_en_inicio: si
+encuadre_movil: 90% 50%
 portada: 01.jpg
 ---
 `,
@@ -468,6 +479,7 @@ labor:
 director: Norma Vila
 productora: Pris&Batty / Bondi
 mostrar_en_inicio: si
+encuadre_movil: 40% 50%
 portada: 03.jpg
 ---
 `,
@@ -545,6 +557,7 @@ labor:
 director: Álvaro Fernández Armero
 productora: Telecinco
 mostrar_en_inicio: no
+encuadre_movil: 23% 50%
 portada: 03.jpg
 ---
 `,
@@ -566,6 +579,7 @@ año: 2018
 labor: 
 director: Paco León
 mostrar_en_inicio: no
+encuadre_movil: 49% 50%
 portada: 08.jpg
 ---
 `,
@@ -819,7 +833,7 @@ mostrar_en_inicio: si
   ],
   "videoclips": [
   ],
-  "home": [{"f":"ext-12.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":853},{"f":"ext-13.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":852},{"f":"salitre-01.jpg","titulo":"Salitre","ano":"2027","tipo":"films","carpeta":"salitre","enInicio":false,"w":2000,"h":1082},{"f":"daniela-forever-01.jpg","titulo":"Daniela Forever","ano":"2024","tipo":"films","carpeta":"daniela-forever","enInicio":true,"w":2600,"h":1080},{"f":"daniela-forever-02.jpg","titulo":"Daniela Forever","ano":"2024","tipo":"films","carpeta":"daniela-forever","enInicio":false,"w":2600,"h":1084},{"f":"rainbow-01.jpg","titulo":"Rainbow","ano":"2022","tipo":"films","carpeta":"rainbow","enInicio":true,"w":2600,"h":1466},{"f":"rainbow-02.jpg","titulo":"Rainbow","ano":"2022","tipo":"films","carpeta":"rainbow","enInicio":true,"w":2600,"h":1459},{"f":"en-las-estrellas-01.jpg","titulo":"En las estrellas","ano":"2018","tipo":"films","carpeta":"en-las-estrellas","enInicio":true,"w":2000,"h":811},{"f":"en-las-estrellas-02.jpg","titulo":"En las estrellas","ano":"2018","tipo":"films","carpeta":"en-las-estrellas","enInicio":true,"w":2000,"h":834}],
+  "home": [{"f":"ext-12.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":853},{"f":"ext-13.jpg","titulo":"Extraterrestre","tipo":"films","carpeta":"extraterrestre","ano":"2011","enInicio":true,"w":2000,"h":852},{"f":"salitre-01.jpg","titulo":"Salitre","ano":"2027","tipo":"films","carpeta":"salitre","enInicio":false,"w":2000,"h":1082},{"f":"daniela-forever-01.jpg","titulo":"Daniela Forever","ano":"2024","tipo":"films","carpeta":"daniela-forever","enInicio":true,"w":2600,"h":1080,"encuadreMovil":"67% 50%"},{"f":"daniela-forever-02.jpg","titulo":"Daniela Forever","ano":"2024","tipo":"films","carpeta":"daniela-forever","enInicio":false,"w":2600,"h":1084},{"f":"rainbow-01.jpg","titulo":"Rainbow","ano":"2022","tipo":"films","carpeta":"rainbow","enInicio":false,"w":2600,"h":1466,"encuadreMovil":"28% 50%"},{"f":"rainbow-02.jpg","titulo":"Rainbow","ano":"2022","tipo":"films","carpeta":"rainbow","enInicio":true,"w":2600,"h":1459},{"f":"en-las-estrellas-01.jpg","titulo":"En las estrellas","ano":"2018","tipo":"films","carpeta":"en-las-estrellas","enInicio":true,"w":2000,"h":811,"encuadreMovil":"49% 50%"},{"f":"en-las-estrellas-02.jpg","titulo":"En las estrellas","ano":"2018","tipo":"films","carpeta":"en-las-estrellas","enInicio":true,"w":2000,"h":834,"encuadreMovil":"63% 50%"}],
   "about": {
     "info": `# =====================================================================
 #  ABOUT  ·  cada dato relleno es una línea en la web (editado con el gestor)
@@ -895,4 +909,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610161209 */
+/* gestor: 202610161227 */

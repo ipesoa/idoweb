@@ -3,5 +3,6 @@ año: 2026
 labor: 
 director: Paco León
 mostrar_en_inicio: no
+encuadre_movil: 57% 50%
 portada: 34.jpg
 ---

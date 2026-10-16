@@ -4,5 +4,6 @@ labor:
 director: Zoe Berriatúa
 productora: Pokeepsie Films
 mostrar_en_inicio: si
+encuadre_movil: 34% 50%
 portada: 01.jpg
 ---
