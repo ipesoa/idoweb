@@ -5,5 +5,5 @@ director: Eduardo Casanova
 productora: Pokeepsie Films
 mostrar_en_inicio: no
 encuadre_movil: 28% 50%
-portada: 13.jpg
+portada: 10.jpg
 ---
