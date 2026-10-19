@@ -5,5 +5,4 @@ director: Paco León
 productora: Telecinco / Netflix
 mostrar_en_inicio: si
 encuadre_movil: 90% 50%
-portada: 01.jpg
 ---
