@@ -7,7 +7,7 @@
    esta capa provisional y vuelve a mandar solo el contenido editable.
    ===================================================================== */
 window.TRAILERS_IMPORT = {
-  version: "2026-10-19-vimeo",
+  version: "2026-10-19-vimeo-v2",
   proyectos: [
     { tipo: "films", carpeta: "salitre", titulo: "Salitre", videos: ["https://player.vimeo.com/video/1237173728?h=1c684bc4f2"] },
     { tipo: "films", carpeta: "a-mil-km-de-la-navidad", titulo: "A mil km de la Navidad", videos: ["https://player.vimeo.com/video/744941465?h=4588b1a547"] },
@@ -34,6 +34,11 @@ window.TRAILERS_IMPORT = {
     { tipo: "films", carpeta: "extraterrestre", titulo: "Extraterrestre", videos: ["https://player.vimeo.com/video/53514834?h=2bbe62d766"] },
     { tipo: "comercials", carpeta: "lo-siento-mi-amor", titulo: "Lo siento mi amor", videos: ["https://player.vimeo.com/video/249250522?h=43741cdbe3"] },
     { tipo: "comercials", carpeta: "2026-samsung", titulo: "Samsung", videos: ["https://player.vimeo.com/video/249193825?h=7467055c12"] },
+    { tipo: "comercials", carpeta: "2024-asisa", titulo: "Asisa", nuevoEn: "2026-10-19-vimeo-v2", videos: ["https://player.vimeo.com/video/1237206224?h=082ba1cfdc"] },
+    { tipo: "films", carpeta: "maridos", titulo: "Maridos", nuevoEn: "2026-10-19-vimeo-v2", videos: ["https://player.vimeo.com/video/1237206132?h=3abd4df896"] },
+    { tipo: "films", carpeta: "daniela-forever", titulo: "Daniela Forever", nuevoEn: "2026-10-19-vimeo-v2", videos: ["https://player.vimeo.com/video/1237205836?h=f06dd7aba8"] },
+    { tipo: "series", carpeta: "superestar", titulo: "Superestar", nuevoEn: "2026-10-19-vimeo-v2", videos: ["https://player.vimeo.com/video/1237205628?h=ab446d4065"] },
+    { tipo: "films", carpeta: "aida-y-vuelta", titulo: "Aída y vuelta", nuevoEn: "2026-10-19-vimeo-v2", videos: ["https://player.vimeo.com/video/1237205448?h=59f7d5d154"] },
   ],
   extras: [
     { tipo: "comercials", titulo: "Vidal - Dipper", video: "https://player.vimeo.com/video/365393693?h=223541a82b" },

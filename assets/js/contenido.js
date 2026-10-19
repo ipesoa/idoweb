@@ -49,9 +49,12 @@
   const slug = (s) => (s || "").toLowerCase().normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const TRAILERS = window.TRAILERS_IMPORT;
-  const trailersPendientes = !!TRAILERS && leerInfo(DATOS.about?.info || "").trailers_importados !== TRAILERS.version;
+  const trailersVersionGuardada = leerInfo(DATOS.about?.info || "").trailers_importados;
+  const trailersPendientes = !!TRAILERS && trailersVersionGuardada !== TRAILERS.version;
+  // Una segunda entrega solo añade sus cinco vídeos: conserva las fichas ya publicadas o editadas.
+  const trailerAplicable = (item) => !trailersVersionGuardada || item.nuevoEn === TRAILERS.version;
   const titulosIguales = (a, b) => slug(a) === slug(b);
-  const planDe = (tipo, bruto) => trailersPendientes && TRAILERS.proyectos.find((p) => p.tipo === tipo &&
+  const planDe = (tipo, bruto) => trailersPendientes && TRAILERS.proyectos.find((p) => trailerAplicable(p) && p.tipo === tipo &&
     (p.carpeta === bruto.carpeta || titulosIguales(p.titulo, leerInfo(bruto.info).titulo || bruto.carpeta)));
 
   function ruta(tipo, carpeta, archivo) {
@@ -125,7 +128,7 @@
     if (tipo === "work" || tipo === "todo") return todos();
     if (!cache[tipo]) {
       const brutos = (DATOS[tipo] || []).slice();
-      if (trailersPendientes) for (const p of TRAILERS.proyectos.filter((x) => x.tipo === tipo)) {
+      if (trailersPendientes) for (const p of TRAILERS.proyectos.filter((x) => trailerAplicable(x) && x.tipo === tipo)) {
         if (brutos.some((b) => b.carpeta === p.carpeta || titulosIguales(leerInfo(b.info).titulo || b.carpeta, p.titulo))) continue;
         brutos.push({ carpeta: p.carpeta, info: `titulo: ${p.titulo}\naño: ${p.ano || ""}\nmostrar_en_inicio: no\n---\n`, archivos: [] });
       }
@@ -180,7 +183,7 @@
         const [ano, titulo, labor, quien, tipo, url, video] = l.split("|").map((s) => (s || "").trim());
         const seccion = (tipo || "films").toLowerCase();
         const id = `filmografia-${slug(titulo)}-${slug(ano)}`;
-        const videoNuevo = trailersPendientes && TRAILERS.extras.find((p) => p.tipo === seccion && titulosIguales(p.titulo, titulo));
+        const videoNuevo = trailersPendientes && TRAILERS.extras.find((p) => trailerAplicable(p) && p.tipo === seccion && titulosIguales(p.titulo, titulo));
         return {
           ano, titulo, labor, director: quien, tipo: seccion, id,
           enlace: /^https?:\/\//i.test(url) ? url : `proyecto.html?tipo=${encodeURIComponent(seccion)}&id=${encodeURIComponent(id)}`,

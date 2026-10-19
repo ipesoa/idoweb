@@ -475,7 +475,7 @@
           const destino = new URL(`https://player.vimeo.com/video/${m[1]}`);
           const h = u.searchParams.get("h") || m[2];
           if (h) destino.searchParams.set("h", h);
-          Object.entries({ dnt: 1, title: 0, byline: 0, portrait: 0, autoplay: a, muted: s, controls: c, playsinline: 1 })
+          Object.entries({ dnt: 1, title: 0, byline: 0, portrait: 0, autoplay: a, muted: s, controls: c, playsinline: 1, unmute_button: 0 })
             .forEach(([k, v]) => destino.searchParams.set(k, String(v)));
           if (P().bucle) destino.searchParams.set("loop", "1");
           return destino.href;

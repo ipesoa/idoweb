@@ -176,8 +176,9 @@
 
 /* ---------- 5. PÁGINA DE PROYECTO (vídeo + ficha + crew + texto) ---- */
   --video-formato:     1.78;          /* formato del vídeo de arriba: 1.78 = 16/9 · 1.85 = cine · 2.39 = scope */
-  --video-ancho:       88vw;          /* ancho del tráiler centrado, con aire a los lados */
-  --video-alto-max:    86vh;          /* no más alto que esto, para que se vea que sigue abajo */
+  --video-ancho:       84vw;          /* ancho del tráiler centrado, con aire a los lados */
+  --video-inicio:      clamp(112px, 15vh, 160px);
+  --video-alto-max:    calc(100svh - var(--video-inicio) - 44px); /* reproductor completo y margen negro inferior */
   --proyecto-tam-titulo: 1.3rem;      /* título debajo del vídeo */
   --proyecto-tam-ficha:  .8rem;       /* directed by / produced by */
   --proyecto-tam-crew:   .78rem;      /* lista de crew (dos columnas) */

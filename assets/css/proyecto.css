@@ -4,13 +4,17 @@
    La rejilla en sí está en base.css (.rejilla-cine)
    ===================================================================== */
 
-/* ---- 1. Vídeo centrado, 16:9; el título comienza justo debajo ---- */
+/* ---- 1. Vídeo centrado, 16:9; la ficha comienza tras el primer pantallazo ---- */
 .proyecto__video {
-  width: min(var(--video-ancho), calc(var(--video-alto-max) * var(--video-formato)));
-  margin: clamp(112px, 15vh, 160px) auto 0;
+  width: 100%;
+  min-height: 100svh;
+  padding-top: var(--video-inicio);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .proyecto__reproductor {
-  width: 100%;
+  width: min(var(--video-ancho), calc(var(--video-alto-max) * var(--video-formato)));
   aspect-ratio: var(--video-formato);
   background: #000;
 }
@@ -111,7 +115,8 @@
 .no-encontrado { min-height: 100vh; display: grid; place-items: center; text-align: center; padding: 2rem; color: var(--color-suave); }
 
 @media (max-width: 700px) {
-  .proyecto__video { width: 90vw; margin-top: clamp(105px, 15vh, 135px); }
+  .proyecto__video { min-height: 0; padding-top: clamp(105px, 15vh, 135px); padding-bottom: clamp(28px, 5vh, 48px); }
+  .proyecto__reproductor { width: 90vw; }
   .proyecto__crew { columns: 1; }
   .proyecto__ficha { padding-top: clamp(30px, 5vh, 60px); }
 }

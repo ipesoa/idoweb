@@ -134,7 +134,7 @@ window.AJUSTES = {
   proyecto: {
     autoplay: true,              // el vídeo de arriba empieza solo
     silencio: true,              // ...sin sonido (los navegadores lo exigen para el autoplay)
-    bucle: false,                // repetir el vídeo al acabar
+    bucle: true,                 // repetir el vídeo al acabar; evita las sugerencias finales de Vimeo
     controles: true,             // enseñar los controles del reproductor
   },
 

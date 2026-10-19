@@ -294,7 +294,7 @@ button { cursor: pointer; background: none; border: 0; }
   <!-- Arrastrar un .zip de actualización a cualquier parte de la ventana -->
   <div class="soltar-zip" id="soltarZip">Suelta aquí el .zip con la actualización de la web</div>
 
-  <script src="assets/js/trailers-idoia.js?v=202610191104"></script>
+  <script src="assets/js/trailers-idoia.js?v=202610191129"></script>
   <script>
 /* =====================================================================
    GESTOR DE LA WEB
@@ -323,7 +323,7 @@ button { cursor: pointer; background: none; border: 0; }
   // Versión de este gestor. Si en GitHub hay un gestor más nuevo (por ejemplo,
   // una pestaña abierta desde antes de instalar una actualización), no deja
   // publicar: guardaría las cosas a la manera antigua.
-  const VERSION_GESTOR = "2026-10-19-trailers-vimeo";
+  const VERSION_GESTOR = "2026-10-19-trailers-vimeo-v2";
 
   /* Las secciones de la web. Si algún día se añade otra, se pone aquí y en
      assets/js/ajustes.js (AJUSTES.secciones) y en los generadores de datos. */
@@ -502,9 +502,11 @@ button { cursor: pointer; background: none; border: 0; }
   // los convierte después en contenido normal del gestor, sin renombrar fotos.
   function prepararTrailersImportados() {
     const plan = window.TRAILERS_IMPORT;
-    if (!plan || E.about.info.campos.trailers_importados === plan.version) return false;
+    const versionGuardada = E.about.info.campos.trailers_importados;
+    if (!plan || versionGuardada === plan.version) return false;
+    const aplicable = (item) => !versionGuardada || item.nuevoEn === plan.version;
     const mismoTitulo = (a, b) => slug(String(a || "")) === slug(String(b || ""));
-    for (const item of plan.proyectos) {
+    for (const item of plan.proyectos.filter(aplicable)) {
       const p = E.proyectos.find((x) => x.tipo === item.tipo &&
         (x.carpeta === item.carpeta || mismoTitulo(x.info.campos.titulo || x.carpeta, item.titulo)));
       const videos = item.videos.join("\n");
@@ -519,7 +521,7 @@ button { cursor: pointer; background: none; border: 0; }
         });
       }
     }
-    for (const item of plan.extras || []) {
+    for (const item of (plan.extras || []).filter(aplicable)) {
       const f = E.about.extra.find((x) => x.tipo === item.tipo && mismoTitulo(x.titulo, item.titulo));
       if (f) f.video = item.video;
     }
