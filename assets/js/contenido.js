@@ -186,6 +186,7 @@
       showreel: info.showreel || (showreelArchivo ? url(showreelArchivo.f) : ""),
       texto: info.texto,
       retrato: retrato ? url(retrato.f) : "",
+      contactOcultos: new Set((info.contact_ocultos || "").split("\n").map((v) => v.trim()).filter(Boolean)),
       extra,
     };
   }
@@ -193,6 +194,7 @@
   // Todos los trabajos (los de la web + los de filmografia-extra.txt) por año
   function filmografia() {
     return todos()
+      .filter((p) => !about?.contactOcultos.has(`${p.tipo}/${p.id}`))
       .map((p) => ({ ano: p.ano, titulo: p.titulo, labor: p.labor, director: p.director || p.cliente, tipo: p.tipo, enlace: p.enlace }))
       .concat(about ? about.extra : [])
       .sort((a, b) => (parseInt(b.ano) || 0) - (parseInt(a.ano) || 0));

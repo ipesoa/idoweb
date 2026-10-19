@@ -164,6 +164,27 @@ button { cursor: pointer; background: none; border: 0; }
 .tabla input, .tabla select { width: 100%; padding: 7px 8px; border: 1px solid var(--linea); border-radius: 6px; }
 .tabla td:first-child { width: 80px; } .tabla td:last-child { width: 40px; }
 
+/* Contact: el orden visible reproduce la lista pública y señala duplicados. */
+.contact-lista { display: grid; gap: 1px; background: var(--linea); border: 1px solid var(--linea); border-radius: 9px; overflow: hidden; }
+.contact-fila { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; align-items: center; gap: 12px;
+  padding: 10px 12px; background: var(--papel); }
+.contact-fila__ano { color: var(--suave); font-variant-numeric: tabular-nums; }
+.contact-fila__titulo { min-width: 0; }
+.contact-fila__titulo b { display: block; font-size: 13px; overflow-wrap: anywhere; }
+.contact-fila__titulo small { display: block; color: var(--suave); font-size: 11px; }
+.contact-fila__acciones { display: flex; align-items: center; gap: 9px; }
+.contact-fila__acciones .boton { padding: 5px 9px; font-size: 11px; }
+.contact-duplicado { display: inline-block; margin-left: 5px; padding: 1px 5px; border-radius: 4px;
+  background: #fff0c2; color: #6f4a00; font-size: 10px; font-weight: 700; }
+.contact-herramientas { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 14px 0; }
+.contact-manual { border: 1px solid var(--linea); border-radius: 9px; background: var(--papel); margin-top: 8px; padding: 12px; }
+.contact-manual summary { cursor: pointer; font-weight: 600; }
+.contact-manual .campos { margin: 14px 0; }
+@media (max-width: 680px) {
+  .contact-fila { grid-template-columns: 46px minmax(0, 1fr); gap: 5px 9px; }
+  .contact-fila__acciones { grid-column: 2; flex-wrap: wrap; }
+}
+
 /* ---- cabecera: ajustes con vista previa ---- */
 .editor-nombre { display: grid; grid-template-columns: minmax(260px, 390px) minmax(0, 1fr); gap: 20px; align-items: start; }
 .controles-nombre { display: grid; gap: 16px; }
@@ -301,7 +322,7 @@ button { cursor: pointer; background: none; border: 0; }
   // Versión de este gestor. Si en GitHub hay un gestor más nuevo (por ejemplo,
   // una pestaña abierta desde antes de instalar una actualización), no deja
   // publicar: guardaría las cosas a la manera antigua.
-  const VERSION_GESTOR = "2026-10-16-encuadre-movil";
+  const VERSION_GESTOR = "2026-10-19-contact-lista";
 
   /* Las secciones de la web. Si algún día se añade otra, se pone aquí y en
      assets/js/ajustes.js (AJUSTES.secciones) y en los generadores de datos. */
@@ -694,6 +715,80 @@ button { cursor: pointer; background: none; border: 0; }
       }).join("")}</div>`;
   }
 
+  // La misma mezcla y orden que Web.filmografia(): fichas automáticas + extras.
+  // Las fichas se pueden ocultar en Contact sin borrar películas ni fotografías.
+  const ocultosContact = () => new Set(String(E.about.info.campos.contact_ocultos || "").split("\n").map((v) => v.trim()).filter(Boolean));
+  function guardarOcultosContact(lista) {
+    if (lista.size) E.about.info.campos.contact_ocultos = [...lista].join("\n");
+    else delete E.about.info.campos.contact_ocultos;
+    E.aboutSucio = true;
+  }
+  function trabajosContact() {
+    const ocultos = ocultosContact();
+    const proyectos = E.proyectos.slice().sort((a, b) =>
+      (parseFloat(b.info.campos.orden) || 0) - (parseFloat(a.info.campos.orden) || 0)
+      || (parseInt(b.info.campos.ano) || 0) - (parseInt(a.info.campos.ano) || 0)
+      || (a.info.campos.titulo || a.carpeta).localeCompare(b.info.campos.titulo || b.carpeta));
+    const fichas = proyectos.map((p) => ({
+      ano: p.info.campos.ano || "", titulo: p.info.campos.titulo || p.carpeta,
+      tipo: p.tipo, clave: p.tipo + "/" + p.carpeta, manual: false,
+      enlace: `proyecto.html?tipo=${encodeURIComponent(p.tipo)}&id=${encodeURIComponent(p.carpeta)}`,
+    }));
+    const extras = E.about.extra.map((f, i) => ({ ...f, indice: i, manual: true })).filter((f) => f.titulo.trim());
+    const visibles = fichas.filter((f) => !ocultos.has(f.clave)).concat(extras)
+      .sort((a, b) => (parseInt(b.ano) || 0) - (parseInt(a.ano) || 0));
+    return { visibles, ocultas: fichas.filter((f) => ocultos.has(f.clave)), ocultos };
+  }
+  function vistaListaContact() {
+    const { visibles, ocultas } = trabajosContact();
+    const tituloClave = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").trim();
+    const slugContact = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const cantidades = new Map();
+    visibles.forEach((f) => { const k = tituloClave(f.titulo); cantidades.set(k, (cantidades.get(k) || 0) + 1); });
+    const tipoNombre = (f) => deTipo(f.tipo).titulo;
+    const fila = (f, escondida = false) => {
+      const duplicada = !escondida && cantidades.get(tituloClave(f.titulo)) > 1;
+      const enlace = f.manual ? (/^https?:\/\//i.test(f.url || "") ? f.url
+        : `proyecto.html?tipo=${encodeURIComponent(f.tipo)}&id=filmografia-${slugContact(f.titulo)}-${slugContact(f.ano)}`) : f.enlace;
+      return `<div class="contact-fila">
+        <span class="contact-fila__ano">${esc(f.ano || "—")}</span>
+        <div class="contact-fila__titulo"><b>${esc(f.titulo)}${duplicada ? '<span class="contact-duplicado">DUPLICADO</span>' : ""}</b>
+          <small>${esc(tipoNombre(f))} · ${f.manual ? "añadido a mano" : "ficha del proyecto"}${escondida ? " · oculto" : ""}</small></div>
+        <div class="contact-fila__acciones">
+          ${!escondida && enlace ? `<a class="enlace" href="${esc(/^https?:\/\//i.test(enlace) ? enlace : webBase() + enlace)}" target="_blank" rel="noopener">Ver ↗</a>` : ""}
+          ${escondida ? `<button class="boton" data-contact-mostrar="${esc(f.clave)}">Volver a mostrar</button>`
+            : f.manual ? `<button class="boton" data-extra-editar="${f.indice}">Editar</button><button class="boton boton--peligro" data-quitar-extra="${f.indice}">Quitar</button>`
+              : `<button class="boton boton--peligro" data-contact-ocultar="${esc(f.clave)}">Quitar de Contact</button>`}
+        </div></div>`;
+    };
+    return `<h3>Lista que verá Contact <small style="color:var(--suave);font-weight:400">(${visibles.length} trabajos)</small></h3>
+      <p>Ordenada por año, como en la web. Los duplicados se señalan aquí. Los cambios se ven en esta lista al momento y se harán públicos al pulsar «Publicar cambios».</p>
+      <div class="contact-herramientas"><button class="boton boton--principal" data-accion="extra-anadir">＋ Añadir trabajo a mano</button>
+        <button class="boton" data-accion="contact-recargar">↻ Recargar desde GitHub</button>
+        <a class="boton" href="${esc(webBase() + "contact.html")}" target="_blank" rel="noopener">Ver Contact publicado ↗</a></div>
+      <div class="contact-lista">${visibles.length ? visibles.map((f) => fila(f)).join("") : '<div class="contact-fila">Todavía no hay trabajos visibles.</div>'}</div>
+      ${ocultas.length ? `<details id="contactOcultos" style="margin-top:18px"><summary>${ocultas.length} ficha${ocultas.length === 1 ? "" : "s"} oculta${ocultas.length === 1 ? "" : "s"} en Contact</summary>
+        <div class="contact-lista" style="margin-top:10px">${ocultas.map((f) => fila(f, true)).join("")}</div></details>` : ""}`;
+  }
+  function actualizarListaContact() {
+    const bloque = $("#contactListaBloque");
+    if (!bloque) return;
+    const abierto = $("#contactOcultos")?.open;
+    bloque.innerHTML = vistaListaContact();
+    if (abierto && $("#contactOcultos")) $("#contactOcultos").open = true;
+  }
+  function actualizarExtraContact(el) {
+    const i = +el.dataset.extra;
+    E.about.extra[i][el.dataset.k] = el.value;
+    E.aboutSucio = true;
+    const f = E.about.extra[i];
+    const resumen = $(`#contact-manual-${i} summary`);
+    if (resumen) resumen.textContent = [f.ano, f.titulo || "Nuevo trabajo"].filter(Boolean).join(" · ");
+    actualizarListaContact();
+    actualizarEstado();
+  }
+
   function vistaAbout() {
     const c = E.about.info.campos;
     const campo = (k, etiqueta, ph = "") => `<label class="campo"><span>${etiqueta}</span><input data-about="${k}" value="${esc(c[k] || "")}" placeholder="${esc(ph)}"></label>`;
@@ -709,16 +804,20 @@ button { cursor: pointer; background: none; border: 0; }
           ${campo("subtitulo", "Labor (no se usa ahora)", "Production designer")}
           ${campo("ubicacion", "Ciudad (no se usa ahora)", "Based in Madrid")}
         </div></div>
-      <div class="bloque"><h3>Lista de trabajos: los que no tienen fotos</h3>
-        <p>Los trabajos de las otras pestañas ya salen solos. Estos abren una ficha dentro de la web; si añades una URL, enlazan directamente a esa página.</p>
-        <table class="tabla"><tbody>${E.about.extra.map((f, i) => `<tr>
-          <td><input data-extra="${i}" data-k="ano" value="${esc(f.ano)}" placeholder="Año"></td>
-          <td><input data-extra="${i}" data-k="titulo" value="${esc(f.titulo)}" placeholder="Título"></td>
-          <td><input data-extra="${i}" data-k="quien" value="${esc(f.quien)}" placeholder="Director o cliente"></td>
-          <td><select data-extra="${i}" data-k="tipo">${TIPOS.map((t) => `<option value="${t.id}"${f.tipo === t.id ? " selected" : ""}>${t.titulo}</option>`).join("")}</select></td>
-          <td><input data-extra="${i}" data-k="url" value="${esc(f.url)}" placeholder="URL de la película (opcional)" type="url"></td>
-          <td><button class="boton boton--peligro" data-quitar-extra="${i}" title="Quitar">✕</button></td></tr>`).join("")}</tbody></table>
-        <button class="boton" data-accion="extra-anadir" style="margin-top:10px">＋ Añadir trabajo</button></div>`;
+      <div class="bloque" id="contactListaBloque">${vistaListaContact()}</div>
+      <div class="bloque" id="contactManuales"><h3>Editar los trabajos añadidos a mano</h3>
+        <p>Las fichas con fotos se editan en Films, Series o Commercials. Aquí puedes cambiar las entradas añadidas solo a la lista de Contact.</p>
+        ${E.about.extra.length ? E.about.extra.map((f, i) => `<details class="contact-manual" id="contact-manual-${i}"${!f.titulo ? " open" : ""}>
+          <summary>${esc([f.ano, f.titulo || "Nuevo trabajo"].filter(Boolean).join(" · "))}</summary>
+          <div class="campos">
+            <label class="campo"><span>Año</span><input data-extra="${i}" data-k="ano" value="${esc(f.ano)}" placeholder="Año"></label>
+            <label class="campo"><span>Título</span><input data-extra="${i}" data-k="titulo" value="${esc(f.titulo)}" placeholder="Título"></label>
+            <label class="campo"><span>Sección</span><select data-extra="${i}" data-k="tipo">${TIPOS.map((t) => `<option value="${t.id}"${f.tipo === t.id ? " selected" : ""}>${t.titulo}</option>`).join("")}</select></label>
+            <label class="campo"><span>Labor</span><input data-extra="${i}" data-k="labor" value="${esc(f.labor)}" placeholder="Production designer"></label>
+            <label class="campo"><span>Director o cliente</span><input data-extra="${i}" data-k="quien" value="${esc(f.quien)}" placeholder="Nombre"></label>
+            <label class="campo campo--ancho"><span>URL externa (opcional)</span><input data-extra="${i}" data-k="url" value="${esc(f.url)}" placeholder="https://..."></label>
+          </div><button class="boton boton--peligro" data-quitar-extra="${i}">Quitar este trabajo de Contact</button></details>`).join("")
+          : '<p class="nota">No hay trabajos añadidos a mano.</p>'}</div>`;
   }
 
   /* ---------- controles compartidos (Cabecera, Parrillas) ---------- */
@@ -1618,7 +1717,29 @@ button { cursor: pointer; background: none; border: 0; }
       if (confirm(`¿Eliminar ${l.length} proyecto(s) con todas sus fotos?\n\n${l.map((p) => "· " + (p.info.campos.titulo || p.carpeta)).join("\n")}\n\n(No se borra nada de verdad hasta que pulses "Publicar cambios")`)) borrarProyectos(l);
       return;
     }
-    if (acc === "extra-anadir") { E.about.extra.push({ ano: "", titulo: "", labor: "", quien: "", tipo: "films", url: "" }); E.aboutSucio = true; pintar(); return; }
+    if (acc === "contact-recargar") {
+      if (!hayCambios() || confirm("Hay cambios sin publicar. ¿Descartarlos y recargar la lista desde GitHub?")) cargar().catch(fallo);
+      return;
+    }
+    if (t.dataset.contactOcultar !== undefined || t.dataset.contactMostrar !== undefined) {
+      const ocultos = ocultosContact();
+      if (t.dataset.contactOcultar !== undefined) ocultos.add(t.dataset.contactOcultar);
+      else ocultos.delete(t.dataset.contactMostrar);
+      guardarOcultosContact(ocultos); actualizarListaContact(); actualizarEstado(); return;
+    }
+    if (t.dataset.extraEditar !== undefined) {
+      const detalle = $(`#contact-manual-${+t.dataset.extraEditar}`);
+      if (detalle) { detalle.open = true; detalle.scrollIntoView({ behavior: "smooth", block: "center" }); detalle.querySelector('[data-k="titulo"]')?.focus({ preventScroll: true }); }
+      return;
+    }
+    if (acc === "extra-anadir") {
+      E.about.extra.push({ ano: "", titulo: "", labor: "", quien: "", tipo: "films", url: "" });
+      E.aboutSucio = true; pintar();
+      const detalle = $(`#contact-manual-${E.about.extra.length - 1}`);
+      detalle?.scrollIntoView({ behavior: "smooth", block: "center" });
+      detalle?.querySelector('[data-k="titulo"]')?.focus({ preventScroll: true });
+      return;
+    }
     if (t.dataset.quitarExtra !== undefined) { E.about.extra.splice(+t.dataset.quitarExtra, 1); E.aboutSucio = true; pintar(); return; }
     if (t.dataset.marcar) {
       e.stopPropagation();
@@ -1702,12 +1823,12 @@ button { cursor: pointer; background: none; border: 0; }
     if (el.dataset.nombre !== undefined) cambiarNombreControl(el);
     if (el.dataset.about) { E.about.info.campos[el.dataset.about] = el.value; E.aboutSucio = true; actualizarEstado(); }
     if (el.dataset.aboutTexto !== undefined) { E.about.info.texto = el.value; E.aboutSucio = true; actualizarEstado(); }
-    if (el.dataset.extra !== undefined) { E.about.extra[+el.dataset.extra][el.dataset.k] = el.value; E.aboutSucio = true; actualizarEstado(); }
+    if (el.dataset.extra !== undefined) actualizarExtraContact(el);
   });
   document.addEventListener("change", (e) => {
     const el = e.target;
     if (el.dataset.nombre !== undefined) cambiarNombreControl(el);
-    if (el.dataset.extra !== undefined) { E.about.extra[+el.dataset.extra][el.dataset.k] = el.value; E.aboutSucio = true; actualizarEstado(); }
+    if (el.dataset.extra !== undefined) actualizarExtraContact(el);
   });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && ed) { cerrarEditor(); pintar(); } });
 
