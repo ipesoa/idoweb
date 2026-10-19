@@ -918,7 +918,6 @@ franja: no
 titulo_fuente: arial
 titulo_peso: 700
 fuente: AlteHaasGroteskRegular | altehaasgroteskregular.ttf
-AlteHaasGroteskBold | altehaasgroteskbold.ttf
 menu_peso: 400
 delfines_contact: no
 menu_fuente: arial
@@ -942,7 +941,6 @@ Enjoy!
 #  con ficha propia (sin fotos). Una URL opcional enlaza directamente fuera.
 #  Una línea por trabajo: año | título | labor | director o cliente | sección | URL
 # =====================================================================
-2027 | El acercamiento de la mujer cactus y el hombre globo |  | Kike Maíllo | films | 
 2025 | Asisa - Reemplazo |  | Miguel Angulo | comercials | 
 2019 | Samsung - Copiloto |  | Martin Jalfen | comercials | 
 2019 | Vidal - Dipper |  | Eduardo Casanova | comercials | 
@@ -951,4 +949,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610190925 */
+/* gestor: 202610190944 */

@@ -36,7 +36,6 @@ franja: no
 titulo_fuente: arial
 titulo_peso: 700
 fuente: AlteHaasGroteskRegular | altehaasgroteskregular.ttf
-AlteHaasGroteskBold | altehaasgroteskbold.ttf
 menu_peso: 400
 delfines_contact: no
 menu_fuente: arial
