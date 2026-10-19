@@ -1,6 +1,0 @@
-titulo: Just Eat
-año: 2018
-labor: 
-director: 
-mostrar_en_inicio: no
----

@@ -816,31 +816,9 @@ portada: 01.jpg
   ],
   "comercials": [
     {
-      "carpeta": "2017-aquarius",
-      "info": `titulo: Aquarius
-año: 2017
-labor: 
-director: 
-mostrar_en_inicio: no
----
-`,
-      "archivos": []
-    },
-    {
       "carpeta": "2017-volkswagen",
       "info": `titulo: Volkswagen
 año: 2017
-labor: 
-director: 
-mostrar_en_inicio: no
----
-`,
-      "archivos": []
-    },
-    {
-      "carpeta": "2018-just-eat",
-      "info": `titulo: Just Eat
-año: 2018
 labor: 
 director: 
 mostrar_en_inicio: no
@@ -865,17 +843,6 @@ mostrar_en_inicio: no
 año: 2024
 labor: 
 director: Miguel Angulo
-mostrar_en_inicio: no
----
-`,
-      "archivos": []
-    },
-    {
-      "carpeta": "2024-santander",
-      "info": `titulo: Santander
-año: 2024
-labor: 
-director: 
 mostrar_en_inicio: no
 ---
 `,
@@ -969,7 +936,7 @@ franja: no
 titulo_fuente: arial
 titulo_peso: 700
 fuente: AlteHaasGroteskRegular | altehaasgroteskregular.ttf
-fuente: AlteHaasGroteskBold | altehaasgroteskbold.ttf
+AlteHaasGroteskBold | altehaasgroteskbold.ttf
 menu_peso: 400
 delfines_contact: no
 menu_fuente: arial
@@ -995,14 +962,11 @@ Enjoy!
 # =====================================================================
 2027 | El acercamiento de la mujer cactus y el hombre globo |  | Kike Maíllo | films | 
 2025 | Asisa - Reemplazo |  | Miguel Angulo | comercials | 
-2021 | Santander - Otro camino |  | Diego Núñez Irigoyen | comercials | 
 2019 | Samsung - Copiloto |  | Martin Jalfen | comercials | 
 2019 | Vidal - Dipper |  | Eduardo Casanova | comercials | 
-2018 | Just Eat |  | María Sosa | comercials | 
-2017 | Aquarius - Photoshooting |  | Javier Tles | comercials | 
 2017 | Volkswagen - Día del padre |  | Miguel Angulo | comercials | 
 `,
     "archivos": []
   }
 };
-/* gestor: 202610161823 */
+/* gestor: 202610190855 */

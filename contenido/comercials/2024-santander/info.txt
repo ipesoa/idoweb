@@ -1,6 +1,0 @@
-titulo: Santander
-año: 2024
-labor: 
-director: 
-mostrar_en_inicio: no
----
