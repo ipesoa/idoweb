@@ -1,9 +1,9 @@
 # =====================================================================
 #  FILMOGRAFÍA EXTRA  ·  trabajos que salen en la lista del about
 #  con ficha propia (sin fotos). Una URL opcional enlaza directamente fuera.
-#  Una línea por trabajo: año | título | labor | director o cliente | sección | URL
+#  Una línea por trabajo: año | título | labor | director o cliente | sección | URL | vídeo
 # =====================================================================
-2025 | Asisa - Reemplazo |  | Miguel Angulo | comercials | 
-2019 | Samsung - Copiloto |  | Martin Jalfen | comercials | 
-2019 | Vidal - Dipper |  | Eduardo Casanova | comercials | 
-2017 | Volkswagen - Día del padre |  | Miguel Angulo | comercials | 
+2025 | Asisa - Reemplazo |  | Miguel Angulo | comercials |  | 
+2019 | Samsung - Copiloto |  | Martin Jalfen | comercials |  | https://player.vimeo.com/video/249193825?h=7467055c12
+2019 | Vidal - Dipper |  | Eduardo Casanova | comercials |  | https://player.vimeo.com/video/365393693?h=223541a82b
+2017 | Volkswagen - Día del padre |  | Miguel Angulo | comercials |  | https://player.vimeo.com/video/159125611?h=a22ae95ef1

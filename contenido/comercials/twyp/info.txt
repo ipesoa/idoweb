@@ -4,5 +4,7 @@ labor:
 director: Eduardo Casanova
 productora: Blur
 mostrar_en_inicio: no
-portada: 01.jpg
+video: https://player.vimeo.com/video/249003094?h=1366bf8494
+video: https://player.vimeo.com/video/249003032?h=47165ea3b1
+video: https://player.vimeo.com/video/243653124?h=0a230eeef0
 ---

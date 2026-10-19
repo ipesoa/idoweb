@@ -4,5 +4,6 @@ labor:
 director: Norma Vila
 productora: Pris&Batty / Bondi
 mostrar_en_inicio: si
+video: https://player.vimeo.com/video/1237173728?h=1c684bc4f2
 encuadre_movil: 40% 50%
 ---

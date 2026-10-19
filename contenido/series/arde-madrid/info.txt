@@ -3,6 +3,6 @@ año: 2018
 labor: 
 director: Paco León
 mostrar_en_inicio: no
+video: https://player.vimeo.com/video/285068434?h=87fe745bda
 encuadre_movil: 49% 50%
-portada: 08.jpg
 ---

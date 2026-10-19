@@ -4,6 +4,6 @@ labor:
 director: Álvaro Fernández Armero
 productora: Telecinco
 mostrar_en_inicio: no
+video: https://player.vimeo.com/video/360825378?h=710a3df7fa
 encuadre_movil: 23% 50%
-portada: 01.jpg
 ---

@@ -36,6 +36,7 @@ labor:
 director: Álvaro Fernández Armero
 productora: Nadie es perfecto / Netflix
 mostrar_en_inicio: no
+video: https://player.vimeo.com/video/744941465?h=4588b1a547
 encuadre_movil: 17% 50%
 ---
 `,
@@ -250,8 +251,8 @@ labor:
 director: Zoe Berriatúa
 productora: Pokeepsie Films
 mostrar_en_inicio: si
+video: https://player.vimeo.com/video/292459943?h=f2a5316fd6
 encuadre_movil: 35% 50%
-portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -298,8 +299,8 @@ labor:
 director: Nacho Vigalondo
 productora: Sayaka
 mostrar_en_inicio: si
+video: https://player.vimeo.com/video/53514834?h=2bbe62d766
 encuadre_movil: 48% 50%
-portada: 03.jpg
 ---
 `,
       "archivos": [
@@ -355,8 +356,8 @@ labor:
 director: Peris Romano
 productora: José Frade PC
 mostrar_en_inicio: si
+video: https://player.vimeo.com/video/151327592?h=5d7a73bef3
 encuadre_movil: 38% 50%
-portada: 04.jpg
 ---
 `,
       "archivos": [
@@ -400,7 +401,7 @@ labor:
 director: Eduardo Casanova
 productora: Pokeepsie Films
 mostrar_en_inicio: si
-portada: 03.jpg
+video: https://player.vimeo.com/video/201715810?h=42b736bd5c
 ---
 `,
       "archivos": [
@@ -426,8 +427,8 @@ labor:
 director: Curro Velázquez
 productora: Morena Films
 mostrar_en_inicio: no
+video: https://player.vimeo.com/video/237627151?h=238a9b18f9
 encuadre_movil: 91% 50%
-portada: 30.jpg
 ---
 `,
       "archivos": [
@@ -477,6 +478,7 @@ labor:
 director: Paco León
 productora: Telecinco / Netflix
 mostrar_en_inicio: si
+video: https://player.vimeo.com/video/744939775?h=f6153c9bbe
 encuadre_movil: 90% 50%
 ---
 `,
@@ -564,6 +566,7 @@ labor:
 director: Norma Vila
 productora: Pris&Batty / Bondi
 mostrar_en_inicio: si
+video: https://player.vimeo.com/video/1237173728?h=1c684bc4f2
 encuadre_movil: 40% 50%
 ---
 `,
@@ -631,8 +634,8 @@ labor:
 director: Álvaro Fernández Armero
 productora: Telecinco
 mostrar_en_inicio: no
+video: https://player.vimeo.com/video/360825378?h=710a3df7fa
 encuadre_movil: 23% 50%
-portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -653,8 +656,8 @@ año: 2018
 labor: 
 director: Paco León
 mostrar_en_inicio: no
+video: https://player.vimeo.com/video/285068434?h=87fe745bda
 encuadre_movil: 49% 50%
-portada: 08.jpg
 ---
 `,
       "archivos": [
@@ -804,6 +807,7 @@ año: 2017
 labor: 
 director: 
 mostrar_en_inicio: no
+video: https://player.vimeo.com/video/159125611?h=a22ae95ef1
 ---
 `,
       "archivos": []
@@ -815,6 +819,8 @@ año: 2019
 labor: 
 director: 
 mostrar_en_inicio: no
+video: https://player.vimeo.com/video/365394222?h=daf6c5a01c
+video: https://player.vimeo.com/video/365393693?h=223541a82b
 ---
 `,
       "archivos": []
@@ -837,6 +843,19 @@ año: 2019
 labor: 
 director: 
 mostrar_en_inicio: no
+video: https://player.vimeo.com/video/249193825?h=7467055c12
+---
+`,
+      "archivos": []
+    },
+    {
+      "carpeta": "amstel-radler",
+      "info": `titulo: Amstel Radler
+año: 
+labor: 
+director: 
+mostrar_en_inicio: no
+video: https://player.vimeo.com/video/162179680?h=88124ac41d
 ---
 `,
       "archivos": []
@@ -849,7 +868,7 @@ labor:
 director: Eduardo Casanova
 productora: The Stoat Fashion Film
 mostrar_en_inicio: no
-portada: 01.jpg
+video: https://player.vimeo.com/video/249250522?h=43741cdbe3
 ---
 `,
       "archivos": [
@@ -861,6 +880,18 @@ portada: 01.jpg
       {"f":"06.jpg","w":742,"h":383}]
     },
     {
+      "carpeta": "stranger-things",
+      "info": `titulo: Stranger Things
+año: 
+labor: 
+director: 
+mostrar_en_inicio: no
+video: https://player.vimeo.com/video/241555097?h=001f4d97f8
+---
+`,
+      "archivos": []
+    },
+    {
       "carpeta": "twyp",
       "info": `titulo: ING Twyp
 año: 2018
@@ -868,12 +899,26 @@ labor:
 director: Eduardo Casanova
 productora: Blur
 mostrar_en_inicio: no
-portada: 01.jpg
+video: https://player.vimeo.com/video/249003094?h=1366bf8494
+video: https://player.vimeo.com/video/249003032?h=47165ea3b1
+video: https://player.vimeo.com/video/243653124?h=0a230eeef0
 ---
 `,
       "archivos": [
       {"f":"01.jpg","w":2000,"h":1123},
       {"f":"02.jpg","w":2000,"h":1038}]
+    },
+    {
+      "carpeta": "vodafone-one-profesional",
+      "info": `titulo: Vodafone One Profesional
+año: 
+labor: 
+director: 
+mostrar_en_inicio: no
+video: https://player.vimeo.com/video/162179623?h=9fd0ed75be
+---
+`,
+      "archivos": []
     },
   ],
   "videoclips": [
@@ -922,6 +967,7 @@ menu_peso: 400
 delfines_contact: no
 menu_fuente: arial
 menu_mayusculas: si
+trailers_importados: 2026-10-19-vimeo
 ---
 HELLÖ!
 
@@ -939,14 +985,14 @@ Enjoy!
     "filmografia": `# =====================================================================
 #  FILMOGRAFÍA EXTRA  ·  trabajos que salen en la lista del about
 #  con ficha propia (sin fotos). Una URL opcional enlaza directamente fuera.
-#  Una línea por trabajo: año | título | labor | director o cliente | sección | URL
+#  Una línea por trabajo: año | título | labor | director o cliente | sección | URL | vídeo
 # =====================================================================
-2025 | Asisa - Reemplazo |  | Miguel Angulo | comercials | 
-2019 | Samsung - Copiloto |  | Martin Jalfen | comercials | 
-2019 | Vidal - Dipper |  | Eduardo Casanova | comercials | 
-2017 | Volkswagen - Día del padre |  | Miguel Angulo | comercials | 
+2025 | Asisa - Reemplazo |  | Miguel Angulo | comercials |  | 
+2019 | Samsung - Copiloto |  | Martin Jalfen | comercials |  | https://player.vimeo.com/video/249193825?h=7467055c12
+2019 | Vidal - Dipper |  | Eduardo Casanova | comercials |  | https://player.vimeo.com/video/365393693?h=223541a82b
+2017 | Volkswagen - Día del padre |  | Miguel Angulo | comercials |  | https://player.vimeo.com/video/159125611?h=a22ae95ef1
 `,
     "archivos": []
   }
 };
-/* gestor: 202610190944 */
+/* gestor: 202610191104 */

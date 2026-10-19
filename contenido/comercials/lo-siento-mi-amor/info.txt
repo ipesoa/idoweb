@@ -4,5 +4,5 @@ labor:
 director: Eduardo Casanova
 productora: The Stoat Fashion Film
 mostrar_en_inicio: no
-portada: 01.jpg
+video: https://player.vimeo.com/video/249250522?h=43741cdbe3
 ---
