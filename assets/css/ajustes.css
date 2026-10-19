@@ -176,7 +176,7 @@
 
 /* ---------- 5. PÁGINA DE PROYECTO (vídeo + ficha + crew + texto) ---- */
   --video-formato:     1.78;          /* formato del vídeo de arriba: 1.78 = 16/9 · 1.85 = cine · 2.39 = scope */
-  --video-ancho:       100vw;         /* 100vw = de lado a lado · min(100vw, 1400px) = con márgenes */
+  --video-ancho:       88vw;          /* ancho del tráiler centrado, con aire a los lados */
   --video-alto-max:    86vh;          /* no más alto que esto, para que se vea que sigue abajo */
   --proyecto-tam-titulo: 1.3rem;      /* título debajo del vídeo */
   --proyecto-tam-ficha:  .8rem;       /* directed by / produced by */

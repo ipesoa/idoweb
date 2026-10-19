@@ -43,8 +43,11 @@
     a.href = p.enlace;
     a.dataset.tipo = p.tipo;
     const ficha = Comun.ficha(p).map((t, i) => `<span${i === 0 ? ' class="celda__titulo"' : ""}>${esc(t)}</span>`).join("");
-    const portada = `<img class="celda__fondo" src="${esc((p.portada || {}).url)}" alt="${esc(p.titulo)}" loading="lazy" decoding="async"
-           style="object-position:${esc(p.encuadre)}">`;
+    const portada = p.portada
+      ? `<img class="celda__fondo" src="${esc(p.portada.url)}" alt="${esc(p.titulo)}" loading="lazy" decoding="async"
+           style="object-position:${esc(p.encuadre)}">`
+      : `<span class="celda__fondo-sin-foto" aria-hidden="true"></span>`;
+    if (!p.portada) a.classList.add("sin-portada");
 
     if (conCarteles) {
       if (p.cartel) a.classList.add("con-cartel");

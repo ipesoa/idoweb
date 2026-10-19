@@ -294,6 +294,7 @@ button { cursor: pointer; background: none; border: 0; }
   <!-- Arrastrar un .zip de actualización a cualquier parte de la ventana -->
   <div class="soltar-zip" id="soltarZip">Suelta aquí el .zip con la actualización de la web</div>
 
+  <script src="assets/js/trailers-idoia.js?v=202610191028"></script>
   <script>
 /* =====================================================================
    GESTOR DE LA WEB
@@ -322,7 +323,7 @@ button { cursor: pointer; background: none; border: 0; }
   // Versión de este gestor. Si en GitHub hay un gestor más nuevo (por ejemplo,
   // una pestaña abierta desde antes de instalar una actualización), no deja
   // publicar: guardaría las cosas a la manera antigua.
-  const VERSION_GESTOR = "2026-10-19-contact-lista";
+  const VERSION_GESTOR = "2026-10-19-trailers-vimeo";
 
   /* Las secciones de la web. Si algún día se añade otra, se pone aquí y en
      assets/js/ajustes.js (AJUSTES.secciones) y en los generadores de datos. */
@@ -473,25 +474,58 @@ button { cursor: pointer; background: none; border: 0; }
       fuentePendiente: null,
       fuentesNuevas: [], fuentesBorrar: [], homeBorrados: [], delfinesNuevos: [],
     };
+    const trailersPreparados = prepararTrailersImportados();
+    E.trailersPendientes = trailersPreparados;
     seleccion.clear();
     pintar();
     comprobarWeb();
+    if (trailersPreparados) aviso("Vídeos preparados. Pulsa «Publicar cambios» para guardarlos en las fichas de GitHub.");
   }
 
   /* ---------- filmografía extra (trabajos sin fotos) ---------- */
   function leerExtra(txt) {
     return (txt || "").replace(/\r/g, "").split("\n").filter((l) => l.trim() && !/^\s*#/.test(l)).map((l) => {
-      const [ano, titulo, labor, quien, tipo, url] = l.split("|").map((s) => (s || "").trim());
-      return { ano, titulo, labor, quien, tipo: (tipo || "films").toLowerCase(), url };
+      const [ano, titulo, labor, quien, tipo, url, video] = l.split("|").map((s) => (s || "").trim());
+      return { ano, titulo, labor, quien, tipo: (tipo || "films").toLowerCase(), url, video };
     });
   }
   function extraATexto(filas) {
     return `# =====================================================================
 #  FILMOGRAFÍA EXTRA  ·  trabajos que salen en la lista del about
 #  con ficha propia (sin fotos). Una URL opcional enlaza directamente fuera.
-#  Una línea por trabajo: año | título | labor | director o cliente | sección | URL
+#  Una línea por trabajo: año | título | labor | director o cliente | sección | URL | vídeo
 # =====================================================================
-` + filas.filter((f) => f.titulo).map((f) => [f.ano, f.titulo, f.labor, f.quien, f.tipo, f.url].map((v) => (v || "").replace(/\|/g, "/")).join(" | ")).join("\n") + "\n";
+` + filas.filter((f) => f.titulo).map((f) => [f.ano, f.titulo, f.labor, f.quien, f.tipo, f.url, f.video].map((v) => (v || "").replace(/\|/g, "/")).join(" | ")).join("\n") + "\n";
+  }
+
+  // El ZIP muestra los tráileres en la web inmediatamente. Esta importación
+  // los convierte después en contenido normal del gestor, sin renombrar fotos.
+  function prepararTrailersImportados() {
+    const plan = window.TRAILERS_IMPORT;
+    if (!plan || E.about.info.campos.trailers_importados === plan.version) return false;
+    const mismoTitulo = (a, b) => slug(String(a || "")) === slug(String(b || ""));
+    for (const item of plan.proyectos) {
+      const p = E.proyectos.find((x) => x.tipo === item.tipo &&
+        (x.carpeta === item.carpeta || mismoTitulo(x.info.campos.titulo || x.carpeta, item.titulo)));
+      const videos = item.videos.join("\n");
+      if (p) {
+        p.info.campos.video = videos;
+        if (!p.nuevo) { p.sucio = true; p.infoSolo = true; }
+      } else {
+        E.proyectos.push({
+          tipo: item.tipo, carpeta: item.carpeta, nuevo: true, sucio: false,
+          fotos: [], portada: null, movil: null, cartel: null, rutasOriginales: [], archivosOriginales: [],
+          info: { campos: { titulo: item.titulo, ano: item.ano || "", labor: "", director: "", video: videos, mostrar_en_inicio: "no" }, orden: [], texto: "" },
+        });
+      }
+    }
+    for (const item of plan.extras || []) {
+      const f = E.about.extra.find((x) => x.tipo === item.tipo && mismoTitulo(x.titulo, item.titulo));
+      if (f) f.video = item.video;
+    }
+    E.about.info.campos.trailers_importados = plan.version;
+    E.aboutSucio = true;
+    return true;
   }
 
   /* ================= LED ================= */
@@ -505,7 +539,8 @@ button { cursor: pointer; background: none; border: 0; }
     const n = E ? E.proyectos.filter((p) => p.sucio || p.nuevo).length + E.borrados.length + (E.aboutSucio ? 1 : 0) + (E.homeSucio ? 1 : 0) : 0;
     $("#publicar").disabled = !n;
     $("#publicar").textContent = n ? `Publicar cambios (${n})` : "Publicar cambios";
-    $("#pendientes").textContent = n ? `${n} cambio${n > 1 ? "s" : ""} sin publicar` : "Todo publicado";
+    $("#pendientes").textContent = E?.trailersPendientes ? `${n} cambios sin publicar · vídeos Vimeo preparados`
+      : n ? `${n} cambio${n > 1 ? "s" : ""} sin publicar` : "Todo publicado";
     $("#descartar").hidden = !n;
     if (n) led("pendiente", "Hay cambios sin publicar");
     else if (!comprobando) led(ultimoEstadoWeb.estado, ultimoEstadoWeb.texto);
@@ -816,6 +851,7 @@ button { cursor: pointer; background: none; border: 0; }
             <label class="campo"><span>Labor</span><input data-extra="${i}" data-k="labor" value="${esc(f.labor)}" placeholder="Production designer"></label>
             <label class="campo"><span>Director o cliente</span><input data-extra="${i}" data-k="quien" value="${esc(f.quien)}" placeholder="Nombre"></label>
             <label class="campo campo--ancho"><span>URL externa (opcional)</span><input data-extra="${i}" data-k="url" value="${esc(f.url)}" placeholder="https://..."></label>
+            <label class="campo campo--ancho"><span>Vídeo (Vimeo, YouTube o .mp4)</span><input data-extra="${i}" data-k="video" value="${esc(f.video)}" placeholder="https://player.vimeo.com/video/..."></label>
           </div><button class="boton boton--peligro" data-quitar-extra="${i}">Quitar este trabajo de Contact</button></details>`).join("")
           : '<p class="nota">No hay trabajos añadidos a mano.</p>'}</div>`;
   }
@@ -1185,7 +1221,7 @@ button { cursor: pointer; background: none; border: 0; }
         ${campo("director", "Dirección", "Nombre del director/a")}
         ${T.cliente ? campo("cliente", "Cliente / marca") : campo("productora", "Productora")}
         ${campo("formato", "Formato (opcional)", "Largometraje, serie…")}
-        ${campo("video", "Vídeo de arriba (Vimeo, YouTube, .mp4 o código iframe)", "https://vimeo.com/…", true)}
+        ${campo("video", "Vídeo de arriba (uno por línea: Vimeo, YouTube, .mp4 o iframe)", "https://vimeo.com/…", true)}
         ${campo("imdb", "Enlace IMDb (opcional)")}
         <label class="campo"><span>Encuadre de la portada</span><select data-campo="encuadre">${encuadres.map(([v, t]) => `<option value="${v}"${(campos.encuadre || "") === v ? " selected" : ""}>${t}</option>`).join("")}</select></label>
         <label class="campo"><span>Pase del inicio</span><button type="button" class="interruptor ${si ? "si" : ""}" data-ed="inicio" style="justify-content:flex-start;padding:8px 0"><i></i><span>${si ? "Sale en el inicio" : "No sale en el inicio"}</span></button></label>
@@ -1359,6 +1395,7 @@ button { cursor: pointer; background: none; border: 0; }
     if (!ed.campos.titulo) { aviso("Falta el título", true); return; }
     if (ed.fotos.length && !portadaDe(ed)) { aviso("Hace falta al menos una foto (no vídeo) para la portada", true); return; }
     p.info.campos = { ...ed.campos };
+    delete p.infoSolo;
     if (!p.info.campos.encuadre) delete p.info.campos.encuadre;
     p.info.texto = ed.texto;
     p.fotos = ed.fotos; p.portada = portadaDe(ed); p.movil = ed.movil; p.cartel = ed.cartel;
@@ -1439,7 +1476,13 @@ button { cursor: pointer; background: none; border: 0; }
 
       for (const p of E.proyectos) {
         const base = `contenido/${p.tipo}/${p.carpeta}/`;
-        if (!p.sucio && !p.nuevo) { datos[p.tipo].push({ carpeta: p.carpeta, info: p.infoOriginal, archivos: p.archivosOriginales }); continue; }
+      if (!p.sucio && !p.nuevo) { datos[p.tipo].push({ carpeta: p.carpeta, info: p.infoOriginal, archivos: p.archivosOriginales }); continue; }
+      if (p.infoSolo && !p.nuevo) {
+        const infoTxt = infoATexto(p);
+        poner(base + "info.txt", await blobTexto(infoTxt));
+        datos[p.tipo].push({ carpeta: p.carpeta, info: infoTxt, archivos: p.archivosOriginales });
+        continue;
+      }
         // Fotos: 01, 02… en el orden del editor (el de la página de la peli).
         // La portada de la parrilla se guarda aparte con la clave "portada:".
         const finales = p.fotos.map((f, i) => ({ f, nombre: String(i + 1).padStart(2, "0") + "." + (f.ext || (f.f.match(/\.(\w+)$/) || [, "jpg"])[1].toLowerCase()) }));
@@ -1733,7 +1776,7 @@ button { cursor: pointer; background: none; border: 0; }
       return;
     }
     if (acc === "extra-anadir") {
-      E.about.extra.push({ ano: "", titulo: "", labor: "", quien: "", tipo: "films", url: "" });
+      E.about.extra.push({ ano: "", titulo: "", labor: "", quien: "", tipo: "films", url: "", video: "" });
       E.aboutSucio = true; pintar();
       const detalle = $(`#contact-manual-${E.about.extra.length - 1}`);
       detalle?.scrollIntoView({ behavior: "smooth", block: "center" });

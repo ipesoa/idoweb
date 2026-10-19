@@ -451,37 +451,52 @@
   }
 
   /* ---------- VÍDEO ----------
-     Comun.embed(url)        → dirección para incrustar (Vimeo / YouTube)
-     Comun.reproductor(url)  → el trozo de HTML ya montado, lo más limpio
-                               posible: sin títulos, sin logotipos y, si
-                               AJUSTES.proyecto lo dice, con autoplay.
-     Vale un enlace de Vimeo o YouTube, la dirección de un archivo .mp4
-     colgado en cualquier servidor, la dirección de un reproductor
-     cualquiera, o el código <iframe …> que te dé la página que lo aloja. */
+     Acepta enlaces, varios "video:" en info.txt o códigos iframe pegados.
+     Vimeo conserva el h= de los vídeos no listados y muestra sus controles. */
   const P = () => (A.proyecto || {});
+  function fuentesVideo(valor) {
+    const texto = String(valor || "").trim();
+    if (!texto) return [];
+    const iframes = [...texto.matchAll(/<iframe\b[^>]*\bsrc\s*=\s*(["'])(.*?)\1[^>]*>/gis)]
+      .map((m) => m[2].replace(/&amp;/g, "&"));
+    return iframes.length ? iframes : texto.split(/\n+/).map((s) => s.trim()).filter(Boolean);
+  }
   function embed(url) {
     if (!url) return "";
     const a = P().autoplay ? 1 : 0, s = P().silencio ? 1 : 0, c = P().controles === false ? 0 : 1;
     let m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([\w-]{6,})/);
     if (m) return `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0&modestbranding=1&playsinline=1&controls=${c}` +
       `&autoplay=${a}&mute=${s}${P().bucle ? `&loop=1&playlist=${m[1]}` : ""}`;
-    m = url.match(/vimeo\.com\/(?:video\/)?(\d+)(?:\/(\w+))?/);
-    if (m) return `https://player.vimeo.com/video/${m[1]}?${m[2] ? "h=" + m[2] + "&" : ""}dnt=1&title=0&byline=0&portrait=0` +
-      `&autoplay=${a}&muted=${s}&controls=${c}${P().bucle ? "&loop=1" : ""}`;
+    try {
+      const u = new URL(url);
+      if (/^(?:player\.)?vimeo\.com$/i.test(u.hostname) || u.hostname === "www.vimeo.com") {
+        m = u.pathname.match(/^\/(?:video\/)?(\d+)(?:\/([a-z0-9]+))?/i);
+        if (m) {
+          const destino = new URL(`https://player.vimeo.com/video/${m[1]}`);
+          const h = u.searchParams.get("h") || m[2];
+          if (h) destino.searchParams.set("h", h);
+          Object.entries({ dnt: 1, title: 0, byline: 0, portrait: 0, autoplay: a, muted: s, controls: c, playsinline: 1 })
+            .forEach(([k, v]) => destino.searchParams.set(k, String(v)));
+          if (P().bucle) destino.searchParams.set("loop", "1");
+          return destino.href;
+        }
+      }
+    } catch (e) { /* otras direcciones de vídeo se dejan tal cual */ }
     return "";
   }
   const esArchivoVideo = (u) => /\.(mp4|webm|ogv|m4v|mov)(\?|#|$)/i.test(u);
   function reproductor(url, titulo = "") {
-    if (!url) return "";
-    if (/^\s*</.test(url)) return url;                       // código <iframe …> pegado tal cual
-    if (esArchivoVideo(url)) {
-      return `<video src="${url}" playsinline preload="metadata"
+    const fuente = fuentesVideo(url)[0];
+    if (!fuente) return "";
+    if (esArchivoVideo(fuente)) {
+      return `<video src="${htmlSeguro(fuente)}" playsinline preload="metadata"
         ${P().autoplay ? "autoplay" : ""} ${P().silencio ? "muted" : ""} ${P().bucle ? "loop" : ""}
         ${P().controles === false ? "" : "controls"}></video>`;
     }
-    const src = embed(url) || url;                            // otro reproductor cualquiera
-    return `<iframe src="${src}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-      allowfullscreen frameborder="0" title="${titulo}"></iframe>`;
+    const src = embed(fuente) || fuente;
+    if (!/^https?:\/\//i.test(src)) return "";
+    return `<iframe src="${htmlSeguro(src)}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+      allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="${htmlSeguro(titulo)}"></iframe>`;
   }
 
   /* ---------- FICHA: título / directed by / produced by ---------- */
@@ -559,7 +574,7 @@
   montarCortina();
 
 
-  window.Comun = { autoScroll, visor, aparecer, letras, azar, irA, embed, reproductor, ficha,
+  window.Comun = { autoScroll, visor, aparecer, letras, azar, irA, embed, reproductor, fuentesVideo, ficha,
     aplicarEfectos,                                   // (gestor) aplicar efectos en directo
     franja,
     animarNombre: () => entradaNombre(document.querySelector(".menu__nombre"), true),

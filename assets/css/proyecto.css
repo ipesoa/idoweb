@@ -4,25 +4,35 @@
    La rejilla en sí está en base.css (.rejilla-cine)
    ===================================================================== */
 
-/* ---- 1. Vídeo de arriba (lo más limpio posible: sin marco ni fondo) ---- */
+/* ---- 1. Vídeo centrado, 16:9; el título comienza justo debajo ---- */
 .proyecto__video {
-  /* no más ancho de lo que cabe de alto, para que se vea que hay más abajo */
   width: min(var(--video-ancho), calc(var(--video-alto-max) * var(--video-formato)));
-  margin: 0 auto;
+  margin: clamp(112px, 15vh, 160px) auto 0;
+}
+.proyecto__reproductor {
+  width: 100%;
   aspect-ratio: var(--video-formato);
   background: #000;
 }
-.proyecto__video iframe,
-.proyecto__video video {
+.proyecto__reproductor iframe,
+.proyecto__reproductor video {
   width: 100%; height: 100%; border: 0; display: block;
   object-fit: cover;
 }
+.proyecto__videos-elegir {
+  display: flex; justify-content: center; gap: 1.1rem;
+  padding-top: 12px;
+  font: 12px Arial, sans-serif; letter-spacing: .12em;
+}
+.proyecto__videos-elegir button { opacity: .55; padding: 5px 2px; }
+.proyecto__videos-elegir button[aria-pressed="true"] { opacity: 1; border-bottom: 1px solid currentColor; }
+.proyecto__videos-elegir button:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
 
 /* ---- 2. Ficha: título, directed by, produced by, año ---- */
 .proyecto__ficha {
   text-align: center;
   font-family: var(--fuente-texto);
-  padding: clamp(40px, 7vh, 90px) var(--margen) 0;
+  padding: clamp(15px, 2.5vh, 28px) var(--margen) 0;
 }
 /* si el proyecto no tiene vídeo, la ficha empieza más abajo (el menú es fijo) */
 .sin-video .proyecto__ficha { padding-top: clamp(150px, 24vh, 240px); }
@@ -101,6 +111,7 @@
 .no-encontrado { min-height: 100vh; display: grid; place-items: center; text-align: center; padding: 2rem; color: var(--color-suave); }
 
 @media (max-width: 700px) {
+  .proyecto__video { width: 90vw; margin-top: clamp(105px, 15vh, 135px); }
   .proyecto__crew { columns: 1; }
   .proyecto__ficha { padding-top: clamp(30px, 5vh, 60px); }
 }

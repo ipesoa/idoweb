@@ -4,8 +4,8 @@
    Dirección:  proyecto.html?tipo=films&id=CARPETA
      tipo = films | series | comercials | videoclips
    Orden de la página:
-     1. VÍDEO      clave "video:" del info.txt (Vimeo, YouTube, un .mp4 de
-                   tu servidor o el código <iframe…> que te den).
+     1. VÍDEO      una o más claves "video:" del info.txt (Vimeo, YouTube,
+                   .mp4 o código <iframe…>), con selector si hay varios.
                    Empieza solo y sin sonido: ajustes.js → AJUSTES.proyecto
      2. FICHA      título · directed by · produced by · año
      3. CREW       una línea "crew:" por persona → sale a dos columnas
@@ -33,9 +33,23 @@
 
   /* ---- 1. vídeo ---- */
   const video = document.getElementById("video");
-  const html = Comun.reproductor(p.video, p.titulo);
-  if (html) video.innerHTML = html;
-  else { video.remove(); document.body.classList.add("sin-video"); }   // sin vídeo, la ficha baja para no chocar con el menú
+  const fuentes = Comun.fuentesVideo(p.video).filter((u) => Comun.reproductor(u, p.titulo));
+  if (fuentes.length) {
+    video.innerHTML = `<div class="proyecto__reproductor">${Comun.reproductor(fuentes[0], p.titulo)}</div>`;
+    if (fuentes.length > 1) {
+      const elegir = document.createElement("nav");
+      elegir.className = "proyecto__videos-elegir";
+      elegir.setAttribute("aria-label", "Vídeos de este trabajo");
+      elegir.innerHTML = fuentes.map((_, i) => `<button type="button" aria-pressed="${i === 0}" aria-label="Ver vídeo ${i + 1} de ${fuentes.length}">${String(i + 1).padStart(2, "0")}</button>`).join("");
+      const botones = [...elegir.querySelectorAll("button")];
+      botones.forEach((b, i) => b.addEventListener("click", () => {
+        if (b.getAttribute("aria-pressed") === "true") return;
+        video.querySelector(".proyecto__reproductor").innerHTML = Comun.reproductor(fuentes[i], `${p.titulo} — ${i + 1}`);
+        botones.forEach((opcion, n) => opcion.setAttribute("aria-pressed", String(n === i)));
+      }));
+      video.append(elegir);
+    }
+  } else { video.remove(); document.body.classList.add("sin-video"); }   // sin vídeo, la ficha baja para no chocar con el menú
 
   /* ---- 2. ficha: título / directed by / produced by / año ---- */
   const [titulo, dirigido, producido] = [
