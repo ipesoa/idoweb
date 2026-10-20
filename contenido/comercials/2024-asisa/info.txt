@@ -4,4 +4,5 @@ labor:
 director: Miguel Angulo
 mostrar_en_inicio: no
 video: https://player.vimeo.com/video/1237206224?h=082ba1cfdc
+portada: 01.jpg
 ---

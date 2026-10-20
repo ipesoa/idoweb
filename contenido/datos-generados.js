@@ -829,11 +829,12 @@ año: 2019
 labor: 
 director: 
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/365394222?h=daf6c5a01c
-video: https://player.vimeo.com/video/365393693?h=223541a82b
+video: https://player.vimeo.com/video/365394222?h=daf6c5a01chttps://player.vimeo.com/video/365393693?h=223541a82b
+portada: 01.jpg
 ---
 `,
-      "archivos": []
+      "archivos": [
+      {"f":"01.jpg","w":2550,"h":1430}]
     },
     {
       "carpeta": "2024-asisa",
@@ -843,21 +844,25 @@ labor:
 director: Miguel Angulo
 mostrar_en_inicio: no
 video: https://player.vimeo.com/video/1237206224?h=082ba1cfdc
+portada: 01.jpg
 ---
 `,
-      "archivos": []
+      "archivos": [
+      {"f":"01.jpg","w":2600,"h":1271}]
     },
     {
       "carpeta": "2026-samsung",
       "info": `titulo: Samsung
 año: 2019
 labor: 
-director: 
+director: Martin Jalfen
 mostrar_en_inicio: no
 video: https://player.vimeo.com/video/249193825?h=7467055c12
+portada: 01.jpg
 ---
 `,
-      "archivos": []
+      "archivos": [
+      {"f":"01.jpg","w":2600,"h":964}]
     },
     {
       "carpeta": "lo-siento-mi-amor",
@@ -971,4 +976,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610201215 */
+/* gestor: 202610201308 */

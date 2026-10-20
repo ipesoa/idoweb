@@ -1,7 +1,8 @@
 titulo: Samsung
 año: 2019
 labor: 
-director: 
+director: Martin Jalfen
 mostrar_en_inicio: no
 video: https://player.vimeo.com/video/249193825?h=7467055c12
+portada: 01.jpg
 ---
