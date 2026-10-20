@@ -14,7 +14,7 @@
 .celda-proyecto { cursor: pointer; }
 .celda-proyecto.oculta { display: none; }
 /* Fichas con tráiler y sin fotografías: tarjeta lisa, sin imagen rota. */
-.celda__fondo-sin-foto { position: absolute; inset: 0; background: #191817; }
+.celda__fondo-sin-foto { position: absolute; inset: 0; background: #000; }
 .celda-proyecto.sin-portada .celda-proyecto__txt,
 .modo-cartel .celda-proyecto.sin-portada .celda__texto {
   display: flex; align-items: center; justify-content: center;

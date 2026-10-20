@@ -294,7 +294,7 @@ button { cursor: pointer; background: none; border: 0; }
   <!-- Arrastrar un .zip de actualización a cualquier parte de la ventana -->
   <div class="soltar-zip" id="soltarZip">Suelta aquí el .zip con la actualización de la web</div>
 
-  <script src="assets/js/trailers-idoia.js?v=202610201440"></script>
+  <script src="assets/js/trailers-idoia.js?v=202610201642"></script>
   <script>
 /* =====================================================================
    GESTOR DE LA WEB
@@ -323,7 +323,7 @@ button { cursor: pointer; background: none; border: 0; }
   // Versión de este gestor. Si en GitHub hay un gestor más nuevo (por ejemplo,
   // una pestaña abierta desde antes de instalar una actualización), no deja
   // publicar: guardaría las cosas a la manera antigua.
-  const VERSION_GESTOR = "2026-10-20-r2-native-v2";
+  const VERSION_GESTOR = "2026-10-20-r2-native-v3";
 
   /* Las secciones de la web. Si algún día se añade otra, se pone aquí y en
      assets/js/ajustes.js (AJUSTES.secciones) y en los generadores de datos. */
@@ -514,7 +514,7 @@ button { cursor: pointer; background: none; border: 0; }
       if (p) {
         p.info.campos.video = videos;
         if (!p.nuevo) { p.sucio = true; p.infoSolo = true; }
-      } else if (item.videos.length) {
+      } else {
         E.proyectos.push({
           tipo: item.tipo, carpeta: item.carpeta, nuevo: true, sucio: false,
           fotos: [], portada: null, movil: null, cartel: null, rutasOriginales: [], archivosOriginales: [],

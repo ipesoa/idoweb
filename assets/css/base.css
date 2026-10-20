@@ -277,7 +277,7 @@ body[data-pagina="contact"] .contacto { position: relative; z-index: 1; }
 /* ---------- VISOR DE FOTOS (al pinchar una imagen) ------------------ */
 .visor {
   position: fixed; inset: 0; z-index: 900;
-  background: rgba(8, 8, 7, .96);
+  background: #000;
   display: flex; align-items: center; justify-content: center;
   opacity: 0; pointer-events: none;
   transition: opacity .45s var(--curva);
