@@ -1,7 +1,0 @@
-titulo: Vodafone One Profesional
-año: 
-labor: 
-director: 
-mostrar_en_inicio: no
-video: https://player.vimeo.com/video/162179623?h=9fd0ed75be
----

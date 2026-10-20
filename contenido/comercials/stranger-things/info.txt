@@ -1,7 +1,0 @@
-titulo: Stranger Things
-año: 
-labor: 
-director: 
-mostrar_en_inicio: no
-video: https://player.vimeo.com/video/241555097?h=001f4d97f8
----

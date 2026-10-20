@@ -813,12 +813,14 @@ video: https://player.vimeo.com/video/1237205628?h=ab446d4065
       "info": `titulo: Volkswagen
 año: 2017
 labor: 
-director: 
+director: Miguel Angulo
 mostrar_en_inicio: no
 video: https://player.vimeo.com/video/159125611?h=a22ae95ef1
+portada: 01.jpg
 ---
 `,
-      "archivos": []
+      "archivos": [
+      {"f":"01.jpg","w":1875,"h":1080}]
     },
     {
       "carpeta": "2021-vidal",
@@ -858,26 +860,16 @@ video: https://player.vimeo.com/video/249193825?h=7467055c12
       "archivos": []
     },
     {
-      "carpeta": "amstel-radler",
-      "info": `titulo: Amstel Radler
-año: 
-labor: 
-director: 
-mostrar_en_inicio: no
-video: https://player.vimeo.com/video/162179680?h=88124ac41d
----
-`,
-      "archivos": []
-    },
-    {
       "carpeta": "lo-siento-mi-amor",
       "info": `titulo: Lo siento mi amor
 año: 2018
 labor: 
 director: Eduardo Casanova
 productora: The Stoat Fashion Film
+cliente: The Stoat
 mostrar_en_inicio: no
 video: https://player.vimeo.com/video/249250522?h=43741cdbe3
+portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -889,18 +881,6 @@ video: https://player.vimeo.com/video/249250522?h=43741cdbe3
       {"f":"06.jpg","w":742,"h":383}]
     },
     {
-      "carpeta": "stranger-things",
-      "info": `titulo: Stranger Things
-año: 
-labor: 
-director: 
-mostrar_en_inicio: no
-video: https://player.vimeo.com/video/241555097?h=001f4d97f8
----
-`,
-      "archivos": []
-    },
-    {
       "carpeta": "twyp",
       "info": `titulo: ING Twyp
 año: 2018
@@ -908,26 +888,13 @@ labor:
 director: Eduardo Casanova
 productora: Blur
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/249003094?h=1366bf8494
-video: https://player.vimeo.com/video/249003032?h=47165ea3b1
-video: https://player.vimeo.com/video/243653124?h=0a230eeef0
+video: https://player.vimeo.com/video/249003094?h=1366bf8494https://player.vimeo.com/video/249003032?h=47165ea3b1https://player.vimeo.com/video/243653124?h=0a230eeef0
+portada: 01.jpg
 ---
 `,
       "archivos": [
       {"f":"01.jpg","w":2000,"h":1123},
       {"f":"02.jpg","w":2000,"h":1038}]
-    },
-    {
-      "carpeta": "vodafone-one-profesional",
-      "info": `titulo: Vodafone One Profesional
-año: 
-labor: 
-director: 
-mostrar_en_inicio: no
-video: https://player.vimeo.com/video/162179623?h=9fd0ed75be
----
-`,
-      "archivos": []
     },
   ],
   "videoclips": [
@@ -1004,4 +971,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610201211 */
+/* gestor: 202610201215 */
