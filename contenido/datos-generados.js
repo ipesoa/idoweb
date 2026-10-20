@@ -114,7 +114,7 @@ director: Paco León
 productora: Telecinco
 mostrar_en_inicio: no
 encuadre_movil: 57% 50%
-portada: 11.jpg
+portada: 31.jpg
 ---
 `,
       "archivos": [
@@ -980,4 +980,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610201334 */
+/* gestor: 202610201336 */
