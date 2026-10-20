@@ -400,6 +400,7 @@ productora: Pokeepsie Films
 mostrar_en_inicio: si
 video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/PIELES%20I%20TR%C3%81ILER%20OFICIAL%20%5B8Ik0Lt8FFBA%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 93% 50%
+portada: 03.jpg
 ---
 `,
       "archivos": [
@@ -977,4 +978,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610201355 */
+/* gestor: 202610201409 */
