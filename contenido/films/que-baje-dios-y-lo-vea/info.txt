@@ -5,5 +5,6 @@ director: Curro Velázquez
 productora: Morena Films
 mostrar_en_inicio: no
 video: https://player.vimeo.com/video/237627151?h=238a9b18f9
-encuadre_movil: 91% 50%
+encuadre_movil: 43% 50%
+portada: 01.jpg
 ---

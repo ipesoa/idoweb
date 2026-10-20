@@ -4,6 +4,6 @@ labor:
 director: Nacho Vigalondo
 productora: Sayaka / Netflix
 mostrar_en_inicio: si
+video: https://player.vimeo.com/video/1237205836?h=f06dd7aba8
 encuadre_movil: 38% 50%
-portada: 03.jpg
 ---

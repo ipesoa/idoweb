@@ -4,6 +4,6 @@ labor:
 director: Lucía Alemany
 productora: Telecinco / Netflix
 mostrar_en_inicio: si
+video: https://player.vimeo.com/video/1237206132?h=3abd4df896
 encuadre_movil: 73% 50%
-portada: 02.jpg
 ---

@@ -4,6 +4,6 @@ labor: Design & Concept art in preproduction. Film nominated for Best Production
 director: Eduardo Casanova
 productora: Pokeepsie Films
 mostrar_en_inicio: no
-encuadre_movil: 28% 50%
+encuadre_movil: 39% 50%
 portada: 10.jpg
 ---

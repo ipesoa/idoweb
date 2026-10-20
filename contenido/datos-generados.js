@@ -113,8 +113,8 @@ labor:
 director: Paco León
 productora: Telecinco
 mostrar_en_inicio: no
+video: https://player.vimeo.com/video/1237205448?h=59f7d5d154
 encuadre_movil: 57% 50%
-portada: 34.jpg
 ---
 `,
       "archivos": [
@@ -166,8 +166,8 @@ labor:
 director: Nacho Vigalondo
 productora: Sayaka / Netflix
 mostrar_en_inicio: si
+video: https://player.vimeo.com/video/1237205836?h=f06dd7aba8
 encuadre_movil: 38% 50%
-portada: 03.jpg
 ---
 `,
       "archivos": [
@@ -300,7 +300,8 @@ director: Nacho Vigalondo
 productora: Sayaka
 mostrar_en_inicio: si
 video: https://player.vimeo.com/video/53514834?h=2bbe62d766
-encuadre_movil: 48% 50%
+encuadre_movil: 53% 50%
+portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -323,7 +324,7 @@ labor: Design & Concept art in preproduction. Film nominated for Best Production
 director: Eduardo Casanova
 productora: Pokeepsie Films
 mostrar_en_inicio: no
-encuadre_movil: 28% 50%
+encuadre_movil: 39% 50%
 portada: 10.jpg
 ---
 `,
@@ -357,7 +358,8 @@ director: Peris Romano
 productora: José Frade PC
 mostrar_en_inicio: si
 video: https://player.vimeo.com/video/151327592?h=5d7a73bef3
-encuadre_movil: 38% 50%
+encuadre_movil: 66% 50%
+portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -374,8 +376,8 @@ labor:
 director: Lucía Alemany
 productora: Telecinco / Netflix
 mostrar_en_inicio: si
+video: https://player.vimeo.com/video/1237206132?h=3abd4df896
 encuadre_movil: 73% 50%
-portada: 02.jpg
 ---
 `,
       "archivos": [
@@ -402,6 +404,8 @@ director: Eduardo Casanova
 productora: Pokeepsie Films
 mostrar_en_inicio: si
 video: https://player.vimeo.com/video/201715810?h=42b736bd5c
+encuadre_movil: 93% 50%
+portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -428,7 +432,8 @@ director: Curro Velázquez
 productora: Morena Films
 mostrar_en_inicio: no
 video: https://player.vimeo.com/video/237627151?h=238a9b18f9
-encuadre_movil: 91% 50%
+encuadre_movil: 43% 50%
+portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -480,20 +485,21 @@ productora: Telecinco / Netflix
 mostrar_en_inicio: si
 video: https://player.vimeo.com/video/744939775?h=f6153c9bbe
 encuadre_movil: 90% 50%
+portada: 01.jpg
 ---
 `,
       "archivos": [
-      {"f":"01.jpg","w":2600,"h":1466},
-      {"f":"02.jpg","w":2600,"h":1459},
-      {"f":"03.jpg","w":2600,"h":1461},
+      {"f":"01.jpg","w":2600,"h":1463},
+      {"f":"02.jpg","w":2600,"h":1466},
+      {"f":"03.jpg","w":2600,"h":1459},
       {"f":"04.jpg","w":2600,"h":1461},
-      {"f":"05.jpg","w":2600,"h":1466},
-      {"f":"06.jpg","w":2600,"h":1457},
-      {"f":"07.jpg","w":1600,"h":1200},
+      {"f":"05.jpg","w":2600,"h":1461},
+      {"f":"06.jpg","w":2600,"h":1466},
+      {"f":"07.jpg","w":2600,"h":1457},
       {"f":"08.jpg","w":1600,"h":1200},
-      {"f":"09.jpg","w":2000,"h":1056},
-      {"f":"10.jpg","w":2000,"h":878},
-      {"f":"11.jpg","w":1867,"h":1400},
+      {"f":"09.jpg","w":1600,"h":1200},
+      {"f":"10.jpg","w":2000,"h":1056},
+      {"f":"11.jpg","w":2000,"h":878},
       {"f":"12.jpg","w":1867,"h":1400},
       {"f":"13.jpg","w":1867,"h":1400},
       {"f":"14.jpg","w":1867,"h":1400},
@@ -501,62 +507,62 @@ encuadre_movil: 90% 50%
       {"f":"16.jpg","w":1867,"h":1400},
       {"f":"17.jpg","w":1867,"h":1400},
       {"f":"18.jpg","w":1867,"h":1400},
-      {"f":"19.jpg","w":2600,"h":1459},
-      {"f":"20.jpg","w":2000,"h":881},
-      {"f":"21.jpg","w":2600,"h":1464},
-      {"f":"22.jpg","w":2000,"h":881},
-      {"f":"23.jpg","w":2600,"h":1459},
+      {"f":"19.jpg","w":1867,"h":1400},
+      {"f":"20.jpg","w":2600,"h":1459},
+      {"f":"21.jpg","w":2000,"h":881},
+      {"f":"22.jpg","w":2600,"h":1464},
+      {"f":"23.jpg","w":2000,"h":881},
       {"f":"24.jpg","w":2600,"h":1459},
-      {"f":"25.jpg","w":2600,"h":1463},
+      {"f":"25.jpg","w":2600,"h":1459},
       {"f":"26.jpg","w":2600,"h":1463},
-      {"f":"27.jpg","w":2600,"h":1457},
-      {"f":"28.jpg","w":2600,"h":1459},
-      {"f":"29.jpg","w":2600,"h":1456},
-      {"f":"30.jpg","w":2000,"h":971},
-      {"f":"31.jpg","w":1867,"h":1400},
-      {"f":"32.jpg","w":2000,"h":1038},
-      {"f":"33.jpg","w":1867,"h":1400},
+      {"f":"27.jpg","w":2600,"h":1463},
+      {"f":"28.jpg","w":2600,"h":1457},
+      {"f":"29.jpg","w":2600,"h":1459},
+      {"f":"30.jpg","w":2600,"h":1456},
+      {"f":"31.jpg","w":2000,"h":971},
+      {"f":"32.jpg","w":1867,"h":1400},
+      {"f":"33.jpg","w":2000,"h":1038},
       {"f":"34.jpg","w":1867,"h":1400},
-      {"f":"35.jpg","w":2000,"h":881},
-      {"f":"36.jpg","w":1867,"h":1400},
+      {"f":"35.jpg","w":1867,"h":1400},
+      {"f":"36.jpg","w":2000,"h":881},
       {"f":"37.jpg","w":1867,"h":1400},
-      {"f":"38.jpg","w":2252,"h":1354},
-      {"f":"39.jpg","w":2600,"h":1459},
-      {"f":"40.jpg","w":2000,"h":941},
-      {"f":"41.jpg","w":2000,"h":946},
-      {"f":"42.jpg","w":2000,"h":942},
-      {"f":"43.jpg","w":2600,"h":1464},
-      {"f":"44.jpg","w":1136,"h":852},
-      {"f":"45.jpg","w":2600,"h":1464},
-      {"f":"46.jpg","w":1452,"h":1334},
-      {"f":"47.jpg","w":1600,"h":827},
-      {"f":"48.jpg","w":2600,"h":1459},
-      {"f":"49.jpg","w":2600,"h":1461},
+      {"f":"38.jpg","w":1867,"h":1400},
+      {"f":"39.jpg","w":2252,"h":1354},
+      {"f":"40.jpg","w":2600,"h":1459},
+      {"f":"41.jpg","w":2000,"h":941},
+      {"f":"42.jpg","w":2000,"h":946},
+      {"f":"43.jpg","w":2000,"h":942},
+      {"f":"44.jpg","w":2600,"h":1464},
+      {"f":"45.jpg","w":1136,"h":852},
+      {"f":"46.jpg","w":2600,"h":1464},
+      {"f":"47.jpg","w":1452,"h":1334},
+      {"f":"48.jpg","w":1600,"h":827},
+      {"f":"49.jpg","w":2600,"h":1459},
       {"f":"50.jpg","w":2600,"h":1461},
       {"f":"51.jpg","w":2600,"h":1461},
-      {"f":"52.jpg","w":1867,"h":1400},
+      {"f":"52.jpg","w":2600,"h":1461},
       {"f":"53.jpg","w":1867,"h":1400},
       {"f":"54.jpg","w":1867,"h":1400},
       {"f":"55.jpg","w":1867,"h":1400},
       {"f":"56.jpg","w":1867,"h":1400},
       {"f":"57.jpg","w":1867,"h":1400},
-      {"f":"58.jpg","w":2600,"h":1459},
-      {"f":"59.jpg","w":2600,"h":1463},
-      {"f":"60.jpg","w":2600,"h":1459},
-      {"f":"61.jpg","w":2600,"h":1456},
-      {"f":"62.jpg","w":2600,"h":1464},
-      {"f":"63.jpg","w":2600,"h":1466},
-      {"f":"64.jpg","w":2600,"h":1459},
-      {"f":"65.jpg","w":2600,"h":1456},
-      {"f":"66.jpg","w":2536,"h":1250},
-      {"f":"67.jpg","w":2600,"h":1464},
-      {"f":"68.jpg","w":2600,"h":1461},
-      {"f":"69.jpg","w":2600,"h":1459},
+      {"f":"58.jpg","w":1867,"h":1400},
+      {"f":"59.jpg","w":2600,"h":1459},
+      {"f":"60.jpg","w":2600,"h":1463},
+      {"f":"61.jpg","w":2600,"h":1459},
+      {"f":"62.jpg","w":2600,"h":1456},
+      {"f":"63.jpg","w":2600,"h":1464},
+      {"f":"64.jpg","w":2600,"h":1466},
+      {"f":"65.jpg","w":2600,"h":1459},
+      {"f":"66.jpg","w":2600,"h":1456},
+      {"f":"67.jpg","w":2536,"h":1250},
+      {"f":"68.jpg","w":2600,"h":1464},
+      {"f":"69.jpg","w":2600,"h":1461},
       {"f":"70.jpg","w":2600,"h":1459},
-      {"f":"71.jpg","w":2600,"h":1461},
+      {"f":"71.jpg","w":2600,"h":1459},
       {"f":"72.jpg","w":2600,"h":1461},
-      {"f":"73.jpg","w":1064,"h":1600},
-      {"f":"portada.jpg","w":2600,"h":1463}]
+      {"f":"73.jpg","w":2600,"h":1461},
+      {"f":"74.jpg","w":1064,"h":1600}]
     },
     {
       "carpeta": "salitre",
@@ -635,7 +641,8 @@ director: Álvaro Fernández Armero
 productora: Telecinco
 mostrar_en_inicio: no
 video: https://player.vimeo.com/video/360825378?h=710a3df7fa
-encuadre_movil: 23% 50%
+encuadre_movil: 15% 50%
+portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -657,7 +664,8 @@ labor:
 director: Paco León
 mostrar_en_inicio: no
 video: https://player.vimeo.com/video/285068434?h=87fe745bda
-encuadre_movil: 49% 50%
+encuadre_movil: 56% 50%
+portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -690,7 +698,7 @@ año: 2025
 labor: 
 director: Nacho Vigalondo / Claudia Costafreda
 mostrar_en_inicio: no
-portada: 01.jpg
+video: https://player.vimeo.com/video/1237205628?h=ab446d4065
 ---
 `,
       "archivos": [
@@ -832,6 +840,7 @@ año: 2024
 labor: 
 director: Miguel Angulo
 mostrar_en_inicio: no
+video: https://player.vimeo.com/video/1237206224?h=082ba1cfdc
 ---
 `,
       "archivos": []
@@ -967,7 +976,7 @@ menu_peso: 400
 delfines_contact: no
 menu_fuente: arial
 menu_mayusculas: si
-trailers_importados: 2026-10-19-vimeo
+trailers_importados: 2026-10-19-vimeo-v2
 ---
 HELLÖ!
 
@@ -995,4 +1004,4 @@ Enjoy!
     "archivos": []
   }
 };
-/* gestor: 202610191104 */
+/* gestor: 202610201211 */

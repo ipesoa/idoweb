@@ -5,5 +5,6 @@ director: Peris Romano
 productora: José Frade PC
 mostrar_en_inicio: si
 video: https://player.vimeo.com/video/151327592?h=5d7a73bef3
-encuadre_movil: 38% 50%
+encuadre_movil: 66% 50%
+portada: 01.jpg
 ---
