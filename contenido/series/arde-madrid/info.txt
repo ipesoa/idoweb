@@ -3,7 +3,6 @@ año: 2018
 labor: 
 director: Paco León
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/285068434?h=87fe745bda
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Arde%20Madrid%EF%BC%9A%20Tr%C3%A1iler%20%EF%BD%9C%20Movistar%2B%20%5BAJmV7QHGGiM%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 56% 50%
-portada: 01.jpg
 ---

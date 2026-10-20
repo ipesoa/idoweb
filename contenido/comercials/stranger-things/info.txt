@@ -1,0 +1,7 @@
+titulo: Stranger Things
+año: 
+labor: 
+director: 
+mostrar_en_inicio: no
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Leticia%20Sabater%20llega%20al%20Upside%20Down%20%EF%BD%9C%20Stranger%20Things%20%EF%BD%9C%20Netflix%20Espa%C3%B1a%20%5BmpXcM61rmuI%5D_WEB_WEB_WEB.mp4
+---

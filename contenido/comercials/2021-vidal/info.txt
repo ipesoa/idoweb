@@ -3,6 +3,7 @@ año: 2019
 labor: 
 director: 
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/365394222?h=daf6c5a01chttps://player.vimeo.com/video/365393693?h=223541a82b
-portada: 01.jpg
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Dipper%20Experiencia%20N%C2%BA%20263%20-%20The%20Implosion%20(Spot%20Dipper%20Ball%202019)%20%5BsvadQ81RYdY%5D_WEB_WEB_WEB.mp4
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Mi%20Querido%20Watson%20-%20Spot%E2%A7%B8Anuncio%20Golosinas%20Vidal%20Dipper%20Experiencia%20N%C2%BA%20375%20%5ByssygR3t64Q%5D_WEB_WEB_WEB.mp4
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/%E2%80%98El%20sabor%20m%C3%A1s%20inesperado%E2%80%99%2C%20de%20Mi%20Querido%20Watson%20para%20Vidal%20%5BurE4AQHbXs0%5D_WEB_WEB_WEB.mp4
 ---

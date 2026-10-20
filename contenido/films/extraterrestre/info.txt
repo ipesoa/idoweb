@@ -4,7 +4,6 @@ labor:
 director: Nacho Vigalondo
 productora: Sayaka
 mostrar_en_inicio: si
-video: https://player.vimeo.com/video/53514834?h=2bbe62d766
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Extraterrestre%20-%20Trailer%20%5BEiNOSJY4A3Q%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 53% 50%
-portada: 01.jpg
 ---

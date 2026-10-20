@@ -4,6 +4,6 @@ labor:
 director: Álvaro Fernández Armero
 productora: Nadie es perfecto / Netflix
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/744941465?h=4588b1a547
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/A%201000km%20De%20La%20Navidad%20(2021)%20Netflix%20Tr%C3%A1iler%20Oficial%20Espa%C3%B1ol%20%5BCQG-6hpGvn4%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 17% 50%
 ---

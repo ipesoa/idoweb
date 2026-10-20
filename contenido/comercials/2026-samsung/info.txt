@@ -3,6 +3,7 @@ año: 2019
 labor: 
 director: Martin Jalfen
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/249193825?h=7467055c12
-portada: 01.jpg
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Copiloto%20Samsung%20-%20Tecnolog%C3%ADa%20Con%20Prop%C3%B3sito%20%5BysnWjDsooIY%5D_WEB_WEB.mp4
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Copiloto%20Samsung%20-%20Tecnolog%C3%ADa%20con%20Prop%C3%B3sito%20%5BJYMYWqMueys%5D_WEB_WEB_WEB.mp4
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Copiloto%20Samsung%20-%20Tencolog%C3%ADa%20con%20Prop%C3%B3sito%20%5B5kwsJYWQeLw%5D_WEB_WEB.mp4
 ---

@@ -4,7 +4,6 @@ labor:
 director: Paco León
 productora: Telecinco / Netflix
 mostrar_en_inicio: si
-video: https://player.vimeo.com/video/744939775?h=f6153c9bbe
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Rainbow%20%EF%BD%9C%20Tr%C3%A1iler%20oficial%20%EF%BD%9C%20Netflix%20%5B33nxp8T5orc%5D_WEB_WEB.mp4
 encuadre_movil: 90% 50%
-portada: 01.jpg
 ---

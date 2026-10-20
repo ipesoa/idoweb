@@ -4,6 +4,8 @@ labor:
 director: Eduardo Casanova
 productora: Blur
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/249003094?h=1366bf8494https://player.vimeo.com/video/249003032?h=47165ea3b1https://player.vimeo.com/video/243653124?h=0a230eeef0
-portada: 01.jpg
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/ANUNCIO%20TWYP%20%20ING%20DIRECT%20TVEO%20%5BJXf_yeHGWpc%5D_WEB_WEB_WEB.mp4
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/TWYP%20%20%20Publicidad%20%20%20Eduardo%20Casanova%20%5B0mhJvMI8ls0%5D_WEB_WEB_WEB.mp4
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/TWYP%20%20%20Publicidad%20%20%20Eduardo%20Casanova%20%5Brh8lbgdzQLU%5D_WEB_WEB_WEB.mp4
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/TWYP%20-%20Publicidad%20-%20Eduardo%20Casanova%20%5BXrzVnebpR2g%5D_WEB_WEB_WEB.mp4
 ---

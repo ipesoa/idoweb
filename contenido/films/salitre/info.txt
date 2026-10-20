@@ -4,6 +4,6 @@ labor:
 director: Norma Vila
 productora: Pris&Batty / Bondi
 mostrar_en_inicio: si
-video: https://player.vimeo.com/video/1237173728?h=1c684bc4f2
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Salitre%20-%20Trailer%20%5BgTY3GEnZl6M%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 40% 50%
 ---

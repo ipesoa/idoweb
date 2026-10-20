@@ -3,6 +3,5 @@ año: 2024
 labor: 
 director: Miguel Angulo
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/1237206224?h=082ba1cfdc
-portada: 01.jpg
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/ASISA%20Irremplazable%20Promo%20verano%2020%E2%80%9D.%20Ampliaci%C3%B3n%20hasta%20el%2031%20de%20julio%20%5BT5ZPe5WaIX4%5D_WEB_WEB_WEB.mp4
 ---

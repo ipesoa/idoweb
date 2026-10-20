@@ -4,6 +4,6 @@
 #  Una línea por trabajo: año | título | labor | director o cliente | sección | URL | vídeo
 # =====================================================================
 2025 | Asisa - Reemplazo |  | Miguel Angulo | comercials |  | 
-2019 | Samsung - Copiloto |  | Martin Jalfen | comercials |  | https://player.vimeo.com/video/249193825?h=7467055c12
-2019 | Vidal - Dipper |  | Eduardo Casanova | comercials |  | https://player.vimeo.com/video/365393693?h=223541a82b
-2017 | Volkswagen - Día del padre |  | Miguel Angulo | comercials |  | https://player.vimeo.com/video/159125611?h=a22ae95ef1
+2019 | Samsung - Copiloto |  | Martin Jalfen | comercials |  | https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Copiloto%20Samsung%20-%20Tecnolog%C3%ADa%20Con%20Prop%C3%B3sito%20%5BysnWjDsooIY%5D_WEB_WEB.mp4\nhttps://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Copiloto%20Samsung%20-%20Tecnolog%C3%ADa%20con%20Prop%C3%B3sito%20%5BJYMYWqMueys%5D_WEB_WEB_WEB.mp4\nhttps://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Copiloto%20Samsung%20-%20Tencolog%C3%ADa%20con%20Prop%C3%B3sito%20%5B5kwsJYWQeLw%5D_WEB_WEB.mp4
+2019 | Vidal - Dipper |  | Eduardo Casanova | comercials |  | https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Dipper%20Experiencia%20N%C2%BA%20263%20-%20The%20Implosion%20(Spot%20Dipper%20Ball%202019)%20%5BsvadQ81RYdY%5D_WEB_WEB_WEB.mp4\nhttps://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Mi%20Querido%20Watson%20-%20Spot%E2%A7%B8Anuncio%20Golosinas%20Vidal%20Dipper%20Experiencia%20N%C2%BA%20375%20%5ByssygR3t64Q%5D_WEB_WEB_WEB.mp4\nhttps://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/%E2%80%98El%20sabor%20m%C3%A1s%20inesperado%E2%80%99%2C%20de%20Mi%20Querido%20Watson%20para%20Vidal%20%5BurE4AQHbXs0%5D_WEB_WEB_WEB.mp4
+2017 | Volkswagen - Día del padre |  | Miguel Angulo | comercials |  | 

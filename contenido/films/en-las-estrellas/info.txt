@@ -4,6 +4,6 @@ labor:
 director: Zoe Berriatúa
 productora: Pokeepsie Films
 mostrar_en_inicio: si
-video: https://player.vimeo.com/video/292459943?h=f2a5316fd6
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/En%20las%20estrellas%20-%20Trailer%20(HD)%20%5BeTCQx5vYjYc%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 35% 50%
 ---

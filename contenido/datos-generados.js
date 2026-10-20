@@ -36,7 +36,7 @@ labor:
 director: Álvaro Fernández Armero
 productora: Nadie es perfecto / Netflix
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/744941465?h=4588b1a547
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/A%201000km%20De%20La%20Navidad%20(2021)%20Netflix%20Tr%C3%A1iler%20Oficial%20Espa%C3%B1ol%20%5BCQG-6hpGvn4%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 17% 50%
 ---
 `,
@@ -113,8 +113,8 @@ labor:
 director: Paco León
 productora: Telecinco
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/1237205448?h=59f7d5d154
 encuadre_movil: 57% 50%
+portada: 11.jpg
 ---
 `,
       "archivos": [
@@ -166,7 +166,7 @@ labor:
 director: Nacho Vigalondo
 productora: Sayaka / Netflix
 mostrar_en_inicio: si
-video: https://player.vimeo.com/video/1237205836?h=f06dd7aba8
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/DANIELA%20FOREVER%20Tr%C3%A1iler%20Oficial%20Espa%C3%B1ol%20(2025)%20%5Bdbfo_r-694c%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 38% 50%
 ---
 `,
@@ -251,7 +251,7 @@ labor:
 director: Zoe Berriatúa
 productora: Pokeepsie Films
 mostrar_en_inicio: si
-video: https://player.vimeo.com/video/292459943?h=f2a5316fd6
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/En%20las%20estrellas%20-%20Trailer%20(HD)%20%5BeTCQx5vYjYc%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 35% 50%
 ---
 `,
@@ -299,9 +299,8 @@ labor:
 director: Nacho Vigalondo
 productora: Sayaka
 mostrar_en_inicio: si
-video: https://player.vimeo.com/video/53514834?h=2bbe62d766
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Extraterrestre%20-%20Trailer%20%5BEiNOSJY4A3Q%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 53% 50%
-portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -324,8 +323,8 @@ labor: Design & Concept art in preproduction. Film nominated for Best Production
 director: Eduardo Casanova
 productora: Pokeepsie Films
 mostrar_en_inicio: no
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/LA%20PIEDAD%20-%20TR%C3%81ILER%20OFICIAL%20(HD)%20%5BZtSngOS_6mo%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 39% 50%
-portada: 10.jpg
 ---
 `,
       "archivos": [
@@ -357,9 +356,8 @@ labor:
 director: Peris Romano
 productora: José Frade PC
 mostrar_en_inicio: si
-video: https://player.vimeo.com/video/151327592?h=5d7a73bef3
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Los%20Miercoles%20No%20Existen%20-%20Trailer%20largo%20HD%20%5Bn_qx0_l7S1I%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 66% 50%
-portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -376,7 +374,7 @@ labor:
 director: Lucía Alemany
 productora: Telecinco / Netflix
 mostrar_en_inicio: si
-video: https://player.vimeo.com/video/1237206132?h=3abd4df896
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Mari(Dos)%20(2023)%20Tr%C3%A1iler%20Oficial%20Espa%C3%B1ol%20%5BrI7OvhsKtKc%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 73% 50%
 ---
 `,
@@ -403,9 +401,8 @@ labor:
 director: Eduardo Casanova
 productora: Pokeepsie Films
 mostrar_en_inicio: si
-video: https://player.vimeo.com/video/201715810?h=42b736bd5c
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/PIELES%20I%20TR%C3%81ILER%20OFICIAL%20%5B8Ik0Lt8FFBA%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 93% 50%
-portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -431,9 +428,8 @@ labor:
 director: Curro Velázquez
 productora: Morena Films
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/237627151?h=238a9b18f9
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Que%20baje%20Dios%20y%20lo%20vea%20-%20Trailer%20(HD)%20%5BgTb0ApAlQ9c%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 43% 50%
-portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -483,9 +479,8 @@ labor:
 director: Paco León
 productora: Telecinco / Netflix
 mostrar_en_inicio: si
-video: https://player.vimeo.com/video/744939775?h=f6153c9bbe
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Rainbow%20%EF%BD%9C%20Tr%C3%A1iler%20oficial%20%EF%BD%9C%20Netflix%20%5B33nxp8T5orc%5D_WEB_WEB.mp4
 encuadre_movil: 90% 50%
-portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -572,7 +567,7 @@ labor:
 director: Norma Vila
 productora: Pris&Batty / Bondi
 mostrar_en_inicio: si
-video: https://player.vimeo.com/video/1237173728?h=1c684bc4f2
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Salitre%20-%20Trailer%20%5BgTY3GEnZl6M%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 40% 50%
 ---
 `,
@@ -640,9 +635,8 @@ labor:
 director: Álvaro Fernández Armero
 productora: Telecinco
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/360825378?h=710a3df7fa
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Si%20Yo%20Fuera%20Rico%20%EF%BD%9C%20Trailer%20%EF%BD%9C%20Paramount%20Pictures%20Spain%20%5BbJ3NHGKXEq0%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 15% 50%
-portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -663,9 +657,8 @@ año: 2018
 labor: 
 director: Paco León
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/285068434?h=87fe745bda
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Arde%20Madrid%EF%BC%9A%20Tr%C3%A1iler%20%EF%BD%9C%20Movistar%2B%20%5BAJmV7QHGGiM%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 56% 50%
-portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -698,7 +691,7 @@ año: 2025
 labor: 
 director: Nacho Vigalondo / Claudia Costafreda
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/1237205628?h=ab446d4065
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Superestar%20%EF%BD%9C%20Tr%C3%A1iler%20Oficial%20%EF%BD%9C%20Netflix%20Espa%C3%B1a%20%5Bh75xrfq-SBE%5D_WEB_WEB_WEB.mp4
 ---
 `,
       "archivos": [
@@ -815,8 +808,6 @@ año: 2017
 labor: 
 director: Miguel Angulo
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/159125611?h=a22ae95ef1
-portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -829,8 +820,9 @@ año: 2019
 labor: 
 director: 
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/365394222?h=daf6c5a01chttps://player.vimeo.com/video/365393693?h=223541a82b
-portada: 01.jpg
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Dipper%20Experiencia%20N%C2%BA%20263%20-%20The%20Implosion%20(Spot%20Dipper%20Ball%202019)%20%5BsvadQ81RYdY%5D_WEB_WEB_WEB.mp4
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Mi%20Querido%20Watson%20-%20Spot%E2%A7%B8Anuncio%20Golosinas%20Vidal%20Dipper%20Experiencia%20N%C2%BA%20375%20%5ByssygR3t64Q%5D_WEB_WEB_WEB.mp4
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/%E2%80%98El%20sabor%20m%C3%A1s%20inesperado%E2%80%99%2C%20de%20Mi%20Querido%20Watson%20para%20Vidal%20%5BurE4AQHbXs0%5D_WEB_WEB_WEB.mp4
 ---
 `,
       "archivos": [
@@ -843,8 +835,7 @@ año: 2024
 labor: 
 director: Miguel Angulo
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/1237206224?h=082ba1cfdc
-portada: 01.jpg
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/ASISA%20Irremplazable%20Promo%20verano%2020%E2%80%9D.%20Ampliaci%C3%B3n%20hasta%20el%2031%20de%20julio%20%5BT5ZPe5WaIX4%5D_WEB_WEB_WEB.mp4
 ---
 `,
       "archivos": [
@@ -857,8 +848,9 @@ año: 2019
 labor: 
 director: Martin Jalfen
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/249193825?h=7467055c12
-portada: 01.jpg
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Copiloto%20Samsung%20-%20Tecnolog%C3%ADa%20Con%20Prop%C3%B3sito%20%5BysnWjDsooIY%5D_WEB_WEB.mp4
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Copiloto%20Samsung%20-%20Tecnolog%C3%ADa%20con%20Prop%C3%B3sito%20%5BJYMYWqMueys%5D_WEB_WEB_WEB.mp4
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Copiloto%20Samsung%20-%20Tencolog%C3%ADa%20con%20Prop%C3%B3sito%20%5B5kwsJYWQeLw%5D_WEB_WEB.mp4
 ---
 `,
       "archivos": [
@@ -873,8 +865,6 @@ director: Eduardo Casanova
 productora: The Stoat Fashion Film
 cliente: The Stoat
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/249250522?h=43741cdbe3
-portada: 01.jpg
 ---
 `,
       "archivos": [
@@ -886,6 +876,18 @@ portada: 01.jpg
       {"f":"06.jpg","w":742,"h":383}]
     },
     {
+      "carpeta": "stranger-things",
+      "info": `titulo: Stranger Things
+año: 
+labor: 
+director: 
+mostrar_en_inicio: no
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Leticia%20Sabater%20llega%20al%20Upside%20Down%20%EF%BD%9C%20Stranger%20Things%20%EF%BD%9C%20Netflix%20Espa%C3%B1a%20%5BmpXcM61rmuI%5D_WEB_WEB_WEB.mp4
+---
+`,
+      "archivos": []
+    },
+    {
       "carpeta": "twyp",
       "info": `titulo: ING Twyp
 año: 2018
@@ -893,8 +895,10 @@ labor:
 director: Eduardo Casanova
 productora: Blur
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/249003094?h=1366bf8494https://player.vimeo.com/video/249003032?h=47165ea3b1https://player.vimeo.com/video/243653124?h=0a230eeef0
-portada: 01.jpg
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/ANUNCIO%20TWYP%20%20ING%20DIRECT%20TVEO%20%5BJXf_yeHGWpc%5D_WEB_WEB_WEB.mp4
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/TWYP%20%20%20Publicidad%20%20%20Eduardo%20Casanova%20%5B0mhJvMI8ls0%5D_WEB_WEB_WEB.mp4
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/TWYP%20%20%20Publicidad%20%20%20Eduardo%20Casanova%20%5Brh8lbgdzQLU%5D_WEB_WEB_WEB.mp4
+video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/TWYP%20-%20Publicidad%20-%20Eduardo%20Casanova%20%5BXrzVnebpR2g%5D_WEB_WEB_WEB.mp4
 ---
 `,
       "archivos": [
@@ -948,7 +952,7 @@ menu_peso: 400
 delfines_contact: no
 menu_fuente: arial
 menu_mayusculas: si
-trailers_importados: 2026-10-19-vimeo-v2
+trailers_importados: 2026-10-20-r2-v2
 ---
 HELLÖ!
 
@@ -969,11 +973,11 @@ Enjoy!
 #  Una línea por trabajo: año | título | labor | director o cliente | sección | URL | vídeo
 # =====================================================================
 2025 | Asisa - Reemplazo |  | Miguel Angulo | comercials |  | 
-2019 | Samsung - Copiloto |  | Martin Jalfen | comercials |  | https://player.vimeo.com/video/249193825?h=7467055c12
-2019 | Vidal - Dipper |  | Eduardo Casanova | comercials |  | https://player.vimeo.com/video/365393693?h=223541a82b
-2017 | Volkswagen - Día del padre |  | Miguel Angulo | comercials |  | https://player.vimeo.com/video/159125611?h=a22ae95ef1
+2019 | Samsung - Copiloto |  | Martin Jalfen | comercials |  | https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Copiloto%20Samsung%20-%20Tecnolog%C3%ADa%20Con%20Prop%C3%B3sito%20%5BysnWjDsooIY%5D_WEB_WEB.mp4\\nhttps://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Copiloto%20Samsung%20-%20Tecnolog%C3%ADa%20con%20Prop%C3%B3sito%20%5BJYMYWqMueys%5D_WEB_WEB_WEB.mp4\\nhttps://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Copiloto%20Samsung%20-%20Tencolog%C3%ADa%20con%20Prop%C3%B3sito%20%5B5kwsJYWQeLw%5D_WEB_WEB.mp4
+2019 | Vidal - Dipper |  | Eduardo Casanova | comercials |  | https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Dipper%20Experiencia%20N%C2%BA%20263%20-%20The%20Implosion%20(Spot%20Dipper%20Ball%202019)%20%5BsvadQ81RYdY%5D_WEB_WEB_WEB.mp4\\nhttps://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Mi%20Querido%20Watson%20-%20Spot%E2%A7%B8Anuncio%20Golosinas%20Vidal%20Dipper%20Experiencia%20N%C2%BA%20375%20%5ByssygR3t64Q%5D_WEB_WEB_WEB.mp4\\nhttps://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/%E2%80%98El%20sabor%20m%C3%A1s%20inesperado%E2%80%99%2C%20de%20Mi%20Querido%20Watson%20para%20Vidal%20%5BurE4AQHbXs0%5D_WEB_WEB_WEB.mp4
+2017 | Volkswagen - Día del padre |  | Miguel Angulo | comercials |  | 
 `,
     "archivos": []
   }
 };
-/* gestor: 202610201308 */
+/* gestor: 202610201334 */

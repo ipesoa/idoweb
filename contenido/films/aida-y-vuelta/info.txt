@@ -4,6 +4,6 @@ labor:
 director: Paco León
 productora: Telecinco
 mostrar_en_inicio: no
-video: https://player.vimeo.com/video/1237205448?h=59f7d5d154
 encuadre_movil: 57% 50%
+portada: 11.jpg
 ---
