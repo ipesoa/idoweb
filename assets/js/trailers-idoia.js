@@ -1,48 +1,63 @@
-/* =====================================================================
-   TRÁILERS DE IDOIA · importación de octubre de 2026
-   ---------------------------------------------------------------------
-   Este archivo viaja dentro del ZIP de actualización. La web lo usa al
-   instante y el gestor copia los enlaces a los info.txt al publicar.
-   Cuando eso ocurre, trailers_importados en about/info.txt desactiva
-   esta capa provisional y vuelve a mandar solo el contenido editable.
-   ===================================================================== */
-window.TRAILERS_IMPORT = {
-  version: "2026-10-19-vimeo-v2",
-  proyectos: [
-    { tipo: "films", carpeta: "salitre", titulo: "Salitre", videos: ["https://player.vimeo.com/video/1237173728?h=1c684bc4f2"] },
-    { tipo: "films", carpeta: "a-mil-km-de-la-navidad", titulo: "A mil km de la Navidad", videos: ["https://player.vimeo.com/video/744941465?h=4588b1a547"] },
-    { tipo: "films", carpeta: "rainbow", titulo: "Rainbow", videos: ["https://player.vimeo.com/video/744939775?h=f6153c9bbe"] },
-    { tipo: "comercials", carpeta: "2021-vidal", titulo: "Vidal", videos: [
-      "https://player.vimeo.com/video/365394222?h=daf6c5a01c",
-      "https://player.vimeo.com/video/365393693?h=223541a82b",
-    ] },
-    { tipo: "films", carpeta: "si-yo-fuera-rico", titulo: "Si yo fuera rico", videos: ["https://player.vimeo.com/video/360825378?h=710a3df7fa"] },
-    { tipo: "films", carpeta: "en-las-estrellas", titulo: "En las estrellas", videos: ["https://player.vimeo.com/video/292459943?h=f2a5316fd6"] },
-    { tipo: "series", carpeta: "arde-madrid", titulo: "Arde Madrid", videos: ["https://player.vimeo.com/video/285068434?h=87fe745bda"] },
-    { tipo: "comercials", carpeta: "twyp", titulo: "ING Twyp", videos: [
-      "https://player.vimeo.com/video/249003094?h=1366bf8494",
-      "https://player.vimeo.com/video/249003032?h=47165ea3b1",
-      "https://player.vimeo.com/video/243653124?h=0a230eeef0",
-    ] },
-    { tipo: "comercials", carpeta: "stranger-things", titulo: "Stranger Things", videos: ["https://player.vimeo.com/video/241555097?h=001f4d97f8"] },
-    { tipo: "films", carpeta: "que-baje-dios-y-lo-vea", titulo: "Que baje Dios y lo vea", videos: ["https://player.vimeo.com/video/237627151?h=238a9b18f9"] },
-    { tipo: "films", carpeta: "pieles", titulo: "Pieles", videos: ["https://player.vimeo.com/video/201715810?h=42b736bd5c"] },
-    { tipo: "comercials", carpeta: "amstel-radler", titulo: "Amstel Radler", videos: ["https://player.vimeo.com/video/162179680?h=88124ac41d"] },
-    { tipo: "comercials", carpeta: "vodafone-one-profesional", titulo: "Vodafone One Profesional", videos: ["https://player.vimeo.com/video/162179623?h=9fd0ed75be"] },
-    { tipo: "comercials", carpeta: "2017-volkswagen", titulo: "Volkswagen", videos: ["https://player.vimeo.com/video/159125611?h=a22ae95ef1"] },
-    { tipo: "films", carpeta: "los-miercoles-no-existen", titulo: "Los miércoles no existen", videos: ["https://player.vimeo.com/video/151327592?h=5d7a73bef3"] },
-    { tipo: "films", carpeta: "extraterrestre", titulo: "Extraterrestre", videos: ["https://player.vimeo.com/video/53514834?h=2bbe62d766"] },
-    { tipo: "comercials", carpeta: "lo-siento-mi-amor", titulo: "Lo siento mi amor", videos: ["https://player.vimeo.com/video/249250522?h=43741cdbe3"] },
-    { tipo: "comercials", carpeta: "2026-samsung", titulo: "Samsung", videos: ["https://player.vimeo.com/video/249193825?h=7467055c12"] },
-    { tipo: "comercials", carpeta: "2024-asisa", titulo: "Asisa", nuevoEn: "2026-10-19-vimeo-v2", videos: ["https://player.vimeo.com/video/1237206224?h=082ba1cfdc"] },
-    { tipo: "films", carpeta: "maridos", titulo: "Maridos", nuevoEn: "2026-10-19-vimeo-v2", videos: ["https://player.vimeo.com/video/1237206132?h=3abd4df896"] },
-    { tipo: "films", carpeta: "daniela-forever", titulo: "Daniela Forever", nuevoEn: "2026-10-19-vimeo-v2", videos: ["https://player.vimeo.com/video/1237205836?h=f06dd7aba8"] },
-    { tipo: "series", carpeta: "superestar", titulo: "Superestar", nuevoEn: "2026-10-19-vimeo-v2", videos: ["https://player.vimeo.com/video/1237205628?h=ab446d4065"] },
-    { tipo: "films", carpeta: "aida-y-vuelta", titulo: "Aída y vuelta", nuevoEn: "2026-10-19-vimeo-v2", videos: ["https://player.vimeo.com/video/1237205448?h=59f7d5d154"] },
-  ],
-  extras: [
-    { tipo: "comercials", titulo: "Vidal - Dipper", video: "https://player.vimeo.com/video/365393693?h=223541a82b" },
-    { tipo: "comercials", titulo: "Volkswagen - Día del padre", video: "https://player.vimeo.com/video/159125611?h=a22ae95ef1" },
-    { tipo: "comercials", titulo: "Samsung - Copiloto", video: "https://player.vimeo.com/video/249193825?h=7467055c12" },
-  ],
-};
+/* Vídeos de R2. El gestor los incorpora a info.txt al publicar cambios. */
+(function () {
+  const version = "2026-10-20-r2-v2";
+  const base = "https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/";
+  const r2 = (archivo) => base + archivo;
+  const proyecto = (tipo, carpeta, titulo, videos = []) => ({ tipo, carpeta, titulo, nuevoEn: version, videos });
+  const extra = (tipo, titulo, videos = []) => ({ tipo, titulo, nuevoEn: version, video: videos.join("\n") });
+
+  const aMilKm = r2("A%201000km%20De%20La%20Navidad%20(2021)%20Netflix%20Tr%C3%A1iler%20Oficial%20Espa%C3%B1ol%20%5BCQG-6hpGvn4%5D_WEB_WEB_WEB.mp4");
+  const asisa = r2("ASISA%20Irremplazable%20Promo%20verano%2020%E2%80%9D.%20Ampliaci%C3%B3n%20hasta%20el%2031%20de%20julio%20%5BT5ZPe5WaIX4%5D_WEB_WEB_WEB.mp4");
+  const samsung = [
+    r2("Copiloto%20Samsung%20-%20Tecnolog%C3%ADa%20Con%20Prop%C3%B3sito%20%5BysnWjDsooIY%5D_WEB_WEB.mp4"),
+    r2("Copiloto%20Samsung%20-%20Tecnolog%C3%ADa%20con%20Prop%C3%B3sito%20%5BJYMYWqMueys%5D_WEB_WEB_WEB.mp4"),
+    r2("Copiloto%20Samsung%20-%20Tencolog%C3%ADa%20con%20Prop%C3%B3sito%20%5B5kwsJYWQeLw%5D_WEB_WEB.mp4"),
+  ];
+  const vidal = [
+    r2("Dipper%20Experiencia%20N%C2%BA%20263%20-%20The%20Implosion%20(Spot%20Dipper%20Ball%202019)%20%5BsvadQ81RYdY%5D_WEB_WEB_WEB.mp4"),
+    r2("Mi%20Querido%20Watson%20-%20Spot%E2%A7%B8Anuncio%20Golosinas%20Vidal%20Dipper%20Experiencia%20N%C2%BA%20375%20%5ByssygR3t64Q%5D_WEB_WEB_WEB.mp4"),
+    r2("%E2%80%98El%20sabor%20m%C3%A1s%20inesperado%E2%80%99%2C%20de%20Mi%20Querido%20Watson%20para%20Vidal%20%5BurE4AQHbXs0%5D_WEB_WEB_WEB.mp4"),
+  ];
+  const twyp = [
+    r2("ANUNCIO%20TWYP%20%20ING%20DIRECT%20TVEO%20%5BJXf_yeHGWpc%5D_WEB_WEB_WEB.mp4"),
+    r2("TWYP%20%20%20Publicidad%20%20%20Eduardo%20Casanova%20%5B0mhJvMI8ls0%5D_WEB_WEB_WEB.mp4"),
+    r2("TWYP%20%20%20Publicidad%20%20%20Eduardo%20Casanova%20%5Brh8lbgdzQLU%5D_WEB_WEB_WEB.mp4"),
+    r2("TWYP%20-%20Publicidad%20-%20Eduardo%20Casanova%20%5BXrzVnebpR2g%5D_WEB_WEB_WEB.mp4"),
+  ];
+
+  window.TRAILERS_IMPORT = {
+    version,
+    versiones: ["2026-10-19-vimeo", "2026-10-19-vimeo-v2", "2026-10-20-r2-v1", version],
+    proyectos: [
+      proyecto("films", "salitre", "Salitre", [r2("Salitre%20-%20Trailer%20%5BgTY3GEnZl6M%5D_WEB_WEB_WEB.mp4")]),
+      proyecto("films", "a-mil-km-de-la-navidad", "A mil km de la Navidad", [aMilKm]),
+      proyecto("films", "rainbow", "Rainbow", [r2("Rainbow%20%EF%BD%9C%20Tr%C3%A1iler%20oficial%20%EF%BD%9C%20Netflix%20%5B33nxp8T5orc%5D_WEB_WEB.mp4")]),
+      proyecto("comercials", "2021-vidal", "Vidal", vidal),
+      proyecto("films", "si-yo-fuera-rico", "Si yo fuera rico", [r2("Si%20Yo%20Fuera%20Rico%20%EF%BD%9C%20Trailer%20%EF%BD%9C%20Paramount%20Pictures%20Spain%20%5BbJ3NHGKXEq0%5D_WEB_WEB_WEB.mp4")]),
+      proyecto("films", "en-las-estrellas", "En las estrellas", [r2("En%20las%20estrellas%20-%20Trailer%20(HD)%20%5BeTCQx5vYjYc%5D_WEB_WEB_WEB.mp4")]),
+      proyecto("series", "arde-madrid", "Arde Madrid", [r2("Arde%20Madrid%EF%BC%9A%20Tr%C3%A1iler%20%EF%BD%9C%20Movistar%2B%20%5BAJmV7QHGGiM%5D_WEB_WEB_WEB.mp4")]),
+      proyecto("comercials", "twyp", "ING Twyp", twyp),
+      proyecto("comercials", "stranger-things", "Stranger Things", [r2("Leticia%20Sabater%20llega%20al%20Upside%20Down%20%EF%BD%9C%20Stranger%20Things%20%EF%BD%9C%20Netflix%20Espa%C3%B1a%20%5BmpXcM61rmuI%5D_WEB_WEB_WEB.mp4")]),
+      proyecto("films", "que-baje-dios-y-lo-vea", "Que baje Dios y lo vea", [r2("Que%20baje%20Dios%20y%20lo%20vea%20-%20Trailer%20(HD)%20%5BgTb0ApAlQ9c%5D_WEB_WEB_WEB.mp4")]),
+      proyecto("films", "pieles", "Pieles", [r2("PIELES%20I%20TR%C3%81ILER%20OFICIAL%20%5B8Ik0Lt8FFBA%5D_WEB_WEB_WEB.mp4")]),
+      proyecto("films", "la-piedad", "La piedad", [r2("LA%20PIEDAD%20-%20TR%C3%81ILER%20OFICIAL%20(HD)%20%5BZtSngOS_6mo%5D_WEB_WEB_WEB.mp4")]),
+      proyecto("comercials", "amstel-radler", "Amstel Radler"),
+      proyecto("comercials", "vodafone-one-profesional", "Vodafone One Profesional"),
+      proyecto("comercials", "2017-volkswagen", "Volkswagen"),
+      proyecto("films", "los-miercoles-no-existen", "Los miércoles no existen", [r2("Los%20Miercoles%20No%20Existen%20-%20Trailer%20largo%20HD%20%5Bn_qx0_l7S1I%5D_WEB_WEB_WEB.mp4")]),
+      proyecto("films", "extraterrestre", "Extraterrestre", [r2("Extraterrestre%20-%20Trailer%20%5BEiNOSJY4A3Q%5D_WEB_WEB_WEB.mp4")]),
+      proyecto("comercials", "lo-siento-mi-amor", "Lo siento mi amor"),
+      proyecto("comercials", "2026-samsung", "Samsung", samsung),
+      proyecto("comercials", "2024-asisa", "Asisa", [asisa]),
+      proyecto("films", "maridos", "Maridos", [r2("Mari(Dos)%20(2023)%20Tr%C3%A1iler%20Oficial%20Espa%C3%B1ol%20%5BrI7OvhsKtKc%5D_WEB_WEB_WEB.mp4")]),
+      proyecto("films", "daniela-forever", "Daniela Forever", [r2("DANIELA%20FOREVER%20Tr%C3%A1iler%20Oficial%20Espa%C3%B1ol%20(2025)%20%5Bdbfo_r-694c%5D_WEB_WEB_WEB.mp4")]),
+      proyecto("series", "superestar", "Superestar", [r2("Superestar%20%EF%BD%9C%20Tr%C3%A1iler%20Oficial%20%EF%BD%9C%20Netflix%20Espa%C3%B1a%20%5Bh75xrfq-SBE%5D_WEB_WEB_WEB.mp4")]),
+      proyecto("films", "aida-y-vuelta", "Aída y vuelta"),
+    ],
+    extras: [
+      extra("comercials", "Vidal - Dipper", vidal),
+      extra("comercials", "Volkswagen - Día del padre"),
+      extra("comercials", "Samsung - Copiloto", samsung),
+    ],
+  };
+})();

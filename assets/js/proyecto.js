@@ -4,9 +4,9 @@
    Dirección:  proyecto.html?tipo=films&id=CARPETA
      tipo = films | series | comercials | videoclips
    Orden de la página:
-     1. VÍDEO      una o más claves "video:" del info.txt (Vimeo, YouTube,
-                   .mp4 o código <iframe…>), con selector si hay varios.
-                   Empieza solo y sin sonido: ajustes.js → AJUSTES.proyecto
+     1. VÍDEO      archivos de R2 con controles nativos. Los anuncios con
+                   varias piezas se reproducen seguidos y vuelven al primero.
+                   Empieza solo y sin sonido.
      2. FICHA      título · directed by · produced by · año
      3. CREW       una línea "crew:" por persona → sale a dos columnas
      4. TEXTO      lo que hay después del --- en el info.txt
@@ -22,7 +22,33 @@
   const rejilla = document.getElementById("rejilla");
   const T = AJUSTES.textos;
   const esc = (t) => String(t ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const esVideoDirecto = (u) => /\.(mp4|webm|ogv|m4v|mov)(?:[?#]|$)/i.test(u);
 
+  function montarReproductorNativo(seccion, fuentes) {
+    seccion.innerHTML = '<div class="proyecto__reproductor"></div>';
+    const media = document.createElement("video");
+    media.controls = true;
+    media.autoplay = true;
+    media.muted = true;
+    media.defaultMuted = true;
+    media.playsInline = true;
+    media.preload = "metadata";
+    media.loop = fuentes.length === 1;
+    let indice = 0;
+    let erroresSeguidos = 0;
+    media.src = fuentes[indice];
+    seccion.firstElementChild.append(media);
+
+    const siguiente = () => {
+      if (fuentes.length < 2) return;
+      indice = (indice + 1) % fuentes.length;
+      media.src = fuentes[indice];
+      media.load();
+      media.play().catch(() => {});
+    };
+    media.addEventListener("ended", () => { erroresSeguidos = 0; siguiente(); });
+    media.addEventListener("error", () => { if (++erroresSeguidos < fuentes.length) siguiente(); });
+  }
   if (!p) {
     document.querySelector("main").innerHTML =
       `<p class="no-encontrado">Este proyecto no existe o ha cambiado de nombre.<br><a href="work.html">←</a></p>`;
@@ -35,19 +61,22 @@
   const video = document.getElementById("video");
   const fuentes = Comun.fuentesVideo(p.video).filter((u) => Comun.reproductor(u, p.titulo));
   if (fuentes.length) {
-    video.innerHTML = `<div class="proyecto__reproductor">${Comun.reproductor(fuentes[0], p.titulo)}</div>`;
-    if (fuentes.length > 1) {
-      const elegir = document.createElement("nav");
-      elegir.className = "proyecto__videos-elegir";
-      elegir.setAttribute("aria-label", "Vídeos de este trabajo");
-      elegir.innerHTML = fuentes.map((_, i) => `<button type="button" aria-pressed="${i === 0}" aria-label="Ver vídeo ${i + 1} de ${fuentes.length}">${String(i + 1).padStart(2, "0")}</button>`).join("");
-      const botones = [...elegir.querySelectorAll("button")];
-      botones.forEach((b, i) => b.addEventListener("click", () => {
-        if (b.getAttribute("aria-pressed") === "true") return;
-        video.querySelector(".proyecto__reproductor").innerHTML = Comun.reproductor(fuentes[i], `${p.titulo} — ${i + 1}`);
-        botones.forEach((opcion, n) => opcion.setAttribute("aria-pressed", String(n === i)));
-      }));
-      video.append(elegir);
+    if (fuentes.every(esVideoDirecto)) montarReproductorNativo(video, fuentes);
+    else {
+      video.innerHTML = `<div class="proyecto__reproductor">${Comun.reproductor(fuentes[0], p.titulo)}</div>`;
+      if (fuentes.length > 1) {
+        const elegir = document.createElement("nav");
+        elegir.className = "proyecto__videos-elegir";
+        elegir.setAttribute("aria-label", "Vídeos de este trabajo");
+        elegir.innerHTML = fuentes.map((_, i) => `<button type="button" aria-pressed="${i === 0}" aria-label="Ver vídeo ${i + 1} de ${fuentes.length}">${String(i + 1).padStart(2, "0")}</button>`).join("");
+        const botones = [...elegir.querySelectorAll("button")];
+        botones.forEach((b, i) => b.addEventListener("click", () => {
+          if (b.getAttribute("aria-pressed") === "true") return;
+          video.querySelector(".proyecto__reproductor").innerHTML = Comun.reproductor(fuentes[i], `${p.titulo} — ${i + 1}`);
+          botones.forEach((opcion, n) => opcion.setAttribute("aria-pressed", String(n === i)));
+        }));
+        video.append(elegir);
+      }
     }
   } else { video.remove(); document.body.classList.add("sin-video"); }   // sin vídeo, la ficha baja para no chocar con el menú
 

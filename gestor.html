@@ -294,7 +294,7 @@ button { cursor: pointer; background: none; border: 0; }
   <!-- Arrastrar un .zip de actualización a cualquier parte de la ventana -->
   <div class="soltar-zip" id="soltarZip">Suelta aquí el .zip con la actualización de la web</div>
 
-  <script src="assets/js/trailers-idoia.js?v=202610201308"></script>
+  <script src="assets/js/trailers-idoia.js?v=202610201320"></script>
   <script>
 /* =====================================================================
    GESTOR DE LA WEB
@@ -323,7 +323,7 @@ button { cursor: pointer; background: none; border: 0; }
   // Versión de este gestor. Si en GitHub hay un gestor más nuevo (por ejemplo,
   // una pestaña abierta desde antes de instalar una actualización), no deja
   // publicar: guardaría las cosas a la manera antigua.
-  const VERSION_GESTOR = "2026-10-19-trailers-vimeo-v2";
+  const VERSION_GESTOR = "2026-10-20-r2-native-v2";
 
   /* Las secciones de la web. Si algún día se añade otra, se pone aquí y en
      assets/js/ajustes.js (AJUSTES.secciones) y en los generadores de datos. */
@@ -486,7 +486,7 @@ button { cursor: pointer; background: none; border: 0; }
   function leerExtra(txt) {
     return (txt || "").replace(/\r/g, "").split("\n").filter((l) => l.trim() && !/^\s*#/.test(l)).map((l) => {
       const [ano, titulo, labor, quien, tipo, url, video] = l.split("|").map((s) => (s || "").trim());
-      return { ano, titulo, labor, quien, tipo: (tipo || "films").toLowerCase(), url, video };
+      return { ano, titulo, labor, quien, tipo: (tipo || "films").toLowerCase(), url, video: video.replace(/\\n/g, "\n") };
     });
   }
   function extraATexto(filas) {
@@ -495,7 +495,7 @@ button { cursor: pointer; background: none; border: 0; }
 #  con ficha propia (sin fotos). Una URL opcional enlaza directamente fuera.
 #  Una línea por trabajo: año | título | labor | director o cliente | sección | URL | vídeo
 # =====================================================================
-` + filas.filter((f) => f.titulo).map((f) => [f.ano, f.titulo, f.labor, f.quien, f.tipo, f.url, f.video].map((v) => (v || "").replace(/\|/g, "/")).join(" | ")).join("\n") + "\n";
+` + filas.filter((f) => f.titulo).map((f) => [f.ano, f.titulo, f.labor, f.quien, f.tipo, f.url, (f.video || "").replace(/\n/g, "\\n")].map((v) => (v || "").replace(/\|/g, "/")).join(" | ")).join("\n") + "\n";
   }
 
   // El ZIP muestra los tráileres en la web inmediatamente. Esta importación
@@ -504,7 +504,8 @@ button { cursor: pointer; background: none; border: 0; }
     const plan = window.TRAILERS_IMPORT;
     const versionGuardada = E.about.info.campos.trailers_importados;
     if (!plan || versionGuardada === plan.version) return false;
-    const aplicable = (item) => !versionGuardada || item.nuevoEn === plan.version;
+    const aplicable = (item) => !versionGuardada || !!item.nuevoEn &&
+      (plan.versiones || []).indexOf(item.nuevoEn) > (plan.versiones || []).indexOf(versionGuardada);
     const mismoTitulo = (a, b) => slug(String(a || "")) === slug(String(b || ""));
     for (const item of plan.proyectos.filter(aplicable)) {
       const p = E.proyectos.find((x) => x.tipo === item.tipo &&
@@ -513,7 +514,7 @@ button { cursor: pointer; background: none; border: 0; }
       if (p) {
         p.info.campos.video = videos;
         if (!p.nuevo) { p.sucio = true; p.infoSolo = true; }
-      } else {
+      } else if (item.videos.length) {
         E.proyectos.push({
           tipo: item.tipo, carpeta: item.carpeta, nuevo: true, sucio: false,
           fotos: [], portada: null, movil: null, cartel: null, rutasOriginales: [], archivosOriginales: [],
@@ -525,6 +526,16 @@ button { cursor: pointer; background: none; border: 0; }
       const f = E.about.extra.find((x) => x.tipo === item.tipo && mismoTitulo(x.titulo, item.titulo));
       if (f) f.video = item.video;
     }
+    // Retirar también enlaces antiguos que no tengan todavía un MP4 en R2.
+    const sinVimeo = (valor) => String(valor || "").split(/\n+/)
+      .filter((linea) => !/vimeo\.com/i.test(linea)).join("\n");
+    for (const p of E.proyectos) {
+      const actual = p.info.campos.video || "";
+      if (!/vimeo\.com/i.test(actual)) continue;
+      p.info.campos.video = sinVimeo(actual);
+      if (!p.nuevo) { p.sucio = true; p.infoSolo = true; }
+    }
+    for (const f of E.about.extra) if (/vimeo\.com/i.test(f.video || "")) f.video = sinVimeo(f.video);
     E.about.info.campos.trailers_importados = plan.version;
     E.aboutSucio = true;
     return true;
@@ -541,7 +552,7 @@ button { cursor: pointer; background: none; border: 0; }
     const n = E ? E.proyectos.filter((p) => p.sucio || p.nuevo).length + E.borrados.length + (E.aboutSucio ? 1 : 0) + (E.homeSucio ? 1 : 0) : 0;
     $("#publicar").disabled = !n;
     $("#publicar").textContent = n ? `Publicar cambios (${n})` : "Publicar cambios";
-    $("#pendientes").textContent = E?.trailersPendientes ? `${n} cambios sin publicar · vídeos Vimeo preparados`
+    $("#pendientes").textContent = E?.trailersPendientes ? `${n} cambios sin publicar · vídeos preparados`
       : n ? `${n} cambio${n > 1 ? "s" : ""} sin publicar` : "Todo publicado";
     $("#descartar").hidden = !n;
     if (n) led("pendiente", "Hay cambios sin publicar");
@@ -853,7 +864,7 @@ button { cursor: pointer; background: none; border: 0; }
             <label class="campo"><span>Labor</span><input data-extra="${i}" data-k="labor" value="${esc(f.labor)}" placeholder="Production designer"></label>
             <label class="campo"><span>Director o cliente</span><input data-extra="${i}" data-k="quien" value="${esc(f.quien)}" placeholder="Nombre"></label>
             <label class="campo campo--ancho"><span>URL externa (opcional)</span><input data-extra="${i}" data-k="url" value="${esc(f.url)}" placeholder="https://..."></label>
-            <label class="campo campo--ancho"><span>Vídeo (Vimeo, YouTube o .mp4)</span><input data-extra="${i}" data-k="video" value="${esc(f.video)}" placeholder="https://player.vimeo.com/video/..."></label>
+            <label class="campo campo--ancho"><span>Vídeos de R2 (uno por línea, en orden)</span><textarea data-extra="${i}" data-k="video" rows="3" placeholder="https://…r2.dev/video.mp4">${esc(f.video)}</textarea></label>
           </div><button class="boton boton--peligro" data-quitar-extra="${i}">Quitar este trabajo de Contact</button></details>`).join("")
           : '<p class="nota">No hay trabajos añadidos a mano.</p>'}</div>`;
   }
@@ -1223,7 +1234,7 @@ button { cursor: pointer; background: none; border: 0; }
         ${campo("director", "Dirección", "Nombre del director/a")}
         ${T.cliente ? campo("cliente", "Cliente / marca") : campo("productora", "Productora")}
         ${campo("formato", "Formato (opcional)", "Largometraje, serie…")}
-        ${campo("video", "Vídeo de arriba (uno por línea: Vimeo, YouTube, .mp4 o iframe)", "https://vimeo.com/…", true)}
+        <label class="campo campo--ancho"><span>Vídeos de R2 (uno por línea, en orden)</span><textarea data-campo="video" rows="4" placeholder="https://…r2.dev/video.mp4">${esc(campos.video || "")}</textarea></label>
         ${campo("imdb", "Enlace IMDb (opcional)")}
         <label class="campo"><span>Encuadre de la portada</span><select data-campo="encuadre">${encuadres.map(([v, t]) => `<option value="${v}"${(campos.encuadre || "") === v ? " selected" : ""}>${t}</option>`).join("")}</select></label>
         <label class="campo"><span>Pase del inicio</span><button type="button" class="interruptor ${si ? "si" : ""}" data-ed="inicio" style="justify-content:flex-start;padding:8px 0"><i></i><span>${si ? "Sale en el inicio" : "No sale en el inicio"}</span></button></label>
@@ -1354,7 +1365,7 @@ button { cursor: pointer; background: none; border: 0; }
   // ---- preparar fotos nuevas: girar según EXIF, reducir y pasar a JPG ----
   async function prepararArchivo(archivo) {
     if (VIDEO.test(archivo.name) || archivo.type.startsWith("video/")) {
-      if (archivo.size > 45 * 1024 * 1024) { aviso(`${archivo.name}: el vídeo pesa más de 45 MB. Súbelo a Vimeo y pon el enlace.`, true); return null; }
+      if (archivo.size > 45 * 1024 * 1024) { aviso(`${archivo.name}: el vídeo pesa más de 45 MB. Súbelo a R2 y pega su enlace público en la ficha.`, true); return null; }
       const ext = (archivo.name.match(/\.(\w+)$/) || [, "mp4"])[1].toLowerCase();
       return { f: "nuevo." + ext, blob: archivo, local: URL.createObjectURL(archivo), video: true, ext };
     }

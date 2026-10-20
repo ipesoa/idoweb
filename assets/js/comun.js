@@ -485,13 +485,14 @@
     return "";
   }
   const esArchivoVideo = (u) => /\.(mp4|webm|ogv|m4v|mov)(\?|#|$)/i.test(u);
-  function reproductor(url, titulo = "") {
+  function reproductor(url, titulo = "", opciones = {}) {
     const fuente = fuentesVideo(url)[0];
     if (!fuente) return "";
     if (esArchivoVideo(fuente)) {
+      const bucle = opciones.bucle === undefined ? P().bucle : opciones.bucle;
       return `<video src="${htmlSeguro(fuente)}" playsinline preload="metadata"
-        ${P().autoplay ? "autoplay" : ""} ${P().silencio ? "muted" : ""} ${P().bucle ? "loop" : ""}
-        ${P().controles === false ? "" : "controls"}></video>`;
+        ${P().autoplay ? "autoplay" : ""} ${P().silencio ? "muted" : ""} ${bucle ? "loop" : ""}
+        ${opciones.controlesPropios || P().controles === false ? "" : "controls"}></video>`;
     }
     const src = embed(fuente) || fuente;
     if (!/^https?:\/\//i.test(src)) return "";

@@ -51,8 +51,11 @@
   const TRAILERS = window.TRAILERS_IMPORT;
   const trailersVersionGuardada = leerInfo(DATOS.about?.info || "").trailers_importados;
   const trailersPendientes = !!TRAILERS && trailersVersionGuardada !== TRAILERS.version;
-  // Una segunda entrega solo añade sus cinco vídeos: conserva las fichas ya publicadas o editadas.
-  const trailerAplicable = (item) => !trailersVersionGuardada || item.nuevoEn === TRAILERS.version;
+  // Cada entrega aplica solo los enlaces posteriores a la última importación guardada.
+  const trailerAplicable = (item) => !trailersVersionGuardada || !!item.nuevoEn &&
+    (TRAILERS.versiones || []).indexOf(item.nuevoEn) > (TRAILERS.versiones || []).indexOf(trailersVersionGuardada);
+  const sinVimeo = (valor) => String(valor || "").split(/\n+/)
+    .filter((linea) => !/vimeo\.com/i.test(linea)).join("\n");
   const titulosIguales = (a, b) => slug(a) === slug(b);
   const planDe = (tipo, bruto) => trailersPendientes && TRAILERS.proyectos.find((p) => trailerAplicable(p) && p.tipo === tipo &&
     (p.carpeta === bruto.carpeta || titulosIguales(p.titulo, leerInfo(bruto.info).titulo || bruto.carpeta)));
@@ -106,7 +109,7 @@
       encuadre: info.encuadre || "center",
       encuadreMovil: info.encuadre_movil || "",
       letrasInicio: info.letras_inicio || "",
-      video: (planDe(tipo, bruto)?.videos || []).join("\n") || info.video || "",
+      video: (() => { const plan = planDe(tipo, bruto); return plan ? plan.videos.join("\n") : sinVimeo(info.video); })(),
       texto: info.texto,
       extra: info,
       portada: portada ? { ...portada, url: ruta(tipo, bruto.carpeta, portada.f) } : null,
@@ -130,6 +133,7 @@
       const brutos = (DATOS[tipo] || []).slice();
       if (trailersPendientes) for (const p of TRAILERS.proyectos.filter((x) => trailerAplicable(x) && x.tipo === tipo)) {
         if (brutos.some((b) => b.carpeta === p.carpeta || titulosIguales(leerInfo(b.info).titulo || b.carpeta, p.titulo))) continue;
+        if (!p.videos.length) continue;
         brutos.push({ carpeta: p.carpeta, info: `titulo: ${p.titulo}\naño: ${p.ano || ""}\nmostrar_en_inicio: no\n---\n`, archivos: [] });
       }
       cache[tipo] = brutos.map((b) => crearProyecto(tipo, b)).sort(ordenar);
@@ -187,7 +191,7 @@
         return {
           ano, titulo, labor, director: quien, tipo: seccion, id,
           enlace: /^https?:\/\//i.test(url) ? url : `proyecto.html?tipo=${encodeURIComponent(seccion)}&id=${encodeURIComponent(id)}`,
-          video: videoNuevo?.video || video || "", productora: "", cliente: "", crew: [], texto: "", portada: null, galeria: [],
+          video: videoNuevo ? videoNuevo.video : sinVimeo(video.replace(/\\n/g, "\n")), productora: "", cliente: "", crew: [], texto: "", portada: null, galeria: [],
         };
       });
 
