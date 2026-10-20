@@ -6,5 +6,5 @@ productora: Sayaka / Netflix
 mostrar_en_inicio: si
 video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/DANIELA%20FOREVER%20Tr%C3%A1iler%20Oficial%20Espa%C3%B1ol%20(2025)%20%5Bdbfo_r-694c%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 38% 50%
-portada: 01.jpg
+portada: 05.jpg
 ---
