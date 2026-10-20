@@ -6,4 +6,5 @@ productora: José Frade PC
 mostrar_en_inicio: si
 video: https://pub-e2d83271dfc84a8c9dac040cb75b4f25.r2.dev/Los%20Miercoles%20No%20Existen%20-%20Trailer%20largo%20HD%20%5Bn_qx0_l7S1I%5D_WEB_WEB_WEB.mp4
 encuadre_movil: 66% 50%
+portada: 04.jpg
 ---
